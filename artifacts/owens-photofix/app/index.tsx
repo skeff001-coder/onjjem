@@ -386,7 +386,7 @@ export default function HomeScreen() {
 
       <View style={s.dedication}>
         <Text style={s.dedicationText}>
-          Built for NIV · Aaron · Owen · Mikey · Jake · Jimmy
+          Built for Niamh · Erin · Owen · Mikey · Jake · Jimmy
         </Text>
       </View>
     </View>
