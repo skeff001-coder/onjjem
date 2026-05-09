@@ -206,7 +206,10 @@ export default function HomeScreen() {
               onPress={pickImage}
             >
               <View style={s.uploadInner}>
-                <Ionicons name="image-outline" size={64} color={colors.primary} />
+                <Image
+                  source={require("@/assets/images/icon.png")}
+                  style={s.logoIcon}
+                />
                 <Text style={s.uploadTitle}>Upload a Photo</Text>
                 <Text style={s.uploadSub}>Tap to choose from your library</Text>
               </View>
@@ -467,6 +470,11 @@ function makeStyles(
     pressed: {
       opacity: 0.7,
       transform: [{ scale: 0.98 }],
+    },
+    logoIcon: {
+      width: 80,
+      height: 80,
+      borderRadius: 18,
     },
     uploadInner: {
       alignItems: "center",
