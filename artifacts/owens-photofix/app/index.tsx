@@ -200,16 +200,26 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         {appState === "idle" && (
-          <Pressable
-            style={({ pressed }) => [s.uploadArea, pressed && s.pressed]}
-            onPress={pickImage}
-          >
-            <View style={s.uploadInner}>
-              <Ionicons name="image-outline" size={64} color={colors.primary} />
-              <Text style={s.uploadTitle}>Upload a Photo</Text>
-              <Text style={s.uploadSub}>Tap to choose from your library</Text>
-            </View>
-          </Pressable>
+          <>
+            <Pressable
+              style={({ pressed }) => [s.uploadArea, pressed && s.pressed]}
+              onPress={pickImage}
+            >
+              <View style={s.uploadInner}>
+                <Ionicons name="image-outline" size={64} color={colors.primary} />
+                <Text style={s.uploadTitle}>Upload a Photo</Text>
+                <Text style={s.uploadSub}>Tap to choose from your library</Text>
+              </View>
+            </Pressable>
+
+            <TouchableOpacity style={s.proBtn} activeOpacity={0.85}>
+              <Ionicons name="star" size={20} color="#000" />
+              <Text style={s.proBtnText}>Unlock Pro</Text>
+              <View style={s.proBadge}>
+                <Text style={s.proBadgeText}>✦ PREMIUM</Text>
+              </View>
+            </TouchableOpacity>
+          </>
         )}
 
         {appState === "selected" && originalUri && (
@@ -610,6 +620,36 @@ function makeStyles(
       fontSize: 16,
       color: colors.mutedForeground,
       fontFamily: "Inter_500Medium",
+    },
+    proBtn: {
+      backgroundColor: "#F5C842",
+      borderRadius: colors.radius,
+      paddingVertical: 18,
+      paddingHorizontal: 24,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 10,
+    },
+    proBtnText: {
+      fontSize: 20,
+      fontWeight: "700" as const,
+      color: "#000",
+      fontFamily: "Inter_700Bold",
+      letterSpacing: 0.3,
+    },
+    proBadge: {
+      backgroundColor: "rgba(0,0,0,0.12)",
+      borderRadius: 6,
+      paddingHorizontal: 7,
+      paddingVertical: 3,
+    },
+    proBadgeText: {
+      fontSize: 10,
+      fontWeight: "700" as const,
+      color: "#000",
+      fontFamily: "Inter_700Bold",
+      letterSpacing: 1,
     },
     dedication: {
       alignItems: "center",
