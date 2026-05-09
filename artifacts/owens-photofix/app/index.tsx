@@ -184,7 +184,10 @@ export default function HomeScreen() {
   return (
     <View style={s.root}>
       <View style={s.header}>
-        <Text style={s.headerTitle}>MENJJO Photo Magic</Text>
+        <View>
+          <Text style={s.headerTitleTop}>ONJJEM</Text>
+          <Text style={s.headerTitleBottom}>SNAP LAB</Text>
+        </View>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
             <Ionicons name="refresh" size={22} color={colors.mutedForeground} />
@@ -411,12 +414,20 @@ function makeStyles(
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: colors.border,
     },
-    headerTitle: {
-      fontSize: 28,
+    headerTitleTop: {
+      fontSize: 32,
       fontWeight: "700" as const,
       color: colors.foreground,
       fontFamily: "Inter_700Bold",
-      letterSpacing: -0.5,
+      letterSpacing: 4,
+      lineHeight: 34,
+    },
+    headerTitleBottom: {
+      fontSize: 13,
+      fontWeight: "700" as const,
+      color: colors.primary,
+      fontFamily: "Inter_700Bold",
+      letterSpacing: 6,
     },
     resetBtn: {
       width: 40,
