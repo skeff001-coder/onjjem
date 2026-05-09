@@ -1,8 +1,13 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "EaWpjHgoh8CEXN55Wqw6q"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
 type = "image"
-title = "owens photofix app icon"
+title = "onjjem snap lab app icon"
+
+[[outputs]]
+id = "j6Xw8ttANGRRRiH61iMoB"
+uri = "file://artifacts/owens-photofix/assets/images/icon.png"
+type = "image"
+title = "ONJJEM SNAP LAB — App Icon"
