@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
@@ -181,25 +182,10 @@ export default function HomeScreen() {
           </Pressable>
         )}
 
-        {(appState === "selected" ||
-          appState === "processing" ||
-          appState === "done") &&
-          originalUri && (
-            <View style={s.imageBlock}>
-              <Text style={s.imageLabel}>Original</Text>
-              <Image source={{ uri: originalUri }} style={s.image} />
-            </View>
-          )}
-
-        {appState === "done" && resultBase64 && (
+        {appState === "selected" && originalUri && (
           <View style={s.imageBlock}>
-            <Text style={[s.imageLabel, { color: colors.primary }]}>
-              {mode === "sharpen" ? "Sharpened" : "Colour Restored"}
-            </Text>
-            <Image
-              source={{ uri: `data:image/jpeg;base64,${resultBase64}` }}
-              style={s.image}
-            />
+            <Text style={s.imageLabel}>Selected Photo</Text>
+            <Image source={{ uri: originalUri }} style={s.image} />
           </View>
         )}
 
@@ -207,6 +193,19 @@ export default function HomeScreen() {
           <View style={s.processingBox}>
             <ActivityIndicator size="large" color={colors.primary} />
             <Text style={s.processingText}>{statusMessage}</Text>
+          </View>
+        )}
+
+        {appState === "done" && originalUri && resultBase64 && (
+          <View style={s.imageBlock}>
+            <Text style={s.imageLabel}>
+              {mode === "sharpen" ? "Sharpened" : "Colour Restored"} — drag to
+              compare
+            </Text>
+            <BeforeAfterSlider
+              beforeUri={originalUri}
+              afterBase64={resultBase64}
+            />
           </View>
         )}
 
@@ -244,7 +243,9 @@ export default function HomeScreen() {
                 <Text
                   style={[
                     s.modeBtnSub,
-                    mode === "sharpen" && { color: "rgba(255,255,255,0.75)" },
+                    mode === "sharpen" && {
+                      color: "rgba(255,255,255,0.75)",
+                    },
                   ]}
                 >
                   Fix blurry{"\n"}photos
@@ -323,7 +324,11 @@ export default function HomeScreen() {
 
             <TouchableOpacity
               style={s.secondaryBtn}
-              onPress={() => setAppState("selected")}
+              onPress={() => {
+                setResultBase64(null);
+                setResultLocalUri(null);
+                setAppState("selected");
+              }}
               activeOpacity={0.7}
             >
               <Text style={s.secondaryBtnText}>Try Different Enhancement</Text>
