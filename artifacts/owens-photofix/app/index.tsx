@@ -1,6 +1,7 @@
 import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library";
 import * as Sharing from "expo-sharing";
 import React, { useState } from "react";
 import {
@@ -111,6 +112,32 @@ export default function HomeScreen() {
       Alert.alert("Error", message, [
         { text: "Try Again", onPress: () => setAppState("selected") },
       ]);
+    }
+  };
+
+  const saveToLibrary = async () => {
+    if (!resultLocalUri) return;
+
+    if (Platform.OS === "web") {
+      Alert.alert("Not supported", "Saving to Photos is only available on iPhone.");
+      return;
+    }
+
+    try {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission needed",
+          "Please allow access to your Photos library to save images.",
+        );
+        return;
+      }
+
+      await MediaLibrary.saveToLibraryAsync(resultLocalUri);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert("Saved!", "Your enhanced photo has been saved to your Photos library.");
+    } catch {
+      Alert.alert("Error", "Could not save to Photos. Please try again.");
     }
   };
 
@@ -314,6 +341,15 @@ export default function HomeScreen() {
         {appState === "done" && (
           <>
             <TouchableOpacity
+              style={s.saveBtn}
+              onPress={saveToLibrary}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="download-outline" size={26} color="#fff" />
+              <Text style={s.saveBtnText}>Save to Photos</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
               style={s.whatsappBtn}
               onPress={shareOnWhatsApp}
               activeOpacity={0.85}
@@ -499,6 +535,22 @@ function makeStyles(
       gap: 10,
     },
     processBtnText: {
+      fontSize: 22,
+      fontWeight: "700" as const,
+      color: "#fff",
+      fontFamily: "Inter_700Bold",
+    },
+    saveBtn: {
+      backgroundColor: "#0A84FF",
+      borderRadius: colors.radius,
+      paddingVertical: 22,
+      paddingHorizontal: 24,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 10,
+    },
+    saveBtnText: {
       fontSize: 22,
       fontWeight: "700" as const,
       color: "#fff",
