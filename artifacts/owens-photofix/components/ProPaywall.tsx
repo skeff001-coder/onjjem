@@ -1,4 +1,4 @@
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -23,29 +23,34 @@ interface Props {
 
 const PRO_FEATURES = [
   {
-    icon: "sparkles" as const,
-    title: "AI Sharpening",
-    sub: "Restore blurry & low-res photos to crystal clarity",
+    emoji: "✦",
+    color: "#0A84FF",
+    title: "Ultra Sharp AI",
+    sub: "Advanced AI sharpening restores blurry and low-res photos to crisp, stunning clarity",
   },
   {
-    icon: "color-palette-outline" as const,
-    title: "Colour Restoration",
-    sub: "Bring old black-and-white photos to life",
+    emoji: "🎨",
+    color: "#FF9F0A",
+    title: "Full Colour Restoration",
+    sub: "Breathe vibrant life back into faded or black-and-white vintage photos",
   },
   {
-    icon: "phone-portrait-outline" as const,
+    emoji: "💬",
+    color: "#25D366",
+    title: "Unlimited WhatsApp Sharing",
+    sub: "Share every enhanced photo directly to WhatsApp with a single tap — no limits",
+  },
+  {
+    emoji: "📸",
+    color: "#FF375F",
     title: "Save to Camera Roll",
-    sub: "Keep every enhanced photo in your library",
+    sub: "Every enhanced photo is saved instantly to your iPhone Photos library",
   },
   {
-    icon: "logo-whatsapp" as const,
-    title: "Share Anywhere",
-    sub: "Send results straight to WhatsApp and beyond",
-  },
-  {
-    icon: "infinite-outline" as const,
+    emoji: "∞",
+    color: "#BF5AF2",
     title: "Unlimited Photos",
-    sub: "No daily limits — fix as many as you like",
+    sub: "Process as many photos as you like, any time, with no daily cap",
   },
 ];
 
@@ -59,17 +64,17 @@ export function ProPaywall({ visible, onClose }: Props) {
 
   const handleSubscribe = async () => {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
+    await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
     Alert.alert(
-      "Coming Soon",
-      "Payments will be live very soon. Thank you for your interest in ONJJEM Pro!",
-      [{ text: "Got it", onPress: onClose }],
+      "Payments Coming Very Soon",
+      "We're putting the finishing touches on ONJJEM Pro. You'll be the first to know when it launches!",
+      [{ text: "Can't Wait!", onPress: onClose }],
     );
   };
 
   const handleRestore = () => {
-    Alert.alert("Restore Purchases", "No previous purchases found.");
+    Alert.alert("Restore Purchases", "No previous purchases found on this account.");
   };
 
   return (
@@ -80,84 +85,97 @@ export function ProPaywall({ visible, onClose }: Props) {
       onRequestClose={onClose}
     >
       <View style={[s.root, { backgroundColor: colors.background }]}>
-        <View style={[s.topBar, { paddingTop: topPad + 8 }]}>
-          <TouchableOpacity style={s.closeBtn} onPress={onClose} activeOpacity={0.7}>
-            <Ionicons name="close" size={22} color={colors.mutedForeground} />
+        <View style={[s.topBar, { paddingTop: topPad + 6 }]}>
+          <TouchableOpacity style={[s.closeBtn, { backgroundColor: colors.card }]} onPress={onClose} activeOpacity={0.7}>
+            <Ionicons name="close" size={20} color={colors.mutedForeground} />
           </TouchableOpacity>
         </View>
 
         <ScrollView
-          contentContainerStyle={[s.scroll, { paddingBottom: bottomPad + 100 }]}
+          contentContainerStyle={[s.scroll, { paddingBottom: bottomPad + 140 }]}
           showsVerticalScrollIndicator={false}
         >
           <View style={s.heroBlock}>
-            <Image
-              source={require("@/assets/images/icon.png")}
-              style={s.heroIcon}
-            />
+            <Image source={require("@/assets/images/icon.png")} style={s.heroIcon} />
+
             <View style={s.proBadgeRow}>
-              <Ionicons name="star" size={14} color="#F5C842" />
-              <Text style={[s.proBadgeLabel, { color: "#F5C842" }]}>PRO</Text>
+              <Text style={s.proBadgeStar}>★</Text>
+              <Text style={s.proBadgeLabel}>ONJJEM PRO</Text>
             </View>
+
             <Text style={[s.heroTitle, { color: colors.foreground }]}>
-              ONJJEM SNAP LAB Pro
+              Transform Your Photos
             </Text>
             <Text style={[s.heroSub, { color: colors.mutedForeground }]}>
-              Everything you need to bring your photos back to life
+              AI-powered tools that make every photo look its absolute best
+            </Text>
+          </View>
+
+          <View style={[s.priceCard, { borderColor: "#F5C842", backgroundColor: "rgba(245,200,66,0.07)" }]}>
+            <View style={s.priceRow}>
+              <Text style={[s.priceCurrency, { color: colors.foreground }]}>$</Text>
+              <Text style={[s.priceAmount, { color: colors.foreground }]}>4.99</Text>
+              <Text style={[s.pricePeriod, { color: colors.mutedForeground }]}>/month</Text>
+            </View>
+            <Text style={[s.priceTagline, { color: colors.mutedForeground }]}>
+              Cancel anytime · No commitment · No hidden fees
             </Text>
           </View>
 
           <View style={[s.featuresCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={[s.featuresHeading, { color: colors.mutedForeground }]}>EVERYTHING INCLUDED</Text>
+
             {PRO_FEATURES.map((f, i) => (
-              <View key={f.title} style={[s.featureRow, i < PRO_FEATURES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}>
-                <View style={s.featureIconWrap}>
-                  <Ionicons name={f.icon as any} size={22} color={colors.primary} />
+              <View
+                key={f.title}
+                style={[
+                  s.featureRow,
+                  i < PRO_FEATURES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+                ]}
+              >
+                <View style={[s.featureIconWrap, { backgroundColor: f.color + "1A" }]}>
+                  <Text style={[s.featureEmoji, { color: f.color }]}>{f.emoji}</Text>
                 </View>
                 <View style={s.featureText}>
                   <Text style={[s.featureTitle, { color: colors.foreground }]}>{f.title}</Text>
                   <Text style={[s.featureSub, { color: colors.mutedForeground }]}>{f.sub}</Text>
                 </View>
-                <Ionicons name="checkmark-circle" size={20} color="#34C759" />
+                <Ionicons name="checkmark-circle" size={22} color="#34C759" />
               </View>
             ))}
           </View>
 
-          <View style={[s.priceCard, { borderColor: "#F5C842" }]}>
-            <View style={s.priceTop}>
-              <Text style={[s.priceAmount, { color: colors.foreground }]}>$4.99</Text>
-              <Text style={[s.pricePer, { color: colors.mutedForeground }]}> / month</Text>
-            </View>
-            <Text style={[s.priceNote, { color: colors.mutedForeground }]}>
-              Cancel anytime · No commitment
+          <View style={[s.socialProof, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={[s.socialProofText, { color: colors.mutedForeground }]}>
+              "My old family photos look incredible — like they were taken yesterday"
             </Text>
+            <Text style={[s.socialProofName, { color: colors.foreground }]}>— Happy ONJJEM user</Text>
           </View>
         </ScrollView>
 
         <View style={[s.footer, { paddingBottom: bottomPad, backgroundColor: colors.background, borderTopColor: colors.border }]}>
           <TouchableOpacity
-            style={[s.subscribeBtn, loading && s.subscribeBtnLoading]}
+            style={[s.subscribeBtn, loading && { opacity: 0.75 }]}
             onPress={handleSubscribe}
             activeOpacity={0.85}
             disabled={loading}
           >
             {loading ? (
-              <ActivityIndicator color="#000" />
+              <ActivityIndicator color="#000" size="small" />
             ) : (
               <>
-                <Ionicons name="star" size={22} color="#000" />
-                <Text style={s.subscribeBtnText}>Start Pro — $4.99/mo</Text>
+                <Text style={s.subscribeBtnText}>Start Pro — $4.99 / month</Text>
+                <Text style={s.subscribeBtnStar}>★</Text>
               </>
             )}
           </TouchableOpacity>
 
           <Pressable onPress={handleRestore} style={s.restoreBtn}>
-            <Text style={[s.restoreText, { color: colors.mutedForeground }]}>
-              Restore Purchases
-            </Text>
+            <Text style={[s.restoreText, { color: colors.mutedForeground }]}>Restore Purchases</Text>
           </Pressable>
 
           <Text style={[s.legal, { color: colors.mutedForeground }]}>
-            Subscription auto-renews monthly. Cancel anytime in your App Store settings.
+            Subscription renews automatically at $4.99/month. Cancel anytime in your iPhone Settings → App Store → Subscriptions.
           </Text>
         </View>
       </View>
@@ -166,91 +184,141 @@ export function ProPaywall({ visible, onClose }: Props) {
 }
 
 const s = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
+  root: { flex: 1 },
   topBar: {
     paddingHorizontal: 20,
-    paddingBottom: 8,
+    paddingBottom: 4,
     alignItems: "flex-end",
   },
   closeBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     alignItems: "center",
     justifyContent: "center",
   },
   scroll: {
     paddingHorizontal: 20,
-    gap: 16,
+    gap: 14,
   },
   heroBlock: {
     alignItems: "center",
-    paddingVertical: 12,
+    paddingTop: 4,
+    paddingBottom: 8,
     gap: 10,
   },
   heroIcon: {
-    width: 90,
-    height: 90,
+    width: 88,
+    height: 88,
     borderRadius: 20,
   },
   proBadgeRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
-    backgroundColor: "rgba(245,200,66,0.15)",
-    paddingHorizontal: 12,
-    paddingVertical: 5,
+    gap: 6,
+    backgroundColor: "rgba(245,200,66,0.14)",
+    paddingHorizontal: 14,
+    paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(245,200,66,0.4)",
+    borderColor: "rgba(245,200,66,0.45)",
+  },
+  proBadgeStar: {
+    fontSize: 12,
+    color: "#F5C842",
   },
   proBadgeLabel: {
     fontSize: 12,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
-    letterSpacing: 2,
+    letterSpacing: 2.5,
+    color: "#F5C842",
   },
   heroTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     textAlign: "center",
-    letterSpacing: -0.3,
+    letterSpacing: -0.5,
+    lineHeight: 34,
   },
   heroSub: {
     fontSize: 15,
     fontFamily: "Inter_400Regular",
     textAlign: "center",
     lineHeight: 22,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
+  },
+  priceCard: {
+    borderRadius: 16,
+    borderWidth: 2,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    gap: 8,
+  },
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  priceCurrency: {
+    fontSize: 24,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    marginTop: 8,
+  },
+  priceAmount: {
+    fontSize: 56,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: -2,
+    lineHeight: 60,
+  },
+  pricePeriod: {
+    fontSize: 18,
+    fontFamily: "Inter_400Regular",
+    alignSelf: "flex-end",
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  priceTagline: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
   },
   featuresCard: {
     borderRadius: 16,
     borderWidth: 1,
     overflow: "hidden",
   },
+  featuresHeading: {
+    fontSize: 11,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+    letterSpacing: 1.5,
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 10,
+  },
   featureRow: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 14,
-    gap: 12,
+    gap: 13,
   },
   featureIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: "rgba(10,132,255,0.12)",
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
   },
-  featureText: {
-    flex: 1,
-    gap: 2,
+  featureEmoji: {
+    fontSize: 18,
+    fontWeight: "700" as const,
   },
+  featureText: { flex: 1, gap: 3 },
   featureTitle: {
     fontSize: 15,
     fontWeight: "600" as const,
@@ -259,33 +327,24 @@ const s = StyleSheet.create({
   featureSub: {
     fontSize: 12,
     fontFamily: "Inter_400Regular",
-    lineHeight: 16,
+    lineHeight: 17,
   },
-  priceCard: {
-    borderRadius: 16,
-    borderWidth: 2,
-    padding: 20,
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: "rgba(245,200,66,0.06)",
+  socialProof: {
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 16,
+    gap: 8,
   },
-  priceTop: {
-    flexDirection: "row",
-    alignItems: "baseline",
-  },
-  priceAmount: {
-    fontSize: 42,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-    letterSpacing: -1,
-  },
-  pricePer: {
-    fontSize: 18,
+  socialProofText: {
+    fontSize: 14,
     fontFamily: "Inter_400Regular",
+    fontStyle: "italic" as const,
+    lineHeight: 20,
   },
-  priceNote: {
+  socialProofName: {
     fontSize: 13,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600" as const,
   },
   footer: {
     position: "absolute",
@@ -293,7 +352,7 @@ const s = StyleSheet.create({
     left: 0,
     right: 0,
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 14,
     borderTopWidth: StyleSheet.hairlineWidth,
     gap: 10,
   },
@@ -304,16 +363,18 @@ const s = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
-  },
-  subscribeBtnLoading: {
-    opacity: 0.7,
+    gap: 8,
   },
   subscribeBtnText: {
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: "700" as const,
     color: "#000",
     fontFamily: "Inter_700Bold",
+    letterSpacing: -0.2,
+  },
+  subscribeBtnStar: {
+    fontSize: 16,
+    color: "#000",
   },
   restoreBtn: {
     alignItems: "center",
@@ -328,6 +389,7 @@ const s = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     textAlign: "center",
     lineHeight: 15,
-    opacity: 0.6,
+    opacity: 0.55,
+    paddingHorizontal: 4,
   },
 });
