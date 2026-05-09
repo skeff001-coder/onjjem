@@ -382,12 +382,13 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </>
         )}
-        <View style={s.dedication}>
-          <Text style={s.dedicationText}>
-            Built for Niamh · Erin · Owen · Mikey · Jake · Jimmy
-          </Text>
-        </View>
       </ScrollView>
+
+      <View style={s.dedication}>
+        <Text style={s.dedicationText}>
+          Built for NIV · Aaron · Owen · Mikey · Jake · Jimmy
+        </Text>
+      </View>
     </View>
   );
 }
@@ -612,15 +613,18 @@ function makeStyles(
     },
     dedication: {
       alignItems: "center",
-      paddingTop: 32,
-      paddingBottom: 8,
+      paddingHorizontal: 20,
+      paddingBottom: bottomPad + 6,
+      paddingTop: 12,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: colors.border,
+      backgroundColor: colors.background,
     },
     dedicationText: {
-      fontSize: 11,
-      color: colors.mutedForeground,
-      fontFamily: "Inter_400Regular",
-      letterSpacing: 0.6,
-      opacity: 0.55,
+      fontSize: 13,
+      color: "#ffffff",
+      fontFamily: "Inter_600SemiBold",
+      letterSpacing: 0.5,
       textAlign: "center",
     },
   });
