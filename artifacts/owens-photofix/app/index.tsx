@@ -184,7 +184,7 @@ export default function HomeScreen() {
   return (
     <View style={s.root}>
       <View style={s.header}>
-        <Text style={s.headerTitle}>Owens Photofix</Text>
+        <Text style={s.headerTitle}>MENJJO Photo Magic</Text>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
             <Ionicons name="refresh" size={22} color={colors.mutedForeground} />
@@ -379,6 +379,11 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </>
         )}
+        <View style={s.dedication}>
+          <Text style={s.dedicationText}>
+            Built for Niamh · Erin · Owen · Mikey · Jake · Jimmy
+          </Text>
+        </View>
       </ScrollView>
     </View>
   );
@@ -593,6 +598,19 @@ function makeStyles(
       fontSize: 16,
       color: colors.mutedForeground,
       fontFamily: "Inter_500Medium",
+    },
+    dedication: {
+      alignItems: "center",
+      paddingTop: 32,
+      paddingBottom: 8,
+    },
+    dedicationText: {
+      fontSize: 11,
+      color: colors.mutedForeground,
+      fontFamily: "Inter_400Regular",
+      letterSpacing: 0.6,
+      opacity: 0.55,
+      textAlign: "center",
     },
   });
 }
