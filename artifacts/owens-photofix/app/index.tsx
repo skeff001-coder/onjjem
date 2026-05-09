@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import { ProPaywall } from "@/components/ProPaywall";
 
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
@@ -28,6 +29,7 @@ export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
 
+  const [paywallVisible, setPaywallVisible] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
   const [originalUri, setOriginalUri] = useState<string | null>(null);
   const [resultBase64, setResultBase64] = useState<string | null>(null);
@@ -215,7 +217,7 @@ export default function HomeScreen() {
               </View>
             </Pressable>
 
-            <TouchableOpacity style={s.proBtn} activeOpacity={0.85}>
+            <TouchableOpacity style={s.proBtn} onPress={() => setPaywallVisible(true)} activeOpacity={0.85}>
               <Ionicons name="star" size={20} color="#000" />
               <Text style={s.proBtnText}>Unlock Pro</Text>
               <View style={s.proBadge}>
@@ -402,6 +404,8 @@ export default function HomeScreen() {
           Built for Niamh · Erin · Owen · Mikey · Jake · Jimmy
         </Text>
       </View>
+
+      <ProPaywall visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
     </View>
   );
 }
