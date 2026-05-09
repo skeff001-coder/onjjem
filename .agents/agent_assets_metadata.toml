@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "EaWpjHgoh8CEXN55Wqw6q"
+uri = "file://artifacts/owens-photofix/assets/images/icon.png"
+type = "image"
+title = "owens photofix app icon"

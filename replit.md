@@ -1,45 +1,49 @@
-# [Project name]
+# Owens Photofix
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A mobile iPhone app that uses AI to sharpen blurry photos and add colour to old black-and-white photos, then lets you share the result directly to WhatsApp.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port from workflow)
+- `pnpm --filter @workspace/owens-photofix run dev` — run the Expo mobile app (via workflow)
 - `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required secret: `REPLICATE_API_TOKEN` — API key from replicate.com for AI processing
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Mobile: Expo SDK 54, Expo Router (file-based routing)
+- API: Express 5 (handles Replicate AI calls server-side)
+- AI: Replicate API — nightmareai/real-esrgan (sharpening), piddnad/ddcolor (colorization)
+- Sharing: expo-sharing (native share sheet, includes WhatsApp)
+- Image picking: expo-image-picker
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- Mobile screens: `artifacts/owens-photofix/app/index.tsx` — single main screen
+- Theme: `artifacts/owens-photofix/constants/colors.ts` — dark photo editor palette
+- AI processing route: `artifacts/api-server/src/routes/process.ts`
+- API routes: `artifacts/api-server/src/routes/index.ts`
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- API server proxies Replicate calls to keep the API key server-side (not exposed to client)
+- Single-screen app (no tabs) — photo tool doesn't need multi-section navigation
+- Dark theme (near-black background) fits the photo editing aesthetic
+- `expo-sharing` native share sheet used for WhatsApp — works without installing extra SDKs
+- Express body limit raised to 30MB to handle base64 image payloads
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Users upload a photo from their library, choose between "Sharpen" (fix blurry/low-res photos using Real-ESRGAN) or "Colorize" (add colour to old black-and-white photos using DDColor), process with one tap, then share the enhanced result to WhatsApp via the native share sheet.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Big, easy-to-see buttons (large padding, prominent colours)
+- iPhone-first design
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Replicate processing can take 30-60 seconds — the route uses `Prefer: wait=30` then polls
+- expo-file-system 18.1.11 may show a version warning at startup (expected ~19.0.22) — this is cosmetic only, the app works fine
+- REPLICATE_API_TOKEN must be set in Replit Secrets before AI processing will work
