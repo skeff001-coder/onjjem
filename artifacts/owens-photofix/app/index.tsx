@@ -28,7 +28,8 @@ export default function HomeScreen() {
 
   const [appState, setAppState] = useState<AppState>("idle");
   const [originalUri, setOriginalUri] = useState<string | null>(null);
-  const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const [resultBase64, setResultBase64] = useState<string | null>(null);
+  const [resultLocalUri, setResultLocalUri] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("sharpen");
   const [statusMessage, setStatusMessage] = useState("Preparing...");
 
@@ -52,7 +53,8 @@ export default function HomeScreen() {
     if (!result.canceled && result.assets.length > 0) {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       setOriginalUri(result.assets[0].uri);
-      setResultUrl(null);
+      setResultBase64(null);
+      setResultLocalUri(null);
       setAppState("selected");
     }
   };
@@ -72,7 +74,7 @@ export default function HomeScreen() {
       setStatusMessage(
         mode === "sharpen"
           ? "Sharpening your photo..."
-          : "Adding colour to your photo...",
+          : "Restoring colour to your photo...",
       );
 
       const domain = process.env.EXPO_PUBLIC_DOMAIN;
@@ -90,35 +92,35 @@ export default function HomeScreen() {
         throw new Error(data.error ?? "Processing failed");
       }
 
-      setResultUrl(data.resultUrl);
+      const b64: string = data.resultBase64;
+      setResultBase64(b64);
+
+      const localPath =
+        (FileSystem.documentDirectory ?? "") + "photofix_result.jpg";
+      await FileSystem.writeAsStringAsync(localPath, b64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      setResultLocalUri(localPath);
+
       setAppState("done");
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Something went wrong";
       Alert.alert("Error", message, [
-        {
-          text: "Try Again",
-          onPress: () => setAppState("selected"),
-        },
+        { text: "Try Again", onPress: () => setAppState("selected") },
       ]);
     }
   };
 
   const shareOnWhatsApp = async () => {
-    if (!resultUrl) return;
+    if (!resultLocalUri) return;
 
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      const localUri =
-        FileSystem.documentDirectory + "photofix_result.jpg";
-      await FileSystem.downloadAsync(resultUrl, localUri);
 
       if (Platform.OS === "web") {
-        Alert.alert(
-          "Share",
-          "Image saved. Open WhatsApp to share it.",
-        );
+        Alert.alert("Share", "Open WhatsApp and share the saved image.");
         return;
       }
 
@@ -131,12 +133,12 @@ export default function HomeScreen() {
         return;
       }
 
-      await Sharing.shareAsync(localUri, {
+      await Sharing.shareAsync(resultLocalUri, {
         mimeType: "image/jpeg",
         UTI: "public.jpeg",
         dialogTitle: "Share your fixed photo",
       });
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Could not share the image. Please try again.");
     }
   };
@@ -145,10 +147,11 @@ export default function HomeScreen() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setAppState("idle");
     setOriginalUri(null);
-    setResultUrl(null);
+    setResultBase64(null);
+    setResultLocalUri(null);
   };
 
-  const s = styles(colors, insets);
+  const s = makeStyles(colors, insets);
 
   return (
     <View style={s.root}>
@@ -173,9 +176,7 @@ export default function HomeScreen() {
             <View style={s.uploadInner}>
               <Ionicons name="image-outline" size={64} color={colors.primary} />
               <Text style={s.uploadTitle}>Upload a Photo</Text>
-              <Text style={s.uploadSub}>
-                Tap to choose from your library
-              </Text>
+              <Text style={s.uploadSub}>Tap to choose from your library</Text>
             </View>
           </Pressable>
         )}
@@ -184,18 +185,21 @@ export default function HomeScreen() {
           appState === "processing" ||
           appState === "done") &&
           originalUri && (
-            <View style={s.imageContainer}>
+            <View style={s.imageBlock}>
               <Text style={s.imageLabel}>Original</Text>
               <Image source={{ uri: originalUri }} style={s.image} />
             </View>
           )}
 
-        {appState === "done" && resultUrl && (
-          <View style={s.imageContainer}>
+        {appState === "done" && resultBase64 && (
+          <View style={s.imageBlock}>
             <Text style={[s.imageLabel, { color: colors.primary }]}>
-              {mode === "sharpen" ? "Sharpened" : "Colourised"}
+              {mode === "sharpen" ? "Sharpened" : "Colour Restored"}
             </Text>
-            <Image source={{ uri: resultUrl }} style={s.image} />
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${resultBase64}` }}
+              style={s.image}
+            />
           </View>
         )}
 
@@ -203,9 +207,6 @@ export default function HomeScreen() {
           <View style={s.processingBox}>
             <ActivityIndicator size="large" color={colors.primary} />
             <Text style={s.processingText}>{statusMessage}</Text>
-            <Text style={s.processingNote}>
-              This can take up to 60 seconds
-            </Text>
           </View>
         )}
 
@@ -234,7 +235,7 @@ export default function HomeScreen() {
                 />
                 <Text
                   style={[
-                    s.modeBtnText,
+                    s.modeBtnTitle,
                     mode === "sharpen" && { color: "#fff" },
                   ]}
                 >
@@ -246,7 +247,7 @@ export default function HomeScreen() {
                     mode === "sharpen" && { color: "rgba(255,255,255,0.75)" },
                   ]}
                 >
-                  Make blurry photos crisp
+                  Fix blurry{"\n"}photos
                 </Text>
               </TouchableOpacity>
 
@@ -273,21 +274,19 @@ export default function HomeScreen() {
                 />
                 <Text
                   style={[
-                    s.modeBtnText,
+                    s.modeBtnTitle,
                     mode === "colorize" && { color: "#000" },
                   ]}
                 >
-                  Colourize
+                  Colorize
                 </Text>
                 <Text
                   style={[
                     s.modeBtnSub,
-                    mode === "colorize" && {
-                      color: "rgba(0,0,0,0.6)",
-                    },
+                    mode === "colorize" && { color: "rgba(0,0,0,0.6)" },
                   ]}
                 >
-                  Add colour to old photos
+                  Restore colour{"\n"}to old photos
                 </Text>
               </TouchableOpacity>
             </View>
@@ -302,11 +301,11 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={s.changePhotoBtn}
+              style={s.secondaryBtn}
               onPress={pickImage}
               activeOpacity={0.7}
             >
-              <Text style={s.changePhotoBtnText}>Change Photo</Text>
+              <Text style={s.secondaryBtnText}>Change Photo</Text>
             </TouchableOpacity>
           </>
         )}
@@ -323,19 +322,19 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={s.tryAgainBtn}
+              style={s.secondaryBtn}
               onPress={() => setAppState("selected")}
               activeOpacity={0.7}
             >
-              <Text style={s.tryAgainText}>Try Different Enhancement</Text>
+              <Text style={s.secondaryBtnText}>Try Different Enhancement</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={s.newPhotoBtn}
+              style={s.ghostBtn}
               onPress={resetApp}
               activeOpacity={0.7}
             >
-              <Text style={s.newPhotoText}>Fix Another Photo</Text>
+              <Text style={s.ghostBtnText}>Fix Another Photo</Text>
             </TouchableOpacity>
           </>
         )}
@@ -344,12 +343,11 @@ export default function HomeScreen() {
   );
 }
 
-function styles(
+function makeStyles(
   colors: ReturnType<typeof import("@/hooks/useColors").useColors>,
   insets: { top: number; bottom: number; left: number; right: number },
 ) {
-  const topPad =
-    Platform.OS === "web" ? Math.max(insets.top, 67) : insets.top;
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 67) : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom + 16;
 
   return StyleSheet.create({
@@ -420,11 +418,11 @@ function styles(
       fontFamily: "Inter_400Regular",
       textAlign: "center",
     },
-    imageContainer: {
+    imageBlock: {
       gap: 8,
     },
     imageLabel: {
-      fontSize: 13,
+      fontSize: 12,
       fontWeight: "600" as const,
       color: colors.mutedForeground,
       fontFamily: "Inter_600SemiBold",
@@ -441,7 +439,7 @@ function styles(
     processingBox: {
       backgroundColor: colors.card,
       borderRadius: colors.radius,
-      padding: 32,
+      padding: 40,
       alignItems: "center",
       gap: 16,
     },
@@ -452,18 +450,12 @@ function styles(
       fontFamily: "Inter_600SemiBold",
       textAlign: "center",
     },
-    processingNote: {
-      fontSize: 14,
-      color: colors.mutedForeground,
-      fontFamily: "Inter_400Regular",
-      textAlign: "center",
-    },
     sectionTitle: {
       fontSize: 18,
       fontWeight: "700" as const,
       color: colors.foreground,
       fontFamily: "Inter_700Bold",
-      marginTop: 8,
+      marginTop: 4,
     },
     modeRow: {
       flexDirection: "row",
@@ -476,56 +468,47 @@ function styles(
       borderColor: colors.border,
       backgroundColor: colors.card,
       padding: 18,
-      gap: 6,
+      gap: 8,
       alignItems: "flex-start",
     },
-    modeBtnText: {
+    modeBtnTitle: {
       fontSize: 18,
       fontWeight: "700" as const,
       color: colors.foreground,
       fontFamily: "Inter_700Bold",
     },
     modeBtnSub: {
-      fontSize: 12,
+      fontSize: 13,
       color: colors.mutedForeground,
       fontFamily: "Inter_400Regular",
+      lineHeight: 18,
     },
     processBtn: {
       backgroundColor: colors.primary,
-      borderRadius: colors.radius,
-      paddingVertical: 20,
-      paddingHorizontal: 24,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 10,
-      marginTop: 4,
-    },
-    processBtnText: {
-      fontSize: 20,
-      fontWeight: "700" as const,
-      color: "#fff",
-      fontFamily: "Inter_700Bold",
-    },
-    changePhotoBtn: {
-      alignItems: "center",
-      paddingVertical: 12,
-    },
-    changePhotoBtnText: {
-      fontSize: 16,
-      color: colors.mutedForeground,
-      fontFamily: "Inter_500Medium",
-    },
-    whatsappBtn: {
-      backgroundColor: "#25D366",
       borderRadius: colors.radius,
       paddingVertical: 22,
       paddingHorizontal: 24,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
+      gap: 10,
+    },
+    processBtnText: {
+      fontSize: 22,
+      fontWeight: "700" as const,
+      color: "#fff",
+      fontFamily: "Inter_700Bold",
+    },
+    whatsappBtn: {
+      backgroundColor: "#25D366",
+      borderRadius: colors.radius,
+      paddingVertical: 24,
+      paddingHorizontal: 24,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
       gap: 12,
-      marginTop: 8,
+      marginTop: 4,
     },
     whatsappBtnText: {
       fontSize: 22,
@@ -533,23 +516,23 @@ function styles(
       color: "#fff",
       fontFamily: "Inter_700Bold",
     },
-    tryAgainBtn: {
+    secondaryBtn: {
       backgroundColor: colors.card,
       borderRadius: colors.radius,
       paddingVertical: 18,
       alignItems: "center",
     },
-    tryAgainText: {
+    secondaryBtnText: {
       fontSize: 17,
       fontWeight: "600" as const,
       color: colors.foreground,
       fontFamily: "Inter_600SemiBold",
     },
-    newPhotoBtn: {
+    ghostBtn: {
       alignItems: "center",
       paddingVertical: 12,
     },
-    newPhotoText: {
+    ghostBtnText: {
       fontSize: 16,
       color: colors.mutedForeground,
       fontFamily: "Inter_500Medium",

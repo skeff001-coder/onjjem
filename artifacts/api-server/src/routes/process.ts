@@ -1,46 +1,51 @@
 import { Router } from "express";
 import type { Request, Response } from "express";
+import sharp from "sharp";
 
 const router = Router();
 
-interface ReplicatePrediction {
-  id: string;
-  status: "starting" | "processing" | "succeeded" | "failed" | "canceled";
-  output?: string | string[];
-  error?: string;
-  urls?: { get: string; cancel: string };
+async function sharpenImage(inputBuffer: Buffer): Promise<Buffer> {
+  return sharp(inputBuffer)
+    .sharpen({
+      sigma: 1.8,
+      m1: 2.5,
+      m2: 3.5,
+      x1: 2.0,
+      y2: 12.0,
+      y3: 25.0,
+    })
+    .normalise()
+    .jpeg({ quality: 92 })
+    .toBuffer();
 }
 
-async function pollPrediction(
-  predictionId: string,
-  token: string,
-  maxAttempts = 60,
-): Promise<string> {
-  let attempts = 0;
-  while (attempts < maxAttempts) {
-    await new Promise((r) => setTimeout(r, 2500));
-    const res = await fetch(
-      `https://api.replicate.com/v1/predictions/${predictionId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
-    const prediction: ReplicatePrediction = await res.json();
+async function colorizeImage(inputBuffer: Buffer): Promise<Buffer> {
+  const meta = await sharp(inputBuffer).metadata();
+  const isGreyscale =
+    meta.channels === 1 ||
+    meta.space === "b-w" ||
+    meta.space === "grey16";
 
-    if (prediction.status === "succeeded") {
-      const output = prediction.output;
-      if (Array.isArray(output)) return output[0];
-      if (typeof output === "string") return output;
-      throw new Error("Unexpected output format from Replicate");
-    }
-
-    if (prediction.status === "failed" || prediction.status === "canceled") {
-      throw new Error(prediction.error ?? "Processing failed");
-    }
-
-    attempts++;
+  if (isGreyscale) {
+    return sharp(inputBuffer)
+      .toColourspace("srgb")
+      .normalise()
+      .modulate({ saturation: 1.0, brightness: 1.05 })
+      .tint({ r: 210, g: 185, b: 150 })
+      .modulate({ saturation: 2.2 })
+      .gamma(1.1)
+      .linear([1.08, 1.0, 0.88], [6, 2, -4])
+      .jpeg({ quality: 92 })
+      .toBuffer();
   }
-  throw new Error("Processing timed out after 150 seconds");
+
+  return sharp(inputBuffer)
+    .normalise()
+    .modulate({ saturation: 1.9, brightness: 1.05 })
+    .gamma(1.08)
+    .linear([1.06, 1.0, 0.92], [4, 1, -3])
+    .jpeg({ quality: 92 })
+    .toBuffer();
 }
 
 router.post("/process", async (req: Request, res: Response) => {
@@ -49,63 +54,21 @@ router.post("/process", async (req: Request, res: Response) => {
     mode: "sharpen" | "colorize";
   };
 
-  const token = process.env.REPLICATE_API_TOKEN;
-  if (!token) {
-    res
-      .status(500)
-      .json({
-        error:
-          "REPLICATE_API_TOKEN is not configured. Please add it in Replit Secrets.",
-      });
-    return;
-  }
-
   if (!imageBase64 || !mode) {
     res.status(400).json({ error: "imageBase64 and mode are required" });
     return;
   }
 
   try {
-    const model =
+    const inputBuffer = Buffer.from(imageBase64, "base64");
+
+    const outputBuffer =
       mode === "sharpen"
-        ? "nightmareai/real-esrgan"
-        : "piddnad/ddcolor";
+        ? await sharpenImage(inputBuffer)
+        : await colorizeImage(inputBuffer);
 
-    const imageDataUri = `data:image/jpeg;base64,${imageBase64}`;
-
-    const createRes = await fetch("https://api.replicate.com/v1/predictions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Prefer: "wait=30",
-      },
-      body: JSON.stringify({
-        model,
-        input: { image: imageDataUri },
-      }),
-    });
-
-    if (!createRes.ok) {
-      const err = await createRes.text();
-      throw new Error(`Replicate API error: ${err}`);
-    }
-
-    const prediction: ReplicatePrediction = await createRes.json();
-
-    if (prediction.status === "succeeded") {
-      const output = prediction.output;
-      const resultUrl = Array.isArray(output) ? output[0] : output;
-      res.json({ resultUrl });
-      return;
-    }
-
-    if (prediction.status === "failed" || prediction.status === "canceled") {
-      throw new Error(prediction.error ?? "Processing failed immediately");
-    }
-
-    const resultUrl = await pollPrediction(prediction.id, token);
-    res.json({ resultUrl });
+    const resultBase64 = outputBuffer.toString("base64");
+    res.json({ resultBase64 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     req.log.error({ message }, "Process route error");

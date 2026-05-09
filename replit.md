@@ -7,14 +7,14 @@ A mobile iPhone app that uses AI to sharpen blurry photos and add colour to old 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port from workflow)
 - `pnpm --filter @workspace/owens-photofix run dev` — run the Expo mobile app (via workflow)
 - `pnpm run typecheck` — full typecheck across all packages
-- Required secret: `REPLICATE_API_TOKEN` — API key from replicate.com for AI processing
+- No external API keys required — image processing runs entirely on the server with `sharp`
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - Mobile: Expo SDK 54, Expo Router (file-based routing)
 - API: Express 5 (handles Replicate AI calls server-side)
-- AI: Replicate API — nightmareai/real-esrgan (sharpening), piddnad/ddcolor (colorization)
+- Image processing: `sharp` (Node.js, no external service needed) — unsharp mask sharpening, colour restoration
 - Sharing: expo-sharing (native share sheet, includes WhatsApp)
 - Image picking: expo-image-picker
 
