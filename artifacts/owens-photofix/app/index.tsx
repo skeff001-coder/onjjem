@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { ProPaywall } from "@/components/ProPaywall";
@@ -37,6 +38,7 @@ const PRINT_PRODUCTS = [
 export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
@@ -244,6 +246,23 @@ export default function HomeScreen() {
                 <View style={s.proBadge}>
                   <Text style={s.proBadgeText}>✦ PREMIUM</Text>
                 </View>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={s.giftBtnGlow}
+              onPress={() => router.push("/gift-shop")}
+              activeOpacity={0.88}
+            >
+              <LinearGradient
+                colors={["#FF6B6B", "#FF9F0A", "#BF5AF2"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.giftBtn}
+              >
+                <Ionicons name="gift" size={24} color="#fff" />
+                <Text style={s.giftBtnText}>Print Your Memories</Text>
+                <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.8)" />
               </LinearGradient>
             </TouchableOpacity>
 
@@ -714,6 +733,33 @@ function makeStyles(
       fontSize: 16,
       color: colors.mutedForeground,
       fontFamily: "Inter_500Medium",
+    },
+    giftBtnGlow: {
+      borderRadius: colors.radius,
+      shadowColor: "#FF6B6B",
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.45,
+      shadowRadius: 14,
+      elevation: 8,
+    },
+    giftBtn: {
+      borderRadius: colors.radius,
+      paddingVertical: 18,
+      paddingHorizontal: 24,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 10,
+    },
+    giftBtnText: {
+      fontSize: 22,
+      fontWeight: "700" as const,
+      color: "#fff",
+      fontFamily: "Inter_700Bold",
+      flex: 1,
+      textShadowColor: "rgba(0,0,0,0.2)",
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 3,
     },
     proBtnGlow: {
       borderRadius: colors.radius,
