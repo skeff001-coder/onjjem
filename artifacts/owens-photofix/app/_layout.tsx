@@ -25,6 +25,7 @@ function RootLayoutNav() {
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="gift-shop" options={{ headerShown: false }} />
       <Stack.Screen name="success" options={{ headerShown: false }} />
+      <Stack.Screen name="admin" options={{ headerShown: false }} />
     </Stack>
   );
 }

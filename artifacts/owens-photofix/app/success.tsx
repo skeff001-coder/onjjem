@@ -45,6 +45,9 @@ export default function SuccessScreen() {
       <View style={styles.titleBlock}>
         <Text style={[styles.successLabel, { color: "#34C759" }]}>PAYMENT SUCCESSFUL</Text>
         <Text style={[styles.title, { color: colors.foreground }]}>Thank You!</Text>
+        <Text style={styles.confirmationText}>
+          You will receive a confirmation email within 24 hours once your order has been sent to our master printers.
+        </Text>
       </View>
 
       {/* Card — your memories are in good hands */}
@@ -175,6 +178,16 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
+  },
+  confirmationText: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "#6C6C70",
+    textAlign: "center",
+    lineHeight: 21,
+    marginTop: 8,
+    paddingHorizontal: 8,
+    fontStyle: "italic",
   },
   card: {
     borderRadius: 20,
