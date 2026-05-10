@@ -55,12 +55,6 @@ type = "image"
 title = "torn childhood photo before"
 
 [[generated]]
-id = "nZ6UtBh8NZqmUJg6TClNy"
-uri = "file://artifacts/owens-photofix/assets/gallery/childhood_after.png"
-type = "image"
-title = "restored childhood photo after"
-
-[[generated]]
 id = "T6RInhGQ3bxu-_8FJKCJ8"
 uri = "file://artifacts/owens-photofix/assets/gallery/grandma_before.png"
 type = "image"

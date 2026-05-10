@@ -1165,9 +1165,37 @@ export default function GiftShopScreen() {
   );
 }
 
-function ProductCard({ product, onPress }: { product: Product; onPress: () => void }) {
+function BadgeRow({ product }: { product: Product }) {
+  if (!product.handmadeInLondon && !product.freePersonalisation && !product.heavyItem) return null;
   return (
-    <View style={[s.productCard, product.wide && !product.photo && s.productCardWide]}>
+    <View style={s.productGoldBadgeRow}>
+      {product.handmadeInLondon && (
+        <View style={s.productGoldBadge}>
+          <Text style={s.productGoldBadgeFlag}>🇬🇧</Text>
+          <Text style={s.productGoldBadgeText}>Handmade in London</Text>
+        </View>
+      )}
+      {product.freePersonalisation && (
+        <View style={[s.productGoldBadge, s.productGoldBadgeFree]}>
+          <Ionicons name="ribbon-outline" size={10} color="#8B6200" />
+          <Text style={s.productGoldBadgeText}>FREE: Expert Personalisation</Text>
+        </View>
+      )}
+      {product.heavyItem && (
+        <View style={s.productHeavyBadge}>
+          <Ionicons name="cube-outline" size={10} color="#6B3A00" />
+          <Text style={s.productHeavyBadgeText}>Heavy Item · UK Tracked £9.50</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
+function ProductCard({ product, onPress }: { product: Product; onPress: () => void }) {
+  const isWide = product.wide && !product.photo;
+
+  return (
+    <View style={[s.productCard, isWide && s.productCardWide]}>
       {product.bestSeller && (
         <View style={s.bestSellerBadge}>
           <Text style={s.bestSellerStar}>★</Text>
@@ -1180,62 +1208,71 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
           <Text style={s.premiumBadgeText}>Premium Quality</Text>
         </View>
       )}
-      {(product.handmadeInLondon || product.freePersonalisation || product.heavyItem) && (
-        <View style={s.productGoldBadgeRow}>
-          {product.handmadeInLondon && (
-            <View style={s.productGoldBadge}>
-              <Text style={s.productGoldBadgeFlag}>🇬🇧</Text>
-              <Text style={s.productGoldBadgeText}>Handmade in London</Text>
-            </View>
-          )}
-          {product.freePersonalisation && (
-            <View style={[s.productGoldBadge, s.productGoldBadgeFree]}>
-              <Ionicons name="ribbon-outline" size={10} color="#8B6200" />
-              <Text style={s.productGoldBadgeText}>FREE: Expert Personalisation</Text>
-            </View>
-          )}
-          {product.heavyItem && (
-            <View style={s.productHeavyBadge}>
-              <Ionicons name="cube-outline" size={10} color="#6B3A00" />
-              <Text style={s.productHeavyBadgeText}>Heavy Item · UK Tracked £9.50</Text>
-            </View>
-          )}
-        </View>
-      )}
 
       {product.photo ? (
-        <Image
-          source={product.photo}
-          style={s.productPhotoFull}
-          resizeMode="contain"
-        />
-      ) : (
-        <View style={[
-          s.productIconWrap,
-          { backgroundColor: product.iconBg },
-          product.wide && s.productIconWrapWide,
-        ]}>
-          <Text style={[s.productEmoji, product.wide && s.productEmojiWide]}>
-            {product.emoji}
-          </Text>
-          {product.size && (
-            <View style={s.sizePill}>
-              <Text style={s.sizePillText}>{product.size}</Text>
+        /* Photo card — full-width image then body */
+        <>
+          <Image source={product.photo} style={s.productPhotoFull} resizeMode="contain" />
+          <View style={s.productBody}>
+            <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
+            <Text style={s.productDesc}>{product.desc}</Text>
+            <View style={s.productFooter}>
+              <Text style={s.productPrice}>{product.price}</Text>
+              <TouchableOpacity style={s.designBtn} activeOpacity={0.82} onPress={onPress}>
+                <Text style={s.designBtnText}>Design Now</Text>
+              </TouchableOpacity>
             </View>
-          )}
-        </View>
+          </View>
+        </>
+      ) : isWide ? (
+        /* Wide card — badges full-width at top, then inner row: icon | body */
+        <>
+          <BadgeRow product={product} />
+          <View style={s.productWideRow}>
+            <View style={[s.productIconWrap, { backgroundColor: product.iconBg }, s.productIconWrapWide]}>
+              <Text style={[s.productEmoji, s.productEmojiWide]}>{product.emoji}</Text>
+              {product.size && (
+                <View style={s.sizePill}>
+                  <Text style={s.sizePillText}>{product.size}</Text>
+                </View>
+              )}
+            </View>
+            <View style={[s.productBody, s.productBodyWide]}>
+              <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
+              <Text style={s.productDesc}>{product.desc}</Text>
+              <View style={s.productFooter}>
+                <Text style={s.productPrice}>{product.price}</Text>
+                <TouchableOpacity style={s.designBtn} activeOpacity={0.82} onPress={onPress}>
+                  <Text style={s.designBtnText}>Design Now</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </>
+      ) : (
+        /* Normal grid card — badges, icon, body stacked */
+        <>
+          <BadgeRow product={product} />
+          <View style={[s.productIconWrap, { backgroundColor: product.iconBg }]}>
+            <Text style={s.productEmoji}>{product.emoji}</Text>
+            {product.size && (
+              <View style={s.sizePill}>
+                <Text style={s.sizePillText}>{product.size}</Text>
+              </View>
+            )}
+          </View>
+          <View style={s.productBody}>
+            <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
+            <Text style={s.productDesc}>{product.desc}</Text>
+            <View style={s.productFooter}>
+              <Text style={s.productPrice}>{product.price}</Text>
+              <TouchableOpacity style={s.designBtn} activeOpacity={0.82} onPress={onPress}>
+                <Text style={s.designBtnText}>Design Now</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </>
       )}
-
-      <View style={[s.productBody, product.wide && !product.photo && s.productBodyWide]}>
-        <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
-        <Text style={s.productDesc}>{product.desc}</Text>
-        <View style={s.productFooter}>
-          <Text style={s.productPrice}>{product.price}</Text>
-          <TouchableOpacity style={s.designBtn} activeOpacity={0.82} onPress={onPress}>
-            <Text style={s.designBtnText}>Design Now</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
     </View>
   );
 }
@@ -1507,6 +1544,8 @@ const s = StyleSheet.create({
   },
   productCardWide: {
     width: "100%",
+  },
+  productWideRow: {
     flexDirection: "row",
   },
 
