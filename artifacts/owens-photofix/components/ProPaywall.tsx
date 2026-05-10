@@ -164,7 +164,7 @@ export function ProPaywall({ visible, onClose }: Props) {
               <ActivityIndicator color="#000" size="small" />
             ) : (
               <>
-                <Text style={s.subscribeBtnText}>Start Pro — $4.99 / month</Text>
+                <Text style={s.subscribeBtnText}>Start Pro — £4.99 / month</Text>
                 <Text style={s.subscribeBtnStar}>★</Text>
               </>
             )}
@@ -175,7 +175,7 @@ export function ProPaywall({ visible, onClose }: Props) {
           </Pressable>
 
           <Text style={[s.legal, { color: colors.mutedForeground }]}>
-            Subscription renews automatically at $4.99/month. Cancel anytime in your iPhone Settings → App Store → Subscriptions.
+            Subscription renews automatically at £4.99/month. Cancel anytime in your iPhone Settings → App Store → Subscriptions.
           </Text>
         </View>
       </View>
