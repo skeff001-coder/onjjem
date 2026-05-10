@@ -358,18 +358,37 @@ export default function GiftShopScreen() {
           </View>
         </View>
 
-        {/* Trust strip */}
-        <View style={s.trustRow}>
-          {[
-            { icon: "shield-checkmark-outline" as IconName, label: "Quality\nGuaranteed" },
-            { icon: "airplane-outline" as IconName, label: "UK Shipping\nIncluded" },
-            { icon: "gift-outline" as IconName, label: "Pro\nPackaging" },
-          ].map((t) => (
-            <View key={t.label} style={s.trustItem}>
-              <Ionicons name={t.icon} size={22} color={BLUE} />
-              <Text style={s.trustLabel}>{t.label}</Text>
+        {/* Quality promise banner */}
+        <View style={s.promiseBanner}>
+          <LinearGradient
+            colors={["#1A3A6B", "#0A2040"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={s.promiseGradient}
+          >
+            <Text style={s.promiseFlag}>🇬🇧</Text>
+            <View style={s.promiseCenter}>
+              <Text style={s.promiseHeadline}>Handmade in London</Text>
+              <Text style={s.promiseSub}>Every item crafted with care by our expert artisans</Text>
             </View>
-          ))}
+          </LinearGradient>
+          <View style={s.promiseGuaranteeRow}>
+            <View style={s.promiseGuaranteeItem}>
+              <Ionicons name="shield-checkmark" size={22} color={GOLD} />
+              <View>
+                <Text style={s.promiseGuaranteeTitle}>10 Year Print Guarantee</Text>
+                <Text style={s.promiseGuaranteeSub}>Colours that last a decade, promise</Text>
+              </View>
+            </View>
+            <View style={s.promiseDivider} />
+            <View style={s.promiseGuaranteeItem}>
+              <Ionicons name="airplane" size={22} color={BLUE} />
+              <View>
+                <Text style={s.promiseGuaranteeTitle}>UK Shipping Included</Text>
+                <Text style={s.promiseGuaranteeSub}>Professional packaging, every time</Text>
+              </View>
+            </View>
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -578,12 +597,69 @@ const s = StyleSheet.create({
   giftWrapDescText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#5C4A00", lineHeight: 19, flex: 1, fontStyle: "italic" },
   giftWrapHint: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#8E8E93", lineHeight: 17, textAlign: "center" },
 
-  /* Trust strip */
-  trustRow: {
-    flexDirection: "row", justifyContent: "space-around",
-    borderRadius: 16, paddingVertical: 16,
-    borderWidth: 1, borderColor: "#E2D9CF", backgroundColor: "#fff",
+  /* Quality promise banner */
+  promiseBanner: {
+    borderRadius: 18,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#1A3A6B",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
   },
-  trustItem: { alignItems: "center", gap: 6 },
-  trustLabel: { fontSize: 12, fontWeight: "600" as const, fontFamily: "Inter_600SemiBold", textAlign: "center", lineHeight: 16, color: "#1C1C1E" },
+  promiseGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+    gap: 14,
+  },
+  promiseFlag: { fontSize: 36 },
+  promiseCenter: { flex: 1, gap: 2 },
+  promiseHeadline: {
+    fontSize: 18,
+    fontWeight: "700" as const,
+    color: "#fff",
+    fontFamily: "Inter_700Bold",
+  },
+  promiseSub: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.75)",
+    fontFamily: "Inter_400Regular",
+  },
+  promiseGuaranteeRow: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    gap: 12,
+    alignItems: "center",
+  },
+  promiseGuaranteeItem: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  promiseGuaranteeTitle: {
+    fontSize: 12,
+    fontWeight: "700" as const,
+    color: "#1C1C1E",
+    fontFamily: "Inter_700Bold",
+    lineHeight: 16,
+  },
+  promiseGuaranteeSub: {
+    fontSize: 10,
+    color: "#6C6C70",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 14,
+    marginTop: 1,
+  },
+  promiseDivider: {
+    width: 1,
+    height: 40,
+    backgroundColor: "#E2D9CF",
+  },
 });
