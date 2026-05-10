@@ -26,6 +26,13 @@ import { ProPaywall } from "@/components/ProPaywall";
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
 
+const PRINT_PRODUCTS = [
+  { id: "canvas",  title: "Premium Canvas",      price: "£29.99", emoji: "🖼️",  bg: "#E8F0FE" },
+  { id: "keyring", title: "Photo Keyring",        price: "£9.99",  emoji: "🔑",  bg: "#FFF3E0" },
+  { id: "large",   title: "Large Format Print",   price: "£39.99", emoji: "🖨️",  bg: "#E8F5E9" },
+  { id: "quilt",   title: "Custom Photo Quilt",   price: "£49.99", emoji: "🧵",  bg: "#FCE4EC" },
+] as const;
+
 export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -232,6 +239,31 @@ export default function HomeScreen() {
                 </View>
               </LinearGradient>
             </TouchableOpacity>
+
+            <View style={s.printShop}>
+              <View style={s.printShopHeader}>
+                <Text style={s.printShopTitle}>Print Shop</Text>
+                <Text style={s.printShopSub}>Turn your photos into lasting memories</Text>
+              </View>
+              <View style={s.printGrid}>
+                {PRINT_PRODUCTS.map((product) => (
+                  <TouchableOpacity
+                    key={product.id}
+                    style={s.printCard}
+                    activeOpacity={0.82}
+                    onPress={() => Alert.alert("Coming Soon", `${product.title} ordering will be available soon!`)}
+                  >
+                    <View style={[s.printCardImage, { backgroundColor: product.bg }]}>
+                      <Text style={s.printCardEmoji}>{product.emoji}</Text>
+                    </View>
+                    <View style={s.printCardBody}>
+                      <Text style={s.printCardTitle}>{product.title}</Text>
+                      <Text style={s.printCardPrice}>From {product.price}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
           </>
         )}
 
@@ -701,6 +733,69 @@ function makeStyles(
       color: "#fff",
       fontFamily: "Inter_700Bold",
       letterSpacing: 1,
+    },
+    printShop: {
+      marginTop: 28,
+      gap: 16,
+    },
+    printShopHeader: {
+      gap: 4,
+    },
+    printShopTitle: {
+      fontSize: 22,
+      fontWeight: "700" as const,
+      color: colors.foreground,
+      fontFamily: "Inter_700Bold",
+      letterSpacing: 0.2,
+    },
+    printShopSub: {
+      fontSize: 14,
+      color: colors.mutedForeground,
+      fontFamily: "Inter_400Regular",
+    },
+    printGrid: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 12,
+    },
+    printCard: {
+      width: "47.5%",
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      overflow: "hidden",
+      borderWidth: 1,
+      borderColor: colors.border,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.06,
+      shadowRadius: 8,
+      elevation: 3,
+    },
+    printCardImage: {
+      width: "100%",
+      aspectRatio: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    printCardEmoji: {
+      fontSize: 48,
+    },
+    printCardBody: {
+      padding: 12,
+      gap: 3,
+    },
+    printCardTitle: {
+      fontSize: 14,
+      fontWeight: "700" as const,
+      color: colors.foreground,
+      fontFamily: "Inter_700Bold",
+      lineHeight: 18,
+    },
+    printCardPrice: {
+      fontSize: 13,
+      fontWeight: "600" as const,
+      color: colors.primary,
+      fontFamily: "Inter_600SemiBold",
     },
     dedication: {
       alignItems: "center",
