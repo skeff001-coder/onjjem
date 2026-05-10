@@ -39,6 +39,8 @@ type Product = {
   bestSeller?: boolean;
   photo?: ReturnType<typeof require>;
   premiumBadge?: boolean;
+  handmadeInLondon?: boolean;
+  freePersonalisation?: boolean;
 };
 
 type Category = {
@@ -382,6 +384,63 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  {
+    id: "little_treasures",
+    label: "Little Treasures",
+    emoji: "✨",
+    subtitle: "Handmade in London · Beautifully gift-boxed keepsakes",
+    fulfillment: "Bags of Love · Master Artisans",
+    headerGradient: ["#7B4F00", "#4A2D00"] as const,
+    products: [
+      {
+        id: "scented_candle",
+        title: "Glass Scented Candle",
+        size: "50-hour burn",
+        desc: "100% vegan soy wax in a luxury gift box. A personalised memory you can see, smell and treasure.",
+        price: "£29.99",
+        emoji: "🕯️",
+        iconBg: "#FFF8E7",
+        wide: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "coasters",
+        title: "High-Gloss Coasters",
+        size: "Set of 4",
+        desc: "Heat-resistant with a solid wooden base. Your restored photo sealed under a mirror-gloss finish.",
+        price: "£24.99",
+        emoji: "🟫",
+        iconBg: "#FDF3E3",
+        wide: true,
+        bestSeller: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "mouse_mat",
+        title: "Photo Mouse Mat",
+        size: "6mm thick",
+        desc: "Non-slip rubber base with a smooth cloth surface — your memory on your desk, every single day.",
+        price: "£19.99",
+        emoji: "🖱️",
+        iconBg: "#FFFBF0",
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "notebook",
+        title: "Handmade Notebook",
+        size: "A5",
+        desc: "Premium ivory paper interior with a hand-stitched spine. A keepsake that writes as beautifully as it looks.",
+        price: "£24.99",
+        emoji: "📔",
+        iconBg: "#FFF9EE",
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+    ],
+  },
 ];
 
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
@@ -549,6 +608,35 @@ export default function GiftShopScreen() {
                 <Text style={s.tinTitle}>Includes Premium Metal Gift Tin</Text>
                 <Text style={s.tinSub}>
                   Every jigsaw ships in a professional metal tin with your photo printed on the lid — ready to gift, no wrapping needed.
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Little Treasures callout */}
+          {activeTab === "little_treasures" && (
+            <View style={s.littleTreasuresCallout}>
+              <LinearGradient
+                colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.littleTreasuresBar}
+              />
+              <View style={s.littleTreasuresInner}>
+                <View style={s.littleTreasuresBadgeCol}>
+                  <View style={s.ltBadge}>
+                    <Text style={s.ltBadgeFlag}>🇬🇧</Text>
+                    <Text style={s.ltBadgeText}>Handmade in London</Text>
+                  </View>
+                  <View style={[s.ltBadge, s.ltBadgeFree]}>
+                    <Ionicons name="ribbon" size={12} color="#8B6200" />
+                    <Text style={s.ltBadgeText}>FREE: Expert Personalisation Included</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={s.littleTreasuresDesc}>
+                <Text style={s.littleTreasuresDescText}>
+                  Every Little Treasures item is individually handmade by London artisans and shipped in premium gift packaging — ready to give, no wrapping needed.
                 </Text>
               </View>
             </View>
@@ -827,6 +915,22 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
         <View style={s.premiumBadge}>
           <Text style={s.premiumBadgeStar}>♦</Text>
           <Text style={s.premiumBadgeText}>Premium Quality</Text>
+        </View>
+      )}
+      {(product.handmadeInLondon || product.freePersonalisation) && (
+        <View style={s.productGoldBadgeRow}>
+          {product.handmadeInLondon && (
+            <View style={s.productGoldBadge}>
+              <Text style={s.productGoldBadgeFlag}>🇬🇧</Text>
+              <Text style={s.productGoldBadgeText}>Handmade in London</Text>
+            </View>
+          )}
+          {product.freePersonalisation && (
+            <View style={[s.productGoldBadge, s.productGoldBadgeFree]}>
+              <Ionicons name="ribbon-outline" size={10} color="#8B6200" />
+              <Text style={s.productGoldBadgeText}>FREE: Expert Personalisation</Text>
+            </View>
+          )}
         </View>
       )}
 
@@ -1151,6 +1255,98 @@ const s = StyleSheet.create({
   },
   premiumBadgeStar: { fontSize: 9, color: "#9A6F00" },
   premiumBadgeText: { fontSize: 10, fontWeight: "700" as const, color: "#9A6F00", fontFamily: "Inter_700Bold", letterSpacing: 0.2 },
+
+  /* Gold inline badges — Handmade in London & FREE Personalisation */
+  productGoldBadgeRow: {
+    flexDirection: "row" as const,
+    flexWrap: "wrap" as const,
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingTop: 8,
+  },
+  productGoldBadge: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 4,
+    backgroundColor: GOLD_BG,
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  productGoldBadgeFree: {
+    backgroundColor: "#FFFBF0",
+    borderColor: GOLD,
+  },
+  productGoldBadgeFlag: { fontSize: 10 },
+  productGoldBadgeText: {
+    fontSize: 9,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#8B6200",
+    letterSpacing: 0.3,
+  },
+
+  /* Little Treasures callout */
+  littleTreasuresCallout: {
+    backgroundColor: "#FFFDF7",
+    borderRadius: 14,
+    overflow: "hidden" as const,
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    shadowColor: GOLD,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+    marginBottom: 4,
+  },
+  littleTreasuresBar: { height: 3 },
+  littleTreasuresInner: {
+    paddingHorizontal: 14,
+    paddingTop: 12,
+    paddingBottom: 4,
+  },
+  littleTreasuresBadgeCol: { flexDirection: "row" as const, flexWrap: "wrap" as const, gap: 8 },
+  ltBadge: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 5,
+    backgroundColor: GOLD_BG,
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  ltBadgeFree: {
+    backgroundColor: "#FFFBF0",
+    borderColor: GOLD,
+  },
+  ltBadgeFlag: { fontSize: 13 },
+  ltBadgeText: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#8B6200",
+    letterSpacing: 0.3,
+  },
+  littleTreasuresDesc: {
+    paddingHorizontal: 14,
+    paddingBottom: 14,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: "#F0E8D5",
+    marginTop: 8,
+  },
+  littleTreasuresDescText: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#7A5C00",
+    lineHeight: 18,
+    fontStyle: "italic" as const,
+  },
 
   productPhoto: { backgroundColor: "#F0EBE5" },
   productPhotoSquare: { width: "100%", height: 110 },
