@@ -443,7 +443,7 @@ const CATEGORIES: Category[] = [
   },
   {
     id: "living_comforts",
-    label: "Living Room Comforts",
+    label: "Comforts",
     emoji: "🛋️",
     subtitle: "Ultra-soft fleece throws · Hand-finished in London",
     fulfillment: "ONJJEM Master Artisans · London Studio",
@@ -491,7 +491,7 @@ const CATEGORIES: Category[] = [
   },
   {
     id: "home_rugs",
-    label: "Home & Heritage Rugs",
+    label: "Rugs",
     emoji: "🏡",
     subtitle: "Marbled Velvet · Non-slip latex base · 10-year print guarantee",
     fulfillment: "ONJJEM Master Artisans · London Studio",
