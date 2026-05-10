@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
-  Alert,
+  Animated,
   Image,
   ScrollView,
   StyleSheet,
@@ -634,6 +634,22 @@ export default function GiftShopScreen() {
   const [promoStatus, setPromoStatus] = useState<"idle" | "valid" | "min_spend" | "invalid">("idle");
   const [shipping, setShipping] = useState<"uk" | "worldwide">("uk");
 
+  const scrollRef = useRef<ScrollView>(null);
+  const toastOpacity = useRef(new Animated.Value(0)).current;
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    Animated.sequence([
+      Animated.timing(toastOpacity, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.delay(2000),
+      Animated.timing(toastOpacity, { toValue: 0, duration: 300, useNativeDriver: true }),
+    ]).start();
+    toastTimer.current = setTimeout(() => setToastMessage(""), 2600);
+  };
+
   const activeCategory = CATEGORIES.find((c) => c.id === activeTab)!;
 
   const basketSubtotal = basketItems.reduce((sum, i) => sum + i.price, 0);
@@ -644,27 +660,16 @@ export default function GiftShopScreen() {
 
   const handleDesign = (title: string, price: string) => {
     const numPrice = parsePrice(price);
-    const extra = giftWrap ? " + Deluxe Gift Wrapping (£4.99)" : "";
     setBasketItems((prev) => [...prev, { title, price: numPrice }]);
-    Alert.alert(
-      "Added to Basket!",
-      `${title}${extra} added.\n\nBasket total: £${(basketSubtotal + numPrice + giftWrapCost).toFixed(2)}`,
-    );
+    showToast("Added to your ONJJEM Basket!");
   };
 
   const handlePersonalisationConfirm = (data: PersonalisationData) => {
     if (!personalisingProduct) return;
     const { title, price } = personalisingProduct;
     const numPrice = parsePrice(price);
-    const extra = giftWrap ? " + Deluxe Gift Wrapping (£4.99)" : "";
-    const personalNote = data.message.trim()
-      ? `\n✍️ Personalisation: "${data.message.trim()}"\nFont: ${data.fontStyle.replace(/_/g, " ")} · Placement: ${data.placement.replace(/_/g, " ")}`
-      : "";
     setBasketItems((prev) => [...prev, { title, price: numPrice }]);
-    Alert.alert(
-      "Added to Basket!",
-      `${title}${extra} added.${personalNote}\n\nBasket total: £${(basketSubtotal + numPrice + giftWrapCost).toFixed(2)}`,
-    );
+    showToast("Added to your ONJJEM Basket!");
     setPersonalisingProduct(null);
   };
 
@@ -720,9 +725,20 @@ export default function GiftShopScreen() {
           <Text style={s.headerTitle}>Gift Shop</Text>
           <Text style={s.headerSub}>Print · Gift · Remember</Text>
         </View>
-        <View style={s.headerRight}>
+        <TouchableOpacity
+          style={s.headerRight}
+          activeOpacity={0.7}
+          onPress={() => scrollRef.current?.scrollToEnd({ animated: true })}
+        >
           <Ionicons name="gift" size={26} color="#FF6B6B" />
-        </View>
+          {basketItems.length > 0 && (
+            <View style={s.basketCountBadge}>
+              <Text style={s.basketCountText}>
+                {basketItems.length > 9 ? "9+" : basketItems.length}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
       {/* Category tab bar — horizontally scrollable for 4 tabs */}
@@ -750,6 +766,7 @@ export default function GiftShopScreen() {
       </ScrollView>
 
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={[s.scroll, { paddingBottom: insets.bottom + 24 }]}
         showsVerticalScrollIndicator={false}
         style={s.scrollView}
@@ -936,7 +953,13 @@ export default function GiftShopScreen() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onPress={() => setPersonalisingProduct(product)}
+                onPress={() => {
+                  if (product.freePersonalisation) {
+                    setPersonalisingProduct(product);
+                  } else {
+                    handleDesign(product.title, product.price);
+                  }
+                }}
               />
             ))}
           </View>
@@ -1242,6 +1265,15 @@ export default function GiftShopScreen() {
         onClose={() => setPersonalisingProduct(null)}
         onConfirm={handlePersonalisationConfirm}
       />
+
+      {/* Basket toast */}
+      <Animated.View
+        style={[s.toast, { opacity: toastOpacity, bottom: insets.bottom + 24 }]}
+        pointerEvents="none"
+      >
+        <Ionicons name="bag-check" size={17} color="#fff" />
+        <Text style={s.toastText}>{toastMessage}</Text>
+      </Animated.View>
     </View>
   );
 }
@@ -1430,6 +1462,55 @@ const s = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
+    color: "#F5D78E",
+  },
+
+  /* Basket count badge on gift icon */
+  basketCountBadge: {
+    position: "absolute" as const,
+    top: -6,
+    right: -6,
+    backgroundColor: "#FF3B30",
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    paddingHorizontal: 4,
+    borderWidth: 2,
+    borderColor: "#FAF7F2",
+  },
+  basketCountText: {
+    fontSize: 10,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    lineHeight: 12,
+  },
+
+  /* In-app toast */
+  toast: {
+    position: "absolute" as const,
+    alignSelf: "center" as const,
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 8,
+    backgroundColor: "#1C1A14",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: GOLD,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  toastText: {
+    fontSize: 14,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
     color: "#F5D78E",
   },
   promoBody: {
