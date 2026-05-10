@@ -96,6 +96,12 @@ uri = "file://attached_assets/icon_refined.png"
 type = "image"
 title = "refined app icon gold O on before/after split restoration photo"
 
+[[generated]]
+id = "4_oIVt71ODkpHrGs9zm56"
+uri = "file://artifacts/owens-photofix/assets/gallery/childhood_after.png"
+type = "image"
+title = "childhood after restored color"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
