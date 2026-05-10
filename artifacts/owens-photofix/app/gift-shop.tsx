@@ -250,6 +250,44 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  {
+    id: "leather",
+    label: "Luxury Leather",
+    emoji: "👜",
+    subtitle: "Handcrafted leather goods with your photo",
+    fulfillment: "Master Leather Goods",
+    headerGradient: ["#6D4C41", "#3E2723"],
+    products: [
+      {
+        id: "leather_purse",
+        title: "Nappa Leather Purse",
+        desc: "100% real leather · your restored photo printed on both sides",
+        price: "£109",
+        emoji: "👛",
+        iconBg: "#EFEBE9",
+        wide: true,
+        bestSeller: true,
+      },
+      {
+        id: "leather_wallet",
+        title: "Men's Leather Wallet",
+        desc: "Handmade · multiple card slots · slim profile",
+        price: "£45",
+        emoji: "💳",
+        iconBg: "#F5F0EB",
+        wide: true,
+      },
+      {
+        id: "leather_handbag",
+        title: "Leather Handbag",
+        desc: "Premium Italian leather · adjustable straps",
+        price: "£89",
+        emoji: "👜",
+        iconBg: "#EDE0D4",
+        wide: true,
+      },
+    ],
+  },
 ];
 
 export default function GiftShopScreen() {
