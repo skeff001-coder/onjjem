@@ -15,6 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
+import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 
 const BLUE = "#0066FF";
 const CREAM = "#FAF7F2";
@@ -304,6 +305,7 @@ export default function GiftShopScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("living");
   const [giftWrap, setGiftWrap] = useState(false);
+  const [contactVisible, setContactVisible] = useState(false);
 
   const activeCategory = CATEGORIES.find((c) => c.id === activeTab)!;
 
@@ -451,6 +453,16 @@ export default function GiftShopScreen() {
           </View>
         </View>
 
+        {/* Contact our experts button */}
+        <TouchableOpacity
+          style={s.contactBtn}
+          onPress={() => setContactVisible(true)}
+          activeOpacity={0.85}
+        >
+          <Ionicons name="chatbubble-ellipses-outline" size={20} color="#fff" />
+          <Text style={s.contactBtnText}>Contact Our Experts</Text>
+        </TouchableOpacity>
+
         {/* Secure checkout badge */}
         <View style={s.secureBadgeWrapper}>
           <SecureCheckoutBadge />
@@ -489,6 +501,8 @@ export default function GiftShopScreen() {
           </View>
         </View>
       </ScrollView>
+
+      <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />
     </View>
   );
 }
@@ -749,6 +763,29 @@ const s = StyleSheet.create({
     color: "#2E7D32",
     fontFamily: "Inter_400Regular",
     lineHeight: 16,
+  },
+
+  /* Contact experts button */
+  contactBtn: {
+    backgroundColor: "#0D9488",
+    borderRadius: 14,
+    paddingVertical: 16,
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    gap: 10,
+    marginBottom: 14,
+    shadowColor: "#0D9488",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  contactBtnText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
   },
 
   /* Secure checkout badge */

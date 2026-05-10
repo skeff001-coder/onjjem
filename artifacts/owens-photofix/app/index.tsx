@@ -24,6 +24,7 @@ import { useColors } from "@/hooks/useColors";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { ProPaywall } from "@/components/ProPaywall";
 import { ProductMockup } from "@/components/ProductMockup";
+import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
@@ -41,6 +42,7 @@ export default function HomeScreen() {
   const router = useRouter();
 
   const [paywallVisible, setPaywallVisible] = useState(false);
+  const [contactVisible, setContactVisible] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
   const [originalUri, setOriginalUri] = useState<string | null>(null);
   const [resultBase64, setResultBase64] = useState<string | null>(null);
@@ -479,6 +481,18 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
+      {/* Contact our experts button */}
+      <View style={s.contactBtnWrapper}>
+        <TouchableOpacity
+          style={s.contactBtn}
+          onPress={() => setContactVisible(true)}
+          activeOpacity={0.85}
+        >
+          <Ionicons name="chatbubble-ellipses-outline" size={20} color="#fff" />
+          <Text style={s.contactBtnText}>Contact Our Experts</Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={s.dedication}>
         <Text style={s.dedicationText}>
           Built for Niamh · Erin · Owen · Mikey · Jake · Jimmy
@@ -486,6 +500,7 @@ export default function HomeScreen() {
       </View>
 
       <ProPaywall visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
+      <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />
     </View>
   );
 }
@@ -863,6 +878,32 @@ function makeStyles(
       fontWeight: "600" as const,
       color: colors.primary,
       fontFamily: "Inter_600SemiBold",
+    },
+    contactBtnWrapper: {
+      paddingHorizontal: 20,
+      paddingTop: 14,
+      paddingBottom: 10,
+      backgroundColor: colors.background,
+    },
+    contactBtn: {
+      backgroundColor: "#0D9488",
+      borderRadius: 14,
+      paddingVertical: 16,
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 10,
+      shadowColor: "#0D9488",
+      shadowOffset: { width: 0, height: 5 },
+      shadowOpacity: 0.3,
+      shadowRadius: 12,
+      elevation: 6,
+    },
+    contactBtnText: {
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
     },
     dedication: {
       alignItems: "center",
