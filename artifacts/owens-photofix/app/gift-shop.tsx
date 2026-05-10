@@ -40,6 +40,7 @@ type Product = {
   premiumBadge?: boolean;
   handmadeInLondon?: boolean;
   freePersonalisation?: boolean;
+  heavyItem?: boolean;
 };
 
 type Category = {
@@ -488,6 +489,70 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  {
+    id: "home_rugs",
+    label: "Home & Heritage Rugs",
+    emoji: "🏡",
+    subtitle: "Marbled Velvet · Non-slip latex base · 10-year print guarantee",
+    fulfillment: "ONJJEM Master Artisans · London Studio",
+    headerGradient: ["#3B2A1A", "#5C3D1E"] as const,
+    products: [
+      {
+        id: "rug_hallway",
+        title: "The Hallway Runner",
+        size: "180×63cm",
+        desc: "Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Every rug is expertly restored and features a 10-year print guarantee. Perfect for high-traffic memories.",
+        price: "£145.00",
+        emoji: "🏡",
+        iconBg: "#FDF5EC",
+        wide: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+        heavyItem: true,
+      },
+      {
+        id: "rug_classic",
+        title: "Classic Area Rug",
+        size: "135×105cm",
+        desc: "Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Every rug is expertly restored and features a 10-year print guarantee. A beautiful centrepiece for any room.",
+        price: "£165.00",
+        emoji: "🏡",
+        iconBg: "#FBF2E8",
+        wide: true,
+        bestSeller: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+        heavyItem: true,
+      },
+      {
+        id: "rug_statement",
+        title: "The Statement Rug",
+        size: "128×200cm",
+        desc: "Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Every rug is expertly restored and features a 10-year print guarantee. Our largest velvet-finish rug.",
+        price: "£195.00",
+        emoji: "🏡",
+        iconBg: "#F9EFE4",
+        wide: true,
+        premiumBadge: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+        heavyItem: true,
+      },
+      {
+        id: "rug_square",
+        title: "Large Square Rug",
+        size: "128×128cm",
+        desc: "Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Every rug is expertly restored and features a 10-year print guarantee. Unique modern styling.",
+        price: "£155.00",
+        emoji: "🏡",
+        iconBg: "#F7EDE2",
+        wide: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+        heavyItem: true,
+      },
+    ],
+  },
 ];
 
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
@@ -658,6 +723,43 @@ export default function GiftShopScreen() {
                 <Text style={s.tinSub}>
                   Every jigsaw ships in a professional metal tin with your photo printed on the lid — ready to gift, no wrapping needed.
                 </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Home & Heritage Rugs callout */}
+          {activeTab === "home_rugs" && (
+            <View style={s.rugsCallout}>
+              <LinearGradient
+                colors={["#5C3D1E", "#8B5E2A", "#5C3D1E"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.rugsCalloutBar}
+              />
+              <View style={s.rugsCalloutInner}>
+                <View style={s.rugsCalloutIconWrap}>
+                  <Text style={{ fontSize: 24 }}>🏡</Text>
+                </View>
+                <View style={s.rugsCalloutText}>
+                  <Text style={s.rugsCalloutTitle}>Marbled Velvet Rugs</Text>
+                  <Text style={s.rugsCalloutSub}>
+                    Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Your restored photo is woven into the fabric — vivid, deep, and built to last.
+                  </Text>
+                  <View style={s.rugsCalloutBadgeRow}>
+                    <View style={s.rugsCalloutBadge}>
+                      <Text style={s.rugsCalloutBadgeFlag}>🇬🇧</Text>
+                      <Text style={s.rugsCalloutBadgeText}>Handmade in London</Text>
+                    </View>
+                    <View style={[s.rugsCalloutBadge, s.rugsCalloutBadgeGold]}>
+                      <Ionicons name="shield-checkmark-outline" size={10} color="#8B6200" />
+                      <Text style={s.rugsCalloutBadgeText}>10-Year Print Guarantee</Text>
+                    </View>
+                    <View style={[s.rugsCalloutBadge, s.rugsCalloutBadgeShipping]}>
+                      <Ionicons name="cube-outline" size={10} color="#6B3A00" />
+                      <Text style={[s.rugsCalloutBadgeText, { color: "#6B3A00" }]}>Heavy Item · UK Tracked £9.50</Text>
+                    </View>
+                  </View>
+                </View>
               </View>
             </View>
           )}
@@ -1078,7 +1180,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
           <Text style={s.premiumBadgeText}>Premium Quality</Text>
         </View>
       )}
-      {(product.handmadeInLondon || product.freePersonalisation) && (
+      {(product.handmadeInLondon || product.freePersonalisation || product.heavyItem) && (
         <View style={s.productGoldBadgeRow}>
           {product.handmadeInLondon && (
             <View style={s.productGoldBadge}>
@@ -1090,6 +1192,12 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
             <View style={[s.productGoldBadge, s.productGoldBadgeFree]}>
               <Ionicons name="ribbon-outline" size={10} color="#8B6200" />
               <Text style={s.productGoldBadgeText}>FREE: Expert Personalisation</Text>
+            </View>
+          )}
+          {product.heavyItem && (
+            <View style={s.productHeavyBadge}>
+              <Ionicons name="cube-outline" size={10} color="#6B3A00" />
+              <Text style={s.productHeavyBadgeText}>Heavy Item · UK Tracked £9.50</Text>
             </View>
           )}
         </View>
@@ -1440,6 +1548,103 @@ const s = StyleSheet.create({
     backgroundColor: "#FFFBF0",
     borderColor: GOLD,
   },
+  productHeavyBadge: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 4,
+    backgroundColor: "#FFF3E0",
+    borderWidth: 1,
+    borderColor: "#FFCC80",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  productHeavyBadgeText: {
+    fontSize: 9,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#6B3A00",
+    letterSpacing: 0.3,
+  },
+
+  /* Rugs callout */
+  rugsCallout: {
+    backgroundColor: "#FDF8F2",
+    borderRadius: 14,
+    overflow: "hidden" as const,
+    borderWidth: 1,
+    borderColor: "#DEB887",
+    shadowColor: "#5C3D1E",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+    marginBottom: 4,
+  },
+  rugsCalloutBar: { height: 3 },
+  rugsCalloutInner: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: 14,
+    padding: 14,
+  },
+  rugsCalloutIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#F5E6D3",
+    borderWidth: 1,
+    borderColor: "#DEB887",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    flexShrink: 0,
+  },
+  rugsCalloutText: { flex: 1, gap: 6 },
+  rugsCalloutTitle: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#3B2A1A",
+  },
+  rugsCalloutSub: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#5C3D1E",
+    lineHeight: 18,
+  },
+  rugsCalloutBadgeRow: {
+    flexDirection: "row" as const,
+    flexWrap: "wrap" as const,
+    gap: 6,
+  },
+  rugsCalloutBadge: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 5,
+    backgroundColor: GOLD_BG,
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    borderRadius: 20,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  rugsCalloutBadgeGold: {
+    backgroundColor: "#FFFBF0",
+    borderColor: GOLD,
+  },
+  rugsCalloutBadgeShipping: {
+    backgroundColor: "#FFF3E0",
+    borderColor: "#FFCC80",
+  },
+  rugsCalloutBadgeFlag: { fontSize: 11 },
+  rugsCalloutBadgeText: {
+    fontSize: 10,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#8B6200",
+    letterSpacing: 0.3,
+  },
+
   productGoldBadgeFlag: { fontSize: 10 },
   productGoldBadgeText: {
     fontSize: 9,
