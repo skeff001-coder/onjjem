@@ -95,7 +95,10 @@ const splash = StyleSheet.create({
   },
   iconGoldRing: {
     position: "absolute",
-    inset: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     borderRadius: 38,
     borderWidth: 2,
     borderColor: "rgba(201,150,12,0.65)",
@@ -114,7 +117,6 @@ const splash = StyleSheet.create({
   brand: {
     fontSize: 38,
     fontWeight: "700",
-    fontFamily: "Inter_700Bold",
     color: "#F5EDD8",
     letterSpacing: 8,
     marginBottom: 6,
@@ -122,7 +124,6 @@ const splash = StyleSheet.create({
   subtitle: {
     fontSize: 11,
     fontWeight: "600",
-    fontFamily: "Inter_600SemiBold",
     color: "#C9960C",
     letterSpacing: 5,
     marginBottom: 20,
@@ -139,7 +140,6 @@ const splash = StyleSheet.create({
   /* Tagline */
   tagline: {
     fontSize: 14,
-    fontFamily: "Inter_400Regular",
     color: "rgba(245,237,216,0.6)",
     fontStyle: "italic",
     letterSpacing: 0.4,
@@ -168,7 +168,6 @@ const splash = StyleSheet.create({
   },
   londonText: {
     fontSize: 11,
-    fontFamily: "Inter_500Medium",
     color: "rgba(201,150,12,0.7)",
     letterSpacing: 1.5,
     textTransform: "uppercase",
