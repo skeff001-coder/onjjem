@@ -189,7 +189,7 @@ export default function HomeScreen() {
       <View style={s.header}>
         <View>
           <Text style={s.headerTitleTop}>ONJJEM</Text>
-          <Text style={s.headerTitleBottom}>PHOTO RESTORATION</Text>
+          <Text style={s.headerTitleBottom}>PHOTOGRAPH RESTORATION</Text>
         </View>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
@@ -452,11 +452,11 @@ function makeStyles(
       textShadowRadius: 8,
     },
     headerTitleBottom: {
-      fontSize: 11,
+      fontSize: 13,
       fontWeight: "700" as const,
       color: colors.primary,
       fontFamily: "Inter_700Bold",
-      letterSpacing: 3.5,
+      letterSpacing: 2.5,
       textShadowColor: "rgba(0,85,255,0.25)",
       textShadowOffset: { width: 0, height: 1 },
       textShadowRadius: 4,
