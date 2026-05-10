@@ -1,6 +1,4 @@
-import { useEvent } from "expo";
-import { useVideoPlayer, VideoView } from "expo-video";
-import React, { useCallback, useState } from "react";
+import React from "react";
 import {
   Alert,
   Modal,
@@ -19,9 +17,6 @@ const GOLD_LIGHT = "#FDF6DC";
 const GOLD_BORDER = "#E8D48B";
 const DARK = "#0D1B2A";
 
-// Bundled locally so it works offline
-const VIDEO_SOURCE = require("@/assets/living_memories_sample.mp4");
-
 interface Props {
   visible: boolean;
   onClose: () => void;
@@ -29,37 +24,13 @@ interface Props {
 
 export function LivingMemoriesModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const player = useVideoPlayer(VIDEO_SOURCE, (p) => {
-    p.loop = true;
-    p.muted = true;
-  });
-
-  const { status } = useEvent(player, "statusChange", { status: player.status });
-
-  const handlePlayPause = useCallback(() => {
-    if (player.playing) {
-      player.pause();
-      setIsPlaying(false);
-    } else {
-      player.play();
-      setIsPlaying(true);
-    }
-  }, [player]);
-
-  const handleClose = () => {
-    player.pause();
-    setIsPlaying(false);
-    onClose();
-  };
 
   return (
     <Modal
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={handleClose}
+      onRequestClose={onClose}
     >
       <View style={[styles.root, { paddingBottom: insets.bottom + 16 }]}>
         {/* Handle */}
@@ -76,58 +47,62 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
             </View>
             <Text style={styles.headerTitle}>Living Memories</Text>
           </View>
-          <Pressable style={styles.closeBtn} onPress={handleClose} hitSlop={12}>
+          <Pressable style={styles.closeBtn} onPress={onClose} hitSlop={12}>
             <Ionicons name="close" size={22} color="#6B7280" />
           </Pressable>
         </View>
 
-        {/* Video player */}
-        <View style={styles.videoWrap}>
-          <VideoView
-            player={player}
-            style={styles.video}
-            contentFit="cover"
-            nativeControls={false}
-          />
-
-          {/* Overlay gradient at bottom */}
+        {/* Preview panel — replaces video player */}
+        <View style={styles.previewWrap}>
           <LinearGradient
-            colors={["transparent", "rgba(13,27,42,0.82)"]}
-            style={styles.videoOverlay}
-          />
-
-          {/* Play/pause button centred */}
-          <TouchableOpacity
-            style={styles.playBtn}
-            onPress={handlePlayPause}
-            activeOpacity={0.85}
+            colors={["#0D1B2A", "#162236", "#0D1B2A"]}
+            style={styles.previewGradient}
           >
-            <Ionicons
-              name={player.playing ? "pause" : "play"}
-              size={28}
-              color="#fff"
-            />
-          </TouchableOpacity>
+            {/* Animated rings decoration */}
+            <View style={styles.ringOuter}>
+              <View style={styles.ringMiddle}>
+                <View style={styles.ringInner}>
+                  <Ionicons name="film" size={36} color={GOLD} />
+                </View>
+              </View>
+            </View>
 
-          {/* Bottom-left "Sample" label */}
-          <View style={styles.sampleLabel}>
-            <Ionicons name="film-outline" size={12} color="rgba(255,255,255,0.8)" />
-            <Text style={styles.sampleLabelText}>Sample animation</Text>
-          </View>
+            {/* Coming soon label */}
+            <View style={styles.comingSoonBadge}>
+              <Ionicons name="time-outline" size={12} color={GOLD} />
+              <Text style={styles.comingSoonText}>Launching Very Soon</Text>
+            </View>
+
+            {/* Bottom-left "Sample" label */}
+            <View style={styles.sampleLabel}>
+              <Ionicons name="film-outline" size={12} color="rgba(255,255,255,0.8)" />
+              <Text style={styles.sampleLabelText}>Sample animation</Text>
+            </View>
+
+            {/* Overlay gradient at bottom */}
+            <LinearGradient
+              colors={["transparent", "rgba(13,27,42,0.82)"]}
+              style={styles.videoOverlay}
+            />
+          </LinearGradient>
         </View>
 
         {/* Description */}
         <View style={styles.body}>
-          <Text style={styles.bodyTitle}>
-            Watch your photo come alive
-          </Text>
+          <Text style={styles.bodyTitle}>Watch your photo come alive</Text>
           <Text style={styles.bodyDesc}>
-            Our AI subtly animates the eyes, hair and atmosphere of your restored photo — creating a beautiful, haunting 10-second video you can keep and share forever.
+            Our AI subtly animates the eyes, hair and atmosphere of your
+            restored photo — creating a beautiful, haunting 10-second video you
+            can keep and share forever.
           </Text>
 
           {/* Feature pills */}
           <View style={styles.pillsRow}>
-            {["👁️ Subtle eye movement", "💨 Hair & atmosphere", "📱 Share-ready MP4"].map((p) => (
+            {[
+              "👁️ Subtle eye movement",
+              "💨 Hair & atmosphere",
+              "📱 Share-ready MP4",
+            ].map((p) => (
               <View key={p} style={styles.pill}>
                 <Text style={styles.pillText}>{p}</Text>
               </View>
@@ -152,7 +127,9 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
                 <View>
                   <Text style={styles.pricingLabel}>One-time add-on</Text>
                   <Text style={styles.pricingAmount}>£14.99</Text>
-                  <Text style={styles.pricingNote}>Per animation · delivered as MP4</Text>
+                  <Text style={styles.pricingNote}>
+                    Per animation · delivered as MP4
+                  </Text>
                 </View>
                 <View style={styles.pricingBadge}>
                   <Ionicons name="sparkles" size={13} color={GOLD} />
@@ -252,16 +229,64 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  /* Video */
-  videoWrap: {
-    marginHorizontal: 0,
+  /* Preview panel */
+  previewWrap: {
     height: 220,
-    backgroundColor: "#000",
-    position: "relative",
+    overflow: "hidden",
   },
-  video: {
-    width: "100%",
-    height: "100%",
+  previewGradient: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ringOuter: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ringMiddle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.35)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ringInner: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 1.5,
+    borderColor: "rgba(201,150,12,0.6)",
+    backgroundColor: "rgba(201,150,12,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  comingSoonBadge: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "rgba(201,150,12,0.18)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.4)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  comingSoonText: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 0.4,
   },
   videoOverlay: {
     position: "absolute",
@@ -269,21 +294,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 80,
-  },
-  playBtn: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginTop: -28,
-    marginLeft: -28,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: "rgba(0,0,0,0.55)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.3)",
-    alignItems: "center",
-    justifyContent: "center",
   },
   sampleLabel: {
     position: "absolute",
