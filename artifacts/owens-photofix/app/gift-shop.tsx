@@ -300,6 +300,56 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  {
+    id: "large_format",
+    label: "Large Format",
+    emoji: "📐",
+    subtitle: "UV-resistant inks · 180gsm satin paper · Architectural tube shipping",
+    fulfillment: "Master Print Lab",
+    headerGradient: ["#1C1A14", "#2E2A1E"] as const,
+    products: [
+      {
+        id: "poster_a2",
+        title: "A2 Boutique Poster",
+        size: "A2 · 42×59 cm",
+        desc: "Perfect for framing — a refined, gallery-quality finish.",
+        price: "£34.99",
+        emoji: "🖼️",
+        iconBg: "#FDF6DC",
+        bestSeller: true,
+      },
+      {
+        id: "poster_a1",
+        title: "A1 Statement Poster",
+        size: "A1 · 59×84 cm",
+        desc: "A high-impact gallery look that fills the room.",
+        price: "£54.99",
+        emoji: "📜",
+        iconBg: "#FDF6DC",
+      },
+      {
+        id: "poster_a0",
+        title: "A0 Giant Poster",
+        size: "A0 · 84×119 cm",
+        desc: "Our largest standard paper print — truly commanding.",
+        price: "£89.99",
+        emoji: "📐",
+        iconBg: "#FDF6DC",
+        wide: true,
+      },
+      {
+        id: "panoramic_150",
+        title: "Massive Panoramic Print",
+        size: "150 cm wide",
+        desc: "Breathtaking wide-angle restoration — walls brought to life.",
+        price: "£115.00",
+        emoji: "🌅",
+        iconBg: "#FDF6DC",
+        wide: true,
+        premiumBadge: true,
+      },
+    ],
+  },
 ];
 
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
@@ -451,6 +501,29 @@ export default function GiftShopScreen() {
                 <Text style={s.tinSub}>
                   Every jigsaw ships in a professional metal tin with your photo printed on the lid — ready to gift, no wrapping needed.
                 </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Large format callout */}
+          {activeTab === "large_format" && (
+            <View style={s.largeFormatCallout}>
+              <LinearGradient
+                colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.largeFormatGoldBar}
+              />
+              <View style={s.largeFormatInner}>
+                <View style={s.largeFormatIconWrap}>
+                  <Text style={s.largeFormatIconEmoji}>🏛️</Text>
+                </View>
+                <View style={s.largeFormatText}>
+                  <Text style={s.largeFormatTitle}>Museum-Grade Production</Text>
+                  <Text style={s.largeFormatDesc}>
+                    All our large-format prints are created using UV-resistant inks on professional 180gsm satin paper. Every order is expertly restored and shipped in heavy-duty architectural tubes to ensure a flawless arrival.
+                  </Text>
+                </View>
               </View>
             </View>
           )}
@@ -1077,6 +1150,49 @@ const s = StyleSheet.create({
     color: "#2E7D32",
     fontFamily: "Inter_400Regular",
     lineHeight: 16,
+  },
+
+  /* Large format callout */
+  largeFormatCallout: {
+    backgroundColor: "#FAF7F2",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E8D48B",
+    overflow: "hidden",
+  },
+  largeFormatGoldBar: {
+    height: 2,
+  },
+  largeFormatInner: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  largeFormatIconWrap: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: "#FDF6DC",
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  largeFormatIconEmoji: { fontSize: 22 },
+  largeFormatText: { flex: 1, gap: 4 },
+  largeFormatTitle: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#1C1A14",
+  },
+  largeFormatDesc: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "#7A6E57",
+    lineHeight: 17,
   },
 
   /* Contact experts button */
