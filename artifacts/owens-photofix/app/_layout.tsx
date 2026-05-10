@@ -41,6 +41,7 @@ function AppSplash() {
         {/* Brand name */}
         <Text style={splash.brand}>ONJJEM</Text>
         <Text style={splash.subtitle}>PHOTO RESTORATION</Text>
+        <Text style={splash.subtitleGifts}>& PERSONALISED GIFTS</Text>
 
         {/* Thin divider */}
         <View style={splash.divider} />
@@ -126,7 +127,15 @@ const splash = StyleSheet.create({
     fontWeight: "600",
     color: "#C9960C",
     letterSpacing: 5,
+    marginBottom: 4,
+  },
+  subtitleGifts: {
+    fontSize: 10,
+    fontWeight: "600",
+    color: "#C9960C",
+    letterSpacing: 4,
     marginBottom: 20,
+    opacity: 0.8,
   },
 
   /* Divider */
