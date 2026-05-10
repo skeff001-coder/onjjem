@@ -14,7 +14,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useColors } from "@/hooks/useColors";
 import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 import { TrustFooter } from "@/components/TrustFooter";
@@ -452,8 +451,8 @@ const CATEGORIES: Category[] = [
       {
         id: "throw_small",
         title: "Luxury Photo Throw Blanket",
-        size: "Small",
-        desc: "Ultra-soft fleece, hand-finished in London. Vibrant, permanent print of your restored memory — perfect for the back of your sofa.",
+        size: "100×75cm",
+        desc: "Ultra-soft fleece, hand-finished in London. Vibrant, permanent print of your restored memory — perfect draped over the back of your sofa.",
         price: "£54.99",
         emoji: "🛋️",
         iconBg: "#F0F7F0",
@@ -464,8 +463,8 @@ const CATEGORIES: Category[] = [
       {
         id: "throw_medium",
         title: "Luxury Photo Throw Blanket",
-        size: "Medium",
-        desc: "Our most popular size — drapes beautifully over sofas and armchairs. Ultra-soft fleece with a permanent photographic print.",
+        size: "145×106cm",
+        desc: "Our most popular size — drapes beautifully over sofas and armchairs. Ultra-soft fleece with a vibrant, permanent photographic print.",
         price: "£74.99",
         emoji: "🛋️",
         iconBg: "#EBF5EB",
@@ -477,8 +476,8 @@ const CATEGORIES: Category[] = [
       {
         id: "throw_large",
         title: "Luxury Photo Throw Blanket",
-        size: "Large",
-        desc: "The ultimate statement piece. Generous dimensions for wrapping in warmth — and in memories. Hand-finished by our London artisans.",
+        size: "198×145cm",
+        desc: "The ultimate statement piece. Generous king-size dimensions for wrapping in warmth — and in memories. Hand-finished by our London artisans.",
         price: "£94.99",
         emoji: "🛋️",
         iconBg: "#E6F0E6",
