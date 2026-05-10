@@ -84,6 +84,18 @@ uri = "file://artifacts/owens-photofix/assets/gallery/victorian_after.png"
 type = "image"
 title = "Victorian portrait colorized after"
 
+[[generated]]
+id = "frh7GKidLqCWRnnciQ_r8"
+uri = "file://attached_assets/icon_option_a.png"
+type = "image"
+title = "luxury gold O navy icon option A"
+
+[[generated]]
+id = "50R80OqOGeG4aquzuRNVJ"
+uri = "file://attached_assets/icon_option_b.png"
+type = "image"
+title = "before after split photo restoration icon option B"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
@@ -119,3 +131,15 @@ id = "l_lA6FQ7P_n7EN_RlFG3H"
 uri = "file://artifacts/owens-photofix/assets/leather/purse_ai.png"
 type = "image"
 title = "Option B — AI generated luxury studio shot"
+
+[[outputs]]
+id = "r9Q9ouAvlObky58xHBEQ1"
+uri = "file://attached_assets/icon_option_a.png"
+type = "image"
+title = "Option A — Gold O on Deep Navy with Sparkle"
+
+[[outputs]]
+id = "ERx-89G4QGl2G0DBH2M3C"
+uri = "file://attached_assets/icon_option_b.png"
+type = "image"
+title = "Option B — Before & After Split Restoration"
