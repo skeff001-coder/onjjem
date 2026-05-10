@@ -280,7 +280,7 @@ export default function HomeScreen() {
             >
               <View style={s.uploadInner}>
                 <Image
-                  source={require("@/assets/images/icon.png")}
+                  source={require("@/assets/images/icon_refined.png")}
                   style={s.logoIcon}
                 />
                 <Text style={s.uploadTitle}>Upload a Photo</Text>
@@ -764,9 +764,9 @@ function makeStyles(
       transform: [{ scale: 0.98 }],
     },
     logoIcon: {
-      width: 80,
-      height: 80,
-      borderRadius: 18,
+      width: 110,
+      height: 110,
+      borderRadius: 24,
     },
     uploadInner: {
       alignItems: "center",
