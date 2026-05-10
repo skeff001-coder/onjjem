@@ -1,3 +1,4 @@
+import { BebasNeue_400Regular } from "@expo-google-fonts/bebas-neue";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -116,11 +117,11 @@ const splash = StyleSheet.create({
 
   /* Brand */
   brand: {
-    fontSize: 38,
-    fontWeight: "700",
+    fontSize: 54,
+    fontFamily: "BebasNeue_400Regular",
     color: "#F5EDD8",
-    letterSpacing: 8,
-    marginBottom: 6,
+    letterSpacing: 10,
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 11,
@@ -197,6 +198,7 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
+    BebasNeue_400Regular,
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
