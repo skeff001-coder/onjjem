@@ -23,17 +23,40 @@ const queryClient = new QueryClient();
 function AppSplash() {
   return (
     <View style={splash.root}>
-      <View style={splash.iconWrap}>
-        <Image
-          source={require("@/assets/images/icon_refined.png")}
-          style={splash.icon}
-          resizeMode="cover"
-        />
-        <View style={splash.iconGoldRing} />
+      {/* Centre content */}
+      <View style={splash.centre}>
+        {/* Icon */}
+        <View style={splash.iconWrap}>
+          <Image
+            source={require("@/assets/images/icon_refined.png")}
+            style={splash.icon}
+            resizeMode="cover"
+          />
+          <View style={splash.iconGoldRing} />
+        </View>
+
+        {/* Thin gold rule above brand */}
+        <View style={splash.rule} />
+
+        {/* Brand name */}
+        <Text style={splash.brand}>ONJJEM</Text>
+        <Text style={splash.subtitle}>PHOTO RESTORATION</Text>
+
+        {/* Thin divider */}
+        <View style={splash.divider} />
+
+        {/* Tagline */}
+        <Text style={splash.tagline}>Turning Memories into Masterpieces</Text>
       </View>
-      <Text style={splash.brand}>ONJJEM</Text>
-      <Text style={splash.subtitle}>PHOTO RESTORATION</Text>
-      <Text style={splash.tagline}>Preserving Your Legacies Since 2026</Text>
+
+      {/* London badge — pinned to bottom */}
+      <View style={splash.londonBadge}>
+        <View style={splash.londonLine} />
+        <View style={splash.londonRow}>
+          <Text style={splash.londonFlag}>🇬🇧</Text>
+          <Text style={splash.londonText}>Expertly Restored in London</Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -41,23 +64,30 @@ function AppSplash() {
 const splash = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#1C1A14",
+    backgroundColor: "#0F0D09",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  /* Centre block */
+  centre: {
+    alignItems: "center",
     gap: 0,
   },
+
+  /* Icon */
   iconWrap: {
     position: "relative",
-    width: 148,
-    height: 148,
-    borderRadius: 36,
+    width: 152,
+    height: 152,
+    borderRadius: 38,
     overflow: "hidden",
-    marginBottom: 28,
+    marginBottom: 30,
     shadowColor: "#C9960C",
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.5,
-    shadowRadius: 24,
-    elevation: 16,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.55,
+    shadowRadius: 28,
+    elevation: 20,
   },
   icon: {
     width: "100%",
@@ -66,28 +96,82 @@ const splash = StyleSheet.create({
   iconGoldRing: {
     position: "absolute",
     inset: 0,
-    borderRadius: 36,
+    borderRadius: 38,
     borderWidth: 2,
-    borderColor: "rgba(201,150,12,0.6)",
+    borderColor: "rgba(201,150,12,0.65)",
   },
+
+  /* Gold rule above brand */
+  rule: {
+    width: 48,
+    height: 1,
+    backgroundColor: "#C9960C",
+    opacity: 0.55,
+    marginBottom: 14,
+  },
+
+  /* Brand */
   brand: {
-    fontSize: 36,
+    fontSize: 38,
     fontWeight: "700",
+    fontFamily: "Inter_700Bold",
     color: "#F5EDD8",
-    letterSpacing: 6,
+    letterSpacing: 8,
+    marginBottom: 6,
   },
   subtitle: {
     fontSize: 11,
+    fontWeight: "600",
+    fontFamily: "Inter_600SemiBold",
     color: "#C9960C",
-    letterSpacing: 4,
-    marginTop: 4,
-    marginBottom: 32,
+    letterSpacing: 5,
+    marginBottom: 20,
   },
+
+  /* Divider */
+  divider: {
+    width: 32,
+    height: 1,
+    backgroundColor: "rgba(201,150,12,0.3)",
+    marginBottom: 16,
+  },
+
+  /* Tagline */
   tagline: {
-    fontSize: 13,
-    color: "rgba(245,215,142,0.55)",
-    letterSpacing: 0.5,
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(245,237,216,0.6)",
     fontStyle: "italic",
+    letterSpacing: 0.4,
+  },
+
+  /* London badge */
+  londonBadge: {
+    position: "absolute",
+    bottom: 44,
+    alignItems: "center",
+    gap: 10,
+  },
+  londonLine: {
+    width: 40,
+    height: 1,
+    backgroundColor: "rgba(201,150,12,0.25)",
+    marginBottom: 2,
+  },
+  londonRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
+  londonFlag: {
+    fontSize: 14,
+  },
+  londonText: {
+    fontSize: 11,
+    fontFamily: "Inter_500Medium",
+    color: "rgba(201,150,12,0.7)",
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
   },
 });
 

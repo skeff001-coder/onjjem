@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "ONJJEM SNAP LAB",
+    "name": "ONJJEM PHOTO RESTORATION",
     "slug": "owens-photofix",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon_refined.png",
     "scheme": "owens-photofix",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
