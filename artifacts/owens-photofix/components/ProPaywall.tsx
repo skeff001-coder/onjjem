@@ -113,7 +113,7 @@ export function ProPaywall({ visible, onClose }: Props) {
 
           <View style={[s.priceCard, { borderColor: "#F5C842", backgroundColor: "rgba(245,200,66,0.07)" }]}>
             <View style={s.priceRow}>
-              <Text style={[s.priceCurrency, { color: colors.foreground }]}>$</Text>
+              <Text style={[s.priceCurrency, { color: colors.foreground }]}>£</Text>
               <Text style={[s.priceAmount, { color: colors.foreground }]}>4.99</Text>
               <Text style={[s.pricePeriod, { color: colors.mutedForeground }]}>/month</Text>
             </View>
