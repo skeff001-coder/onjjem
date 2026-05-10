@@ -22,16 +22,17 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { ProPaywall } from "@/components/ProPaywall";
+import { ProductMockup } from "@/components/ProductMockup";
 
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
 
 const PRINT_PRODUCTS = [
-  { id: "canvas",  title: "Premium Canvas",      price: "£29.99", emoji: "🖼️",  bg: "#E8F0FE" },
-  { id: "keyring", title: "Photo Keyring",        price: "£9.99",  emoji: "🔑",  bg: "#FFF3E0" },
-  { id: "large",   title: "Large Format Print",   price: "£39.99", emoji: "🖨️",  bg: "#E8F5E9" },
-  { id: "quilt",   title: "Custom Photo Quilt",   price: "£49.99", emoji: "🧵",  bg: "#FCE4EC" },
-] as const;
+  { id: "canvas",  type: "canvas"  as const, title: "Premium Canvas",      price: "£29.99", emoji: "🖼️", bg: "#E8F0FE" },
+  { id: "keyring", type: "keyring" as const, title: "Photo Keyring",        price: "£9.99",  emoji: "🔑", bg: "#FFF3E0" },
+  { id: "large",   type: "large"   as const, title: "Large Format Print",   price: "£39.99", emoji: "🖨️", bg: "#E8F5E9" },
+  { id: "quilt",   type: "quilt"   as const, title: "Custom Photo Quilt",   price: "£49.99", emoji: "🧵", bg: "#FCE4EC" },
+];
 
 export default function HomeScreen() {
   const colors = useColors();
@@ -44,6 +45,12 @@ export default function HomeScreen() {
   const [resultLocalUri, setResultLocalUri] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("sharpen");
   const [statusMessage, setStatusMessage] = useState("Preparing...");
+
+  // Best available photo URI to show in print mockups
+  const previewUri: string | null =
+    appState === "done" && resultBase64
+      ? `data:image/jpeg;base64,${resultBase64}`
+      : originalUri;
 
   const pickImage = async () => {
     const permission =
@@ -240,30 +247,6 @@ export default function HomeScreen() {
               </LinearGradient>
             </TouchableOpacity>
 
-            <View style={s.printShop}>
-              <View style={s.printShopHeader}>
-                <Text style={s.printShopTitle}>Print Shop</Text>
-                <Text style={s.printShopSub}>Turn your photos into lasting memories</Text>
-              </View>
-              <View style={s.printGrid}>
-                {PRINT_PRODUCTS.map((product) => (
-                  <TouchableOpacity
-                    key={product.id}
-                    style={s.printCard}
-                    activeOpacity={0.82}
-                    onPress={() => Alert.alert("Coming Soon", `${product.title} ordering will be available soon!`)}
-                  >
-                    <View style={[s.printCardImage, { backgroundColor: product.bg }]}>
-                      <Text style={s.printCardEmoji}>{product.emoji}</Text>
-                    </View>
-                    <View style={s.printCardBody}>
-                      <Text style={s.printCardTitle}>{product.title}</Text>
-                      <Text style={s.printCardPrice}>From {product.price}</Text>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
           </>
         )}
 
@@ -437,6 +420,44 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </>
         )}
+
+        {/* Print Shop — always visible, upgrades to live mockups once a photo is loaded */}
+        <View style={s.printShop}>
+          <View style={s.printShopHeader}>
+            <Text style={s.printShopTitle}>Print Shop</Text>
+            <Text style={s.printShopSub}>
+              {previewUri
+                ? "See your photo on real products — tap to order"
+                : "Upload a photo to see it on real products"}
+            </Text>
+          </View>
+          <View style={s.printGrid}>
+            {PRINT_PRODUCTS.map((product) => (
+              <TouchableOpacity
+                key={product.id}
+                style={s.printCard}
+                activeOpacity={0.82}
+                onPress={() =>
+                  Alert.alert(
+                    "Coming Soon",
+                    `${product.title} ordering will be available soon!`
+                  )
+                }
+              >
+                <ProductMockup
+                  type={product.type}
+                  photoUri={previewUri}
+                  emoji={product.emoji}
+                  bg={product.bg}
+                />
+                <View style={s.printCardBody}>
+                  <Text style={s.printCardTitle}>{product.title}</Text>
+                  <Text style={s.printCardPrice}>From {product.price}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
       </ScrollView>
 
       <View style={s.dedication}>
