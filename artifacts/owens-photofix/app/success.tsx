@@ -11,12 +11,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
+import { ReferralModal } from "@/components/ReferralModal";
 
 export default function SuccessScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
+  const [referralVisible, setReferralVisible] = useState(false);
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -123,6 +125,20 @@ export default function SuccessScreen() {
 
       {/* Return to home button */}
       <View style={[styles.btnWrapper, { paddingBottom: insets.bottom + 24 }]}>
+        {/* Referral CTA */}
+        <TouchableOpacity
+          style={styles.referralBtn}
+          onPress={() => setReferralVisible(true)}
+          activeOpacity={0.87}
+        >
+          <Text style={styles.referralEmoji}>🎁</Text>
+          <View style={styles.referralTextWrap}>
+            <Text style={styles.referralPrimary}>Give £10, Get £10</Text>
+            <Text style={styles.referralSub}>Invite a friend · Share the Memories</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={16} color="#C9960C" />
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.homeBtn, { backgroundColor: "#34C759" }]}
           onPress={() => router.replace("/")}
@@ -132,6 +148,8 @@ export default function SuccessScreen() {
           <Text style={styles.homeBtnText}>Return to Home</Text>
         </TouchableOpacity>
       </View>
+
+      <ReferralModal visible={referralVisible} onClose={() => setReferralVisible(false)} />
     </View>
   );
 }
@@ -283,6 +301,31 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     flex: 1,
+  },
+  referralBtn: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: "#FDF6DC",
+    borderWidth: 1.5,
+    borderColor: "#E8D48B",
+    borderRadius: 14,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+    marginBottom: 10,
+  },
+  referralEmoji: { fontSize: 22 },
+  referralTextWrap: { flex: 1, gap: 1 },
+  referralPrimary: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#A67C00",
+  },
+  referralSub: {
+    fontSize: 11,
+    color: "#7A6E57",
+    fontFamily: "Inter_400Regular",
   },
   badgeWrapper: {
     paddingHorizontal: 0,

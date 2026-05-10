@@ -25,6 +25,7 @@ import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { ProPaywall } from "@/components/ProPaywall";
 import { ProductMockup } from "@/components/ProductMockup";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
+import { ReferralModal } from "@/components/ReferralModal";
 
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
@@ -43,6 +44,7 @@ export default function HomeScreen() {
 
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
+  const [referralVisible, setReferralVisible] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
   const [originalUri, setOriginalUri] = useState<string | null>(null);
   const [resultBase64, setResultBase64] = useState<string | null>(null);
@@ -279,6 +281,29 @@ export default function HomeScreen() {
               <Ionicons name="chevron-forward" size={16} color="#C9960C" />
             </TouchableOpacity>
 
+            {/* Referral button */}
+            <TouchableOpacity
+              style={s.referralBtn}
+              onPress={() => setReferralVisible(true)}
+              activeOpacity={0.88}
+            >
+              <LinearGradient
+                colors={["#1C1A14", "#2E2818"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.referralBtnGradient}
+              >
+                <Text style={s.referralBtnEmoji}>🎁</Text>
+                <View style={s.referralBtnTextWrap}>
+                  <Text style={s.referralBtnPrimary}>Give £10, Get £10</Text>
+                  <Text style={s.referralBtnSub}>Share the Memories</Text>
+                </View>
+                <View style={s.referralBtnBadge}>
+                  <Text style={s.referralBtnBadgeText}>REFER</Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+
           </>
         )}
 
@@ -512,6 +537,7 @@ export default function HomeScreen() {
 
       <ProPaywall visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
       <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />
+      <ReferralModal visible={referralVisible} onClose={() => setReferralVisible(false)} />
     </View>
   );
 }
@@ -889,6 +915,50 @@ function makeStyles(
       fontWeight: "600" as const,
       color: colors.primary,
       fontFamily: "Inter_600SemiBold",
+    },
+    referralBtn: {
+      borderRadius: 14,
+      overflow: "hidden" as const,
+      shadowColor: "#1C1A14",
+      shadowOffset: { width: 0, height: 5 },
+      shadowOpacity: 0.28,
+      shadowRadius: 12,
+      elevation: 6,
+    },
+    referralBtnGradient: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      paddingVertical: 15,
+      paddingHorizontal: 18,
+      gap: 12,
+    },
+    referralBtnEmoji: { fontSize: 24 },
+    referralBtnTextWrap: { flex: 1, gap: 2 },
+    referralBtnPrimary: {
+      fontSize: 16,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#F5D78E",
+    },
+    referralBtnSub: {
+      fontSize: 12,
+      color: "rgba(245,216,142,0.65)",
+      fontFamily: "Inter_400Regular",
+    },
+    referralBtnBadge: {
+      backgroundColor: "rgba(201,150,12,0.25)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.5)",
+      paddingHorizontal: 9,
+      paddingVertical: 4,
+      borderRadius: 8,
+    },
+    referralBtnBadgeText: {
+      fontSize: 10,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#F5D78E",
+      letterSpacing: 1.2,
     },
     galleryBtn: {
       flexDirection: "row" as const,
