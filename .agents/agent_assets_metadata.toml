@@ -96,6 +96,12 @@ uri = "file://attached_assets/icon_option_b.png"
 type = "image"
 title = "before after split photo restoration icon option B"
 
+[[generated]]
+id = "E5nrn456FMwHhblts9dxO"
+uri = "file://attached_assets/icon_refined.png"
+type = "image"
+title = "refined app icon gold O on before/after split restoration photo"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
@@ -143,3 +149,9 @@ id = "ERx-89G4QGl2G0DBH2M3C"
 uri = "file://attached_assets/icon_option_b.png"
 type = "image"
 title = "Option B — Before & After Split Restoration"
+
+[[outputs]]
+id = "3JuNP48gqEVZ-anlPslVL"
+uri = "file://attached_assets/icon_refined.png"
+type = "image"
+title = "Refined Icon — Gold O on Before & After Restoration Background"
