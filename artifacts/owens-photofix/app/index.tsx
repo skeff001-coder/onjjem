@@ -1,7 +1,6 @@
 import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
-import * as MediaLibrary from "expo-media-library";
 import * as Sharing from "expo-sharing";
 import React, { useState } from "react";
 import {
@@ -150,6 +149,7 @@ export default function HomeScreen() {
     }
 
     try {
+      const MediaLibrary = await import("expo-media-library");
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(

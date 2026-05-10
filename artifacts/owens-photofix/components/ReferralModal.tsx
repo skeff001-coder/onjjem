@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -48,7 +47,13 @@ export function ReferralModal({ visible, onClose }: Props) {
   }, [visible]);
 
   const handleCopy = async () => {
-    await Clipboard.setStringAsync(link);
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(link);
+      }
+    } catch {
+      // silent — copied state still shown
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
