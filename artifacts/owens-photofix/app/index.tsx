@@ -628,12 +628,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={s.dedication}>
-        <Text style={s.dedicationText}>
-          Built for Niamh · Erin · Owen · Mikey · Jake · Jimmy
-        </Text>
-      </View>
-
       <ProPaywall visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
       <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />
       <ReferralModal visible={referralVisible} onClose={() => setReferralVisible(false)} />
