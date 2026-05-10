@@ -227,7 +227,7 @@ export default function HomeScreen() {
         <View>
           <Text style={s.headerTitleTop}>ONJJEM</Text>
           <Text style={s.headerTitleBottom}>PHOTO RESTORATION</Text>
-          <Text style={s.headerTitleGifts}>& PERSONALISED GIFTS</Text>
+          <Text style={s.headerTitleGifts}>PERSONALISED GIFTS</Text>
         </View>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
@@ -686,12 +686,14 @@ function makeStyles(
       textShadowRadius: 4,
     },
     headerTitleGifts: {
-      fontSize: 11,
-      fontWeight: "600" as const,
-      color: "#C9960C",
-      fontFamily: "Inter_600SemiBold",
-      letterSpacing: 2,
-      marginTop: 1,
+      fontSize: 13,
+      fontWeight: "700" as const,
+      color: colors.primary,
+      fontFamily: "Inter_700Bold",
+      letterSpacing: 2.5,
+      textShadowColor: "rgba(0,85,255,0.25)",
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 4,
     },
     resetBtn: {
       width: 40,
