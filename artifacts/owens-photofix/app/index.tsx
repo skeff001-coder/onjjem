@@ -189,7 +189,7 @@ export default function HomeScreen() {
       <View style={s.header}>
         <View>
           <Text style={s.headerTitleTop}>ONJJEM</Text>
-          <Text style={s.headerTitleBottom}>SNAP LAB</Text>
+          <Text style={s.headerTitleBottom}>PHOTO RESTORATION</Text>
         </View>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
@@ -441,25 +441,25 @@ function makeStyles(
       borderBottomColor: colors.border,
     },
     headerTitleTop: {
-      fontSize: 40,
+      fontSize: 42,
       fontWeight: "700" as const,
       color: colors.foreground,
       fontFamily: "Inter_700Bold",
-      letterSpacing: 4,
-      lineHeight: 42,
-      textShadowColor: "rgba(0,85,255,0.22)",
-      textShadowOffset: { width: 3, height: 3 },
-      textShadowRadius: 0,
+      letterSpacing: 1,
+      lineHeight: 44,
+      textShadowColor: "rgba(0,85,255,0.35)",
+      textShadowOffset: { width: 0, height: 3 },
+      textShadowRadius: 8,
     },
     headerTitleBottom: {
-      fontSize: 15,
+      fontSize: 11,
       fontWeight: "700" as const,
       color: colors.primary,
       fontFamily: "Inter_700Bold",
-      letterSpacing: 7,
-      textShadowColor: "rgba(0,85,255,0.3)",
-      textShadowOffset: { width: 2, height: 2 },
-      textShadowRadius: 0,
+      letterSpacing: 3.5,
+      textShadowColor: "rgba(0,85,255,0.25)",
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 4,
     },
     resetBtn: {
       width: 40,
