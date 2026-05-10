@@ -1167,7 +1167,7 @@ export default function GiftShopScreen() {
 
 function ProductCard({ product, onPress }: { product: Product; onPress: () => void }) {
   return (
-    <View style={[s.productCard, product.wide && s.productCardWide]}>
+    <View style={[s.productCard, product.wide && !product.photo && s.productCardWide]}>
       {product.bestSeller && (
         <View style={s.bestSellerBadge}>
           <Text style={s.bestSellerStar}>★</Text>
@@ -1206,8 +1206,8 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
       {product.photo ? (
         <Image
           source={product.photo}
-          style={[s.productPhoto, product.wide ? s.productPhotoWide : s.productPhotoSquare]}
-          resizeMode="cover"
+          style={s.productPhotoFull}
+          resizeMode="contain"
         />
       ) : (
         <View style={[
@@ -1226,7 +1226,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
         </View>
       )}
 
-      <View style={[s.productBody, product.wide && s.productBodyWide]}>
+      <View style={[s.productBody, product.wide && !product.photo && s.productBodyWide]}>
         <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
         <Text style={s.productDesc}>{product.desc}</Text>
         <View style={s.productFooter}>
@@ -1717,6 +1717,11 @@ const s = StyleSheet.create({
   productPhoto: { backgroundColor: "#F0EBE5" },
   productPhotoSquare: { width: "100%", height: 110 },
   productPhotoWide: { width: 110, alignSelf: "stretch" as const, flexShrink: 0 },
+  productPhotoFull: {
+    width: "100%",
+    height: 220,
+    backgroundColor: "#F5EDE0",
+  },
   productIconWrap: {
     height: 84, alignItems: "center", justifyContent: "center", position: "relative",
   },
