@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Switch,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -300,22 +301,76 @@ const CATEGORIES: Category[] = [
   },
 ];
 
+const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
+  EXPERT10: { discount: 10, minSpend: 20 },
+};
+
+function parsePrice(p: string): number {
+  return parseFloat(p.replace(/[£,]/g, "")) || 0;
+}
+
 export default function GiftShopScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("living");
   const [giftWrap, setGiftWrap] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
+  const [basketItems, setBasketItems] = useState<{ title: string; price: number }[]>([]);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoStatus, setPromoStatus] = useState<"idle" | "valid" | "min_spend" | "invalid">("idle");
 
   const activeCategory = CATEGORIES.find((c) => c.id === activeTab)!;
 
-  const handleDesign = (title: string) => {
+  const basketSubtotal = basketItems.reduce((sum, i) => sum + i.price, 0);
+  const giftWrapCost = giftWrap && basketItems.length > 0 ? 4.99 : 0;
+  const promoDiscount = promoStatus === "valid" ? 10 : 0;
+  const basketTotal = basketSubtotal + giftWrapCost - promoDiscount;
+
+  const handleDesign = (title: string, price: string) => {
+    const numPrice = parsePrice(price);
     const extra = giftWrap ? " + Deluxe Gift Wrapping (£4.99)" : "";
-    Alert.alert("Coming Soon", `${title}${extra} ordering is launching very soon!`);
+    setBasketItems((prev) => [...prev, { title, price: numPrice }]);
+    Alert.alert(
+      "Added to Basket!",
+      `${title}${extra} added.\n\nBasket total: £${(basketSubtotal + numPrice + giftWrapCost).toFixed(2)}`,
+    );
+  };
+
+  const applyPromo = () => {
+    const code = promoCode.trim().toUpperCase();
+    const rule = PROMO_CODES[code];
+    if (!rule) {
+      setPromoStatus("invalid");
+      return;
+    }
+    if (basketSubtotal < rule.minSpend) {
+      setPromoStatus("min_spend");
+      return;
+    }
+    setPromoStatus("valid");
+  };
+
+  const clearPromo = () => {
+    setPromoCode("");
+    setPromoStatus("idle");
   };
 
   return (
     <View style={[s.root, { paddingTop: insets.top }]}>
+      {/* Promo announcement banner */}
+      <LinearGradient
+        colors={["#1C1A14", "#2E2818"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={s.promoBanner}
+      >
+        <Ionicons name="sparkles" size={13} color="#F5D78E" />
+        <Text style={s.promoBannerText}>
+          NEW CUSTOMERS: Get <Text style={s.promoBannerBold}>£10 OFF</Text> your first order over £20 · code:{" "}
+          <Text style={s.promoBannerCode}>EXPERT10</Text>
+        </Text>
+      </LinearGradient>
+
       {/* Rainbow bar */}
       <LinearGradient
         colors={["#FF6B6B", "#FF9F0A", "#FFD60A", "#34C759", "#4F8EF7", "#BF5AF2"]}
@@ -404,7 +459,7 @@ export default function GiftShopScreen() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onPress={() => handleDesign(product.title)}
+                onPress={() => handleDesign(product.title, product.price)}
               />
             ))}
           </View>
@@ -449,6 +504,90 @@ export default function GiftShopScreen() {
               <Text style={s.giftWrapHint}>
                 Toggle on to add a beautiful hand-wrapped finish to your order.
               </Text>
+            )}
+          </View>
+        </View>
+
+        {/* Discount code section */}
+        <View style={s.promoCard}>
+          <LinearGradient
+            colors={["#1C1A14", "#2E2818"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={s.promoHeader}
+          >
+            <Ionicons name="pricetag" size={15} color="#F5D78E" />
+            <Text style={s.promoHeaderText}>Discount Code</Text>
+            {basketItems.length > 0 && (
+              <View style={s.basketBadge}>
+                <Text style={s.basketBadgeText}>
+                  Basket: £{basketSubtotal.toFixed(2)}
+                </Text>
+              </View>
+            )}
+          </LinearGradient>
+
+          <View style={s.promoBody}>
+            {promoStatus === "valid" ? (
+              <View style={s.promoSuccess}>
+                <Ionicons name="checkmark-circle" size={22} color="#34C759" />
+                <View style={s.promoSuccessText}>
+                  <Text style={s.promoSuccessTitle}>£10 discount applied!</Text>
+                  <Text style={s.promoSuccessSub}>
+                    Code EXPERT10 · saving £10.00 on your order
+                  </Text>
+                </View>
+                <TouchableOpacity onPress={clearPromo} hitSlop={10}>
+                  <Ionicons name="close-circle" size={20} color="#9CA3AF" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <>
+                <View style={s.promoInputRow}>
+                  <TextInput
+                    style={s.promoInput}
+                    value={promoCode}
+                    onChangeText={(t) => { setPromoCode(t.toUpperCase()); setPromoStatus("idle"); }}
+                    placeholder="Enter code e.g. EXPERT10"
+                    placeholderTextColor="#B0A898"
+                    autoCapitalize="characters"
+                    returnKeyType="done"
+                    onSubmitEditing={applyPromo}
+                  />
+                  <TouchableOpacity
+                    style={[s.promoApplyBtn, !promoCode.trim() && s.promoApplyBtnDisabled]}
+                    onPress={applyPromo}
+                    disabled={!promoCode.trim()}
+                    activeOpacity={0.82}
+                  >
+                    <Text style={s.promoApplyBtnText}>Apply</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {promoStatus === "min_spend" && (
+                  <View style={s.promoMessage}>
+                    <Ionicons name="information-circle" size={17} color="#FF9F0A" />
+                    <Text style={s.promoMessageText}>
+                      This offer is available on all orders over £20. Add a few more memories to your basket to claim your discount!
+                    </Text>
+                  </View>
+                )}
+
+                {promoStatus === "invalid" && (
+                  <View style={[s.promoMessage, s.promoMessageError]}>
+                    <Ionicons name="close-circle" size={17} color="#FF3B30" />
+                    <Text style={[s.promoMessageText, { color: "#FF3B30" }]}>
+                      That code doesn't look right. Please check and try again.
+                    </Text>
+                  </View>
+                )}
+
+                {promoStatus === "idle" && (
+                  <Text style={s.promoHint}>
+                    New customers get £10 off orders over £20 with code EXPERT10
+                  </Text>
+                )}
+              </>
             )}
           </View>
         </View>
@@ -576,6 +715,165 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
 const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: CREAM },
   rainbowBar: { height: 4, width: "100%" },
+
+  /* Promo announcement banner */
+  promoBanner: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    gap: 7,
+    paddingVertical: 9,
+    paddingHorizontal: 14,
+  },
+  promoBannerText: {
+    fontSize: 12,
+    color: "rgba(245,215,142,0.85)",
+    fontFamily: "Inter_400Regular",
+    textAlign: "center" as const,
+    flexShrink: 1,
+    lineHeight: 17,
+  },
+  promoBannerBold: {
+    fontFamily: "Inter_700Bold",
+    fontWeight: "700" as const,
+    color: "#F5D78E",
+  },
+  promoBannerCode: {
+    fontFamily: "Inter_700Bold",
+    fontWeight: "700" as const,
+    color: "#FFE88A",
+    letterSpacing: 1.2,
+  },
+
+  /* Discount code card */
+  promoCard: {
+    borderRadius: 16,
+    overflow: "hidden" as const,
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.35)",
+    shadowColor: "#C9960C",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  promoHeader: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  promoHeaderText: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#F5D78E",
+    letterSpacing: 0.5,
+  },
+  basketBadge: {
+    backgroundColor: "rgba(245,215,142,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(245,215,142,0.3)",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  basketBadgeText: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#F5D78E",
+  },
+  promoBody: {
+    backgroundColor: "#FFFDF7",
+    padding: 14,
+    gap: 10,
+  },
+  promoInputRow: {
+    flexDirection: "row" as const,
+    gap: 10,
+    alignItems: "center" as const,
+  },
+  promoInput: {
+    flex: 1,
+    borderWidth: 1.5,
+    borderColor: "#E8D48B",
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600" as const,
+    color: "#1C1A14",
+    backgroundColor: "#fff",
+    letterSpacing: 1,
+  },
+  promoApplyBtn: {
+    backgroundColor: "#C9960C",
+    paddingHorizontal: 20,
+    paddingVertical: 13,
+    borderRadius: 12,
+  },
+  promoApplyBtnDisabled: {
+    opacity: 0.45,
+  },
+  promoApplyBtnText: {
+    fontSize: 14,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+  },
+  promoHint: {
+    fontSize: 11,
+    color: "#7A6E57",
+    fontFamily: "Inter_400Regular",
+    textAlign: "center" as const,
+  },
+  promoMessage: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: 8,
+    backgroundColor: "#FFFBF0",
+    borderWidth: 1,
+    borderColor: "#FFE0A0",
+    borderRadius: 10,
+    padding: 12,
+  },
+  promoMessageError: {
+    backgroundColor: "#FFF5F5",
+    borderColor: "#FFCDD2",
+  },
+  promoMessageText: {
+    flex: 1,
+    fontSize: 13,
+    color: "#FF9F0A",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 19,
+  },
+  promoSuccess: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 10,
+    backgroundColor: "#F0FDF4",
+    borderWidth: 1,
+    borderColor: "#86EFAC",
+    borderRadius: 12,
+    padding: 14,
+  },
+  promoSuccessText: { flex: 1, gap: 2 },
+  promoSuccessTitle: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#15803D",
+  },
+  promoSuccessSub: {
+    fontSize: 12,
+    color: "#16A34A",
+    fontFamily: "Inter_400Regular",
+  },
 
   header: {
     flexDirection: "row",

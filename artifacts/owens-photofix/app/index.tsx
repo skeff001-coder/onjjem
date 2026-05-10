@@ -208,6 +208,20 @@ export default function HomeScreen() {
 
   return (
     <View style={s.root}>
+      {/* Promo announcement banner */}
+      <LinearGradient
+        colors={["#1C1A14", "#2E2818"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={s.promoBanner}
+      >
+        <Ionicons name="sparkles" size={13} color="#F5D78E" />
+        <Text style={s.promoBannerText}>
+          NEW CUSTOMERS: Get <Text style={s.promoBannerBold}>£10 OFF</Text> your first order over £20 · code:{" "}
+          <Text style={s.promoBannerCode}>EXPERT10</Text>
+        </Text>
+      </LinearGradient>
+
       <View style={s.header}>
         <View>
           <Text style={s.headerTitleTop}>ONJJEM</Text>
@@ -1090,6 +1104,33 @@ function makeStyles(
       fontWeight: "700" as const,
       fontFamily: "Inter_700Bold",
       color: "#F5D78E",
+      letterSpacing: 1.2,
+    },
+    promoBanner: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 7,
+      paddingVertical: 8,
+      paddingHorizontal: 14,
+    },
+    promoBannerText: {
+      fontSize: 11,
+      color: "rgba(245,215,142,0.85)",
+      fontFamily: "Inter_400Regular",
+      textAlign: "center" as const,
+      flexShrink: 1,
+      lineHeight: 16,
+    },
+    promoBannerBold: {
+      fontFamily: "Inter_700Bold",
+      fontWeight: "700" as const,
+      color: "#F5D78E",
+    },
+    promoBannerCode: {
+      fontFamily: "Inter_700Bold",
+      fontWeight: "700" as const,
+      color: "#FFE88A",
       letterSpacing: 1.2,
     },
     galleryBtn: {
