@@ -43,6 +43,9 @@ type Product = {
   freePersonalisation?: boolean;
   heavyItem?: boolean;
   scents?: string[];
+  options?: { label: string; choices: string[] }[];
+  onjjemSeal?: boolean;
+  ukMasterPrinters?: boolean;
 };
 
 type Category = {
@@ -616,53 +619,65 @@ const CATEGORIES: Category[] = [
   },
   {
     id: "car_keepsakes",
-    label: "Car Keepsakes",
-    emoji: "🚗",
-    subtitle: "Personalised car accessories · Your memories on the road",
-    fulfillment: "ONJJEM Master Print Lab",
+    label: "Car Journey",
+    emoji: "🚙",
+    subtitle: "Car Journey Keepsakes · Your memories on every drive",
+    fulfillment: "ONJJEM Master Print Lab · UK Master Printers",
     headerGradient: ["#1A237E", "#283593"] as const,
     products: [
       {
         id: "air_freshener",
-        title: "Photo Air Freshener",
-        size: "Standard",
-        desc: "Your restored photo printed on a premium air freshener. Hangs beautifully from any rear-view mirror. Choose your favourite scent below.",
-        price: "£12.99",
+        title: "Personalised Photo Air Freshener",
+        size: "Heart · Round · Rectangular",
+        desc: "Your restored photo printed on a premium air freshener with a soft elastic cord. Hangs beautifully from any rear-view mirror. Available in three shapes and four luxury scents.",
+        price: "£14.99",
         emoji: "🌿",
         iconBg: "#E8F5E9",
         wide: true,
         bestSeller: true,
-        scents: ["New Car", "Ocean Mist", "Vanilla Dream", "Fresh Linen"],
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        options: [
+          { label: "Shape", choices: ["Heart", "Round", "Rectangular"] },
+          { label: "Scent", choices: ["New Car", "Ocean Mist", "Vanilla Dream", "Fresh Linen"] },
+        ],
+      },
+      {
+        id: "travel_coffee_mug",
+        title: "Travel Coffee Mug",
+        size: "Spill-proof lid",
+        desc: "Designed to fit perfectly into any standard car cup holder. Your restored photo printed in vivid HD on a durable double-walled mug with a secure, spill-proof lid — your memory on every journey.",
+        price: "£24.99",
+        emoji: "☕",
+        iconBg: "#FFF3E0",
+        wide: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+      },
+      {
+        id: "leather_keyring",
+        title: "Handmade Leather Keyring",
+        size: "Genuine Nappa Leather",
+        desc: "Crafted from the same buttery-soft Genuine Nappa Leather as our designer bags. A beautiful, tactile way to keep your cherished memory on your car keys every single day.",
+        price: "£19.99",
+        emoji: "🔑",
+        iconBg: "#EFEBE9",
+        wide: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
       },
       {
         id: "window_stickers",
-        title: "Photo Window Stickers",
+        title: "Heritage Car Window Stickers",
         size: "Pack of 4",
-        desc: "Four premium vinyl window stickers featuring your restored photo. UV-resistant, weatherproof and removable — perfect for cars, caravans or windows.",
-        price: "£14.99",
+        desc: "High-definition photo stickers designed for the inside of your car windows. UV-resistant, wipe-clean and easy to remove — your memories go wherever the road takes you.",
+        price: "£9.99",
         emoji: "🪟",
         iconBg: "#E3F2FD",
         wide: true,
-      },
-      {
-        id: "bumper_sticker",
-        title: "Photo Bumper Sticker",
-        size: "30×10 cm",
-        desc: "High-quality weatherproof vinyl bumper sticker with your restored photo. Strong adhesive, easy to apply.",
-        price: "£9.99",
-        emoji: "🚘",
-        iconBg: "#EDE7F6",
-        wide: true,
-      },
-      {
-        id: "car_sun_strip",
-        title: "Photo Sun Visor Strip",
-        size: "Universal fit",
-        desc: "A custom sun visor strip printed with your cherished photo. Durable, UV-resistant film that fits most car windscreens.",
-        price: "£16.99",
-        emoji: "☀️",
-        iconBg: "#FFF8E1",
-        wide: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
       },
     ],
   },
@@ -1329,7 +1344,7 @@ export default function GiftShopScreen() {
 }
 
 function BadgeRow({ product }: { product: Product }) {
-  if (!product.handmadeInLondon && !product.freePersonalisation && !product.heavyItem) return null;
+  if (!product.handmadeInLondon && !product.freePersonalisation && !product.heavyItem && !product.onjjemSeal && !product.ukMasterPrinters) return null;
   return (
     <View style={s.productGoldBadgeRow}>
       {product.handmadeInLondon && (
@@ -1344,6 +1359,18 @@ function BadgeRow({ product }: { product: Product }) {
           <Text style={s.productGoldBadgeText}>FREE: Expert Personalisation</Text>
         </View>
       )}
+      {product.onjjemSeal && (
+        <View style={s.onjjemSealBadge}>
+          <Ionicons name="ribbon" size={10} color="#7A5A00" />
+          <Text style={s.onjjemSealBadgeText}>Certified ONJJEM Quality Seal</Text>
+        </View>
+      )}
+      {product.ukMasterPrinters && (
+        <View style={s.ukMasterBadge}>
+          <Text style={s.ukMasterBadgeFlag}>🇬🇧</Text>
+          <Text style={s.ukMasterBadgeText}>Finished by UK Master Printers</Text>
+        </View>
+      )}
       {product.heavyItem && (
         <View style={s.productHeavyBadge}>
           <Ionicons name="cube-outline" size={10} color="#6B3A00" />
@@ -1354,11 +1381,21 @@ function BadgeRow({ product }: { product: Product }) {
   );
 }
 
-function ProductCard({ product, onPress }: { product: Product; onPress: (scent?: string) => void }) {
+function ProductCard({ product, onPress }: { product: Product; onPress: (summary?: string) => void }) {
   const isWide = product.wide && !product.photo;
-  const [selectedScent, setSelectedScent] = useState<string>(
-    product.scents ? product.scents[0] : ""
+
+  const allOptions = [
+    ...(product.options ?? []),
+    ...(product.scents ? [{ label: "Scent", choices: product.scents }] : []),
+  ];
+
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(
+    Object.fromEntries(allOptions.map((opt) => [opt.label, opt.choices[0]]))
   );
+
+  const optionSummary = allOptions.length > 0
+    ? allOptions.map((opt) => `${opt.label}: ${selectedOptions[opt.label]}`).join(" · ")
+    : undefined;
 
   const footer = (
     <View style={s.productFooter}>
@@ -1366,30 +1403,34 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (scent?:
       <TouchableOpacity
         style={s.designBtn}
         activeOpacity={0.82}
-        onPress={() => onPress(product.scents ? selectedScent : undefined)}
+        onPress={() => onPress(optionSummary)}
       >
         <Text style={s.designBtnText}>Add to Basket</Text>
       </TouchableOpacity>
     </View>
   );
 
-  const scentPicker = product.scents ? (
+  const optionPickers = allOptions.length > 0 ? (
     <View style={s.scentPickerWrap}>
-      <Text style={s.scentPickerLabel}>Choose scent:</Text>
-      <View style={s.scentRow}>
-        {product.scents.map((scent) => (
-          <TouchableOpacity
-            key={scent}
-            style={[s.scentPill, selectedScent === scent && s.scentPillActive]}
-            onPress={() => setSelectedScent(scent)}
-            activeOpacity={0.75}
-          >
-            <Text style={[s.scentPillText, selectedScent === scent && s.scentPillTextActive]}>
-              {scent}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {allOptions.map((opt) => (
+        <View key={opt.label}>
+          <Text style={s.scentPickerLabel}>{opt.label}:</Text>
+          <View style={s.scentRow}>
+            {opt.choices.map((choice) => (
+              <TouchableOpacity
+                key={choice}
+                style={[s.scentPill, selectedOptions[opt.label] === choice && s.scentPillActive]}
+                onPress={() => setSelectedOptions((prev) => ({ ...prev, [opt.label]: choice }))}
+                activeOpacity={0.75}
+              >
+                <Text style={[s.scentPillText, selectedOptions[opt.label] === choice && s.scentPillTextActive]}>
+                  {choice}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      ))}
     </View>
   ) : null;
 
@@ -1414,7 +1455,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (scent?:
           <View style={s.productBody}>
             <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
             <Text style={s.productDesc}>{product.desc}</Text>
-            {scentPicker}
+            {optionPickers}
             {footer}
           </View>
         </>
@@ -1433,7 +1474,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (scent?:
             <View style={[s.productBody, s.productBodyWide]}>
               <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
               <Text style={s.productDesc}>{product.desc}</Text>
-              {scentPicker}
+              {optionPickers}
               {footer}
             </View>
           </View>
@@ -1452,7 +1493,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (scent?:
           <View style={s.productBody}>
             <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
             <Text style={s.productDesc}>{product.desc}</Text>
-            {scentPicker}
+            {optionPickers}
             {footer}
           </View>
         </>
@@ -2004,6 +2045,49 @@ const s = StyleSheet.create({
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     color: "#6B3A00",
+    letterSpacing: 0.3,
+  },
+
+  /* ONJJEM Seal badge */
+  onjjemSealBadge: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 4,
+    backgroundColor: "#FDF6DC",
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  onjjemSealBadgeText: {
+    fontSize: 9,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#7A5A00",
+    letterSpacing: 0.3,
+  },
+
+  /* UK Master Printers badge */
+  ukMasterBadge: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 4,
+    backgroundColor: "#FFF5F5",
+    borderWidth: 1,
+    borderColor: "#FFCDD2",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  ukMasterBadgeFlag: {
+    fontSize: 9,
+  },
+  ukMasterBadgeText: {
+    fontSize: 9,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#C0390B",
     letterSpacing: 0.3,
   },
 
