@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { ProPaywall } from "@/components/ProPaywall";
@@ -217,12 +218,19 @@ export default function HomeScreen() {
               </View>
             </Pressable>
 
-            <TouchableOpacity style={s.proBtn} onPress={() => setPaywallVisible(true)} activeOpacity={0.85}>
-              <Ionicons name="star" size={20} color="#000" />
-              <Text style={s.proBtnText}>Unlock Pro</Text>
-              <View style={s.proBadge}>
-                <Text style={s.proBadgeText}>✦ PREMIUM</Text>
-              </View>
+            <TouchableOpacity style={s.proBtnGlow} onPress={() => setPaywallVisible(true)} activeOpacity={0.88}>
+              <LinearGradient
+                colors={["#FFE566", "#F5C030", "#E08800"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.proBtn}
+              >
+                <Ionicons name="star" size={22} color="#fff" />
+                <Text style={s.proBtnText}>Unlock Pro</Text>
+                <View style={s.proBadge}>
+                  <Text style={s.proBadgeText}>✦ PREMIUM</Text>
+                </View>
+              </LinearGradient>
             </TouchableOpacity>
           </>
         )}
@@ -654,10 +662,17 @@ function makeStyles(
       color: colors.mutedForeground,
       fontFamily: "Inter_500Medium",
     },
-    proBtn: {
-      backgroundColor: "#F5C842",
+    proBtnGlow: {
       borderRadius: colors.radius,
-      paddingVertical: 18,
+      shadowColor: "#F5C030",
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.65,
+      shadowRadius: 16,
+      elevation: 10,
+    },
+    proBtn: {
+      borderRadius: colors.radius,
+      paddingVertical: 20,
       paddingHorizontal: 24,
       flexDirection: "row",
       alignItems: "center",
@@ -667,23 +682,23 @@ function makeStyles(
     proBtnText: {
       fontSize: 24,
       fontWeight: "700" as const,
-      color: "#000",
+      color: "#fff",
       fontFamily: "Inter_700Bold",
       letterSpacing: 0.3,
-      textShadowColor: "rgba(180,140,0,0.3)",
+      textShadowColor: "rgba(120,70,0,0.45)",
       textShadowOffset: { width: 0, height: 2 },
-      textShadowRadius: 3,
+      textShadowRadius: 4,
     },
     proBadge: {
-      backgroundColor: "rgba(0,0,0,0.12)",
+      backgroundColor: "rgba(255,255,255,0.2)",
       borderRadius: 6,
-      paddingHorizontal: 7,
+      paddingHorizontal: 8,
       paddingVertical: 3,
     },
     proBadgeText: {
       fontSize: 10,
       fontWeight: "700" as const,
-      color: "#000",
+      color: "#fff",
       fontFamily: "Inter_700Bold",
       letterSpacing: 1,
     },
