@@ -268,6 +268,17 @@ export default function HomeScreen() {
               </LinearGradient>
             </TouchableOpacity>
 
+            {/* Masterpiece Gallery button */}
+            <TouchableOpacity
+              style={s.galleryBtn}
+              onPress={() => router.push("/gallery")}
+              activeOpacity={0.88}
+            >
+              <Ionicons name="images-outline" size={20} color="#C9960C" />
+              <Text style={s.galleryBtnText}>Masterpiece Gallery</Text>
+              <Ionicons name="chevron-forward" size={16} color="#C9960C" />
+            </TouchableOpacity>
+
           </>
         )}
 
@@ -878,6 +889,26 @@ function makeStyles(
       fontWeight: "600" as const,
       color: colors.primary,
       fontFamily: "Inter_600SemiBold",
+    },
+    galleryBtn: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 10,
+      paddingVertical: 14,
+      paddingHorizontal: 20,
+      borderRadius: 14,
+      backgroundColor: "#FDF6DC",
+      borderWidth: 1.5,
+      borderColor: "#E8D48B",
+    },
+    galleryBtnText: {
+      flex: 1,
+      fontSize: 15,
+      fontWeight: "600" as const,
+      fontFamily: "Inter_600SemiBold",
+      color: "#A67C00",
+      textAlign: "center" as const,
     },
     contactBtnWrapper: {
       paddingHorizontal: 20,

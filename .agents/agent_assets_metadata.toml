@@ -24,6 +24,66 @@ uri = "file://artifacts/owens-photofix/assets/leather/tote_ai.png"
 type = "image"
 title = "luxury leather tote bag studio"
 
+[[generated]]
+id = "I6S5U0MKZsPfdgwTITZzf"
+uri = "file://artifacts/owens-photofix/assets/gallery/portrait_before.png"
+type = "image"
+title = "1920s damaged portrait before"
+
+[[generated]]
+id = "zWONlXfweNnkpN-GWHa2s"
+uri = "file://artifacts/owens-photofix/assets/gallery/portrait_after.png"
+type = "image"
+title = "1920s restored portrait after"
+
+[[generated]]
+id = "ViX5ndykAFfv-uL4SidYl"
+uri = "file://artifacts/owens-photofix/assets/gallery/wedding_before.png"
+type = "image"
+title = "faded wedding photo before"
+
+[[generated]]
+id = "ruTjSRpEMqzAQ0ghPoMy-"
+uri = "file://artifacts/owens-photofix/assets/gallery/wedding_after.png"
+type = "image"
+title = "colorized wedding photo after"
+
+[[generated]]
+id = "sEMglzd6VwGFSVPwifHsf"
+uri = "file://artifacts/owens-photofix/assets/gallery/childhood_before.png"
+type = "image"
+title = "torn childhood photo before"
+
+[[generated]]
+id = "nZ6UtBh8NZqmUJg6TClNy"
+uri = "file://artifacts/owens-photofix/assets/gallery/childhood_after.png"
+type = "image"
+title = "restored childhood photo after"
+
+[[generated]]
+id = "T6RInhGQ3bxu-_8FJKCJ8"
+uri = "file://artifacts/owens-photofix/assets/gallery/grandma_before.png"
+type = "image"
+title = "blurry grandma portrait before"
+
+[[generated]]
+id = "Al-sGJDXlgxuvB41Dlgmf"
+uri = "file://artifacts/owens-photofix/assets/gallery/grandma_after.png"
+type = "image"
+title = "sharpened grandma portrait after"
+
+[[generated]]
+id = "vNvpn54te47JJSv5pXdgJ"
+uri = "file://artifacts/owens-photofix/assets/gallery/victorian_before.png"
+type = "image"
+title = "Victorian daguerreotype before"
+
+[[generated]]
+id = "mrrJJd2JbDh8uhyyi_qYJ"
+uri = "file://artifacts/owens-photofix/assets/gallery/victorian_after.png"
+type = "image"
+title = "Victorian portrait colorized after"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
