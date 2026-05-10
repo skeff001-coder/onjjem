@@ -27,6 +27,7 @@ import { ProductMockup } from "@/components/ProductMockup";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 import { ReferralModal } from "@/components/ReferralModal";
 import { LivingMemoriesModal } from "@/components/LivingMemoriesModal";
+import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { TrustFooter } from "@/components/TrustFooter";
 
 type Mode = "sharpen" | "colorize";
@@ -257,7 +258,7 @@ export default function HomeScreen() {
 
       <View style={s.header}>
         <View>
-          <Text style={s.headerTitleTop}>ONJJEM</Text>
+          <GraffitiTitle fontSize={52} letterSpacing={5} />
           <Text style={s.headerTitleBottom}>PHOTO RESTORATION</Text>
           <Text style={s.headerTitleGifts}>PERSONALISED GIFTS</Text>
         </View>

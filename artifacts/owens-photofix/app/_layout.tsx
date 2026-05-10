@@ -9,6 +9,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { GraffitiTitle } from "@/components/GraffitiTitle";
 import React, { useEffect } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -40,7 +41,7 @@ function AppSplash() {
         <View style={splash.rule} />
 
         {/* Brand name */}
-        <Text style={splash.brand}>ONJJEM</Text>
+        <GraffitiTitle fontSize={60} letterSpacing={8} />
         <Text style={splash.subtitle}>PHOTO RESTORATION</Text>
         <Text style={splash.subtitleGifts}>PERSONALISED GIFTS</Text>
 
