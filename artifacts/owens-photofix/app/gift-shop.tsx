@@ -18,6 +18,7 @@ import { useColors } from "@/hooks/useColors";
 import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 import { TrustFooter } from "@/components/TrustFooter";
+import { PersonalisationModal, type PersonalisationData } from "@/components/PersonalisationModal";
 
 const BLUE = "#0066FF";
 const CREAM = "#FAF7F2";
@@ -397,6 +398,7 @@ export default function GiftShopScreen() {
   const [activeTab, setActiveTab] = useState("living");
   const [giftWrap, setGiftWrap] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
+  const [personalisingProduct, setPersonalisingProduct] = useState<Product | null>(null);
   const [basketItems, setBasketItems] = useState<{ title: string; price: number }[]>([]);
   const [promoCode, setPromoCode] = useState("");
   const [promoStatus, setPromoStatus] = useState<"idle" | "valid" | "min_spend" | "invalid">("idle");
@@ -416,6 +418,22 @@ export default function GiftShopScreen() {
       "Added to Basket!",
       `${title}${extra} added.\n\nBasket total: £${(basketSubtotal + numPrice + giftWrapCost).toFixed(2)}`,
     );
+  };
+
+  const handlePersonalisationConfirm = (data: PersonalisationData) => {
+    if (!personalisingProduct) return;
+    const { title, price } = personalisingProduct;
+    const numPrice = parsePrice(price);
+    const extra = giftWrap ? " + Deluxe Gift Wrapping (£4.99)" : "";
+    const personalNote = data.message.trim()
+      ? `\n✍️ Personalisation: "${data.message.trim()}"\nFont: ${data.fontStyle.replace(/_/g, " ")} · Placement: ${data.placement.replace(/_/g, " ")}`
+      : "";
+    setBasketItems((prev) => [...prev, { title, price: numPrice }]);
+    Alert.alert(
+      "Added to Basket!",
+      `${title}${extra} added.${personalNote}\n\nBasket total: £${(basketSubtotal + numPrice + giftWrapCost).toFixed(2)}`,
+    );
+    setPersonalisingProduct(null);
   };
 
   const applyPromo = () => {
@@ -587,7 +605,7 @@ export default function GiftShopScreen() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onPress={() => handleDesign(product.title, product.price)}
+                onPress={() => setPersonalisingProduct(product)}
               />
             ))}
           </View>
@@ -785,6 +803,13 @@ export default function GiftShopScreen() {
       </ScrollView>
 
       <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />
+      <PersonalisationModal
+        visible={personalisingProduct !== null}
+        productTitle={personalisingProduct?.title ?? ""}
+        productPrice={personalisingProduct?.price ?? ""}
+        onClose={() => setPersonalisingProduct(null)}
+        onConfirm={handlePersonalisationConfirm}
+      />
     </View>
   );
 }
