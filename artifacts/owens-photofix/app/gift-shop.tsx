@@ -163,7 +163,7 @@ const CATEGORIES: Category[] = [
     id: "personal",
     label: "Personal Gifts",
     emoji: "🎁",
-    subtitle: "Keyrings, jigsaws, mugs & more for everyone",
+    subtitle: "Keyrings, mugs & keepsakes for everyone",
     fulfillment: "Master Print Lab",
     headerGradient: ["#E07000", "#BF4500"],
     products: [
@@ -201,23 +201,51 @@ const CATEGORIES: Category[] = [
         emoji: "🧋",
         iconBg: "#FFF8F0",
       },
+    ],
+  },
+  {
+    id: "jigsaws",
+    label: "Jigsaws",
+    emoji: "🧩",
+    subtitle: "Every puzzle ships in a premium metal gift tin",
+    fulfillment: "Master Print Lab",
+    headerGradient: ["#2E7D32", "#1B5E20"],
+    products: [
+      {
+        id: "jigsaw_30",
+        title: "Mini Wooden Jigsaw",
+        size: "30 pieces",
+        desc: "Wooden pieces · perfect for little ones",
+        price: "£19.99",
+        emoji: "🪵",
+        iconBg: "#E8F5E9",
+      },
+      {
+        id: "jigsaw_252",
+        title: "Classic Jigsaw",
+        size: "252 pieces",
+        desc: "Cardboard · great family activity",
+        price: "£29.99",
+        emoji: "🧩",
+        iconBg: "#F1F8E9",
+      },
       {
         id: "jigsaw_500",
-        title: "Photo Jigsaw",
+        title: "Standard Jigsaw",
         size: "500 pieces",
-        desc: "A fun gift for the whole family",
-        price: "£22.99",
+        desc: "Cardboard · satisfying challenge",
+        price: "£39.99",
         emoji: "🧩",
-        iconBg: "#FFF0E8",
+        iconBg: "#E8F5E9",
       },
       {
         id: "jigsaw_1000",
-        title: "Deluxe Photo Jigsaw",
+        title: "Deluxe Jigsaw",
         size: "1000 pieces",
-        desc: "The ultimate memory challenge",
-        price: "£34.99",
+        desc: "Cardboard · the ultimate memory puzzle",
+        price: "£49.99",
         emoji: "🧩",
-        iconBg: "#FFE8DC",
+        iconBg: "#DCEDC8",
         bestSeller: true,
       },
     ],
@@ -261,8 +289,13 @@ export default function GiftShopScreen() {
         </View>
       </View>
 
-      {/* Category tab bar */}
-      <View style={s.tabBar}>
+      {/* Category tab bar — horizontally scrollable for 4 tabs */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={s.tabBarScroll}
+        contentContainerStyle={s.tabBar}
+      >
         {CATEGORIES.map((cat) => {
           const active = activeTab === cat.id;
           return (
@@ -278,7 +311,7 @@ export default function GiftShopScreen() {
             </TouchableOpacity>
           );
         })}
-      </View>
+      </ScrollView>
 
       <ScrollView
         contentContainerStyle={[s.scroll, { paddingBottom: insets.bottom + 24 }]}
@@ -303,6 +336,19 @@ export default function GiftShopScreen() {
               <Text style={s.fulfillmentText}>{activeCategory.fulfillment}</Text>
             </View>
           </LinearGradient>
+
+          {/* Metal tin callout — jigsaws only */}
+          {activeTab === "jigsaws" && (
+            <View style={s.tinCallout}>
+              <Text style={s.tinEmoji}>🥫</Text>
+              <View style={s.tinText}>
+                <Text style={s.tinTitle}>Includes Premium Metal Gift Tin</Text>
+                <Text style={s.tinSub}>
+                  Every jigsaw ships in a professional metal tin with your photo printed on the lid — ready to gift, no wrapping needed.
+                </Text>
+              </View>
+            </View>
+          )}
 
           <View style={s.productGrid}>
             {activeCategory.products.map((product) => (
@@ -458,21 +504,24 @@ const s = StyleSheet.create({
   headerRight: { width: 40, alignItems: "center" },
 
   /* Tab bar */
-  tabBar: {
-    flexDirection: "row",
+  tabBarScroll: {
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#E2D9CF",
-    paddingHorizontal: 8,
+    flexGrow: 0,
+  },
+  tabBar: {
+    flexDirection: "row",
+    paddingHorizontal: 4,
   },
   tab: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 11,
-    paddingHorizontal: 4,
+    paddingHorizontal: 14,
     position: "relative",
     gap: 3,
+    minWidth: 88,
   },
   tabActive: {},
   tabEmoji: { fontSize: 18 },
@@ -596,6 +645,32 @@ const s = StyleSheet.create({
   },
   giftWrapDescText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#5C4A00", lineHeight: 19, flex: 1, fontStyle: "italic" },
   giftWrapHint: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#8E8E93", lineHeight: 17, textAlign: "center" },
+
+  /* Metal tin callout */
+  tinCallout: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: "#E8F5E9",
+    borderBottomWidth: 1,
+    borderBottomColor: "#C8E6C9",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  tinEmoji: { fontSize: 32 },
+  tinText: { flex: 1, gap: 3 },
+  tinTitle: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    color: "#1B5E20",
+    fontFamily: "Inter_700Bold",
+  },
+  tinSub: {
+    fontSize: 11,
+    color: "#2E7D32",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 16,
+  },
 
   /* Quality promise banner */
   promiseBanner: {
