@@ -2,10 +2,11 @@ import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Dimensions,
   Image,
   Platform,
   Pressable,
@@ -38,6 +39,21 @@ const PRINT_PRODUCTS = [
   { id: "quilt",   type: "quilt"   as const, title: "Custom Photo Quilt",   price: "£49.99", emoji: "🧵", bg: "#FCE4EC" },
 ];
 
+const GALLERY_POOL = [
+  require("@/assets/gallery/childhood_before.png"),
+  require("@/assets/gallery/childhood_after.png"),
+  require("@/assets/gallery/grandma_before.png"),
+  require("@/assets/gallery/grandma_after.png"),
+  require("@/assets/gallery/portrait_before.png"),
+  require("@/assets/gallery/portrait_after.png"),
+  require("@/assets/gallery/victorian_before.png"),
+  require("@/assets/gallery/victorian_after.png"),
+  require("@/assets/gallery/wedding_before.png"),
+  require("@/assets/gallery/wedding_after.png"),
+];
+
+const { height: SCREEN_H } = Dimensions.get("window");
+
 export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -53,6 +69,11 @@ export default function HomeScreen() {
   const [resultLocalUri, setResultLocalUri] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("sharpen");
   const [statusMessage, setStatusMessage] = useState("Preparing...");
+
+  const bgImages = useMemo(() => {
+    const shuffled = [...GALLERY_POOL].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 6);
+  }, []);
 
   // Best available photo URI to show in print mockups
   const previewUri: string | null =
@@ -209,6 +230,17 @@ export default function HomeScreen() {
 
   return (
     <View style={s.root}>
+      {/* Background photo mosaic */}
+      <View style={s.bgMosaic}>
+        {bgImages.map((src, i) => (
+          <Image key={i} source={src} style={s.bgTile} resizeMode="cover" />
+        ))}
+      </View>
+      <LinearGradient
+        colors={["rgba(250,247,242,0.78)", "rgba(250,247,242,0.88)"]}
+        style={[StyleSheet.absoluteFillObject, { pointerEvents: "none" }]}
+      />
+
       {/* Promo announcement banner */}
       <LinearGradient
         colors={["#1C1A14", "#2E2818"]}
@@ -647,6 +679,20 @@ function makeStyles(
     root: {
       flex: 1,
       backgroundColor: colors.background,
+      overflow: "hidden",
+    },
+    bgMosaic: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      flexDirection: "row",
+      flexWrap: "wrap",
+    },
+    bgTile: {
+      width: "50%",
+      height: SCREEN_H / 3,
     },
     header: {
       paddingTop: topPad + 8,
