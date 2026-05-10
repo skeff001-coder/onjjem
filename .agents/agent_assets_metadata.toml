@@ -11,3 +11,21 @@ id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
 type = "image"
 title = "ONJJEM SNAP LAB — App Icon"
+
+[[outputs]]
+id = "Xlz2xC360E_nLv63xKBfF"
+uri = "file://artifacts/owens-photofix/assets/leather/purse.jpg"
+type = "image"
+title = "Nappa Leather Purse — tan crossbody, made in Britain"
+
+[[outputs]]
+id = "qpQ7hHs7X8LJs4kMX3-sl"
+uri = "file://artifacts/owens-photofix/assets/leather/wallet.jpg"
+type = "image"
+title = "Men's Luxury Leather Wallet — ANTORINI, off-white"
+
+[[outputs]]
+id = "bOLE_WwGM2Sf129PY4zkc"
+uri = "file://artifacts/owens-photofix/assets/leather/tote.jpg"
+type = "image"
+title = "Leather Tote Bag — JLR London, tan boutique tote"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Switch,
@@ -31,6 +32,7 @@ type Product = {
   iconBg: string;
   wide?: boolean;
   bestSeller?: boolean;
+  photo?: ReturnType<typeof require>;
 };
 
 type Category = {
@@ -267,6 +269,7 @@ const CATEGORIES: Category[] = [
         iconBg: "#EFEBE9",
         wide: true,
         bestSeller: true,
+        photo: require("@/assets/leather/purse.jpg"),
       },
       {
         id: "leather_wallet",
@@ -276,6 +279,7 @@ const CATEGORIES: Category[] = [
         emoji: "💳",
         iconBg: "#F5F0EB",
         wide: true,
+        photo: require("@/assets/leather/wallet.jpg"),
       },
       {
         id: "leather_handbag",
@@ -285,6 +289,7 @@ const CATEGORIES: Category[] = [
         emoji: "👜",
         iconBg: "#EDE0D4",
         wide: true,
+        photo: require("@/assets/leather/tote.jpg"),
       },
     ],
   },
@@ -489,20 +494,28 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
         </View>
       )}
 
-      <View style={[
-        s.productIconWrap,
-        { backgroundColor: product.iconBg },
-        product.wide && s.productIconWrapWide,
-      ]}>
-        <Text style={[s.productEmoji, product.wide && s.productEmojiWide]}>
-          {product.emoji}
-        </Text>
-        {product.size && (
-          <View style={s.sizePill}>
-            <Text style={s.sizePillText}>{product.size}</Text>
-          </View>
-        )}
-      </View>
+      {product.photo ? (
+        <Image
+          source={product.photo}
+          style={[s.productPhoto, product.wide ? s.productPhotoWide : s.productPhotoSquare]}
+          resizeMode="cover"
+        />
+      ) : (
+        <View style={[
+          s.productIconWrap,
+          { backgroundColor: product.iconBg },
+          product.wide && s.productIconWrapWide,
+        ]}>
+          <Text style={[s.productEmoji, product.wide && s.productEmojiWide]}>
+            {product.emoji}
+          </Text>
+          {product.size && (
+            <View style={s.sizePill}>
+              <Text style={s.sizePillText}>{product.size}</Text>
+            </View>
+          )}
+        </View>
+      )}
 
       <View style={[s.productBody, product.wide && s.productBodyWide]}>
         <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
@@ -634,6 +647,9 @@ const s = StyleSheet.create({
   bestSellerStar: { fontSize: 10, color: GOLD },
   bestSellerText: { fontSize: 10, fontWeight: "700" as const, color: GOLD, fontFamily: "Inter_700Bold" },
 
+  productPhoto: { backgroundColor: "#F0EBE5" },
+  productPhotoSquare: { width: "100%", height: 110 },
+  productPhotoWide: { width: 110, alignSelf: "stretch" as const, flexShrink: 0 },
   productIconWrap: {
     height: 84, alignItems: "center", justifyContent: "center", position: "relative",
   },
