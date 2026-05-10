@@ -272,7 +272,7 @@ export function PersonalisationModal({
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.skipBtn} onPress={handleConfirm} activeOpacity={0.7}>
-              <Text style={styles.skipBtnText}>Skip personalisation &amp; add to basket</Text>
+              <Text style={styles.skipBtnText}>Skip personalisation & add to basket</Text>
             </TouchableOpacity>
           </View>
         </View>
