@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
+import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
 
 const BLUE = "#0066FF";
 const CREAM = "#FAF7F2";
@@ -281,7 +282,7 @@ const CATEGORIES: Category[] = [
         iconBg: "#F5F0EB",
         wide: true,
         premiumBadge: true,
-        photo: require("@/assets/leather/wallet.jpg"),
+        photo: require("@/assets/leather/wallet_ai.png"),
       },
       {
         id: "leather_handbag",
@@ -292,7 +293,7 @@ const CATEGORIES: Category[] = [
         iconBg: "#EDE0D4",
         wide: true,
         premiumBadge: true,
-        photo: require("@/assets/leather/tote.jpg"),
+        photo: require("@/assets/leather/tote_ai.png"),
       },
     ],
   },
@@ -448,6 +449,11 @@ export default function GiftShopScreen() {
               </Text>
             )}
           </View>
+        </View>
+
+        {/* Secure checkout badge */}
+        <View style={s.secureBadgeWrapper}>
+          <SecureCheckoutBadge />
         </View>
 
         {/* Quality promise banner */}
@@ -743,6 +749,12 @@ const s = StyleSheet.create({
     color: "#2E7D32",
     fontFamily: "Inter_400Regular",
     lineHeight: 16,
+  },
+
+  /* Secure checkout badge */
+  secureBadgeWrapper: {
+    marginHorizontal: 4,
+    marginBottom: 18,
   },
 
   /* Quality promise banner */

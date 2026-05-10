@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
+import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
 
 export default function SuccessScreen() {
   const colors = useColors();
@@ -114,6 +115,11 @@ export default function SuccessScreen() {
       </View>
 
       <View style={styles.bottomSpacer} />
+
+      {/* Secure payment badge */}
+      <View style={styles.badgeWrapper}>
+        <SecureCheckoutBadge />
+      </View>
 
       {/* Return to home button */}
       <View style={[styles.btnWrapper, { paddingBottom: insets.bottom + 24 }]}>
@@ -277,6 +283,10 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     flex: 1,
+  },
+  badgeWrapper: {
+    paddingHorizontal: 0,
+    paddingBottom: 14,
   },
   btnWrapper: {
     paddingHorizontal: 0,
