@@ -270,7 +270,7 @@ const CATEGORIES: Category[] = [
         iconBg: "#EFEBE9",
         wide: true,
         premiumBadge: true,
-        photo: require("@/assets/leather/purse.jpg"),
+        photo: require("@/assets/leather/purse_ai.png"),
       },
       {
         id: "leather_wallet",
