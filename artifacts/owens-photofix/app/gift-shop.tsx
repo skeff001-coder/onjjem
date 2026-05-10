@@ -1209,6 +1209,28 @@ export default function GiftShopScreen() {
           </View>
         </View>
 
+        {/* About Our Quality */}
+        <View style={s.qualityNote}>
+          <View style={s.qualityNoteHeader}>
+            <Ionicons name="ribbon" size={15} color={GOLD} />
+            <Text style={s.qualityNoteHeading}>About Our Quality</Text>
+          </View>
+          <View style={s.qualityNoteDivider} />
+          <Text style={s.qualityNoteBody}>
+            Every masterpiece is finished with the ONJJEM seal of quality. Our textile items include a custom brand label, and all orders are shipped with an official ONJJEM Master Lab despatch note to verify their authenticity.
+          </Text>
+          <View style={s.qualityNoteSealRow}>
+            <View style={s.qualityNoteSeal}>
+              <Ionicons name="shield-checkmark" size={12} color={GOLD} />
+              <Text style={s.qualityNoteSealText}>ONJJEM Seal of Quality</Text>
+            </View>
+            <View style={s.qualityNoteSeal}>
+              <Ionicons name="document-text-outline" size={12} color={GOLD} />
+              <Text style={s.qualityNoteSealText}>Master Lab Despatch Note</Text>
+            </View>
+          </View>
+        </View>
+
         <TrustFooter />
       </ScrollView>
 
@@ -2080,6 +2102,71 @@ const s = StyleSheet.create({
     width: 1,
     height: 40,
     backgroundColor: "#E2D9CF",
+  },
+
+  /* About Our Quality note card */
+  qualityNote: {
+    marginHorizontal: 14,
+    marginTop: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    backgroundColor: "#FFFDF4",
+    padding: 16,
+    shadowColor: "#C9960C",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  qualityNoteHeader: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 7,
+    marginBottom: 10,
+  },
+  qualityNoteHeading: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#7A5A00",
+    letterSpacing: 0.3,
+    textTransform: "uppercase" as const,
+  },
+  qualityNoteDivider: {
+    height: 1,
+    backgroundColor: "#E8D48B",
+    marginBottom: 12,
+    opacity: 0.6,
+  },
+  qualityNoteBody: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    color: "#4A3A1A",
+    lineHeight: 20,
+    marginBottom: 14,
+  },
+  qualityNoteSealRow: {
+    flexDirection: "row" as const,
+    gap: 8,
+    flexWrap: "wrap" as const,
+  },
+  qualityNoteSeal: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 5,
+    backgroundColor: "#FDF6DC",
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  qualityNoteSealText: {
+    fontSize: 11,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+    color: "#7A5A00",
   },
 
   /* Shipping callout */
