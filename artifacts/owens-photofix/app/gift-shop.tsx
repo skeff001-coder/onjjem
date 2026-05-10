@@ -704,13 +704,13 @@ export default function GiftShopScreen() {
             end={{ x: 1, y: 0 }}
             style={s.sectionHeader}
           >
-            <View style={{ flex: 1 }}>
-              <Text style={s.sectionTitle}>{activeCategory.emoji}  {activeCategory.label}</Text>
-              <Text style={s.sectionSubtitle}>{activeCategory.subtitle}</Text>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={s.sectionTitle} numberOfLines={1}>{activeCategory.emoji}  {activeCategory.label}</Text>
+              <Text style={s.sectionSubtitle} numberOfLines={2}>{activeCategory.subtitle}</Text>
             </View>
             <View style={s.fulfillmentBadge}>
               <Ionicons name="business-outline" size={10} color="rgba(255,255,255,0.9)" />
-              <Text style={s.fulfillmentText}>{activeCategory.fulfillment}</Text>
+              <Text style={s.fulfillmentText} numberOfLines={1}>{activeCategory.fulfillment}</Text>
             </View>
           </LinearGradient>
 
@@ -1528,9 +1528,10 @@ const s = StyleSheet.create({
   fulfillmentBadge: {
     flexDirection: "row", alignItems: "center", gap: 4,
     backgroundColor: "rgba(0,0,0,0.22)",
-    paddingHorizontal: 8, paddingVertical: 4, borderRadius: 20, flexShrink: 0,
+    paddingHorizontal: 8, paddingVertical: 4, borderRadius: 20,
+    flexShrink: 1, maxWidth: "45%",
   },
-  fulfillmentText: { fontSize: 9, color: "rgba(255,255,255,0.9)", fontFamily: "Inter_600SemiBold" },
+  fulfillmentText: { fontSize: 9, color: "rgba(255,255,255,0.9)", fontFamily: "Inter_600SemiBold", flexShrink: 1 },
 
   productGrid: {
     flexDirection: "row", flexWrap: "wrap",
