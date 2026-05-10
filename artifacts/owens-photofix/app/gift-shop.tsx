@@ -17,6 +17,7 @@ import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
+import { TrustFooter } from "@/components/TrustFooter";
 
 const BLUE = "#0066FF";
 const CREAM = "#FAF7F2";
@@ -652,6 +653,8 @@ export default function GiftShopScreen() {
             </View>
           </View>
         </View>
+
+        <TrustFooter />
       </ScrollView>
 
       <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />

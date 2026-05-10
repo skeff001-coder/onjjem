@@ -27,6 +27,7 @@ import { ProductMockup } from "@/components/ProductMockup";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 import { ReferralModal } from "@/components/ReferralModal";
 import { LivingMemoriesModal } from "@/components/LivingMemoriesModal";
+import { TrustFooter } from "@/components/TrustFooter";
 
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
@@ -576,6 +577,8 @@ export default function HomeScreen() {
             ))}
           </View>
         </View>
+
+        <TrustFooter />
       </ScrollView>
 
       {/* Contact our experts button */}

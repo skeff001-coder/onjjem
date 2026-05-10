@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { TrustFooter } from "@/components/TrustFooter";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -197,6 +198,8 @@ export default function GalleryScreen() {
             Free preview · No account required · Results in under 60 seconds
           </Text>
         </View>
+
+        <TrustFooter />
       </ScrollView>
     </View>
   );

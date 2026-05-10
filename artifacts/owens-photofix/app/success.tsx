@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   StyleSheet,
@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
 import { ReferralModal } from "@/components/ReferralModal";
+import { TrustFooter } from "@/components/TrustFooter";
 
 export default function SuccessScreen() {
   const colors = useColors();
@@ -117,6 +118,9 @@ export default function SuccessScreen() {
       </View>
 
       <View style={styles.bottomSpacer} />
+
+      {/* Trust footer */}
+      <TrustFooter />
 
       {/* Secure payment badge */}
       <View style={styles.badgeWrapper}>
