@@ -350,6 +350,37 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  {
+    id: "wearable",
+    label: "Wearable Memories",
+    emoji: "👕",
+    subtitle: "Cut and sewn by hand in London · 10-year print guarantee",
+    fulfillment: "Master London Garments",
+    headerGradient: ["#4A0080", "#2D0050"] as const,
+    products: [
+      {
+        id: "tee_adult",
+        title: "Custom All-Over Print Tee",
+        size: "XS–3XL",
+        desc: "Your restored photo printed edge-to-edge on soft jersey fabric.",
+        price: "£44.99",
+        emoji: "👕",
+        iconBg: "#F3E8FF",
+        wide: true,
+        bestSeller: true,
+      },
+      {
+        id: "tee_kids",
+        title: "Personalised Kids Tee",
+        size: "Ages 2–12",
+        desc: "Perfect for family reunions or gifts — vivid, washable, joyful.",
+        price: "£34.99",
+        emoji: "🧒",
+        iconBg: "#EDE0FF",
+        wide: true,
+      },
+    ],
+  },
 ];
 
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
@@ -501,6 +532,29 @@ export default function GiftShopScreen() {
                 <Text style={s.tinSub}>
                   Every jigsaw ships in a professional metal tin with your photo printed on the lid — ready to gift, no wrapping needed.
                 </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Wearable Memories callout */}
+          {activeTab === "wearable" && (
+            <View style={s.wearableCallout}>
+              <LinearGradient
+                colors={["#4A0080", "#7B2FBE", "#4A0080"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.wearableGoldBar}
+              />
+              <View style={s.wearableInner}>
+                <View style={s.wearableIconWrap}>
+                  <Text style={s.wearableIconEmoji}>✂️</Text>
+                </View>
+                <View style={s.wearableText}>
+                  <Text style={s.wearableTitle}>Cut &amp; Sewn by Hand in London</Text>
+                  <Text style={s.wearableDesc}>
+                    Every garment is individually cut and sewn by our London artisans, then printed using fade-proof inks. Backed by our 10-year print guarantee — your memories stay vivid wash after wash.
+                  </Text>
+                </View>
               </View>
             </View>
           )}
@@ -1150,6 +1204,49 @@ const s = StyleSheet.create({
     color: "#2E7D32",
     fontFamily: "Inter_400Regular",
     lineHeight: 16,
+  },
+
+  /* Wearable Memories callout */
+  wearableCallout: {
+    backgroundColor: "#FAF7F2",
+    borderBottomWidth: 1,
+    borderBottomColor: "#D8B4FE",
+    overflow: "hidden",
+  },
+  wearableGoldBar: {
+    height: 2,
+  },
+  wearableInner: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  wearableIconWrap: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: "#F3E8FF",
+    borderWidth: 1,
+    borderColor: "#D8B4FE",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  wearableIconEmoji: { fontSize: 22 },
+  wearableText: { flex: 1, gap: 4 },
+  wearableTitle: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#2D0050",
+  },
+  wearableDesc: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "#6B21A8",
+    lineHeight: 17,
   },
 
   /* Large format callout */
