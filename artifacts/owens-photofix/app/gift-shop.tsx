@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import {
   Animated,
   Image,
+  Modal,
   ScrollView,
   StyleSheet,
   Switch,
@@ -41,6 +42,7 @@ type Product = {
   handmadeInLondon?: boolean;
   freePersonalisation?: boolean;
   heavyItem?: boolean;
+  scents?: string[];
 };
 
 type Category = {
@@ -612,6 +614,58 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  {
+    id: "car_keepsakes",
+    label: "Car Keepsakes",
+    emoji: "🚗",
+    subtitle: "Personalised car accessories · Your memories on the road",
+    fulfillment: "ONJJEM Master Print Lab",
+    headerGradient: ["#1A237E", "#283593"] as const,
+    products: [
+      {
+        id: "air_freshener",
+        title: "Photo Air Freshener",
+        size: "Standard",
+        desc: "Your restored photo printed on a premium air freshener. Hangs beautifully from any rear-view mirror. Choose your favourite scent below.",
+        price: "£12.99",
+        emoji: "🌿",
+        iconBg: "#E8F5E9",
+        wide: true,
+        bestSeller: true,
+        scents: ["New Car", "Ocean Mist", "Vanilla Dream", "Fresh Linen"],
+      },
+      {
+        id: "window_stickers",
+        title: "Photo Window Stickers",
+        size: "Pack of 4",
+        desc: "Four premium vinyl window stickers featuring your restored photo. UV-resistant, weatherproof and removable — perfect for cars, caravans or windows.",
+        price: "£14.99",
+        emoji: "🪟",
+        iconBg: "#E3F2FD",
+        wide: true,
+      },
+      {
+        id: "bumper_sticker",
+        title: "Photo Bumper Sticker",
+        size: "30×10 cm",
+        desc: "High-quality weatherproof vinyl bumper sticker with your restored photo. Strong adhesive, easy to apply.",
+        price: "£9.99",
+        emoji: "🚘",
+        iconBg: "#EDE7F6",
+        wide: true,
+      },
+      {
+        id: "car_sun_strip",
+        title: "Photo Sun Visor Strip",
+        size: "Universal fit",
+        desc: "A custom sun visor strip printed with your cherished photo. Durable, UV-resistant film that fits most car windscreens.",
+        price: "£16.99",
+        emoji: "☀️",
+        iconBg: "#FFF8E1",
+        wide: true,
+      },
+    ],
+  },
 ];
 
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
@@ -635,20 +689,7 @@ export default function GiftShopScreen() {
   const [shipping, setShipping] = useState<"uk" | "worldwide">("uk");
 
   const scrollRef = useRef<ScrollView>(null);
-  const toastOpacity = useRef(new Animated.Value(0)).current;
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [toastMessage, setToastMessage] = useState("");
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    Animated.sequence([
-      Animated.timing(toastOpacity, { toValue: 1, duration: 200, useNativeDriver: true }),
-      Animated.delay(2000),
-      Animated.timing(toastOpacity, { toValue: 0, duration: 300, useNativeDriver: true }),
-    ]).start();
-    toastTimer.current = setTimeout(() => setToastMessage(""), 2600);
-  };
+  const [basketConfirm, setBasketConfirm] = useState<{ title: string } | null>(null);
 
   const activeCategory = CATEGORIES.find((c) => c.id === activeTab)!;
 
@@ -658,10 +699,11 @@ export default function GiftShopScreen() {
   const shippingCost = basketItems.length > 0 ? (shipping === "uk" ? 9.50 : 24.99) : 0;
   const basketTotal = basketSubtotal + giftWrapCost + shippingCost - promoDiscount;
 
-  const handleDesign = (title: string, price: string) => {
+  const handleDesign = (title: string, price: string, scent?: string) => {
     const numPrice = parsePrice(price);
-    setBasketItems((prev) => [...prev, { title, price: numPrice }]);
-    showToast("Added to your ONJJEM Basket!");
+    const itemTitle = scent ? `${title} — ${scent}` : title;
+    setBasketItems((prev) => [...prev, { title: itemTitle, price: numPrice }]);
+    setBasketConfirm({ title: itemTitle });
   };
 
   const handlePersonalisationConfirm = (data: PersonalisationData) => {
@@ -669,7 +711,7 @@ export default function GiftShopScreen() {
     const { title, price } = personalisingProduct;
     const numPrice = parsePrice(price);
     setBasketItems((prev) => [...prev, { title, price: numPrice }]);
-    showToast("Added to your ONJJEM Basket!");
+    setBasketConfirm({ title });
     setPersonalisingProduct(null);
   };
 
@@ -926,6 +968,38 @@ export default function GiftShopScreen() {
           )}
 
           {/* Large format callout */}
+          {activeTab === "car_keepsakes" && (
+            <View style={s.carCallout}>
+              <LinearGradient
+                colors={["#1A237E", "#3949AB", "#1A237E"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.carCalloutBar}
+              />
+              <View style={s.carCalloutInner}>
+                <View style={s.carCalloutIconWrap}>
+                  <Text style={{ fontSize: 28 }}>🚗</Text>
+                </View>
+                <View style={s.carCalloutText}>
+                  <Text style={s.carCalloutTitle}>Your Memories on the Road</Text>
+                  <Text style={s.carCalloutDesc}>
+                    Every Car Keepsake is printed using UV-resistant, weatherproof inks — built to last in all British weather. Dispatched from the ONJJEM Master Print Lab.
+                  </Text>
+                  <View style={s.carSealRow}>
+                    <View style={s.carSealBadge}>
+                      <Ionicons name="ribbon" size={11} color={GOLD} />
+                      <Text style={s.carSealText}>Certified ONJJEM Quality Seal</Text>
+                    </View>
+                    <View style={s.carSealBadge}>
+                      <Ionicons name="flag" size={11} color="#C0390B" />
+                      <Text style={s.carSealText}>UK Master Printers</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
           {activeTab === "large_format" && (
             <View style={s.largeFormatCallout}>
               <LinearGradient
@@ -953,11 +1027,11 @@ export default function GiftShopScreen() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onPress={() => {
+                onPress={(scent) => {
                   if (product.freePersonalisation) {
                     setPersonalisingProduct(product);
                   } else {
-                    handleDesign(product.title, product.price);
+                    handleDesign(product.title, product.price, scent);
                   }
                 }}
               />
@@ -1211,14 +1285,45 @@ export default function GiftShopScreen() {
         onConfirm={handlePersonalisationConfirm}
       />
 
-      {/* Basket toast */}
-      <Animated.View
-        style={[s.toast, { opacity: toastOpacity, bottom: insets.bottom + 24 }]}
-        pointerEvents="none"
+      {/* Basket confirmation modal */}
+      <Modal
+        visible={basketConfirm !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setBasketConfirm(null)}
       >
-        <Ionicons name="bag-check" size={17} color="#fff" />
-        <Text style={s.toastText}>{toastMessage}</Text>
-      </Animated.View>
+        <View style={s.confirmOverlay}>
+          <View style={s.confirmBox}>
+            <View style={s.confirmIconRing}>
+              <Ionicons name="bag-check" size={28} color={GOLD} />
+            </View>
+            <Text style={s.confirmTitle}>Successfully Added to your{"\n"}ONJJEM Basket!</Text>
+            {basketConfirm?.title ? (
+              <Text style={s.confirmItem} numberOfLines={2}>{basketConfirm.title}</Text>
+            ) : null}
+            <View style={s.confirmBtns}>
+              <TouchableOpacity
+                style={s.confirmBtnPrimary}
+                activeOpacity={0.85}
+                onPress={() => {
+                  setBasketConfirm(null);
+                  scrollRef.current?.scrollToEnd({ animated: true });
+                }}
+              >
+                <Ionicons name="bag-handle" size={15} color="#fff" />
+                <Text style={s.confirmBtnPrimaryText}>View Basket</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={s.confirmBtnSecondary}
+                activeOpacity={0.8}
+                onPress={() => setBasketConfirm(null)}
+              >
+                <Text style={s.confirmBtnSecondaryText}>Continue Shopping</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -1249,8 +1354,44 @@ function BadgeRow({ product }: { product: Product }) {
   );
 }
 
-function ProductCard({ product, onPress }: { product: Product; onPress: () => void }) {
+function ProductCard({ product, onPress }: { product: Product; onPress: (scent?: string) => void }) {
   const isWide = product.wide && !product.photo;
+  const [selectedScent, setSelectedScent] = useState<string>(
+    product.scents ? product.scents[0] : ""
+  );
+
+  const footer = (
+    <View style={s.productFooter}>
+      <Text style={s.productPrice}>{product.price}</Text>
+      <TouchableOpacity
+        style={s.designBtn}
+        activeOpacity={0.82}
+        onPress={() => onPress(product.scents ? selectedScent : undefined)}
+      >
+        <Text style={s.designBtnText}>Add to Basket</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const scentPicker = product.scents ? (
+    <View style={s.scentPickerWrap}>
+      <Text style={s.scentPickerLabel}>Choose scent:</Text>
+      <View style={s.scentRow}>
+        {product.scents.map((scent) => (
+          <TouchableOpacity
+            key={scent}
+            style={[s.scentPill, selectedScent === scent && s.scentPillActive]}
+            onPress={() => setSelectedScent(scent)}
+            activeOpacity={0.75}
+          >
+            <Text style={[s.scentPillText, selectedScent === scent && s.scentPillTextActive]}>
+              {scent}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  ) : null;
 
   return (
     <View style={[s.productCard, isWide && s.productCardWide]}>
@@ -1268,22 +1409,16 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
       )}
 
       {product.photo ? (
-        /* Photo card — full-width image then body */
         <>
           <Image source={product.photo} style={s.productPhotoFull} resizeMode="contain" />
           <View style={s.productBody}>
             <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
             <Text style={s.productDesc}>{product.desc}</Text>
-            <View style={s.productFooter}>
-              <Text style={s.productPrice}>{product.price}</Text>
-              <TouchableOpacity style={s.designBtn} activeOpacity={0.82} onPress={onPress}>
-                <Text style={s.designBtnText}>Design Now</Text>
-              </TouchableOpacity>
-            </View>
+            {scentPicker}
+            {footer}
           </View>
         </>
       ) : isWide ? (
-        /* Wide card — badges full-width at top, then inner row: icon | body */
         <>
           <BadgeRow product={product} />
           <View style={s.productWideRow}>
@@ -1298,17 +1433,12 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
             <View style={[s.productBody, s.productBodyWide]}>
               <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
               <Text style={s.productDesc}>{product.desc}</Text>
-              <View style={s.productFooter}>
-                <Text style={s.productPrice}>{product.price}</Text>
-                <TouchableOpacity style={s.designBtn} activeOpacity={0.82} onPress={onPress}>
-                  <Text style={s.designBtnText}>Design Now</Text>
-                </TouchableOpacity>
-              </View>
+              {scentPicker}
+              {footer}
             </View>
           </View>
         </>
       ) : (
-        /* Normal grid card — badges, icon, body stacked */
         <>
           <BadgeRow product={product} />
           <View style={[s.productIconWrap, { backgroundColor: product.iconBg }]}>
@@ -1322,12 +1452,8 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
           <View style={s.productBody}>
             <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
             <Text style={s.productDesc}>{product.desc}</Text>
-            <View style={s.productFooter}>
-              <Text style={s.productPrice}>{product.price}</Text>
-              <TouchableOpacity style={s.designBtn} activeOpacity={0.82} onPress={onPress}>
-                <Text style={s.designBtnText}>Design Now</Text>
-              </TouchableOpacity>
-            </View>
+            {scentPicker}
+            {footer}
           </View>
         </>
       )}
@@ -1433,30 +1559,193 @@ const s = StyleSheet.create({
     lineHeight: 12,
   },
 
-  /* In-app toast */
-  toast: {
-    position: "absolute" as const,
-    alignSelf: "center" as const,
+  /* Basket confirmation modal */
+  confirmOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    paddingHorizontal: 28,
+  },
+  confirmBox: {
+    width: "100%" as const,
+    backgroundColor: "#FFFDF4",
+    borderRadius: 24,
+    borderWidth: 1.5,
+    borderColor: "#E8D48B",
+    padding: 26,
+    alignItems: "center" as const,
+    gap: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 20,
+    elevation: 12,
+  },
+  confirmIconRing: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#FDF6DC",
+    borderWidth: 2,
+    borderColor: "#E8D48B",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+  },
+  confirmTitle: {
+    fontSize: 16,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#1C1A14",
+    textAlign: "center" as const,
+    lineHeight: 22,
+  },
+  confirmItem: {
+    fontSize: 13,
+    fontFamily: "Inter_500Medium",
+    color: "#7A6E57",
+    textAlign: "center" as const,
+    lineHeight: 18,
+    paddingHorizontal: 8,
+  },
+  confirmBtns: {
+    width: "100%" as const,
+    gap: 10,
+    marginTop: 4,
+  },
+  confirmBtnPrimary: {
     flexDirection: "row" as const,
     alignItems: "center" as const,
+    justifyContent: "center" as const,
     gap: 8,
     backgroundColor: "#1C1A14",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: GOLD,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 8,
+    borderRadius: 14,
+    paddingVertical: 14,
   },
-  toastText: {
+  confirmBtnPrimaryText: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#F5D78E",
+  },
+  confirmBtnSecondary: {
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    borderRadius: 14,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    backgroundColor: "#FAF7F2",
+  },
+  confirmBtnSecondaryText: {
     fontSize: 14,
     fontWeight: "600" as const,
     fontFamily: "Inter_600SemiBold",
-    color: "#F5D78E",
+    color: "#7A5A00",
+  },
+
+  /* Scent picker */
+  scentPickerWrap: {
+    gap: 8,
+    marginBottom: 4,
+  },
+  scentPickerLabel: {
+    fontSize: 11,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+    color: "#7A6E57",
+    textTransform: "uppercase" as const,
+    letterSpacing: 0.5,
+  },
+  scentRow: {
+    flexDirection: "row" as const,
+    flexWrap: "wrap" as const,
+    gap: 6,
+  },
+  scentPill: {
+    borderWidth: 1,
+    borderColor: "#D1C9BE",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: "#FAF7F2",
+  },
+  scentPillActive: {
+    borderColor: GOLD,
+    backgroundColor: "#FDF6DC",
+  },
+  scentPillText: {
+    fontSize: 12,
+    fontFamily: "Inter_500Medium",
+    color: "#7A6E57",
+  },
+  scentPillTextActive: {
+    color: "#7A5A00",
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+  },
+
+  /* Car Keepsakes callout */
+  carCallout: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    marginHorizontal: 4,
+    marginBottom: 12,
+    overflow: "hidden" as const,
+    borderWidth: 1,
+    borderColor: "#C5CAE9",
+  },
+  carCalloutBar: { height: 4 },
+  carCalloutInner: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    padding: 14,
+    gap: 12,
+  },
+  carCalloutIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#E8EAF6",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    flexShrink: 0,
+  },
+  carCalloutText: { flex: 1, gap: 6 },
+  carCalloutTitle: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#1A237E",
+  },
+  carCalloutDesc: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#4A4A5A",
+    lineHeight: 17,
+  },
+  carSealRow: {
+    flexDirection: "row" as const,
+    flexWrap: "wrap" as const,
+    gap: 6,
+    marginTop: 2,
+  },
+  carSealBadge: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 4,
+    backgroundColor: "#FDF6DC",
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  carSealText: {
+    fontSize: 10,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+    color: "#7A5A00",
   },
   promoBody: {
     backgroundColor: "#FFFDF7",
