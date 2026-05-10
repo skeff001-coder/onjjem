@@ -26,6 +26,7 @@ import { ProPaywall } from "@/components/ProPaywall";
 import { ProductMockup } from "@/components/ProductMockup";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 import { ReferralModal } from "@/components/ReferralModal";
+import { LivingMemoriesModal } from "@/components/LivingMemoriesModal";
 
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
@@ -45,6 +46,7 @@ export default function HomeScreen() {
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
   const [referralVisible, setReferralVisible] = useState(false);
+  const [livingMemoriesVisible, setLivingMemoriesVisible] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
   const [originalUri, setOriginalUri] = useState<string | null>(null);
   const [resultBase64, setResultBase64] = useState<string | null>(null);
@@ -478,6 +480,51 @@ export default function HomeScreen() {
           </>
         )}
 
+        {/* Living Memories */}
+        <TouchableOpacity
+          style={s.livingMemoriesBtn}
+          onPress={() => setLivingMemoriesVisible(true)}
+          activeOpacity={0.87}
+        >
+          <LinearGradient
+            colors={["#0D1B2A", "#162236"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={s.livingMemoriesBtnGradient}
+          >
+            {/* Top gold shimmer bar */}
+            <LinearGradient
+              colors={[colors.primary, "#F5D78E", colors.primary]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={s.livingMemoriesGoldBar}
+            />
+            <View style={s.livingMemoriesRow}>
+              <View style={s.livingMemoriesIconWrap}>
+                <Text style={s.livingMemoriesIconEmoji}>🎬</Text>
+              </View>
+              <View style={s.livingMemoriesTextWrap}>
+                <View style={s.livingMemoriesTopRow}>
+                  <Text style={s.livingMemoriesTitle}>
+                    ✨ Bring This Photo to Life
+                  </Text>
+                  <View style={s.livingMemoriesAiBadge}>
+                    <Ionicons name="sparkles" size={9} color={colors.primary} />
+                    <Text style={s.livingMemoriesAiBadgeText}>AI</Text>
+                  </View>
+                </View>
+                <Text style={s.livingMemoriesSub}>
+                  AI Motion Video · Watch it move
+                </Text>
+              </View>
+              <View style={s.livingMemoriesPriceWrap}>
+                <Text style={s.livingMemoriesPrice}>£14.99</Text>
+                <Ionicons name="chevron-forward" size={14} color={colors.primary} />
+              </View>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+
         {/* Print Shop — always visible, upgrades to live mockups once a photo is loaded */}
         <View style={s.printShop}>
           <View style={s.printShopHeader}>
@@ -538,6 +585,7 @@ export default function HomeScreen() {
       <ProPaywall visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
       <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />
       <ReferralModal visible={referralVisible} onClose={() => setReferralVisible(false)} />
+      <LivingMemoriesModal visible={livingMemoriesVisible} onClose={() => setLivingMemoriesVisible(false)} />
     </View>
   );
 }
@@ -915,6 +963,90 @@ function makeStyles(
       fontWeight: "600" as const,
       color: colors.primary,
       fontFamily: "Inter_600SemiBold",
+    },
+    livingMemoriesBtn: {
+      marginHorizontal: 16,
+      marginBottom: 14,
+      borderRadius: 16,
+      overflow: "hidden" as const,
+      shadowColor: "#C9960C",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.25,
+      shadowRadius: 12,
+      elevation: 7,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.3)",
+    },
+    livingMemoriesBtnGradient: {
+      overflow: "hidden" as const,
+    },
+    livingMemoriesGoldBar: {
+      height: 3,
+      width: "100%" as const,
+    },
+    livingMemoriesRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      paddingVertical: 14,
+      paddingHorizontal: 14,
+      gap: 12,
+    },
+    livingMemoriesIconWrap: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: "rgba(201,150,12,0.15)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.35)",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    livingMemoriesIconEmoji: { fontSize: 22 },
+    livingMemoriesTextWrap: { flex: 1, gap: 3 },
+    livingMemoriesTopRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 7,
+      flexWrap: "wrap" as const,
+    },
+    livingMemoriesTitle: {
+      fontSize: 14,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#F5EDD8",
+    },
+    livingMemoriesAiBadge: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 3,
+      backgroundColor: "rgba(201,150,12,0.2)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.4)",
+      paddingHorizontal: 7,
+      paddingVertical: 2,
+      borderRadius: 8,
+    },
+    livingMemoriesAiBadgeText: {
+      fontSize: 9,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
+      letterSpacing: 1,
+    },
+    livingMemoriesSub: {
+      fontSize: 11,
+      color: "#8BA4BA",
+      fontFamily: "Inter_400Regular",
+    },
+    livingMemoriesPriceWrap: {
+      alignItems: "flex-end" as const,
+      gap: 2,
+    },
+    livingMemoriesPrice: {
+      fontSize: 16,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
     },
     referralBtn: {
       borderRadius: 14,
