@@ -540,6 +540,40 @@ export default function HomeScreen() {
           </LinearGradient>
         </TouchableOpacity>
 
+        {/* Feature Walls */}
+        <TouchableOpacity
+          style={s.featureWallsBtn}
+          onPress={() => router.push("/feature-walls")}
+          activeOpacity={0.87}
+        >
+          <LinearGradient
+            colors={["#1C1A14", "#2E2A1E"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={s.featureWallsGradient}
+          >
+            <LinearGradient
+              colors={[colors.primary, "#F5D78E", colors.primary]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={s.featureWallsGoldBar}
+            />
+            <View style={s.featureWallsRow}>
+              <View style={s.featureWallsIconWrap}>
+                <Text style={s.featureWallsEmoji}>🖼️</Text>
+              </View>
+              <View style={s.featureWallsTextWrap}>
+                <Text style={s.featureWallsTitle}>Life-Sized Feature Walls</Text>
+                <Text style={s.featureWallsSub}>Custom murals up to 4m × 3m · Heritage &amp; Wedding</Text>
+              </View>
+              <View style={s.featureWallsPriceWrap}>
+                <Text style={s.featureWallsPrice}>£409.99</Text>
+                <Ionicons name="chevron-forward" size={14} color={colors.primary} />
+              </View>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+
         {/* Print Shop — always visible, upgrades to live mockups once a photo is loaded */}
         <View style={s.printShop}>
           <View style={s.printShopHeader}>
@@ -1155,6 +1189,66 @@ function makeStyles(
       fontFamily: "Inter_600SemiBold",
       color: "#A67C00",
       textAlign: "center" as const,
+    },
+    featureWallsBtn: {
+      marginHorizontal: 16,
+      marginTop: 14,
+      borderRadius: 14,
+      overflow: "hidden" as const,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.3)",
+    },
+    featureWallsGradient: {
+      borderRadius: 14,
+      overflow: "hidden" as const,
+    },
+    featureWallsGoldBar: {
+      height: 2,
+    },
+    featureWallsRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      paddingHorizontal: 14,
+      paddingVertical: 14,
+      gap: 12,
+    },
+    featureWallsIconWrap: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: "rgba(201,150,12,0.15)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.3)",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    featureWallsEmoji: {
+      fontSize: 20,
+    },
+    featureWallsTextWrap: {
+      flex: 1,
+      gap: 3,
+    },
+    featureWallsTitle: {
+      fontSize: 15,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#F5EDD8",
+    },
+    featureWallsSub: {
+      fontSize: 11,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(245,237,216,0.6)",
+    },
+    featureWallsPriceWrap: {
+      alignItems: "flex-end" as const,
+      gap: 2,
+    },
+    featureWallsPrice: {
+      fontSize: 14,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: colors.primary,
     },
     contactBtnWrapper: {
       paddingHorizontal: 20,
