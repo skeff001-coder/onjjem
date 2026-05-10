@@ -680,7 +680,6 @@ function makeStyles(
     root: {
       flex: 1,
       backgroundColor: colors.background,
-      overflow: "hidden",
     },
     bgMosaic: {
       position: "absolute",
