@@ -33,6 +33,7 @@ type Product = {
   wide?: boolean;
   bestSeller?: boolean;
   photo?: ReturnType<typeof require>;
+  premiumBadge?: boolean;
 };
 
 type Category = {
@@ -263,32 +264,34 @@ const CATEGORIES: Category[] = [
       {
         id: "leather_purse",
         title: "Nappa Leather Purse",
-        desc: "100% real leather · your restored photo printed on both sides",
+        desc: "Expertly handmade in London using buttery soft nappa leather. Features a smooth or textured finish with your memories printed in high definition.",
         price: "£109",
         emoji: "👛",
         iconBg: "#EFEBE9",
         wide: true,
-        bestSeller: true,
+        premiumBadge: true,
         photo: require("@/assets/leather/purse.jpg"),
       },
       {
         id: "leather_wallet",
-        title: "Men's Leather Wallet",
-        desc: "Handmade · multiple card slots · slim profile",
+        title: "Groom's Leather Wallet",
+        desc: "A timeless gift. Hand stitched genuine leather with a hidden photo compartment for a truly personal touch.",
         price: "£45",
         emoji: "💳",
         iconBg: "#F5F0EB",
         wide: true,
+        premiumBadge: true,
         photo: require("@/assets/leather/wallet.jpg"),
       },
       {
         id: "leather_handbag",
-        title: "Leather Handbag",
-        desc: "Premium Italian leather · adjustable straps",
-        price: "£89",
+        title: "Designer Leather Tote",
+        desc: "Make a statement with a 100% real leather handbag — durable, stylish, and completely unique to you.",
+        price: "£139",
         emoji: "👜",
         iconBg: "#EDE0D4",
         wide: true,
+        premiumBadge: true,
         photo: require("@/assets/leather/tote.jpg"),
       },
     ],
@@ -493,6 +496,12 @@ function ProductCard({ product, onPress }: { product: Product; onPress: () => vo
           <Text style={s.bestSellerText}>Best Seller</Text>
         </View>
       )}
+      {product.premiumBadge && (
+        <View style={s.premiumBadge}>
+          <Text style={s.premiumBadgeStar}>♦</Text>
+          <Text style={s.premiumBadgeText}>Premium Quality</Text>
+        </View>
+      )}
 
       {product.photo ? (
         <Image
@@ -646,6 +655,16 @@ const s = StyleSheet.create({
   },
   bestSellerStar: { fontSize: 10, color: GOLD },
   bestSellerText: { fontSize: 10, fontWeight: "700" as const, color: GOLD, fontFamily: "Inter_700Bold" },
+
+  premiumBadge: {
+    position: "absolute", top: 8, right: 8, zIndex: 10,
+    flexDirection: "row", alignItems: "center", gap: 3,
+    backgroundColor: "#FBF5E0",
+    borderWidth: 1, borderColor: "#C9960C",
+    borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3,
+  },
+  premiumBadgeStar: { fontSize: 9, color: "#9A6F00" },
+  premiumBadgeText: { fontSize: 10, fontWeight: "700" as const, color: "#9A6F00", fontFamily: "Inter_700Bold", letterSpacing: 0.2 },
 
   productPhoto: { backgroundColor: "#F0EBE5" },
   productPhotoSquare: { width: "100%", height: 110 },
