@@ -441,6 +441,54 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  {
+    id: "living_comforts",
+    label: "Living Room Comforts",
+    emoji: "🛋️",
+    subtitle: "Ultra-soft fleece throws · Hand-finished in London",
+    fulfillment: "ONJJEM Master Artisans · London Studio",
+    headerGradient: ["#2D4A2D", "#1B3020"] as const,
+    products: [
+      {
+        id: "throw_small",
+        title: "Luxury Photo Throw Blanket",
+        size: "Small",
+        desc: "Ultra-soft fleece, hand-finished in London. Vibrant, permanent print of your restored memory — perfect for the back of your sofa.",
+        price: "£54.99",
+        emoji: "🛋️",
+        iconBg: "#F0F7F0",
+        wide: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "throw_medium",
+        title: "Luxury Photo Throw Blanket",
+        size: "Medium",
+        desc: "Our most popular size — drapes beautifully over sofas and armchairs. Ultra-soft fleece with a permanent photographic print.",
+        price: "£74.99",
+        emoji: "🛋️",
+        iconBg: "#EBF5EB",
+        wide: true,
+        bestSeller: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "throw_large",
+        title: "Luxury Photo Throw Blanket",
+        size: "Large",
+        desc: "The ultimate statement piece. Generous dimensions for wrapping in warmth — and in memories. Hand-finished by our London artisans.",
+        price: "£94.99",
+        emoji: "🛋️",
+        iconBg: "#E6F0E6",
+        wide: true,
+        premiumBadge: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+    ],
+  },
 ];
 
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
@@ -461,13 +509,15 @@ export default function GiftShopScreen() {
   const [basketItems, setBasketItems] = useState<{ title: string; price: number }[]>([]);
   const [promoCode, setPromoCode] = useState("");
   const [promoStatus, setPromoStatus] = useState<"idle" | "valid" | "min_spend" | "invalid">("idle");
+  const [shipping, setShipping] = useState<"uk" | "worldwide">("uk");
 
   const activeCategory = CATEGORIES.find((c) => c.id === activeTab)!;
 
   const basketSubtotal = basketItems.reduce((sum, i) => sum + i.price, 0);
   const giftWrapCost = giftWrap && basketItems.length > 0 ? 4.99 : 0;
   const promoDiscount = promoStatus === "valid" ? 10 : 0;
-  const basketTotal = basketSubtotal + giftWrapCost - promoDiscount;
+  const shippingCost = basketItems.length > 0 ? (shipping === "uk" ? 9.50 : 24.99) : 0;
+  const basketTotal = basketSubtotal + giftWrapCost + shippingCost - promoDiscount;
 
   const handleDesign = (title: string, price: string) => {
     const numPrice = parsePrice(price);
@@ -609,6 +659,39 @@ export default function GiftShopScreen() {
                 <Text style={s.tinSub}>
                   Every jigsaw ships in a professional metal tin with your photo printed on the lid — ready to gift, no wrapping needed.
                 </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Living Room Comforts callout */}
+          {activeTab === "living_comforts" && (
+            <View style={s.livingComfortsCallout}>
+              <LinearGradient
+                colors={["#2D4A2D", "#3A5C3A", "#2D4A2D"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.livingComfortsBar}
+              />
+              <View style={s.livingComfortsInner}>
+                <View style={s.livingComfortsIconWrap}>
+                  <Text style={{ fontSize: 24 }}>🛋️</Text>
+                </View>
+                <View style={s.livingComfortsText}>
+                  <Text style={s.livingComfortsTitle}>Ultra-Soft Fleece Throws</Text>
+                  <Text style={s.livingComfortsSub}>
+                    Hand-finished by our London artisans using vibrant, permanent dye-sublimation printing. Your restored memory stays vivid wash after wash — and looks stunning on any sofa.
+                  </Text>
+                  <View style={s.livingComfortsBadgeRow}>
+                    <View style={s.livingComfortsBadge}>
+                      <Text style={s.livingComfortsBadgeFlag}>🇬🇧</Text>
+                      <Text style={s.livingComfortsBadgeText}>Hand-finished in London</Text>
+                    </View>
+                    <View style={[s.livingComfortsBadge, s.livingComfortsBadgeGold]}>
+                      <Ionicons name="water-outline" size={10} color="#15803D" />
+                      <Text style={[s.livingComfortsBadgeText, { color: "#15803D" }]}>Machine Washable</Text>
+                    </View>
+                  </View>
+                </View>
               </View>
             </View>
           )}
@@ -826,16 +909,95 @@ export default function GiftShopScreen() {
           </View>
         </View>
 
-        {/* Shipping callout */}
-        <View style={s.shippingCallout}>
-          <View style={s.shippingIconWrap}>
-            <Ionicons name="airplane" size={22} color={BLUE} />
+        {/* Shipping selector */}
+        <View style={s.shippingCard}>
+          <LinearGradient
+            colors={["#0A2040", "#1A3A6B"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={s.shippingCardHeader}
+          >
+            <Ionicons name="airplane" size={15} color="#93C5FD" />
+            <Text style={s.shippingCardHeaderText}>Delivery &amp; Shipping</Text>
+          </LinearGradient>
+
+          <View style={s.shippingCardBody}>
+            {/* UK option */}
+            <TouchableOpacity
+              style={[s.shippingOption, shipping === "uk" && s.shippingOptionActive]}
+              onPress={() => setShipping("uk")}
+              activeOpacity={0.8}
+            >
+              <View style={[s.shippingRadio, shipping === "uk" && s.shippingRadioActive]}>
+                {shipping === "uk" && <View style={s.shippingRadioDot} />}
+              </View>
+              <View style={s.shippingOptionBody}>
+                <View style={s.shippingOptionRow}>
+                  <Text style={s.shippingOptionFlag}>🇬🇧</Text>
+                  <Text style={[s.shippingOptionLabel, shipping === "uk" && s.shippingOptionLabelActive]}>
+                    UK Tracked
+                  </Text>
+                  <Text style={[s.shippingOptionPrice, shipping === "uk" && s.shippingOptionPriceActive]}>
+                    £9.50
+                  </Text>
+                </View>
+                <Text style={s.shippingOptionMeta}>5–7 working days · Tracked &amp; fully insured</Text>
+              </View>
+            </TouchableOpacity>
+
+            <View style={s.shippingDivider} />
+
+            {/* Worldwide option */}
+            <TouchableOpacity
+              style={[s.shippingOption, shipping === "worldwide" && s.shippingOptionActive]}
+              onPress={() => setShipping("worldwide")}
+              activeOpacity={0.8}
+            >
+              <View style={[s.shippingRadio, shipping === "worldwide" && s.shippingRadioActive]}>
+                {shipping === "worldwide" && <View style={s.shippingRadioDot} />}
+              </View>
+              <View style={s.shippingOptionBody}>
+                <View style={s.shippingOptionRow}>
+                  <Text style={s.shippingOptionFlag}>🌍</Text>
+                  <Text style={[s.shippingOptionLabel, shipping === "worldwide" && s.shippingOptionLabelActive]}>
+                    Worldwide Tracked
+                  </Text>
+                  <Text style={[s.shippingOptionPrice, shipping === "worldwide" && s.shippingOptionPriceActive]}>
+                    £24.99
+                  </Text>
+                </View>
+                <Text style={s.shippingOptionMeta}>7–10 working days · Tracked &amp; fully insured</Text>
+              </View>
+            </TouchableOpacity>
+
+            {/* Packaging note */}
+            <View style={s.shippingNote}>
+              <Ionicons name="cube-outline" size={13} color="#3B82F6" />
+              <Text style={s.shippingNoteText}>
+                Every order is dispatched in premium protective packaging — safe, secure and beautifully presented.
+              </Text>
+            </View>
           </View>
-          <View style={s.shippingTextWrap}>
-            <Text style={s.shippingTitle}>£9.50 Professional UK Delivery</Text>
-            <Text style={s.shippingDesc}>
-              Every order is tracked, fully insured and dispatched in premium protective packaging. Delivered straight to your door.
-            </Text>
+        </View>
+
+        {/* Restoration buffer note */}
+        <View style={s.bufferNote}>
+          <LinearGradient
+            colors={[GOLD, "#A67C00"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={s.bufferNoteBar}
+          />
+          <View style={s.bufferNoteInner}>
+            <View style={s.bufferNoteIconWrap}>
+              <Ionicons name="color-wand" size={18} color={GOLD} />
+            </View>
+            <View style={s.bufferNoteText}>
+              <Text style={s.bufferNoteTitle}>2-Day Master Restoration Period</Text>
+              <Text style={s.bufferNoteDesc}>
+                All orders include a complimentary 2-day restoration period where our expert artisans personally enhance your photo before it is sent to our London printers — ensuring a truly museum-quality result.
+              </Text>
+            </View>
           </View>
         </View>
 
@@ -880,8 +1042,8 @@ export default function GiftShopScreen() {
             <View style={s.promiseGuaranteeItem}>
               <Ionicons name="airplane" size={22} color={BLUE} />
               <View>
-                <Text style={s.promiseGuaranteeTitle}>£9.50 Professional UK Delivery</Text>
-                <Text style={s.promiseGuaranteeSub}>Tracked, insured &amp; safely packaged</Text>
+                <Text style={s.promiseGuaranteeTitle}>UK &amp; Worldwide Delivery</Text>
+                <Text style={s.promiseGuaranteeSub}>UK £9.50 · Worldwide £24.99 · All tracked</Text>
               </View>
             </View>
           </View>
@@ -1609,6 +1771,233 @@ const s = StyleSheet.create({
   },
 
   /* Shipping callout */
+  /* Shipping selector card */
+  shippingCard: {
+    borderRadius: 16,
+    overflow: "hidden" as const,
+    borderWidth: 1,
+    borderColor: "#BFDBFE",
+    shadowColor: "#1D4ED8",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  shippingCardHeader: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 11,
+  },
+  shippingCardHeaderText: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#93C5FD",
+    letterSpacing: 0.5,
+  },
+  shippingCardBody: {
+    backgroundColor: "#FFFFFF",
+    padding: 14,
+    gap: 4,
+  },
+  shippingOption: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: 12,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: "#E2D9CF",
+    padding: 12,
+    backgroundColor: "#FAFAF9",
+  },
+  shippingOptionActive: {
+    borderColor: BLUE,
+    backgroundColor: "#EFF6FF",
+  },
+  shippingRadio: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#C4BAB0",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    flexShrink: 0,
+    marginTop: 1,
+  },
+  shippingRadioActive: { borderColor: BLUE },
+  shippingRadioDot: {
+    width: 9,
+    height: 9,
+    borderRadius: 4.5,
+    backgroundColor: BLUE,
+  },
+  shippingOptionBody: { flex: 1, gap: 3 },
+  shippingOptionRow: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 6,
+  },
+  shippingOptionFlag: { fontSize: 15 },
+  shippingOptionLabel: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+    color: "#1C1A14",
+  },
+  shippingOptionLabelActive: { color: "#1D4ED8" },
+  shippingOptionPrice: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#7A6E57",
+  },
+  shippingOptionPriceActive: { color: "#1D4ED8" },
+  shippingOptionMeta: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "#7A6E57",
+  },
+  shippingDivider: {
+    height: 1,
+    backgroundColor: "#F0EBE5",
+    marginVertical: 4,
+  },
+  shippingNote: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: 7,
+    backgroundColor: "#EFF6FF",
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 6,
+  },
+  shippingNoteText: {
+    flex: 1,
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "#3B82F6",
+    lineHeight: 16,
+  },
+
+  /* Restoration buffer note */
+  bufferNote: {
+    borderRadius: 14,
+    overflow: "hidden" as const,
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    backgroundColor: GOLD_BG,
+  },
+  bufferNoteBar: { height: 3 },
+  bufferNoteInner: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: 12,
+    padding: 14,
+  },
+  bufferNoteIconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "#FDF6DC",
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    flexShrink: 0,
+  },
+  bufferNoteText: { flex: 1, gap: 4 },
+  bufferNoteTitle: {
+    fontSize: 14,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#7A5C00",
+  },
+  bufferNoteDesc: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#8B6200",
+    lineHeight: 18,
+  },
+
+  /* Living Room Comforts callout */
+  livingComfortsCallout: {
+    backgroundColor: "#F4FAF4",
+    borderRadius: 14,
+    overflow: "hidden" as const,
+    borderWidth: 1,
+    borderColor: "#B6D9B6",
+    shadowColor: "#2D4A2D",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    marginBottom: 4,
+  },
+  livingComfortsBar: { height: 3 },
+  livingComfortsInner: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: 14,
+    padding: 14,
+  },
+  livingComfortsIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#DCF0DC",
+    borderWidth: 1,
+    borderColor: "#B6D9B6",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    flexShrink: 0,
+  },
+  livingComfortsText: { flex: 1, gap: 6 },
+  livingComfortsTitle: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#1B3020",
+  },
+  livingComfortsSub: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#2D4A2D",
+    lineHeight: 18,
+  },
+  livingComfortsBadgeRow: {
+    flexDirection: "row" as const,
+    flexWrap: "wrap" as const,
+    gap: 6,
+  },
+  livingComfortsBadge: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 5,
+    backgroundColor: GOLD_BG,
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    borderRadius: 20,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  livingComfortsBadgeGold: {
+    backgroundColor: "#F0FDF4",
+    borderColor: "#86EFAC",
+  },
+  livingComfortsBadgeFlag: { fontSize: 11 },
+  livingComfortsBadgeText: {
+    fontSize: 10,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#8B6200",
+    letterSpacing: 0.3,
+  },
+
+  /* Legacy alias kept so nothing breaks during transition */
   shippingCallout: {
     flexDirection: "row" as const,
     alignItems: "flex-start" as const,
