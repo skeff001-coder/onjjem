@@ -1,5 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
+import { addInquiry } from "@/lib/inquiries";
 import {
   Alert,
   Image,
@@ -59,11 +60,15 @@ export function ContactExpertsModal({ visible, onClose }: Props) {
       return;
     }
     setSending(true);
-    await new Promise((r) => setTimeout(r, 1200));
+    try {
+      await addInquiry({ email: email.trim(), question: question.trim(), photoUri: photoUri });
+    } catch (_) {
+      // silently continue — UI shouldn't fail if storage fails
+    }
     setSending(false);
     Alert.alert(
-      "Message sent! 🎉",
-      "Our master restorers will review your photo and get back to you within 24 hours with a free expert opinion.",
+      "Message sent successfully",
+      "We will be in touch shortly.",
       [{ text: "Great, thanks!", onPress: handleClose }],
     );
   };

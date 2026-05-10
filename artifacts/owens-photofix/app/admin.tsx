@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   ScrollView,
+  SectionList,
   StyleSheet,
   Text,
   TextInput,
@@ -22,6 +23,11 @@ import {
   markOrderAsOrdered,
   timeAgo,
 } from "@/lib/orders";
+import {
+  type Inquiry,
+  loadInquiries,
+  markInquiryRead,
+} from "@/lib/inquiries";
 
 const ADMIN_PIN = "1234";
 
@@ -34,35 +40,42 @@ export default function AdminScreen() {
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(false);
 
   const tryUnlock = () => {
     if (pin === ADMIN_PIN) {
       setUnlocked(true);
       setPinError(false);
-      fetchOrders();
+      fetchAll();
     } else {
       setPinError(true);
       setPin("");
     }
   };
 
-  const fetchOrders = useCallback(async () => {
+  const fetchAll = useCallback(async () => {
     setLoading(true);
-    const data = await loadOrders();
-    setOrders(data);
+    const [ordersData, inquiriesData] = await Promise.all([loadOrders(), loadInquiries()]);
+    setOrders(ordersData);
+    setInquiries(inquiriesData);
     setLoading(false);
   }, []);
 
   const handleMarkOrdered = async (id: string) => {
     await markOrderAsOrdered(id);
-    setOrders((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, markedAsOrdered: true } : o))
-    );
+    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, markedAsOrdered: true } : o)));
+  };
+
+  const handleMarkRead = async (id: string) => {
+    await markInquiryRead(id);
+    setInquiries((prev) => prev.map((i) => (i.id === id ? { ...i, read: true } : i)));
   };
 
   const pending = orders.filter((o) => !o.markedAsOrdered);
   const done = orders.filter((o) => o.markedAsOrdered);
+  const unreadInquiries = inquiries.filter((i) => !i.read);
+  const readInquiries = inquiries.filter((i) => i.read);
 
   if (!unlocked) {
     return (
@@ -92,9 +105,7 @@ export default function AdminScreen() {
               autoFocus
             />
           </View>
-          {pinError && (
-            <Text style={styles.pinError}>Incorrect PIN. Please try again.</Text>
-          )}
+          {pinError && <Text style={styles.pinError}>Incorrect PIN. Please try again.</Text>}
 
           <TouchableOpacity
             style={[styles.unlockBtn, { backgroundColor: "#0055FF", opacity: pin.length === 4 ? 1 : 0.5 }]}
@@ -122,10 +133,10 @@ export default function AdminScreen() {
         <View style={styles.headerCenter}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Admin Dashboard</Text>
           <Text style={[styles.headerSub, { color: colors.mutedForeground }]}>
-            {pending.length} pending · {done.length} fulfilled
+            {pending.length} pending · {done.length} fulfilled · {unreadInquiries.length} new enquir{unreadInquiries.length !== 1 ? "ies" : "y"}
           </Text>
         </View>
-        <TouchableOpacity onPress={fetchOrders} style={styles.refreshBtn}>
+        <TouchableOpacity onPress={fetchAll} style={styles.refreshBtn}>
           <Ionicons name="refresh" size={20} color={colors.primary} />
         </TouchableOpacity>
       </View>
@@ -135,13 +146,62 @@ export default function AdminScreen() {
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
       ) : (
-        <FlatList
-          data={orders}
-          keyExtractor={(o) => o.id}
-          contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 24 }]}
+        <ScrollView
+          contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 32 }]}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            pending.length > 0 ? (
+        >
+          {/* ── EXPERT INQUIRIES SECTION ── */}
+          {inquiries.length > 0 && (
+            <View style={styles.section}>
+              {/* Section header with notification badge */}
+              <View style={styles.sectionHeaderRow}>
+                <View style={styles.sectionHeaderLeft}>
+                  <Ionicons name="chatbubble-ellipses" size={16} color="#0D9488" />
+                  <Text style={[styles.sectionTitle, { color: "#0D9488" }]}>Expert Inquiries</Text>
+                </View>
+                {unreadInquiries.length > 0 && (
+                  <View style={styles.newBadge}>
+                    <View style={styles.newBadgeDot} />
+                    <Text style={styles.newBadgeText}>
+                      {unreadInquiries.length} New Expert {unreadInquiries.length === 1 ? "Inquiry" : "Inquiries"}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* Unread inquiries first */}
+              {unreadInquiries.map((inq) => (
+                <InquiryCard
+                  key={inq.id}
+                  inquiry={inq}
+                  colors={colors}
+                  onMarkRead={() => handleMarkRead(inq.id)}
+                />
+              ))}
+
+              {/* Read inquiries */}
+              {readInquiries.map((inq) => (
+                <InquiryCard
+                  key={inq.id}
+                  inquiry={inq}
+                  colors={colors}
+                  onMarkRead={() => handleMarkRead(inq.id)}
+                />
+              ))}
+            </View>
+          )}
+
+          {/* ── ORDERS SECTION ── */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeaderRow}>
+              <View style={styles.sectionHeaderLeft}>
+                <Ionicons name="cube-outline" size={16} color={colors.primary} />
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Print Orders</Text>
+              </View>
+            </View>
+
+            {/* Pending / fulfilled label */}
+            {pending.length > 0 ? (
               <View style={[styles.sectionLabel, { backgroundColor: "#FFF3E0" }]}>
                 <Ionicons name="time-outline" size={14} color="#FF6B00" />
                 <Text style={[styles.sectionLabelText, { color: "#FF6B00" }]}>
@@ -153,22 +213,110 @@ export default function AdminScreen() {
                 <Ionicons name="checkmark-circle" size={14} color="#34C759" />
                 <Text style={[styles.sectionLabelText, { color: "#34C759" }]}>All orders fulfilled!</Text>
               </View>
-            )
-          }
-          renderItem={({ item }) => (
-            <OrderCard
-              order={item}
-              colors={colors}
-              onMarkOrdered={() => handleMarkOrdered(item.id)}
-            />
-          )}
-          ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-        />
+            )}
+
+            {orders.map((order, i) => (
+              <View key={order.id}>
+                <OrderCard
+                  order={order}
+                  colors={colors}
+                  onMarkOrdered={() => handleMarkOrdered(order.id)}
+                />
+                {i < orders.length - 1 && <View style={{ height: 12 }} />}
+              </View>
+            ))}
+          </View>
+        </ScrollView>
       )}
     </View>
   );
 }
 
+// ─────────────────────────────────────────────
+// Inquiry card
+// ─────────────────────────────────────────────
+function InquiryCard({
+  inquiry,
+  colors,
+  onMarkRead,
+}: {
+  inquiry: Inquiry;
+  colors: ReturnType<typeof useColors>;
+  onMarkRead: () => void;
+}) {
+  const isUnread = !inquiry.read;
+
+  return (
+    <View style={[
+      styles.inquiryCard,
+      {
+        backgroundColor: isUnread ? "#F0FDFA" : colors.card,
+        borderColor: isUnread ? "#99F6E4" : colors.border,
+        borderLeftColor: isUnread ? "#0D9488" : "#9CA3AF",
+      },
+    ]}>
+      {/* Teal left strip */}
+      <View style={[styles.cardStrip, { backgroundColor: isUnread ? "#0D9488" : "#D1D5DB" }]} />
+
+      <View style={styles.cardBody}>
+        {/* Top row */}
+        <View style={styles.inquiryTopRow}>
+          <View style={styles.inquiryIconWrap}>
+            <Ionicons name="chatbubble-ellipses-outline" size={22} color="#0D9488" />
+          </View>
+          <View style={styles.inquiryMeta}>
+            <View style={styles.orderIdRow}>
+              <Text style={[styles.orderId, { color: colors.mutedForeground }]}>
+                #{inquiry.id.replace("inq_", "")}
+              </Text>
+              <View style={styles.inquiryTimeRow}>
+                {isUnread && <View style={styles.unreadDot} />}
+                <Text style={[styles.orderTime, { color: colors.mutedForeground }]}>
+                  {timeAgo(inquiry.submittedAt)}
+                </Text>
+              </View>
+            </View>
+            <Text style={[styles.customerName, { color: colors.foreground }]}>{inquiry.email}</Text>
+          </View>
+        </View>
+
+        {/* Question */}
+        <View style={[styles.questionBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
+          <Text style={[styles.questionLabel, { color: colors.mutedForeground }]}>Question</Text>
+          <Text style={[styles.questionText, { color: colors.foreground }]}>{inquiry.question}</Text>
+        </View>
+
+        {/* Photo thumbnail if present */}
+        {inquiry.photoUri && (
+          <View style={styles.inquiryPhotoWrap}>
+            <Image source={{ uri: inquiry.photoUri }} style={styles.inquiryPhoto} resizeMode="cover" />
+            <View style={styles.inquiryPhotoLabel}>
+              <Ionicons name="image-outline" size={11} color="#fff" />
+              <Text style={styles.inquiryPhotoLabelText}>Photo attached</Text>
+            </View>
+          </View>
+        )}
+
+        {/* Action */}
+        {isUnread ? (
+          <TouchableOpacity style={styles.markReadBtn} onPress={onMarkRead} activeOpacity={0.82}>
+            <Ionicons name="checkmark-done-outline" size={16} color="#fff" />
+            <Text style={styles.markReadBtnText}>Mark as Read</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.readBadge}>
+            <Ionicons name="checkmark-circle" size={15} color="#9CA3AF" />
+            <Text style={styles.readBadgeText}>Read</Text>
+          </View>
+        )}
+      </View>
+    </View>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Order card (unchanged)
+// ─────────────────────────────────────────────
 function OrderCard({
   order,
   colors,
@@ -179,23 +327,17 @@ function OrderCard({
   onMarkOrdered: () => void;
 }) {
   const isOrdered = order.markedAsOrdered;
-
   return (
-    <View
-      style={[
-        styles.card,
-        {
-          backgroundColor: colors.card,
-          borderColor: isOrdered ? "#D1FAE5" : colors.border,
-          borderLeftColor: isOrdered ? "#34C759" : "#FF9F0A",
-        },
-      ]}
-    >
-      {/* Status strip */}
+    <View style={[
+      styles.card,
+      {
+        backgroundColor: colors.card,
+        borderColor: isOrdered ? "#D1FAE5" : colors.border,
+        borderLeftColor: isOrdered ? "#34C759" : "#FF9F0A",
+      },
+    ]}>
       <View style={[styles.cardStrip, { backgroundColor: isOrdered ? "#34C759" : "#FF9F0A" }]} />
-
       <View style={styles.cardBody}>
-        {/* Top row: photo + customer info */}
         <View style={styles.cardTopRow}>
           {order.photoUri ? (
             <Image source={{ uri: order.photoUri }} style={styles.photoThumb} resizeMode="cover" />
@@ -204,19 +346,12 @@ function OrderCard({
               <Ionicons name="image-outline" size={24} color={colors.mutedForeground} />
             </View>
           )}
-
           <View style={styles.customerInfo}>
             <View style={styles.orderIdRow}>
-              <Text style={[styles.orderId, { color: colors.mutedForeground }]}>
-                #{order.id.replace("ord_", "")}
-              </Text>
-              <Text style={[styles.orderTime, { color: colors.mutedForeground }]}>
-                {timeAgo(order.orderedAt)}
-              </Text>
+              <Text style={[styles.orderId, { color: colors.mutedForeground }]}>#{order.id.replace("ord_", "")}</Text>
+              <Text style={[styles.orderTime, { color: colors.mutedForeground }]}>{timeAgo(order.orderedAt)}</Text>
             </View>
-            <Text style={[styles.customerName, { color: colors.foreground }]}>
-              {order.customerName}
-            </Text>
+            <Text style={[styles.customerName, { color: colors.foreground }]}>{order.customerName}</Text>
             <View style={styles.addressRow}>
               <Ionicons name="location-outline" size={12} color={colors.mutedForeground} />
               <Text style={[styles.customerAddress, { color: colors.mutedForeground }]} numberOfLines={2}>
@@ -225,25 +360,17 @@ function OrderCard({
             </View>
           </View>
         </View>
-
-        {/* Product row */}
         <View style={[styles.productRow, { backgroundColor: colors.background, borderColor: colors.border }]}>
           <Ionicons name="cube-outline" size={14} color={colors.primary} />
           <Text style={[styles.productName, { color: colors.foreground }]}>{order.product}</Text>
         </View>
-
-        {/* Action */}
         {isOrdered ? (
           <View style={styles.fulfilledBadge}>
             <Ionicons name="checkmark-circle" size={16} color="#34C759" />
             <Text style={styles.fulfilledText}>Sent to printer</Text>
           </View>
         ) : (
-          <TouchableOpacity
-            style={styles.markBtn}
-            onPress={onMarkOrdered}
-            activeOpacity={0.82}
-          >
+          <TouchableOpacity style={styles.markBtn} onPress={onMarkOrdered} activeOpacity={0.82}>
             <Ionicons name="print-outline" size={16} color="#fff" />
             <Text style={styles.markBtnText}>Mark as Ordered</Text>
           </TouchableOpacity>
@@ -255,249 +382,87 @@ function OrderCard({
 
 const styles = StyleSheet.create({
   /* Lock screen */
-  lockRoot: {
-    flex: 1,
-    paddingHorizontal: 24,
-  },
-  lockCenter: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
-    marginTop: -60,
-  },
-  lockIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 4,
-  },
-  lockTitle: {
-    fontSize: 26,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-  },
-  lockSub: {
-    fontSize: 14,
-    fontFamily: "Inter_400Regular",
-    textAlign: "center",
-  },
-  pinBox: {
-    width: "100%",
-    borderWidth: 1.5,
-    borderRadius: 14,
-    marginTop: 8,
-  },
-  pinInput: {
-    fontSize: 28,
-    fontFamily: "Inter_700Bold",
-    textAlign: "center",
-    paddingVertical: 16,
-    letterSpacing: 12,
-  },
-  pinError: {
-    fontSize: 13,
-    color: "#FF3B30",
-    fontFamily: "Inter_400Regular",
-    marginTop: -4,
-  },
-  unlockBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingVertical: 16,
-    paddingHorizontal: 40,
-    borderRadius: 50,
-    marginTop: 4,
-  },
-  unlockBtnText: {
-    fontSize: 17,
-    fontWeight: "700" as const,
-    color: "#fff",
-    fontFamily: "Inter_700Bold",
-  },
-  pinHint: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    marginTop: 8,
-  },
+  lockRoot: { flex: 1, paddingHorizontal: 24 },
+  lockCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 16, marginTop: -60 },
+  lockIcon: { width: 80, height: 80, borderRadius: 40, alignItems: "center", justifyContent: "center", marginBottom: 4 },
+  lockTitle: { fontSize: 26, fontWeight: "700" as const, fontFamily: "Inter_700Bold" },
+  lockSub: { fontSize: 14, fontFamily: "Inter_400Regular", textAlign: "center" },
+  pinBox: { width: "100%", borderWidth: 1.5, borderRadius: 14, marginTop: 8 },
+  pinInput: { fontSize: 28, fontFamily: "Inter_700Bold", textAlign: "center", paddingVertical: 16, letterSpacing: 12 },
+  pinError: { fontSize: 13, color: "#FF3B30", fontFamily: "Inter_400Regular", marginTop: -4 },
+  unlockBtn: { flexDirection: "row" as const, alignItems: "center" as const, gap: 8, paddingVertical: 16, paddingHorizontal: 40, borderRadius: 50, marginTop: 4 },
+  unlockBtnText: { fontSize: 17, fontWeight: "700" as const, color: "#fff", fontFamily: "Inter_700Bold" },
+  pinHint: { fontSize: 12, fontFamily: "Inter_400Regular", marginTop: 8 },
 
-  /* Dashboard */
-  root: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  backBtn: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerCenter: {
-    flex: 1,
-    alignItems: "center",
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-  },
-  headerSub: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    marginTop: 1,
-  },
-  refreshBtn: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  loader: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  list: {
-    padding: 16,
-    gap: 0,
-  },
-  sectionLabel: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 10,
-    marginBottom: 14,
-  },
-  sectionLabelText: {
-    fontSize: 13,
-    fontWeight: "600" as const,
-    fontFamily: "Inter_600SemiBold",
-  },
+  /* Dashboard layout */
+  root: { flex: 1 },
+  header: { flexDirection: "row" as const, alignItems: "center" as const, paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth },
+  backBtn: { width: 36, height: 36, alignItems: "center" as const, justifyContent: "center" as const },
+  headerCenter: { flex: 1, alignItems: "center" as const },
+  headerTitle: { fontSize: 18, fontWeight: "700" as const, fontFamily: "Inter_700Bold" },
+  headerSub: { fontSize: 12, fontFamily: "Inter_400Regular", marginTop: 1 },
+  refreshBtn: { width: 36, height: 36, alignItems: "center" as const, justifyContent: "center" as const },
+  loader: { flex: 1, alignItems: "center" as const, justifyContent: "center" as const },
+  list: { padding: 16, gap: 0 },
 
-  /* Order card */
-  card: {
-    borderRadius: 16,
+  /* Sections */
+  section: { marginBottom: 24 },
+  sectionHeaderRow: { flexDirection: "row" as const, alignItems: "center" as const, justifyContent: "space-between", marginBottom: 10 },
+  sectionHeaderLeft: { flexDirection: "row" as const, alignItems: "center" as const, gap: 6 },
+  sectionTitle: { fontSize: 15, fontWeight: "700" as const, fontFamily: "Inter_700Bold" },
+  newBadge: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 5,
+    backgroundColor: "#CCFBF1",
     borderWidth: 1,
-    borderLeftWidth: 4,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
-    flexDirection: "row",
+    borderColor: "#99F6E4",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
   },
-  cardStrip: {
-    width: 4,
-  },
-  cardBody: {
-    flex: 1,
-    padding: 14,
-    gap: 12,
-  },
-  cardTopRow: {
-    flexDirection: "row",
-    gap: 12,
-    alignItems: "flex-start",
-  },
-  photoThumb: {
-    width: 64,
-    height: 64,
-    borderRadius: 10,
-    flexShrink: 0,
-  },
-  photoPlaceholder: {
-    backgroundColor: "#F0F0F5",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  customerInfo: {
-    flex: 1,
-    gap: 3,
-  },
-  orderIdRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  orderId: {
-    fontSize: 11,
-    fontFamily: "Inter_600SemiBold",
-    letterSpacing: 0.5,
-  },
-  orderTime: {
-    fontSize: 11,
-    fontFamily: "Inter_400Regular",
-  },
-  customerName: {
-    fontSize: 16,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-  },
-  addressRow: {
-    flexDirection: "row",
-    gap: 3,
-    alignItems: "flex-start",
-  },
-  customerAddress: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    flex: 1,
-    lineHeight: 16,
-  },
-  productRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  productName: {
-    fontSize: 14,
-    fontWeight: "600" as const,
-    fontFamily: "Inter_600SemiBold",
-    flex: 1,
-  },
-  markBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    backgroundColor: "#0055FF",
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
-  markBtnText: {
-    fontSize: 15,
-    fontWeight: "700" as const,
-    color: "#fff",
-    fontFamily: "Inter_700Bold",
-  },
-  fulfilledBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    paddingVertical: 10,
-    borderRadius: 12,
-    backgroundColor: "#E8F5E9",
-  },
-  fulfilledText: {
-    fontSize: 14,
-    fontWeight: "600" as const,
-    color: "#34C759",
-    fontFamily: "Inter_600SemiBold",
-  },
+  newBadgeDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: "#0D9488" },
+  newBadgeText: { fontSize: 11, fontWeight: "700" as const, color: "#0D9488", fontFamily: "Inter_700Bold", letterSpacing: 0.3 },
+  sectionLabel: { flexDirection: "row" as const, alignItems: "center" as const, gap: 6, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, marginBottom: 14 },
+  sectionLabelText: { fontSize: 13, fontWeight: "600" as const, fontFamily: "Inter_600SemiBold" },
+
+  /* Shared card shell */
+  card: { borderRadius: 16, borderWidth: 1, borderLeftWidth: 4, overflow: "hidden", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 3, flexDirection: "row" as const, marginBottom: 12 },
+  inquiryCard: { borderRadius: 16, borderWidth: 1, borderLeftWidth: 4, overflow: "hidden", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 3, flexDirection: "row" as const, marginBottom: 12 },
+  cardStrip: { width: 4 },
+  cardBody: { flex: 1, padding: 14, gap: 12 },
+  cardTopRow: { flexDirection: "row" as const, gap: 12, alignItems: "flex-start" as const },
+  photoThumb: { width: 64, height: 64, borderRadius: 10, flexShrink: 0 },
+  photoPlaceholder: { backgroundColor: "#F0F0F5", alignItems: "center" as const, justifyContent: "center" as const },
+  customerInfo: { flex: 1, gap: 3 },
+  orderIdRow: { flexDirection: "row" as const, justifyContent: "space-between" as const },
+  orderId: { fontSize: 11, fontFamily: "Inter_600SemiBold", letterSpacing: 0.5 },
+  orderTime: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  customerName: { fontSize: 15, fontWeight: "700" as const, fontFamily: "Inter_700Bold" },
+  addressRow: { flexDirection: "row" as const, gap: 3, alignItems: "flex-start" as const },
+  customerAddress: { fontSize: 12, fontFamily: "Inter_400Regular", flex: 1, lineHeight: 16 },
+  productRow: { flexDirection: "row" as const, alignItems: "center" as const, gap: 8, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, borderWidth: 1 },
+  productName: { fontSize: 14, fontWeight: "600" as const, fontFamily: "Inter_600SemiBold", flex: 1 },
+  markBtn: { flexDirection: "row" as const, alignItems: "center" as const, justifyContent: "center" as const, gap: 8, backgroundColor: "#0055FF", paddingVertical: 12, borderRadius: 12 },
+  markBtnText: { fontSize: 15, fontWeight: "700" as const, color: "#fff", fontFamily: "Inter_700Bold" },
+  fulfilledBadge: { flexDirection: "row" as const, alignItems: "center" as const, justifyContent: "center" as const, gap: 6, paddingVertical: 10, borderRadius: 12, backgroundColor: "#E8F5E9" },
+  fulfilledText: { fontSize: 14, fontWeight: "600" as const, color: "#34C759", fontFamily: "Inter_600SemiBold" },
+
+  /* Inquiry-specific */
+  inquiryTopRow: { flexDirection: "row" as const, gap: 12, alignItems: "flex-start" as const },
+  inquiryIconWrap: { width: 44, height: 44, borderRadius: 12, backgroundColor: "#CCFBF1", alignItems: "center" as const, justifyContent: "center" as const, flexShrink: 0 },
+  inquiryMeta: { flex: 1, gap: 3 },
+  inquiryTimeRow: { flexDirection: "row" as const, alignItems: "center" as const, gap: 5 },
+  unreadDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: "#0D9488" },
+  questionBox: { borderWidth: 1, borderRadius: 10, padding: 12, gap: 4 },
+  questionLabel: { fontSize: 10, fontFamily: "Inter_600SemiBold", fontWeight: "600" as const, letterSpacing: 1, textTransform: "uppercase" as const },
+  questionText: { fontSize: 14, fontFamily: "Inter_400Regular", lineHeight: 20 },
+  inquiryPhotoWrap: { borderRadius: 10, overflow: "hidden", height: 120, position: "relative" as const },
+  inquiryPhoto: { width: "100%", height: "100%" },
+  inquiryPhotoLabel: { position: "absolute" as const, bottom: 8, left: 8, flexDirection: "row" as const, alignItems: "center" as const, gap: 4, backgroundColor: "rgba(0,0,0,0.52)", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
+  inquiryPhotoLabelText: { color: "#fff", fontSize: 11, fontFamily: "Inter_600SemiBold", fontWeight: "600" as const },
+  markReadBtn: { flexDirection: "row" as const, alignItems: "center" as const, justifyContent: "center" as const, gap: 8, backgroundColor: "#0D9488", paddingVertical: 12, borderRadius: 12 },
+  markReadBtnText: { fontSize: 15, fontWeight: "700" as const, color: "#fff", fontFamily: "Inter_700Bold" },
+  readBadge: { flexDirection: "row" as const, alignItems: "center" as const, justifyContent: "center" as const, gap: 6, paddingVertical: 10, borderRadius: 12, backgroundColor: "#F3F4F6" },
+  readBadgeText: { fontSize: 14, fontWeight: "600" as const, color: "#9CA3AF", fontFamily: "Inter_600SemiBold" },
 });
