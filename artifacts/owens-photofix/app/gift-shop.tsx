@@ -1199,61 +1199,6 @@ export default function GiftShopScreen() {
           <SecureCheckoutBadge />
         </View>
 
-        {/* Quality promise banner */}
-        <View style={s.promiseBanner}>
-          <LinearGradient
-            colors={["#1A3A6B", "#0A2040"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={s.promiseGradient}
-          >
-            <Text style={s.promiseFlag}>🇬🇧</Text>
-            <View style={s.promiseCenter}>
-              <Text style={s.promiseHeadline}>Handmade in London</Text>
-              <Text style={s.promiseSub}>Every item crafted with care by our expert artisans</Text>
-            </View>
-          </LinearGradient>
-          <View style={s.promiseGuaranteeRow}>
-            <View style={s.promiseGuaranteeItem}>
-              <Ionicons name="shield-checkmark" size={22} color={GOLD} />
-              <View>
-                <Text style={s.promiseGuaranteeTitle}>10 Year Print Guarantee</Text>
-                <Text style={s.promiseGuaranteeSub}>Colours that last a decade, promise</Text>
-              </View>
-            </View>
-            <View style={s.promiseDivider} />
-            <View style={s.promiseGuaranteeItem}>
-              <Ionicons name="airplane" size={22} color={BLUE} />
-              <View>
-                <Text style={s.promiseGuaranteeTitle}>UK & Worldwide Delivery</Text>
-                <Text style={s.promiseGuaranteeSub}>UK £9.50 · Worldwide £24.99 · All tracked</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {/* About Our Quality */}
-        <View style={s.qualityNote}>
-          <View style={s.qualityNoteHeader}>
-            <Ionicons name="ribbon" size={15} color={GOLD} />
-            <Text style={s.qualityNoteHeading}>About Our Quality</Text>
-          </View>
-          <View style={s.qualityNoteDivider} />
-          <Text style={s.qualityNoteBody}>
-            Every masterpiece is finished with the ONJJEM seal of quality. Our textile items include a custom brand label, and all orders are shipped with an official ONJJEM Master Lab despatch note to verify their authenticity.
-          </Text>
-          <View style={s.qualityNoteSealRow}>
-            <View style={s.qualityNoteSeal}>
-              <Ionicons name="shield-checkmark" size={12} color={GOLD} />
-              <Text style={s.qualityNoteSealText}>ONJJEM Seal of Quality</Text>
-            </View>
-            <View style={s.qualityNoteSeal}>
-              <Ionicons name="document-text-outline" size={12} color={GOLD} />
-              <Text style={s.qualityNoteSealText}>Master Lab Despatch Note</Text>
-            </View>
-          </View>
-        </View>
-
         <TrustFooter />
       </ScrollView>
 
