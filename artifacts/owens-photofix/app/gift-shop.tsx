@@ -701,7 +701,7 @@ export default function GiftShopScreen() {
   const [basketItems, setBasketItems] = useState<{ title: string; price: number }[]>([]);
   const [promoCode, setPromoCode] = useState("");
   const [promoStatus, setPromoStatus] = useState<"idle" | "valid" | "min_spend" | "invalid">("idle");
-  const [shipping, setShipping] = useState<"uk" | "worldwide">("uk");
+  const [shipping, setShipping] = useState<"small" | "standard" | "flat">("standard");
 
   const scrollRef = useRef<ScrollView>(null);
   const [basketConfirm, setBasketConfirm] = useState<{ title: string } | null>(null);
@@ -711,7 +711,9 @@ export default function GiftShopScreen() {
   const basketSubtotal = basketItems.reduce((sum, i) => sum + i.price, 0);
   const giftWrapCost = giftWrap && basketItems.length > 0 ? 4.99 : 0;
   const promoDiscount = promoStatus === "valid" ? 10 : 0;
-  const shippingCost = basketItems.length > 0 ? (shipping === "uk" ? 9.50 : 24.99) : 0;
+  const shippingCost = basketItems.length > 0
+    ? shipping === "small" ? 4.50 : shipping === "standard" ? 6.99 : 9.50
+    : 0;
   const basketTotal = basketSubtotal + giftWrapCost + shippingCost - promoDiscount;
 
   const handleDesign = (title: string, price: string, scent?: string) => {
@@ -1194,51 +1196,81 @@ export default function GiftShopScreen() {
           </LinearGradient>
 
           <View style={s.shippingCardBody}>
-            {/* UK option */}
+            {/* Small Item Tracked */}
             <TouchableOpacity
-              style={[s.shippingOption, shipping === "uk" && s.shippingOptionActive]}
-              onPress={() => setShipping("uk")}
+              style={[s.shippingOption, shipping === "small" && s.shippingOptionActive]}
+              onPress={() => setShipping("small")}
               activeOpacity={0.8}
             >
-              <View style={[s.shippingRadio, shipping === "uk" && s.shippingRadioActive]}>
-                {shipping === "uk" && <View style={s.shippingRadioDot} />}
+              <View style={[s.shippingRadio, shipping === "small" && s.shippingRadioActive]}>
+                {shipping === "small" && <View style={s.shippingRadioDot} />}
               </View>
               <View style={s.shippingOptionBody}>
                 <View style={s.shippingOptionRow}>
-                  <Text style={s.shippingOptionFlag}>🇬🇧</Text>
-                  <Text style={[s.shippingOptionLabel, shipping === "uk" && s.shippingOptionLabelActive]}>
-                    UK Tracked
+                  <Text style={s.shippingOptionFlag}>📦</Text>
+                  <Text style={[s.shippingOptionLabel, shipping === "small" && s.shippingOptionLabelActive]}>
+                    Small Item Tracked
                   </Text>
-                  <Text style={[s.shippingOptionPrice, shipping === "uk" && s.shippingOptionPriceActive]}>
-                    £9.50
+                  <Text style={[s.shippingOptionPrice, shipping === "small" && s.shippingOptionPriceActive]}>
+                    £4.50
                   </Text>
                 </View>
-                <Text style={s.shippingOptionMeta}>5–7 working days · Tracked & fully insured</Text>
+                <Text style={s.shippingOptionMeta}>Stickers & labels only · 3–5 working days</Text>
               </View>
             </TouchableOpacity>
 
             <View style={s.shippingDivider} />
 
-            {/* Worldwide option */}
+            {/* Standard UK Tracked */}
             <TouchableOpacity
-              style={[s.shippingOption, shipping === "worldwide" && s.shippingOptionActive]}
-              onPress={() => setShipping("worldwide")}
+              style={[s.shippingOption, shipping === "standard" && s.shippingOptionActive]}
+              onPress={() => setShipping("standard")}
               activeOpacity={0.8}
             >
-              <View style={[s.shippingRadio, shipping === "worldwide" && s.shippingRadioActive]}>
-                {shipping === "worldwide" && <View style={s.shippingRadioDot} />}
+              <View style={[s.shippingRadio, shipping === "standard" && s.shippingRadioActive]}>
+                {shipping === "standard" && <View style={s.shippingRadioDot} />}
               </View>
               <View style={s.shippingOptionBody}>
                 <View style={s.shippingOptionRow}>
-                  <Text style={s.shippingOptionFlag}>🌍</Text>
-                  <Text style={[s.shippingOptionLabel, shipping === "worldwide" && s.shippingOptionLabelActive]}>
-                    Worldwide Tracked
+                  <Text style={s.shippingOptionFlag}>🇬🇧</Text>
+                  <Text style={[s.shippingOptionLabel, shipping === "standard" && s.shippingOptionLabelActive]}>
+                    Standard UK Tracked
                   </Text>
-                  <Text style={[s.shippingOptionPrice, shipping === "worldwide" && s.shippingOptionPriceActive]}>
-                    £24.99
+                  <Text style={[s.shippingOptionPrice, shipping === "standard" && s.shippingOptionPriceActive]}>
+                    £6.99
                   </Text>
                 </View>
-                <Text style={s.shippingOptionMeta}>7–10 working days · Tracked & fully insured</Text>
+                <Text style={s.shippingOptionMeta}>Air fresheners, keyrings & mugs · 5–7 working days</Text>
+              </View>
+            </TouchableOpacity>
+
+            <View style={s.shippingDivider} />
+
+            {/* Master Lab Flat Rate */}
+            <TouchableOpacity
+              style={[s.shippingOption, shipping === "flat" && s.shippingOptionActive]}
+              onPress={() => setShipping("flat")}
+              activeOpacity={0.8}
+            >
+              <View style={[s.shippingRadio, shipping === "flat" && s.shippingRadioActive]}>
+                {shipping === "flat" && <View style={s.shippingRadioDot} />}
+              </View>
+              <View style={s.shippingOptionBody}>
+                <View style={s.shippingOptionRow}>
+                  <Text style={s.shippingOptionFlag}>🇬🇧</Text>
+                  <Text style={[s.shippingOptionLabel, shipping === "flat" && s.shippingOptionLabelActive]}>
+                    Master Lab Flat Rate
+                  </Text>
+                  <Text style={[s.shippingOptionPrice, shipping === "flat" && s.shippingOptionPriceActive]}>
+                    £9.50
+                  </Text>
+                </View>
+                <View style={s.shippingFlatRow}>
+                  <View style={s.shippingBestValueBadge}>
+                    <Text style={s.shippingBestValueText}>BEST VALUE</Text>
+                  </View>
+                  <Text style={s.shippingOptionMeta}>Any number of items incl. Quilts & Rugs</Text>
+                </View>
               </View>
             </TouchableOpacity>
 
@@ -2664,6 +2696,26 @@ const s = StyleSheet.create({
     backgroundColor: "#F0EBE5",
     marginVertical: 4,
   },
+  shippingFlatRow: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 6,
+    flexWrap: "wrap" as const,
+  },
+  shippingBestValueBadge: {
+    backgroundColor: "#C9960C",
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  shippingBestValueText: {
+    fontSize: 8,
+    fontWeight: "800" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#FFFFFF",
+    letterSpacing: 0.6,
+  },
+
   shippingNote: {
     flexDirection: "row" as const,
     alignItems: "flex-start" as const,
