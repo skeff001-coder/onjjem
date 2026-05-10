@@ -136,23 +136,25 @@ export default function FeatureWallsScreen() {
 
             {/* Price block */}
             <View style={s.priceBlock}>
-              <View style={s.priceLeft}>
-                <Text style={s.priceLabel}>FROM</Text>
-                <Text style={s.priceAmount}>£409.99</Text>
-                <Text style={s.priceIncludes}>Includes Restoration &amp; Delivery</Text>
+              <View style={s.priceTopRow}>
+                <View style={s.priceLeft}>
+                  <Text style={s.priceLabel}>FROM</Text>
+                  <Text style={s.priceAmount}>£409.99</Text>
+                  <Text style={s.priceIncludes}>Includes Restoration &amp; Delivery</Text>
+                </View>
               </View>
-              <View style={s.priceDivider} />
+              <View style={s.priceDividerH} />
               <View style={s.priceRight}>
                 <View style={s.priceFeature}>
-                  <Ionicons name="checkmark-circle" size={14} color={GOLD} />
+                  <Ionicons name="checkmark-circle" size={15} color={GOLD} />
                   <Text style={s.priceFeatureText}>Expert restoration</Text>
                 </View>
                 <View style={s.priceFeature}>
-                  <Ionicons name="checkmark-circle" size={14} color={GOLD} />
+                  <Ionicons name="checkmark-circle" size={15} color={GOLD} />
                   <Text style={s.priceFeatureText}>Premium wallpaper</Text>
                 </View>
                 <View style={s.priceFeature}>
-                  <Ionicons name="checkmark-circle" size={14} color={GOLD} />
+                  <Ionicons name="checkmark-circle" size={15} color={GOLD} />
                   <Text style={s.priceFeatureText}>UK delivery included</Text>
                 </View>
               </View>
@@ -173,7 +175,7 @@ export default function FeatureWallsScreen() {
             style={s.ctaBtnGradient}
           >
             <Ionicons name="home-outline" size={22} color="#fff" />
-            <View>
+            <View style={s.ctaBtnTextWrap}>
               <Text style={s.ctaBtnPrimary}>Start My Mural Project</Text>
               <Text style={s.ctaBtnSub}>Tell us your measurements — we'll do the rest</Text>
             </View>
@@ -275,7 +277,7 @@ export default function FeatureWallsScreen() {
             style={s.ctaBtnGradient}
           >
             <Ionicons name="chatbubble-ellipses-outline" size={22} color="#fff" />
-            <View>
+            <View style={s.ctaBtnTextWrap}>
               <Text style={s.ctaBtnPrimary}>Start My Mural Project</Text>
               <Text style={s.ctaBtnSub}>Our experts are ready to help</Text>
             </View>
@@ -416,15 +418,15 @@ const s = StyleSheet.create({
 
   /* Price block */
   priceBlock: {
-    flexDirection: "row",
     backgroundColor: "rgba(201,150,12,0.1)",
     borderWidth: 1,
     borderColor: "rgba(201,150,12,0.25)",
     borderRadius: 14,
     padding: 16,
     marginTop: 4,
-    gap: 16,
+    gap: 14,
   },
+  priceTopRow: {},
   priceLeft: {
     gap: 2,
   },
@@ -436,26 +438,34 @@ const s = StyleSheet.create({
     letterSpacing: 2,
   },
   priceAmount: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: "700",
     fontFamily: "Inter_700Bold",
     color: "#F5EDD8",
     letterSpacing: -0.5,
+    lineHeight: 42,
   },
   priceIncludes: {
-    fontSize: 10,
+    fontSize: 11,
     fontFamily: "Inter_400Regular",
     color: "rgba(245,237,216,0.55)",
+    marginTop: 2,
   },
+  priceDividerH: {
+    height: 1,
+    backgroundColor: "rgba(201,150,12,0.2)",
+    marginVertical: 2,
+  },
+  /* keep old name so nothing else breaks */
   priceDivider: {
     width: 1,
     backgroundColor: "rgba(201,150,12,0.2)",
     alignSelf: "stretch",
   },
   priceRight: {
-    flex: 1,
-    justifyContent: "center",
-    gap: 7,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
   },
   priceFeature: {
     flexDirection: "row",
@@ -463,9 +473,9 @@ const s = StyleSheet.create({
     gap: 6,
   },
   priceFeatureText: {
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: "Inter_500Medium",
-    color: "rgba(245,237,216,0.8)",
+    color: "rgba(245,237,216,0.85)",
   },
 
   /* CTA button */
@@ -493,6 +503,9 @@ const s = StyleSheet.create({
     fontWeight: "700",
     fontFamily: "Inter_700Bold",
     color: "#fff",
+  },
+  ctaBtnTextWrap: {
+    flex: 1,
   },
   ctaBtnSub: {
     fontSize: 11,
