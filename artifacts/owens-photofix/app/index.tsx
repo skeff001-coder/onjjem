@@ -211,7 +211,7 @@ export default function HomeScreen() {
       <View style={s.header}>
         <View>
           <Text style={s.headerTitleTop}>ONJJEM</Text>
-          <Text style={s.headerTitleBottom}>PHOTOGRAPH RESTORATION</Text>
+          <Text style={s.headerTitleBottom}>PHOTO RESTORATION</Text>
         </View>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>

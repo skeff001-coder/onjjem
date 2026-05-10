@@ -5,6 +5,8 @@ export type Order = {
   customerName: string;
   customerAddress: string;
   product: string;
+  retailPrice: number;
+  tradeCost: number;
   photoUri: string | null;
   orderedAt: string;
   markedAsOrdered: boolean;
@@ -18,6 +20,8 @@ const SAMPLE_ORDERS: Order[] = [
     customerName: "Sarah Mitchell",
     customerAddress: "14 Oakfield Road, Bristol, BS6 7AH",
     product: "Premium Canvas (A2)",
+    retailPrice: 49.99,
+    tradeCost: 14.00,
     photoUri: null,
     orderedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
     markedAsOrdered: false,
@@ -27,6 +31,8 @@ const SAMPLE_ORDERS: Order[] = [
     customerName: "James O'Brien",
     customerAddress: "7 Maple Avenue, Dublin, D04 X2Y1",
     product: "Photo Bed Quilt (King)",
+    retailPrice: 195.00,
+    tradeCost: 78.00,
     photoUri: null,
     orderedAt: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(),
     markedAsOrdered: false,
@@ -36,6 +42,8 @@ const SAMPLE_ORDERS: Order[] = [
     customerName: "Emma Thornton",
     customerAddress: "22 Church Lane, Edinburgh, EH1 2AN",
     product: "Large Format Print (A1)",
+    retailPrice: 39.99,
+    tradeCost: 8.00,
     photoUri: null,
     orderedAt: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
     markedAsOrdered: true,
@@ -45,6 +53,8 @@ const SAMPLE_ORDERS: Order[] = [
     customerName: "Liam Walsh",
     customerAddress: "9 Harbour View, Galway, H91 A1B2",
     product: "Photo Keyring (Set of 3)",
+    retailPrice: 38.97,
+    tradeCost: 9.00,
     photoUri: null,
     orderedAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
     markedAsOrdered: false,

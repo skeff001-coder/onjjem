@@ -364,6 +364,33 @@ function OrderCard({
           <Ionicons name="cube-outline" size={14} color={colors.primary} />
           <Text style={[styles.productName, { color: colors.foreground }]}>{order.product}</Text>
         </View>
+
+        {/* Pricing breakdown */}
+        <View style={[styles.profitRow, { backgroundColor: colors.background, borderColor: colors.border }]}>
+          <View style={styles.profitItem}>
+            <Text style={[styles.profitLabel, { color: colors.mutedForeground }]}>Retail</Text>
+            <Text style={[styles.profitValue, { color: colors.foreground }]}>
+              £{order.retailPrice?.toFixed(2) ?? "—"}
+            </Text>
+          </View>
+          <View style={styles.profitDivider} />
+          <View style={styles.profitItem}>
+            <Text style={[styles.profitLabel, { color: colors.mutedForeground }]}>Trade Cost</Text>
+            <Text style={[styles.profitValue, { color: "#FF6B00" }]}>
+              £{order.tradeCost?.toFixed(2) ?? "—"}
+            </Text>
+          </View>
+          <View style={styles.profitDivider} />
+          <View style={styles.profitItem}>
+            <Text style={[styles.profitLabel, { color: colors.mutedForeground }]}>Profit</Text>
+            <Text style={styles.profitAmount}>
+              {order.retailPrice != null && order.tradeCost != null
+                ? `£${(order.retailPrice - order.tradeCost).toFixed(2)}`
+                : "—"}
+            </Text>
+          </View>
+        </View>
+
         {isOrdered ? (
           <View style={styles.fulfilledBadge}>
             <Ionicons name="checkmark-circle" size={16} color="#34C759" />
@@ -461,6 +488,45 @@ const styles = StyleSheet.create({
   inquiryPhoto: { width: "100%", height: "100%" },
   inquiryPhotoLabel: { position: "absolute" as const, bottom: 8, left: 8, flexDirection: "row" as const, alignItems: "center" as const, gap: 4, backgroundColor: "rgba(0,0,0,0.52)", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
   inquiryPhotoLabelText: { color: "#fff", fontSize: 11, fontFamily: "Inter_600SemiBold", fontWeight: "600" as const },
+  /* Profit breakdown row */
+  profitRow: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    gap: 0,
+  },
+  profitItem: {
+    flex: 1,
+    alignItems: "center" as const,
+    gap: 3,
+  },
+  profitDivider: {
+    width: 1,
+    height: 28,
+    backgroundColor: "#E5E7EB",
+  },
+  profitLabel: {
+    fontSize: 10,
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600" as const,
+    letterSpacing: 0.8,
+    textTransform: "uppercase" as const,
+  },
+  profitValue: {
+    fontSize: 14,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+  },
+  profitAmount: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#34C759",
+  },
+
   markReadBtn: { flexDirection: "row" as const, alignItems: "center" as const, justifyContent: "center" as const, gap: 8, backgroundColor: "#0D9488", paddingVertical: 12, borderRadius: 12 },
   markReadBtnText: { fontSize: 15, fontWeight: "700" as const, color: "#fff", fontFamily: "Inter_700Bold" },
   readBadge: { flexDirection: "row" as const, alignItems: "center" as const, justifyContent: "center" as const, gap: 6, paddingVertical: 10, borderRadius: 12, backgroundColor: "#F3F4F6" },

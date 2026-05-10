@@ -265,8 +265,8 @@ const CATEGORIES: Category[] = [
     products: [
       {
         id: "leather_purse",
-        title: "Nappa Leather Purse",
-        desc: "Expertly handmade in London using buttery soft nappa leather. Features a smooth or textured finish with your memories printed in high definition.",
+        title: "Genuine Nappa Leather Purse",
+        desc: "Expertly handmade in London using buttery soft Genuine Nappa Leather. Features a smooth or textured finish with your memories printed in high definition.",
         price: "£109",
         emoji: "👛",
         iconBg: "#EFEBE9",
@@ -277,7 +277,7 @@ const CATEGORIES: Category[] = [
       {
         id: "leather_wallet",
         title: "Groom's Leather Wallet",
-        desc: "A timeless gift. Hand stitched genuine leather with a hidden photo compartment for a truly personal touch.",
+        desc: "A timeless gift. Hand stitched Genuine Nappa Leather with a hidden photo compartment for a truly personal touch.",
         price: "£45",
         emoji: "💳",
         iconBg: "#F5F0EB",
@@ -288,7 +288,7 @@ const CATEGORIES: Category[] = [
       {
         id: "leather_handbag",
         title: "Designer Leather Tote",
-        desc: "Make a statement with a 100% real leather handbag — durable, stylish, and completely unique to you.",
+        desc: "Make a statement with a 100% Genuine Nappa Leather handbag — durable, stylish, and completely unique to you.",
         price: "£139",
         emoji: "👜",
         iconBg: "#EDE0D4",
@@ -442,7 +442,7 @@ export default function GiftShopScreen() {
               <View style={s.giftWrapDesc}>
                 <Ionicons name="sparkles-outline" size={15} color={GOLD} />
                 <Text style={s.giftWrapDescText}>
-                  Your item will be beautifully hand wrapped in premium paper with a personalized ribbon and a handwritten gift note.
+                  Your item will be beautifully hand wrapped in premium paper with a personalised ribbon and a handwritten gift note.
                 </Text>
               </View>
             ) : (
@@ -450,6 +450,19 @@ export default function GiftShopScreen() {
                 Toggle on to add a beautiful hand-wrapped finish to your order.
               </Text>
             )}
+          </View>
+        </View>
+
+        {/* Shipping callout */}
+        <View style={s.shippingCallout}>
+          <View style={s.shippingIconWrap}>
+            <Ionicons name="airplane" size={22} color={BLUE} />
+          </View>
+          <View style={s.shippingTextWrap}>
+            <Text style={s.shippingTitle}>£9.50 Professional UK Delivery</Text>
+            <Text style={s.shippingDesc}>
+              Every order is tracked, fully insured and dispatched in premium protective packaging. Delivered straight to your door.
+            </Text>
           </View>
         </View>
 
@@ -494,8 +507,8 @@ export default function GiftShopScreen() {
             <View style={s.promiseGuaranteeItem}>
               <Ionicons name="airplane" size={22} color={BLUE} />
               <View>
-                <Text style={s.promiseGuaranteeTitle}>UK Shipping Included</Text>
-                <Text style={s.promiseGuaranteeSub}>Professional packaging, every time</Text>
+                <Text style={s.promiseGuaranteeTitle}>£9.50 Professional UK Delivery</Text>
+                <Text style={s.promiseGuaranteeSub}>Tracked, insured &amp; safely packaged</Text>
               </View>
             </View>
           </View>
@@ -858,5 +871,39 @@ const s = StyleSheet.create({
     width: 1,
     height: 40,
     backgroundColor: "#E2D9CF",
+  },
+
+  /* Shipping callout */
+  shippingCallout: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: 14,
+    backgroundColor: "#EFF6FF",
+    borderWidth: 1,
+    borderColor: "#BFDBFE",
+    borderRadius: 14,
+    padding: 16,
+  },
+  shippingIconWrap: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "#DBEAFE",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    flexShrink: 0,
+  },
+  shippingTextWrap: { flex: 1, gap: 4 },
+  shippingTitle: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#1D4ED8",
+  },
+  shippingDesc: {
+    fontSize: 12,
+    color: "#3B82F6",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 18,
   },
 });
