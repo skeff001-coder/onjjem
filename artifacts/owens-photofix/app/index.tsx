@@ -564,7 +564,7 @@ export default function HomeScreen() {
               </View>
               <View style={s.featureWallsTextWrap}>
                 <Text style={s.featureWallsTitle}>Life-Sized Feature Walls</Text>
-                <Text style={s.featureWallsSub}>Custom murals up to 4m × 3m · Heritage &amp; Wedding</Text>
+                <Text style={s.featureWallsSub}>Custom murals up to 4m × 3m · Heritage & Wedding</Text>
               </View>
               <View style={s.featureWallsPriceWrap}>
                 <Text style={s.featureWallsPrice}>£409.99</Text>

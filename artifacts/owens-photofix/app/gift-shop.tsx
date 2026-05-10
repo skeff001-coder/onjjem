@@ -840,7 +840,7 @@ export default function GiftShopScreen() {
                   <Text style={s.wearableIconEmoji}>✂️</Text>
                 </View>
                 <View style={s.wearableText}>
-                  <Text style={s.wearableTitle}>Cut &amp; Sewn by Hand in London</Text>
+                  <Text style={s.wearableTitle}>Cut & Sewn by Hand in London</Text>
                   <Text style={s.wearableDesc}>
                     Every garment is individually cut and sewn by our London artisans, then printed using fade-proof inks. Backed by our 10-year print guarantee — your memories stay vivid wash after wash.
                   </Text>
@@ -1019,7 +1019,7 @@ export default function GiftShopScreen() {
             style={s.shippingCardHeader}
           >
             <Ionicons name="airplane" size={15} color="#93C5FD" />
-            <Text style={s.shippingCardHeaderText}>Delivery &amp; Shipping</Text>
+            <Text style={s.shippingCardHeaderText}>Delivery & Shipping</Text>
           </LinearGradient>
 
           <View style={s.shippingCardBody}>
@@ -1042,7 +1042,7 @@ export default function GiftShopScreen() {
                     £9.50
                   </Text>
                 </View>
-                <Text style={s.shippingOptionMeta}>5–7 working days · Tracked &amp; fully insured</Text>
+                <Text style={s.shippingOptionMeta}>5–7 working days · Tracked & fully insured</Text>
               </View>
             </TouchableOpacity>
 
@@ -1067,7 +1067,7 @@ export default function GiftShopScreen() {
                     £24.99
                   </Text>
                 </View>
-                <Text style={s.shippingOptionMeta}>7–10 working days · Tracked &amp; fully insured</Text>
+                <Text style={s.shippingOptionMeta}>7–10 working days · Tracked & fully insured</Text>
               </View>
             </TouchableOpacity>
 
@@ -1143,7 +1143,7 @@ export default function GiftShopScreen() {
             <View style={s.promiseGuaranteeItem}>
               <Ionicons name="airplane" size={22} color={BLUE} />
               <View>
-                <Text style={s.promiseGuaranteeTitle}>UK &amp; Worldwide Delivery</Text>
+                <Text style={s.promiseGuaranteeTitle}>UK & Worldwide Delivery</Text>
                 <Text style={s.promiseGuaranteeSub}>UK £9.50 · Worldwide £24.99 · All tracked</Text>
               </View>
             </View>

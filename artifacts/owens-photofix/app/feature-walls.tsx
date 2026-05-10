@@ -122,7 +122,7 @@ export default function FeatureWallsScreen() {
             </View>
 
             <Text style={s.heroHeadline}>Turn Your Wall into{"\n"}a Masterpiece.</Text>
-            <Text style={s.heroProduct}>Custom Wedding &amp; Heritage Murals</Text>
+            <Text style={s.heroProduct}>Custom Wedding & Heritage Murals</Text>
             <Text style={s.heroSize}>Up to 4m × 3m</Text>
 
             <View style={s.heroDivider} />
@@ -140,7 +140,7 @@ export default function FeatureWallsScreen() {
                 <View style={s.priceLeft}>
                   <Text style={s.priceLabel}>FROM</Text>
                   <Text style={s.priceAmount}>£409.99</Text>
-                  <Text style={s.priceIncludes}>Includes Restoration &amp; Delivery</Text>
+                  <Text style={s.priceIncludes}>Includes Restoration & Delivery</Text>
                 </View>
               </View>
               <View style={s.priceDividerH} />
@@ -186,7 +186,7 @@ export default function FeatureWallsScreen() {
         {/* Room style selector — visual inspiration */}
         <View style={s.roomSection}>
           <Text style={s.sectionEyebrow}>PERFECT FOR</Text>
-          <Text style={s.sectionTitle}>Every Room &amp; Occasion</Text>
+          <Text style={s.sectionTitle}>Every Room & Occasion</Text>
           <View style={s.roomGrid}>
             {ROOM_STYLES.map((r) => (
               <View key={r.label} style={s.roomChip}>
@@ -230,12 +230,12 @@ export default function FeatureWallsScreen() {
             },
             {
               n: "2",
-              title: "We Restore &amp; Print",
+              title: "We Restore & Print",
               desc: "Our master restorers perfect your image, then it is printed large-format on premium wallpaper with fade-proof, eco-certified inks.",
             },
             {
               n: "3",
-              title: "Hang &amp; Admire",
+              title: "Hang & Admire",
               desc: "Delivered in specialist protective packaging. Hang it yourself with our included guide, or use any local decorator.",
             },
           ].map((step) => (
