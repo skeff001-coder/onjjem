@@ -43,7 +43,7 @@ type Product = {
   freePersonalisation?: boolean;
   heavyItem?: boolean;
   scents?: string[];
-  options?: { label: string; choices: string[] }[];
+  options?: { label: string; choices: string[]; type?: "pills" | "dropdown" }[];
   onjjemSeal?: boolean;
   ukMasterPrinters?: boolean;
 };
@@ -639,7 +639,7 @@ const CATEGORIES: Category[] = [
         ukMasterPrinters: true,
         options: [
           { label: "Shape", choices: ["Heart", "Round", "Rectangular"] },
-          { label: "Scent", choices: ["New Car", "Ocean Mist", "Vanilla Dream", "Fresh Linen"] },
+          { label: "Scent", choices: ["New Car", "Ocean Mist", "Vanilla Dream", "Fresh Linen"], type: "dropdown" as const },
         ],
       },
       {
@@ -671,7 +671,7 @@ const CATEGORIES: Category[] = [
         id: "window_stickers",
         title: "Heritage Car Window Stickers",
         size: "Pack of 4",
-        desc: "High-definition photo stickers designed for the inside of your car windows. UV-resistant, wipe-clean and easy to remove — your memories go wherever the road takes you.",
+        desc: "Pack of 4 high-definition photo stickers, designed to be placed on the inside of your car windows. UV-resistant glass-cling film — wipe-clean, easy to reposition, and simple to remove without leaving any residue.",
         price: "£9.99",
         emoji: "🪟",
         iconBg: "#E3F2FD",
@@ -1418,12 +1418,13 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
 
   const allOptions = [
     ...(product.options ?? []),
-    ...(product.scents ? [{ label: "Scent", choices: product.scents }] : []),
+    ...(product.scents ? [{ label: "Scent", choices: product.scents, type: undefined as ("pills" | "dropdown" | undefined) }] : []),
   ];
 
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(
     Object.fromEntries(allOptions.map((opt) => [opt.label, opt.choices[0]]))
   );
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 
   const optionSummary = allOptions.length > 0
     ? allOptions.map((opt) => `${opt.label}: ${selectedOptions[opt.label]}`).join(" · ")
@@ -1437,6 +1438,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
         activeOpacity={0.82}
         onPress={() => onPress(optionSummary)}
       >
+        <Ionicons name="bag-add-outline" size={15} color="#fff" style={{ marginRight: 5 }} />
         <Text style={s.designBtnText}>Add to Basket</Text>
       </TouchableOpacity>
     </View>
@@ -1444,25 +1446,82 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
 
   const optionPickers = allOptions.length > 0 ? (
     <View style={s.scentPickerWrap}>
-      {allOptions.map((opt) => (
-        <View key={opt.label}>
-          <Text style={s.scentPickerLabel}>{opt.label}:</Text>
-          <View style={s.scentRow}>
-            {opt.choices.map((choice) => (
+      {allOptions.map((opt) => {
+        const isDropdown = opt.type === "dropdown";
+        const selected = selectedOptions[opt.label];
+        if (isDropdown) {
+          return (
+            <View key={opt.label}>
+              <Text style={s.scentPickerLabel}>{opt.label}:</Text>
               <TouchableOpacity
-                key={choice}
-                style={[s.scentPill, selectedOptions[opt.label] === choice && s.scentPillActive]}
-                onPress={() => setSelectedOptions((prev) => ({ ...prev, [opt.label]: choice }))}
-                activeOpacity={0.75}
+                style={s.dropdownBtn}
+                activeOpacity={0.8}
+                onPress={() => setDropdownOpen(opt.label)}
               >
-                <Text style={[s.scentPillText, selectedOptions[opt.label] === choice && s.scentPillTextActive]}>
-                  {choice}
-                </Text>
+                <Text style={s.dropdownBtnText}>{selected}</Text>
+                <Ionicons name="chevron-down" size={14} color="#7A6E57" />
               </TouchableOpacity>
-            ))}
+              <Modal
+                visible={dropdownOpen === opt.label}
+                transparent
+                animationType="fade"
+                onRequestClose={() => setDropdownOpen(null)}
+              >
+                <TouchableOpacity
+                  style={s.dropdownOverlay}
+                  activeOpacity={1}
+                  onPress={() => setDropdownOpen(null)}
+                >
+                  <View style={s.dropdownMenu}>
+                    <Text style={s.dropdownMenuTitle}>{opt.label}</Text>
+                    {opt.choices.map((choice, idx) => (
+                      <TouchableOpacity
+                        key={choice}
+                        style={[
+                          s.dropdownItem,
+                          idx < opt.choices.length - 1 && s.dropdownItemBorder,
+                          selected === choice && s.dropdownItemActive,
+                        ]}
+                        activeOpacity={0.75}
+                        onPress={() => {
+                          setSelectedOptions((prev) => ({ ...prev, [opt.label]: choice }));
+                          setDropdownOpen(null);
+                        }}
+                      >
+                        <Text style={[s.dropdownItemText, selected === choice && s.dropdownItemTextActive]}>
+                          {choice}
+                        </Text>
+                        {selected === choice && (
+                          <Ionicons name="checkmark" size={15} color={GOLD} />
+                        )}
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </TouchableOpacity>
+              </Modal>
+            </View>
+          );
+        }
+        return (
+          <View key={opt.label}>
+            <Text style={s.scentPickerLabel}>{opt.label}:</Text>
+            <View style={s.scentRow}>
+              {opt.choices.map((choice) => (
+                <TouchableOpacity
+                  key={choice}
+                  style={[s.scentPill, selectedOptions[opt.label] === choice && s.scentPillActive]}
+                  onPress={() => setSelectedOptions((prev) => ({ ...prev, [opt.label]: choice }))}
+                  activeOpacity={0.75}
+                >
+                  <Text style={[s.scentPillText, selectedOptions[opt.label] === choice && s.scentPillTextActive]}>
+                    {choice}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
-        </View>
-      ))}
+        );
+      })}
     </View>
   ) : null;
 
@@ -1714,6 +1773,77 @@ const s = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600" as const,
     fontFamily: "Inter_600SemiBold",
+    color: "#7A5A00",
+  },
+
+  /* Dropdown picker */
+  dropdownBtn: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    justifyContent: "space-between" as const,
+    backgroundColor: "#FAF7F2",
+    borderWidth: 1,
+    borderColor: "#E8D48B",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    marginBottom: 2,
+  },
+  dropdownBtnText: {
+    fontSize: 13,
+    fontFamily: "Inter_500Medium",
+    color: "#1C1A14",
+  },
+  dropdownOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
+    paddingHorizontal: 32,
+  },
+  dropdownMenu: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    paddingVertical: 6,
+    width: "100%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  dropdownMenuTitle: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#7A6E57",
+    letterSpacing: 1,
+    textTransform: "uppercase" as const,
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 8,
+  },
+  dropdownItem: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    justifyContent: "space-between" as const,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
+  },
+  dropdownItemBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0EBE5",
+  },
+  dropdownItemActive: {
+    backgroundColor: "#FDF6DC",
+  },
+  dropdownItemText: {
+    fontSize: 15,
+    fontFamily: "Inter_400Regular",
+    color: "#1C1A14",
+  },
+  dropdownItemTextActive: {
+    fontFamily: "Inter_700Bold",
     color: "#7A5A00",
   },
 
