@@ -954,6 +954,35 @@ const CATEGORIES: Category[] = [
     headerGradient: ["#4A148C", "#7B1FA2"] as const,
     products: [
       {
+        id: "photo_ribbon",
+        title: "Bespoke Photo Ribbon",
+        size: "Per metre · satin finish",
+        desc: "Add a touch of elegance with satin-finish ribbon featuring your restored memories. Perfect for gifts and cakes. Each metre is hand-finished to order at the ONJJEM Master Print Lab in London.",
+        price: "£14.95 / m",
+        emoji: "🎀",
+        iconBg: "#F3E5F5",
+        bestSeller: true,
+        quickBuy: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "heritage_gift_tags",
+        title: "Heritage Gift Tags",
+        size: "Pack of 20 · double-sided premium card",
+        desc: "Double-sided premium tags with your photos and message. Includes luxury hanging chains or ribbon. Each tag is printed on heavyweight card with a satin-gloss finish — the finishing touch that turns a gift into an heirloom.",
+        price: "£24.99",
+        emoji: "🏷️",
+        iconBg: "#EDE7F6",
+        wide: true,
+        bestSeller: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        ukMasterPrinters: true,
+        freePersonalisation: true,
+      },
+      {
         id: "giftwrap_sheet",
         title: "Luxury Personalised Gift Wrap — Single Sheet",
         size: "Single sheet · 140gsm satin-gloss",
@@ -1293,6 +1322,42 @@ export default function GiftShopScreen() {
           )}
 
           {/* Junior Champions & Sports callout */}
+          {activeTab === "grand_presentation" && (
+            <View style={s.giftCallout}>
+              <LinearGradient
+                colors={["#4A148C", "#7B1FA2", "#4A148C"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.giftCalloutBar}
+              />
+              <View style={s.giftCalloutInner}>
+                <View style={s.giftCalloutIconWrap}>
+                  <Text style={{ fontSize: 28 }}>🎁</Text>
+                </View>
+                <View style={s.giftCalloutText}>
+                  <Text style={s.giftCalloutTitle}>The Complete Gift Experience</Text>
+                  <Text style={s.giftCalloutDesc}>
+                    Create the ultimate gift with our matching wrapping paper, ribbon, and tags — all featuring your restored masterpiece.
+                  </Text>
+                  <View style={s.giftCalloutBadgeRow}>
+                    <View style={s.giftBadge}>
+                      <Text style={{ fontSize: 10 }}>🎀</Text>
+                      <Text style={s.giftBadgeText}>Matching Ribbon</Text>
+                    </View>
+                    <View style={s.giftBadge}>
+                      <Text style={{ fontSize: 10 }}>🏷️</Text>
+                      <Text style={s.giftBadgeText}>Heritage Tags</Text>
+                    </View>
+                    <View style={s.giftBadge}>
+                      <Ionicons name="cube-outline" size={11} color="#7B1FA2" />
+                      <Text style={s.giftBadgeText}>Save on Shipping</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
           {activeTab === "junior_sports" && (
             <View style={s.sportsCallout}>
               <LinearGradient
@@ -2594,6 +2659,64 @@ const s = StyleSheet.create({
   },
 
   /* Junior Champions & Sports callout */
+  giftCallout: {
+    backgroundColor: "#FAF5FF",
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#CE93D8",
+  },
+  giftCalloutBar: { height: 4 },
+  giftCalloutInner: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    padding: 16,
+    gap: 12,
+  },
+  giftCalloutIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#E1BEE7",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  giftCalloutText: { flex: 1, gap: 6 },
+  giftCalloutTitle: {
+    fontSize: 15,
+    fontFamily: "Inter_700Bold",
+    color: "#4A148C",
+    letterSpacing: 0.2,
+  },
+  giftCalloutDesc: {
+    fontSize: 12.5,
+    fontFamily: "Inter_400Regular",
+    color: "#6A1B9A",
+    lineHeight: 18,
+  },
+  giftCalloutBadgeRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginTop: 4,
+  },
+  giftBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "#E1BEE7",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  giftBadgeText: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    color: "#4A148C",
+  },
+
   sportsCallout: {
     backgroundColor: "#F1FDF2",
     borderRadius: 16,
