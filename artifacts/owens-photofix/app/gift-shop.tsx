@@ -50,6 +50,7 @@ type Product = {
   teamPhotoUpload?: boolean;
   getQuote?: boolean;
   quoteType?: "wall" | "window";
+  madeToMeasure?: boolean;
 };
 
 type Category = {
@@ -409,6 +410,22 @@ const CATEGORIES: Category[] = [
     fulfillment: "ONJJEM Master Print Lab · Architectural Tube Shipping",
     headerGradient: ["#1C1A14", "#2E2A1E"] as const,
     products: [
+      {
+        id: "masterpiece_mural",
+        title: "The Masterpiece Wall Mural",
+        size: "Any size — made to measure",
+        desc: "Turn your entire wall into a high-definition sports stadium or heritage family portrait. Printed on premium, easy-to-hang wallpaper with eco-friendly, fade-resistant inks.\n\nPriced by the square metre — starts at £14.99 for small sections. Click 'Request Custom Size Quote' and share your wall width and height for an exact price.",
+        price: "from £14.99 / m²",
+        emoji: "🖼️",
+        iconBg: "#FDF6DC",
+        wide: true,
+        bestSeller: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        madeToMeasure: true,
+        getQuote: true,
+        quoteType: "wall" as const,
+      },
       {
         id: "bespoke_mural",
         title: "Bespoke Wall Mural (Custom Sizes to Fit Your Room)",
@@ -1949,6 +1966,12 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
           <Text style={s.bestSellerText}>Best Seller</Text>
         </View>
       )}
+      {product.madeToMeasure && (
+        <View style={s.madeToMeasureBadge}>
+          <Text style={s.madeToMeasureBadgeStar}>📐</Text>
+          <Text style={s.madeToMeasureBadgeText}>Made to Measure</Text>
+        </View>
+      )}
       {product.premiumBadge && (
         <View style={s.premiumBadge}>
           <Text style={s.premiumBadgeStar}>♦</Text>
@@ -2845,6 +2868,16 @@ const s = StyleSheet.create({
   },
   bestSellerStar: { fontSize: 10, color: GOLD },
   bestSellerText: { fontSize: 10, fontWeight: "700" as const, color: GOLD, fontFamily: "Inter_700Bold" },
+
+  madeToMeasureBadge: {
+    position: "absolute", top: 8, left: 8, zIndex: 10,
+    flexDirection: "row", alignItems: "center", gap: 3,
+    backgroundColor: "#1C1A14",
+    borderWidth: 1, borderColor: "#C9960C",
+    borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3,
+  },
+  madeToMeasureBadgeStar: { fontSize: 9 },
+  madeToMeasureBadgeText: { fontSize: 10, fontWeight: "700" as const, color: "#C9960C", fontFamily: "Inter_700Bold", letterSpacing: 0.3 },
 
   premiumBadge: {
     position: "absolute", top: 8, right: 8, zIndex: 10,
