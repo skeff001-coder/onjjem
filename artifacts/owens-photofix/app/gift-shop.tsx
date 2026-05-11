@@ -48,6 +48,8 @@ type Product = {
   onjjemSeal?: boolean;
   ukMasterPrinters?: boolean;
   teamPhotoUpload?: boolean;
+  getQuote?: boolean;
+  quoteType?: "wall" | "window";
 };
 
 type Category = {
@@ -401,12 +403,29 @@ const CATEGORIES: Category[] = [
   },
   {
     id: "large_format",
-    label: "Large Format",
-    emoji: "📐",
-    subtitle: "UV-resistant inks · 180gsm satin paper · Architectural tube shipping",
-    fulfillment: "Master Print Lab",
+    label: "Feature Walls",
+    emoji: "🏛️",
+    subtitle: "Life-Sized Feature Walls · Bespoke prints made to fit your room",
+    fulfillment: "ONJJEM Master Print Lab · Architectural Tube Shipping",
     headerGradient: ["#1C1A14", "#2E2A1E"] as const,
     products: [
+      {
+        id: "bespoke_mural",
+        title: "Bespoke Wall Mural (Custom Sizes to Fit Your Room)",
+        size: "Any size — made to measure",
+        desc: "The ultimate statement wall. Your restored photo reproduced at life-sized scale using UV-resistant inks on 180gsm satin paper — printed, matched, and hand-trimmed to fit your exact wall. No standard sizes. No compromise.\n\nFinal price depends on your wall dimensions. Click 'Get a Quote' for a master restorer to calculate your exact price.",
+        price: "from £149.00",
+        emoji: "🏛️",
+        iconBg: "#FDF6DC",
+        wide: true,
+        bestSeller: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
+        getQuote: true,
+        quoteType: "wall" as const,
+      },
       {
         id: "poster_a2",
         title: "A2 Boutique Poster",
@@ -825,9 +844,9 @@ const CATEGORIES: Category[] = [
       {
         id: "team_curtains",
         title: "Bespoke Team Curtains",
-        size: "Custom fit — Blackout lining",
-        desc: "Send us your favourite team photo or stadium shot — we will restore the colours and create custom-fit blackout curtains for your child's bedroom. A truly unique statement piece no other family will have. " + "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.",
-        price: "£125",
+        size: "Hand-made to your exact window measurements",
+        desc: "Send us your favourite team photo or stadium shot — we will restore the colours and create custom-fit blackout curtains for your child's bedroom. Hand-made to your exact window measurements. Blackout lining included as standard. A truly unique statement piece no other family will have.\n\nOur master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.\n\nFinal price depends on your window dimensions. Click 'Get a Quote' for a master restorer to calculate your exact price.",
+        price: "from £125",
         emoji: "🪟",
         iconBg: "#E8F5E9",
         wide: true,
@@ -836,7 +855,8 @@ const CATEGORIES: Category[] = [
         ukMasterPrinters: true,
         handmadeInLondon: true,
         freePersonalisation: true,
-        teamPhotoUpload: true,
+        getQuote: true,
+        quoteType: "window" as const,
       },
     ],
   },
@@ -1659,6 +1679,11 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
   );
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [teamPhotoUri, setTeamPhotoUri] = useState<string | null>(null);
+  const [quoteModalVisible, setQuoteModalVisible] = useState(false);
+  const [quoteWidth, setQuoteWidth] = useState("");
+  const [quoteHeight, setQuoteHeight] = useState("");
+  const [quotePhotoUri, setQuotePhotoUri] = useState<string | null>(null);
+  const [quoteSubmitted, setQuoteSubmitted] = useState(false);
 
   const optionSummary = allOptions.length > 0
     ? allOptions.map((opt) => `${opt.label}: ${selectedOptions[opt.label]}`).join(" · ")
@@ -1682,6 +1707,19 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
     }
   }
 
+  async function handleQuotePhotoUpload() {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) return;
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      quality: 0.9,
+      allowsEditing: false,
+    });
+    if (!result.canceled && result.assets[0]) {
+      setQuotePhotoUri(result.assets[0].uri);
+    }
+  }
+
   const uploadBtn = product.teamPhotoUpload ? (
     <TouchableOpacity
       style={[s.uploadTeamBtn, teamPhotoUri ? s.uploadTeamBtnDone : null]}
@@ -1700,17 +1738,124 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
     </TouchableOpacity>
   ) : null;
 
+  const dimLabel = product.quoteType === "window" ? "Window" : "Wall";
+
+  const quoteModal = product.getQuote ? (
+    <Modal
+      visible={quoteModalVisible}
+      transparent
+      animationType="slide"
+      onRequestClose={() => setQuoteModalVisible(false)}
+    >
+      <View style={s.quoteOverlay}>
+        <View style={s.quoteCard}>
+          {!quoteSubmitted ? (
+            <>
+              <View style={s.quoteCardHeader}>
+                <View style={{ flex: 1 }}>
+                  <Text style={s.quoteCardTitle}>Get a Quote</Text>
+                  <Text style={s.quoteCardSub} numberOfLines={2}>{product.title}</Text>
+                </View>
+                <TouchableOpacity onPress={() => setQuoteModalVisible(false)} style={s.quoteCardClose}>
+                  <Ionicons name="close" size={22} color="#7A6E57" />
+                </TouchableOpacity>
+              </View>
+              <Text style={s.quoteNote}>
+                Final price depends on your {dimLabel.toLowerCase()} dimensions. A master restorer will calculate your exact price and contact you within 24 hours.
+              </Text>
+              <Text style={s.quoteFormLabel}>{dimLabel} Width (cm)</Text>
+              <TextInput
+                style={s.quoteFormInput}
+                value={quoteWidth}
+                onChangeText={setQuoteWidth}
+                placeholder="e.g. 240"
+                keyboardType="numeric"
+                placeholderTextColor="#B0A898"
+              />
+              <Text style={s.quoteFormLabel}>{dimLabel} Height (cm)</Text>
+              <TextInput
+                style={s.quoteFormInput}
+                value={quoteHeight}
+                onChangeText={setQuoteHeight}
+                placeholder="e.g. 280"
+                keyboardType="numeric"
+                placeholderTextColor="#B0A898"
+              />
+              <Text style={s.quoteFormLabel}>Upload Your Photo</Text>
+              <TouchableOpacity
+                style={[s.uploadTeamBtn, quotePhotoUri ? s.uploadTeamBtnDone : null]}
+                activeOpacity={0.82}
+                onPress={handleQuotePhotoUpload}
+              >
+                <Ionicons
+                  name={quotePhotoUri ? "checkmark-circle" : "cloud-upload-outline"}
+                  size={16}
+                  color={quotePhotoUri ? "#15803D" : "#1B5E20"}
+                  style={{ marginRight: 6 }}
+                />
+                <Text style={[s.uploadTeamBtnText, quotePhotoUri ? s.uploadTeamBtnTextDone : null]}>
+                  {quotePhotoUri ? "Photo Uploaded ✓" : "Upload Your Photo"}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.quoteSubmitBtn, (!quoteWidth.trim() || !quoteHeight.trim()) && s.quoteSubmitBtnDisabled]}
+                activeOpacity={0.82}
+                disabled={!quoteWidth.trim() || !quoteHeight.trim()}
+                onPress={() => setQuoteSubmitted(true)}
+              >
+                <Ionicons name="send-outline" size={15} color="#fff" style={{ marginRight: 6 }} />
+                <Text style={s.quoteSubmitBtnText}>Submit Quote Request</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <View style={s.quoteSuccessWrap}>
+              <Ionicons name="checkmark-circle" size={56} color={GOLD} />
+              <Text style={s.quoteSuccessTitle}>Quote Request Sent!</Text>
+              <Text style={s.quoteSuccessDesc}>
+                A master restorer will review your {dimLabel.toLowerCase()} dimensions ({quoteWidth} × {quoteHeight} cm) and be in touch with your exact price within 24 hours.
+              </Text>
+              <TouchableOpacity
+                style={s.quoteSubmitBtn}
+                activeOpacity={0.82}
+                onPress={() => { setQuoteModalVisible(false); setQuoteSubmitted(false); }}
+              >
+                <Text style={s.quoteSubmitBtnText}>Done</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </View>
+    </Modal>
+  ) : null;
+
   const footer = (
     <View style={s.productFooter}>
       <Text style={s.productPrice}>{product.price}</Text>
-      <TouchableOpacity
-        style={s.designBtn}
-        activeOpacity={0.82}
-        onPress={() => onPress(fullSummary)}
-      >
-        <Ionicons name="bag-add-outline" size={15} color="#fff" style={{ marginRight: 5 }} />
-        <Text style={s.designBtnText}>Add to Basket</Text>
-      </TouchableOpacity>
+      {product.getQuote ? (
+        <TouchableOpacity
+          style={s.getQuoteBtn}
+          activeOpacity={0.82}
+          onPress={() => {
+            setQuoteSubmitted(false);
+            setQuoteWidth("");
+            setQuoteHeight("");
+            setQuotePhotoUri(null);
+            setQuoteModalVisible(true);
+          }}
+        >
+          <Ionicons name="calculator-outline" size={15} color="#fff" style={{ marginRight: 5 }} />
+          <Text style={s.getQuoteBtnText}>Get a Quote</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={s.designBtn}
+          activeOpacity={0.82}
+          onPress={() => onPress(fullSummary)}
+        >
+          <Ionicons name="bag-add-outline" size={15} color="#fff" style={{ marginRight: 5 }} />
+          <Text style={s.designBtnText}>Add to Basket</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 
@@ -1796,6 +1941,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
   ) : null;
 
   return (
+    <>
     <View style={[s.productCard, isWide && s.productCardWide]}>
       {product.bestSeller && (
         <View style={s.bestSellerBadge}>
@@ -1863,6 +2009,8 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
         </>
       )}
     </View>
+    {quoteModal}
+    </>
   );
 }
 
@@ -2159,6 +2307,123 @@ const s = StyleSheet.create({
     color: "#7A5A00",
     fontWeight: "600" as const,
     fontFamily: "Inter_600SemiBold",
+  },
+
+  /* Get a Quote button */
+  getQuoteBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: GOLD,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+  },
+  getQuoteBtnText: {
+    color: "#fff",
+    fontSize: 13,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 0.3,
+  },
+
+  /* Quote modal */
+  quoteOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(28,26,20,0.6)",
+    justifyContent: "flex-end",
+  },
+  quoteCard: {
+    backgroundColor: "#FAF7F2",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    paddingBottom: 36,
+    gap: 14,
+  },
+  quoteCardHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+  quoteCardTitle: {
+    fontSize: 20,
+    fontFamily: "Inter_700Bold",
+    color: "#1C1A14",
+    letterSpacing: 0.2,
+  },
+  quoteCardSub: {
+    fontSize: 12.5,
+    fontFamily: "Inter_400Regular",
+    color: "#7A6E57",
+    marginTop: 2,
+  },
+  quoteCardClose: {
+    padding: 4,
+    marginTop: 2,
+  },
+  quoteNote: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    color: "#5A4F3C",
+    lineHeight: 19,
+    backgroundColor: "#FDF6DC",
+    borderRadius: 10,
+    padding: 12,
+    borderLeftWidth: 3,
+    borderLeftColor: GOLD,
+  },
+  quoteFormLabel: {
+    fontSize: 13,
+    fontFamily: "Inter_600SemiBold",
+    color: "#1C1A14",
+    marginBottom: -8,
+  },
+  quoteFormInput: {
+    backgroundColor: "#fff",
+    borderWidth: 1.5,
+    borderColor: "#D9CFC0",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 16,
+    fontFamily: "Inter_400Regular",
+    color: "#1C1A14",
+  },
+  quoteSubmitBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: GOLD,
+    borderRadius: 12,
+    paddingVertical: 14,
+    marginTop: 4,
+  },
+  quoteSubmitBtnDisabled: {
+    backgroundColor: "#D9CFC0",
+  },
+  quoteSubmitBtnText: {
+    color: "#fff",
+    fontSize: 15,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 0.4,
+  },
+  quoteSuccessWrap: {
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 16,
+  },
+  quoteSuccessTitle: {
+    fontSize: 22,
+    fontFamily: "Inter_700Bold",
+    color: "#1C1A14",
+    textAlign: "center",
+  },
+  quoteSuccessDesc: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "#5A4F3C",
+    textAlign: "center",
+    lineHeight: 21,
   },
 
   /* Upload Team Photo button */
