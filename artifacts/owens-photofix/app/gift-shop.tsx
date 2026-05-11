@@ -723,7 +723,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["living", "bedroom", "leather", "personal", "car_keepsakes"];
+const MENU_TABS = ["living", "bedroom", "leather", "personal", "little_treasures", "bargain_memories", "car_keepsakes"];
 
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
   EXPERT10: { discount: 10, minSpend: 20 },
