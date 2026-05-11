@@ -1033,6 +1033,7 @@ export default function GiftShopScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("living");
   const [giftWrap, setGiftWrap] = useState(false);
+  const [heritageCardAdded, setHeritageCardAdded] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
   const [personalisingProduct, setPersonalisingProduct] = useState<Product | null>(null);
   const [basketItems, setBasketItems] = useState<{ title: string; price: number }[]>([]);
@@ -1541,6 +1542,58 @@ export default function GiftShopScreen() {
             )}
           </View>
         </View>
+
+        {/* Heritage Card upsell — shown only when basket has items */}
+        {basketItems.length > 0 && (
+          <View style={s.heritageCardUpsell}>
+            <LinearGradient
+              colors={["#2D1B4E", "#4A2C7A", "#2D1B4E"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={s.heritageCardUpsellBar}
+            />
+            <View style={s.heritageCardUpsellInner}>
+              <View style={s.heritageCardUpsellIconWrap}>
+                <Text style={{ fontSize: 26 }}>💌</Text>
+              </View>
+              <View style={s.heritageCardUpsellBody}>
+                <View style={s.heritageCardUpsellTitleRow}>
+                  <Text style={s.heritageCardUpsellTitle}>ONJJEM Heritage Card</Text>
+                  <Text style={s.heritageCardUpsellPrice}>£6.95</Text>
+                </View>
+                <Text style={s.heritageCardUpsellDesc}>
+                  A premium 350gsm card featuring your restored masterpiece. Left blank inside for your own personal message. Includes a luxury handmade envelope.
+                </Text>
+                <TouchableOpacity
+                  style={[
+                    s.heritageCardUpsellBtn,
+                    heritageCardAdded && s.heritageCardUpsellBtnDone,
+                  ]}
+                  onPress={() => {
+                    if (!heritageCardAdded) {
+                      setHeritageCardAdded(true);
+                      setBasketItems((prev) => [...prev, { title: "ONJJEM Heritage Card", price: 6.95 }]);
+                      setBasketConfirm({ title: "ONJJEM Heritage Card" });
+                    }
+                  }}
+                  activeOpacity={0.85}
+                >
+                  {heritageCardAdded ? (
+                    <>
+                      <Ionicons name="checkmark-circle" size={16} color="#fff" />
+                      <Text style={s.heritageCardUpsellBtnText}>Added to Basket</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Ionicons name="add-circle-outline" size={16} color="#fff" />
+                      <Text style={s.heritageCardUpsellBtnText}>Add Heritage Card — £6.95</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
 
         {/* Discount code section */}
         <View style={s.promoCard}>
@@ -2250,6 +2303,76 @@ const s = StyleSheet.create({
   },
 
   /* Discount code card */
+  heritageCardUpsell: {
+    backgroundColor: "#F5F0FF",
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginBottom: 14,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#9C6FD6",
+  },
+  heritageCardUpsellBar: { height: 4 },
+  heritageCardUpsellInner: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    padding: 14,
+    gap: 12,
+  },
+  heritageCardUpsellIconWrap: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: "#E9D8FD",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  heritageCardUpsellBody: { flex: 1, gap: 6 },
+  heritageCardUpsellTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  heritageCardUpsellTitle: {
+    fontSize: 14,
+    fontFamily: "Inter_700Bold",
+    color: "#2D1B4E",
+    letterSpacing: 0.2,
+    flex: 1,
+  },
+  heritageCardUpsellPrice: {
+    fontSize: 14,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 0.3,
+  },
+  heritageCardUpsellDesc: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#5B4280",
+    lineHeight: 17,
+  },
+  heritageCardUpsellBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    backgroundColor: "#4A2C7A",
+    borderRadius: 10,
+    paddingVertical: 9,
+    paddingHorizontal: 14,
+    marginTop: 2,
+  },
+  heritageCardUpsellBtnDone: {
+    backgroundColor: "#2E7D32",
+  },
+  heritageCardUpsellBtnText: {
+    fontSize: 13,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: 0.2,
+  },
+
   promoCard: {
     borderRadius: 16,
     overflow: "hidden" as const,
