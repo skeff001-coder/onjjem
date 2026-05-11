@@ -280,7 +280,7 @@ const CATEGORIES: Category[] = [
   },
   {
     id: "leather",
-    label: "Luxury Leather",
+    label: "Luxury Bags",
     emoji: "👜",
     subtitle: "Handcrafted leather goods with your photo",
     fulfillment: "Master Leather Goods",
@@ -695,6 +695,8 @@ const CATEGORIES: Category[] = [
   },
 ];
 
+const MENU_TABS = ["living", "leather", "personal", "car_keepsakes"];
+
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
   EXPERT10: { discount: 10, minSpend: 20 },
 };
@@ -819,7 +821,7 @@ export default function GiftShopScreen() {
         style={s.tabBarScroll}
         contentContainerStyle={s.tabBar}
       >
-        {CATEGORIES.map((cat) => {
+        {CATEGORIES.filter((cat) => MENU_TABS.includes(cat.id)).map((cat) => {
           const active = activeTab === cat.id;
           return (
             <TouchableOpacity
