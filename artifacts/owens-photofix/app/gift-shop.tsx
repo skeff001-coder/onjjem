@@ -126,51 +126,79 @@ const CATEGORIES: Category[] = [
   },
   {
     id: "bedroom",
-    label: "Bedroom",
-    emoji: "🛏️",
-    subtitle: "Quilts & pillowcases for a personal touch",
-    fulfillment: "Master Textiles",
-    headerGradient: ["#7B2FBE", "#4A1080"],
+    label: "Luxury Sleep",
+    emoji: "🌙",
+    subtitle: "Luxury Sleep Collection · Heirloom textiles for your bedroom",
+    fulfillment: "ONJJEM Master Textiles · Handcrafted in London",
+    headerGradient: ["#2D1B69", "#5B2D9E"] as const,
     products: [
       {
-        id: "pillowcase",
-        title: "Premium Pillowcase",
-        desc: "Soft touch fabric, perfect for memories",
-        price: "£24.99",
-        emoji: "😴",
-        iconBg: "#FDE8F5",
+        id: "quilt_king",
+        title: "King-Size Heirloom Quilt",
+        size: "King — 220×230 cm",
+        desc: "Our finest creation. Each quilt is individually hand-stitched by our London artisans using 300-thread-count cotton and filled with premium hollowfibre. Your restored photo is reproduced in extraordinary detail across the full face — a genuine family heirloom built to last generations.",
+        price: "£195",
+        emoji: "👑",
+        iconBg: "#EDE0FF",
         wide: true,
+        bestSeller: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
+      },
+      {
+        id: "pillowcase",
+        title: "Luxury Photo Pillowcases",
+        size: "Matching set of 2",
+        desc: "A perfect companion to the Heirloom Quilt. Satin-smooth 200-thread-count cotton with your restored photo printed edge-to-edge. Complete the set and transform your bedroom into a gallery of cherished memories.",
+        price: "£34.99",
+        emoji: "🌙",
+        iconBg: "#F3E8FF",
+        wide: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
+      },
+      {
+        id: "bedside_rug",
+        title: "Plush Bedside Rug",
+        size: "60×90 cm",
+        desc: "Wake up to your most treasured memory every morning. Crafted in ultra-plush velvet with a non-slip latex base. Your restored photo is reproduced in vivid, deep colour — soft underfoot and beautiful to look at.",
+        price: "£99",
+        emoji: "🏡",
+        iconBg: "#EDE0FF",
+        wide: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
+        heavyItem: true,
       },
       {
         id: "quilt_single",
         title: "Single Photo Quilt",
-        size: "Single",
-        desc: "Hand stitched and delightfully cosy",
+        size: "Single — 135×200 cm",
+        desc: "Hand-stitched by our London artisans using premium hollowfibre fill and 300-thread-count cotton. Your restored photo printed in stunning detail — delightfully cosy and deeply personal.",
         price: "£135",
         emoji: "🛏️",
-        iconBg: "#F3E8FF",
+        iconBg: "#F5EEFF",
         wide: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
       },
       {
         id: "quilt_double",
         title: "Double Photo Quilt",
-        size: "Double",
-        desc: "Premium quality comfort",
+        size: "Double — 200×200 cm",
+        desc: "All the craftsmanship of the Single in a generous double size. Perfect for sharing a memory. Hand-stitched by our London artisans with premium comfort and lasting colour.",
         price: "£165",
         emoji: "🛏️",
         iconBg: "#EDE0FF",
         wide: true,
-      },
-      {
-        id: "quilt_king",
-        title: "King-Size Quilt",
-        size: "King",
-        desc: "Our largest, most detailed gift",
-        price: "£195",
-        emoji: "🌟",
-        iconBg: "#E8DAFF",
-        wide: true,
-        bestSeller: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
       },
     ],
   },
@@ -695,7 +723,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["living", "leather", "personal", "car_keepsakes"];
+const MENU_TABS = ["living", "bedroom", "leather", "personal", "car_keepsakes"];
 
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
   EXPERT10: { discount: 10, minSpend: 20 },
@@ -998,7 +1026,40 @@ export default function GiftShopScreen() {
             </View>
           )}
 
-          {/* Large format callout */}
+          {/* Luxury Sleep callout */}
+          {activeTab === "bedroom" && (
+            <View style={s.luxurySleepCallout}>
+              <LinearGradient
+                colors={["#2D1B69", "#6B3FA0", "#2D1B69"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.luxurySleepBar}
+              />
+              <View style={s.luxurySleepInner}>
+                <View style={s.luxurySleepIconWrap}>
+                  <Text style={{ fontSize: 30 }}>🌙</Text>
+                </View>
+                <View style={s.luxurySleepText}>
+                  <Text style={s.luxurySleepTitle}>The Luxury Sleep Collection</Text>
+                  <Text style={s.luxurySleepDesc}>
+                    Heirloom-quality quilts, pillowcases and rugs — each one hand-finished by our London textile artisans. Your restored photo is woven into every thread of your bedroom story.
+                  </Text>
+                  <View style={s.luxurySleepBadgeRow}>
+                    <View style={s.luxurySealBadge}>
+                      <Ionicons name="ribbon" size={11} color={GOLD} />
+                      <Text style={s.luxurySealText}>Certified ONJJEM Quality Seal</Text>
+                    </View>
+                    <View style={s.luxurySealBadge}>
+                      <Text style={s.luxurySealFlag}>🇬🇧</Text>
+                      <Text style={s.luxurySealText}>Handcrafted in London</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {/* Car keepsakes callout */}
           {activeTab === "car_keepsakes" && (
             <View style={s.carCallout}>
               <LinearGradient
@@ -1901,6 +1962,66 @@ const s = StyleSheet.create({
     fontWeight: "600" as const,
     fontFamily: "Inter_600SemiBold",
   },
+
+  /* Luxury Sleep callout */
+  luxurySleepCallout: {
+    backgroundColor: "#FAF7FF",
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#D8C8F0",
+  },
+  luxurySleepBar: { height: 4 },
+  luxurySleepInner: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    padding: 16,
+    gap: 12,
+  },
+  luxurySleepIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#EDE0FF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  luxurySleepText: { flex: 1, gap: 6 },
+  luxurySleepTitle: {
+    fontSize: 15,
+    fontFamily: "Inter_700Bold",
+    color: "#2D1B69",
+    letterSpacing: 0.2,
+  },
+  luxurySleepDesc: {
+    fontSize: 12.5,
+    fontFamily: "Inter_400Regular",
+    color: "#5A4080",
+    lineHeight: 18,
+  },
+  luxurySleepBadgeRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginTop: 4,
+  },
+  luxurySealBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "#EDE0FF",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  luxurySealText: {
+    fontSize: 10.5,
+    fontFamily: "Inter_600SemiBold",
+    color: "#4A1080",
+  },
+  luxurySealFlag: { fontSize: 11 },
 
   /* Car Keepsakes callout */
   carCallout: {
