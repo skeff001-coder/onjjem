@@ -10,6 +10,10 @@ export type Order = {
   photoUri: string | null;
   orderedAt: string;
   markedAsOrdered: boolean;
+  personalisation?: {
+    text: string;
+    fontStyle: string;
+  } | null;
 };
 
 const ORDERS_KEY = "@onjjem_orders";
@@ -25,6 +29,10 @@ const SAMPLE_ORDERS: Order[] = [
     photoUri: null,
     orderedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
     markedAsOrdered: false,
+    personalisation: {
+      text: "In loving memory of Nan — forever in our hearts",
+      fontStyle: "Elegant Serif",
+    },
   },
   {
     id: "ord_002",
@@ -36,6 +44,10 @@ const SAMPLE_ORDERS: Order[] = [
     photoUri: null,
     orderedAt: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(),
     markedAsOrdered: false,
+    personalisation: {
+      text: "The O'Brien Family — Est. 1987",
+      fontStyle: "Classic Bold",
+    },
   },
   {
     id: "ord_003",
@@ -47,6 +59,7 @@ const SAMPLE_ORDERS: Order[] = [
     photoUri: null,
     orderedAt: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
     markedAsOrdered: true,
+    personalisation: null,
   },
   {
     id: "ord_004",
@@ -58,6 +71,10 @@ const SAMPLE_ORDERS: Order[] = [
     photoUri: null,
     orderedAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
     markedAsOrdered: false,
+    personalisation: {
+      text: "Always Together",
+      fontStyle: "Handwritten Script",
+    },
   },
 ];
 

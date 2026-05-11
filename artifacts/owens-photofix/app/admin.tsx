@@ -5,6 +5,7 @@ import {
   Alert,
   FlatList,
   Image,
+  Linking,
   ScrollView,
   SectionList,
   StyleSheet,
@@ -13,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import * as Sharing from "expo-sharing";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -315,7 +317,7 @@ function InquiryCard({
 }
 
 // ─────────────────────────────────────────────
-// Order card (unchanged)
+// Order card
 // ─────────────────────────────────────────────
 function OrderCard({
   order,
@@ -327,6 +329,26 @@ function OrderCard({
   onMarkOrdered: () => void;
 }) {
   const isOrdered = order.markedAsOrdered;
+  const profit =
+    order.retailPrice != null && order.tradeCost != null
+      ? order.retailPrice - order.tradeCost
+      : null;
+
+  const handleDownloadPhoto = async () => {
+    if (!order.photoUri) return;
+    const available = await Sharing.isAvailableAsync();
+    if (available) {
+      await Sharing.shareAsync(order.photoUri);
+    } else {
+      Alert.alert("Sharing unavailable", "Photo sharing is not supported on this device.");
+    }
+  };
+
+  const handleProcessOrder = () => {
+    Linking.openURL("https://www.bagsoflove.co.uk");
+    if (!isOrdered) onMarkOrdered();
+  };
+
   return (
     <View style={[
       styles.card,
@@ -338,6 +360,8 @@ function OrderCard({
     ]}>
       <View style={[styles.cardStrip, { backgroundColor: isOrdered ? "#34C759" : "#FF9F0A" }]} />
       <View style={styles.cardBody}>
+
+        {/* Customer + photo thumbnail */}
         <View style={styles.cardTopRow}>
           {order.photoUri ? (
             <Image source={{ uri: order.photoUri }} style={styles.photoThumb} resizeMode="cover" />
@@ -348,10 +372,16 @@ function OrderCard({
           )}
           <View style={styles.customerInfo}>
             <View style={styles.orderIdRow}>
-              <Text style={[styles.orderId, { color: colors.mutedForeground }]}>#{order.id.replace("ord_", "")}</Text>
-              <Text style={[styles.orderTime, { color: colors.mutedForeground }]}>{timeAgo(order.orderedAt)}</Text>
+              <Text style={[styles.orderId, { color: colors.mutedForeground }]}>
+                #{order.id.replace("ord_", "")}
+              </Text>
+              <Text style={[styles.orderTime, { color: colors.mutedForeground }]}>
+                {timeAgo(order.orderedAt)}
+              </Text>
             </View>
-            <Text style={[styles.customerName, { color: colors.foreground }]}>{order.customerName}</Text>
+            <Text style={[styles.customerName, { color: colors.foreground }]}>
+              {order.customerName}
+            </Text>
             <View style={styles.addressRow}>
               <Ionicons name="location-outline" size={12} color={colors.mutedForeground} />
               <Text style={[styles.customerAddress, { color: colors.mutedForeground }]} numberOfLines={2}>
@@ -360,46 +390,81 @@ function OrderCard({
             </View>
           </View>
         </View>
+
+        {/* Item */}
         <View style={[styles.productRow, { backgroundColor: colors.background, borderColor: colors.border }]}>
           <Ionicons name="cube-outline" size={14} color={colors.primary} />
           <Text style={[styles.productName, { color: colors.foreground }]}>{order.product}</Text>
         </View>
 
-        {/* Pricing breakdown */}
+        {/* Personalisation block */}
+        {order.personalisation ? (
+          <View style={[styles.personalisationBox, { backgroundColor: "#FFFBEB", borderColor: "#FDE68A" }]}>
+            <View style={styles.personalisationHeader}>
+              <Ionicons name="text-outline" size={13} color="#B45309" />
+              <Text style={styles.personalisationTitle}>Personalisation</Text>
+            </View>
+            <Text style={styles.personalisationText}>"{order.personalisation.text}"</Text>
+            <View style={styles.personalisationFontRow}>
+              <Ionicons name="brush-outline" size={11} color="#92400E" />
+              <Text style={styles.personalisationFont}>Font: {order.personalisation.fontStyle}</Text>
+            </View>
+          </View>
+        ) : (
+          <View style={[styles.personalisationBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <Text style={[styles.personalisationNone, { color: colors.mutedForeground }]}>
+              No personalisation on this order
+            </Text>
+          </View>
+        )}
+
+        {/* Profit tracker */}
         <View style={[styles.profitRow, { backgroundColor: colors.background, borderColor: colors.border }]}>
           <View style={styles.profitItem}>
-            <Text style={[styles.profitLabel, { color: colors.mutedForeground }]}>Retail</Text>
+            <Text style={[styles.profitLabel, { color: colors.mutedForeground }]}>Total Paid</Text>
             <Text style={[styles.profitValue, { color: colors.foreground }]}>
               £{order.retailPrice?.toFixed(2) ?? "—"}
             </Text>
           </View>
           <View style={styles.profitDivider} />
           <View style={styles.profitItem}>
-            <Text style={[styles.profitLabel, { color: colors.mutedForeground }]}>Trade Cost</Text>
+            <Text style={[styles.profitLabel, { color: colors.mutedForeground }]}>Bags of Love</Text>
             <Text style={[styles.profitValue, { color: "#FF6B00" }]}>
               £{order.tradeCost?.toFixed(2) ?? "—"}
             </Text>
           </View>
           <View style={styles.profitDivider} />
           <View style={styles.profitItem}>
-            <Text style={[styles.profitLabel, { color: colors.mutedForeground }]}>Profit</Text>
+            <Text style={[styles.profitLabel, { color: colors.mutedForeground }]}>Your Profit</Text>
             <Text style={styles.profitAmount}>
-              {order.retailPrice != null && order.tradeCost != null
-                ? `£${(order.retailPrice - order.tradeCost).toFixed(2)}`
-                : "—"}
+              {profit != null ? `£${profit.toFixed(2)}` : "—"}
             </Text>
           </View>
         </View>
 
+        {/* Download restored photo */}
+        <TouchableOpacity
+          style={[styles.downloadBtn, !order.photoUri && styles.downloadBtnDisabled]}
+          onPress={handleDownloadPhoto}
+          disabled={!order.photoUri}
+          activeOpacity={0.82}
+        >
+          <Ionicons name="cloud-download-outline" size={16} color={order.photoUri ? "#fff" : "#9CA3AF"} />
+          <Text style={[styles.downloadBtnText, !order.photoUri && styles.downloadBtnTextDisabled]}>
+            {order.photoUri ? "Download Restored Photo" : "No Photo Uploaded Yet"}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Process Order / fulfilled */}
         {isOrdered ? (
           <View style={styles.fulfilledBadge}>
             <Ionicons name="checkmark-circle" size={16} color="#34C759" />
-            <Text style={styles.fulfilledText}>Sent to printer</Text>
+            <Text style={styles.fulfilledText}>Sent to Bags of Love</Text>
           </View>
         ) : (
-          <TouchableOpacity style={styles.markBtn} onPress={onMarkOrdered} activeOpacity={0.82}>
-            <Ionicons name="print-outline" size={16} color="#fff" />
-            <Text style={styles.markBtnText}>Mark as Ordered</Text>
+          <TouchableOpacity style={styles.processBtn} onPress={handleProcessOrder} activeOpacity={0.82}>
+            <Ionicons name="open-outline" size={16} color="#fff" />
+            <Text style={styles.processBtnText}>Process Order — Open Bags of Love</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -525,6 +590,92 @@ const styles = StyleSheet.create({
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     color: "#34C759",
+  },
+
+  /* Personalisation block */
+  personalisationBox: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
+    gap: 6,
+  },
+  personalisationHeader: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 5,
+  },
+  personalisationTitle: {
+    fontSize: 10,
+    fontFamily: "Inter_700Bold",
+    fontWeight: "700" as const,
+    color: "#B45309",
+    letterSpacing: 1,
+    textTransform: "uppercase" as const,
+  },
+  personalisationText: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    color: "#78350F",
+    lineHeight: 19,
+    fontStyle: "italic" as const,
+  },
+  personalisationFontRow: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 4,
+    marginTop: 2,
+  },
+  personalisationFont: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    color: "#92400E",
+  },
+  personalisationNone: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    fontStyle: "italic" as const,
+    textAlign: "center" as const,
+    paddingVertical: 4,
+  },
+
+  /* Download photo button */
+  downloadBtn: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    gap: 8,
+    backgroundColor: "#1D4ED8",
+    paddingVertical: 11,
+    borderRadius: 12,
+  },
+  downloadBtnDisabled: {
+    backgroundColor: "#F3F4F6",
+  },
+  downloadBtnText: {
+    fontSize: 14,
+    fontWeight: "700" as const,
+    color: "#fff",
+    fontFamily: "Inter_700Bold",
+  },
+  downloadBtnTextDisabled: {
+    color: "#9CA3AF",
+  },
+
+  /* Process order button */
+  processBtn: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    gap: 8,
+    backgroundColor: "#15803D",
+    paddingVertical: 13,
+    borderRadius: 12,
+  },
+  processBtnText: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    color: "#fff",
+    fontFamily: "Inter_700Bold",
   },
 
   markReadBtn: { flexDirection: "row" as const, alignItems: "center" as const, justifyContent: "center" as const, gap: 8, backgroundColor: "#0D9488", paddingVertical: 12, borderRadius: 12 },
