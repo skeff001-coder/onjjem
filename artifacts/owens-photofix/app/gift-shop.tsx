@@ -945,9 +945,49 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  {
+    id: "grand_presentation",
+    label: "Grand Presentation",
+    emoji: "🎁",
+    subtitle: "Luxury gift wrapping · Hand-printed in London",
+    fulfillment: "ONJJEM Master Print Lab · London",
+    headerGradient: ["#4A148C", "#7B1FA2"] as const,
+    products: [
+      {
+        id: "giftwrap_sheet",
+        title: "Luxury Personalised Gift Wrap — Single Sheet",
+        size: "Single sheet · 140gsm satin-gloss",
+        desc: "Don't just give a gift; tell a story before they even open it. Our 140gsm luxury thick paper features your restored photos in a stunning satin-gloss finish. Hand-printed in London.\n\nSave on shipping by adding gift wrap to your Masterpiece order!",
+        price: "£14.99",
+        emoji: "🎀",
+        iconBg: "#F3E5F5",
+        bestSeller: true,
+        quickBuy: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        ukMasterPrinters: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "giftwrap_roll",
+        title: "Luxury Personalised Gift Wrap — Full Roll",
+        size: "Full roll · 140gsm satin-gloss · multiple gifts",
+        desc: "Don't just give a gift; tell a story before they even open it. Our 140gsm luxury thick paper features your restored photos in a stunning satin-gloss finish. Hand-printed in London. A full roll gives you enough to wrap multiple gifts with matching paper — perfect for Christmas or a milestone birthday.\n\nSave on shipping by adding gift wrap to your Masterpiece order!",
+        price: "£24.99",
+        emoji: "🎁",
+        iconBg: "#EDE7F6",
+        wide: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        ukMasterPrinters: true,
+        freePersonalisation: true,
+      },
+    ],
+  },
 ];
 
-const MENU_TABS = ["living", "bedroom", "junior_sports", "leather", "personal", "little_treasures", "bargain_memories", "car_keepsakes"];
+const MENU_TABS = ["living", "bedroom", "junior_sports", "leather", "personal", "little_treasures", "bargain_memories", "car_keepsakes", "grand_presentation"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
