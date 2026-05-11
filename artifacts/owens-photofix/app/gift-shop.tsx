@@ -360,7 +360,7 @@ const CATEGORIES: Category[] = [
   },
   {
     id: "leather",
-    label: "Luxury Bags",
+    label: "Luxury Leather",
     emoji: "👜",
     subtitle: "Handcrafted leather goods with your photo",
     fulfillment: "Master Leather Goods",
