@@ -51,6 +51,7 @@ type Product = {
   getQuote?: boolean;
   quoteType?: "wall" | "window";
   madeToMeasure?: boolean;
+  quickBuy?: boolean;
 };
 
 type Category = {
@@ -442,6 +443,30 @@ const CATEGORIES: Category[] = [
         handmadeInLondon: true,
         getQuote: true,
         quoteType: "wall" as const,
+      },
+      {
+        id: "wallpaper_sample_walls",
+        title: "Master Lab Wallpaper Sample",
+        size: "Large sample · approx. 62×30 cm",
+        desc: "See the stunning detail of our Cinema-Grade AI restoration in person. Printed on the same premium wallpaper we use for our full murals — so you can feel the quality and see the colours before you commit.\n\nIf you decide to order a full mural after receiving your sample, we will credit the £5.00 back to your order!",
+        price: "£5.00",
+        emoji: "🧾",
+        iconBg: "#FDF6DC",
+        wide: false,
+        quickBuy: true,
+        onjjemSeal: true,
+      },
+      {
+        id: "standard_photo_poster",
+        title: "Standard Photo Poster",
+        size: "A3 · 30×42 cm",
+        desc: "A crisp, gallery-quality print of your restored photo — ready to frame and hang in minutes. No quotes, no measurements. Just add to basket.",
+        price: "£12.99",
+        emoji: "🖼️",
+        iconBg: "#FDF6DC",
+        bestSeller: true,
+        quickBuy: true,
+        ukMasterPrinters: true,
       },
       {
         id: "poster_a2",
@@ -859,6 +884,18 @@ const CATEGORIES: Category[] = [
         teamPhotoUpload: true,
       },
       {
+        id: "junior_wallpaper_sample",
+        title: "Master Lab Wallpaper Sample",
+        size: "Large sample · approx. 62×30 cm",
+        desc: "See the stunning detail of our Cinema-Grade AI restoration in person before ordering a full room mural. Printed on the same premium wallpaper we use for our stadium murals.\n\nIf you decide to order a full mural after receiving your sample, we will credit the £5.00 back to your order!",
+        price: "£5.00",
+        emoji: "🧾",
+        iconBg: "#E8F5E9",
+        wide: false,
+        quickBuy: true,
+        onjjemSeal: true,
+      },
+      {
         id: "junior_peel_stick",
         title: "Peel & Stick Team Poster",
         size: "A1 · 59×84 cm",
@@ -868,6 +905,7 @@ const CATEGORIES: Category[] = [
         iconBg: "#E8F5E9",
         wide: true,
         bestSeller: true,
+        quickBuy: true,
         onjjemSeal: true,
         ukMasterPrinters: true,
         teamPhotoUpload: true,
@@ -1996,6 +2034,12 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
           <Text style={s.bestSellerText}>Best Seller</Text>
         </View>
       )}
+      {product.quickBuy && (
+        <View style={s.quickBuyBadge}>
+          <Text style={s.quickBuyBadgeIcon}>⚡</Text>
+          <Text style={s.quickBuyBadgeText}>Quick Buy</Text>
+        </View>
+      )}
       {product.madeToMeasure && (
         <View style={s.madeToMeasureBadge}>
           <Text style={s.madeToMeasureBadgeStar}>📐</Text>
@@ -2898,6 +2942,16 @@ const s = StyleSheet.create({
   },
   bestSellerStar: { fontSize: 10, color: GOLD },
   bestSellerText: { fontSize: 10, fontWeight: "700" as const, color: GOLD, fontFamily: "Inter_700Bold" },
+
+  quickBuyBadge: {
+    position: "absolute", top: 8, left: 8, zIndex: 10,
+    flexDirection: "row", alignItems: "center", gap: 3,
+    backgroundColor: "#1A4D2E",
+    borderWidth: 1, borderColor: "#4CAF50",
+    borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3,
+  },
+  quickBuyBadgeIcon: { fontSize: 9 },
+  quickBuyBadgeText: { fontSize: 10, fontWeight: "700" as const, color: "#81C784", fontFamily: "Inter_700Bold", letterSpacing: 0.3 },
 
   madeToMeasureBadge: {
     position: "absolute", top: 8, left: 8, zIndex: 10,
