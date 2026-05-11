@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import * as ImagePicker from "expo-image-picker";
 import {
   Animated,
   Image,
@@ -46,6 +47,7 @@ type Product = {
   options?: { label: string; choices: string[]; type?: "pills" | "dropdown" }[];
   onjjemSeal?: boolean;
   ukMasterPrinters?: boolean;
+  teamPhotoUpload?: boolean;
 };
 
 type Category = {
@@ -781,9 +783,68 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  {
+    id: "junior_sports",
+    label: "Junior Sports",
+    emoji: "⚽",
+    subtitle: "Junior Champions & Sports · Personalised team keepsakes",
+    fulfillment: "ONJJEM Master Print Lab · Handcrafted in London",
+    headerGradient: ["#1B5E20", "#2E7D32"] as const,
+    products: [
+      {
+        id: "junior_throw",
+        title: "Junior Throw Blanket",
+        size: "100×75 cm — Super Soft Fleece",
+        desc: "A soft, snuggly fleece throw featuring their local team or sports hero — the perfect bedroom companion for any young champion. " + "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.",
+        price: "£54.99",
+        emoji: "🏆",
+        iconBg: "#E8F5E9",
+        wide: true,
+        bestSeller: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+        teamPhotoUpload: true,
+      },
+      {
+        id: "sports_duvet",
+        title: "Sports Hero Duvet Set",
+        size: "All standard UK sizes",
+        desc: "Personalised bedding set in vibrant colours that never fade in the wash. Send us your favourite team photo or stadium shot and we'll do the rest. " + "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.",
+        price: "£69.00",
+        emoji: "🛏️",
+        iconBg: "#F1F8E9",
+        wide: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+        teamPhotoUpload: true,
+      },
+      {
+        id: "team_curtains",
+        title: "Bespoke Team Curtains",
+        size: "Custom fit — Blackout lining",
+        desc: "Send us your favourite team photo or stadium shot — we will restore the colours and create custom-fit blackout curtains for your child's bedroom. A truly unique statement piece no other family will have. " + "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.",
+        price: "£125",
+        emoji: "🪟",
+        iconBg: "#E8F5E9",
+        wide: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+        teamPhotoUpload: true,
+      },
+    ],
+  },
 ];
 
-const MENU_TABS = ["living", "bedroom", "leather", "personal", "little_treasures", "bargain_memories", "car_keepsakes"];
+const MENU_TABS = ["living", "bedroom", "junior_sports", "leather", "personal", "little_treasures", "bargain_memories", "car_keepsakes"];
+
+const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
 const PROMO_CODES: Record<string, { discount: number; minSpend: number }> = {
   EXPERT10: { discount: 10, minSpend: 20 },
@@ -1081,6 +1142,43 @@ export default function GiftShopScreen() {
                   <Text style={s.wearableDesc}>
                     Every garment is individually cut and sewn by our London artisans, then printed using fade-proof inks. Backed by our 10-year print guarantee — your memories stay vivid wash after wash.
                   </Text>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {/* Junior Champions & Sports callout */}
+          {activeTab === "junior_sports" && (
+            <View style={s.sportsCallout}>
+              <LinearGradient
+                colors={["#1B5E20", "#388E3C", "#1B5E20"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.sportsCalloutBar}
+              />
+              <View style={s.sportsCalloutInner}>
+                <View style={s.sportsCalloutIconWrap}>
+                  <Text style={{ fontSize: 30 }}>⚽</Text>
+                </View>
+                <View style={s.sportsCalloutText}>
+                  <Text style={s.sportsCalloutTitle}>Junior Champions & Sports</Text>
+                  <Text style={s.sportsCalloutDesc}>
+                    Send us your favourite team photo or stadium shot. Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.
+                  </Text>
+                  <View style={s.sportsCalloutBadgeRow}>
+                    <View style={s.sportsBadge}>
+                      <Ionicons name="ribbon" size={11} color={GOLD} />
+                      <Text style={s.sportsBadgeText}>Certified ONJJEM Quality Seal</Text>
+                    </View>
+                    <View style={s.sportsBadge}>
+                      <Text style={s.sportsBadgeFlag}>🇬🇧</Text>
+                      <Text style={s.sportsBadgeText}>Handcrafted in London</Text>
+                    </View>
+                    <View style={s.sportsBadge}>
+                      <Ionicons name="cloud-upload-outline" size={11} color="#1B5E20" />
+                      <Text style={s.sportsBadgeText}>Upload Your Team Photo</Text>
+                    </View>
+                  </View>
                 </View>
               </View>
             </View>
@@ -1560,10 +1658,47 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
     Object.fromEntries(allOptions.map((opt) => [opt.label, opt.choices[0]]))
   );
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+  const [teamPhotoUri, setTeamPhotoUri] = useState<string | null>(null);
 
   const optionSummary = allOptions.length > 0
     ? allOptions.map((opt) => `${opt.label}: ${selectedOptions[opt.label]}`).join(" · ")
     : undefined;
+
+  const fullSummary = [
+    optionSummary,
+    teamPhotoUri ? "Team Photo: ✓ Uploaded" : null,
+  ].filter(Boolean).join(" · ") || undefined;
+
+  async function handleTeamPhotoUpload() {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) return;
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      quality: 0.9,
+      allowsEditing: false,
+    });
+    if (!result.canceled && result.assets[0]) {
+      setTeamPhotoUri(result.assets[0].uri);
+    }
+  }
+
+  const uploadBtn = product.teamPhotoUpload ? (
+    <TouchableOpacity
+      style={[s.uploadTeamBtn, teamPhotoUri ? s.uploadTeamBtnDone : null]}
+      activeOpacity={0.82}
+      onPress={handleTeamPhotoUpload}
+    >
+      <Ionicons
+        name={teamPhotoUri ? "checkmark-circle" : "cloud-upload-outline"}
+        size={16}
+        color={teamPhotoUri ? "#15803D" : "#1B5E20"}
+        style={{ marginRight: 6 }}
+      />
+      <Text style={[s.uploadTeamBtnText, teamPhotoUri ? s.uploadTeamBtnTextDone : null]}>
+        {teamPhotoUri ? "Team Photo Uploaded ✓" : "Upload Team Photo"}
+      </Text>
+    </TouchableOpacity>
+  ) : null;
 
   const footer = (
     <View style={s.productFooter}>
@@ -1571,7 +1706,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
       <TouchableOpacity
         style={s.designBtn}
         activeOpacity={0.82}
-        onPress={() => onPress(optionSummary)}
+        onPress={() => onPress(fullSummary)}
       >
         <Ionicons name="bag-add-outline" size={15} color="#fff" style={{ marginRight: 5 }} />
         <Text style={s.designBtnText}>Add to Basket</Text>
@@ -1682,6 +1817,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
             <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
             <Text style={s.productDesc}>{product.desc}</Text>
             {optionPickers}
+            {uploadBtn}
             {footer}
           </View>
         </>
@@ -1701,6 +1837,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
               <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
               <Text style={s.productDesc}>{product.desc}</Text>
               {optionPickers}
+              {uploadBtn}
               {footer}
             </View>
           </View>
@@ -1720,6 +1857,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
             <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
             <Text style={s.productDesc}>{product.desc}</Text>
             {optionPickers}
+            {uploadBtn}
             {footer}
           </View>
         </>
@@ -2022,6 +2160,96 @@ const s = StyleSheet.create({
     fontWeight: "600" as const,
     fontFamily: "Inter_600SemiBold",
   },
+
+  /* Upload Team Photo button */
+  uploadTeamBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#E8F5E9",
+    borderWidth: 1.5,
+    borderColor: "#2E7D32",
+    borderStyle: "dashed" as const,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginTop: 10,
+    marginBottom: 2,
+  },
+  uploadTeamBtnDone: {
+    backgroundColor: "#F0FFF4",
+    borderStyle: "solid" as const,
+    borderColor: "#15803D",
+  },
+  uploadTeamBtnText: {
+    fontSize: 13,
+    fontFamily: "Inter_600SemiBold",
+    color: "#1B5E20",
+    letterSpacing: 0.2,
+  },
+  uploadTeamBtnTextDone: {
+    color: "#15803D",
+  },
+
+  /* Junior Champions & Sports callout */
+  sportsCallout: {
+    backgroundColor: "#F1FDF2",
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#A5D6A7",
+  },
+  sportsCalloutBar: { height: 4 },
+  sportsCalloutInner: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    padding: 16,
+    gap: 12,
+  },
+  sportsCalloutIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#C8E6C9",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sportsCalloutText: { flex: 1, gap: 6 },
+  sportsCalloutTitle: {
+    fontSize: 15,
+    fontFamily: "Inter_700Bold",
+    color: "#1B5E20",
+    letterSpacing: 0.2,
+  },
+  sportsCalloutDesc: {
+    fontSize: 12.5,
+    fontFamily: "Inter_400Regular",
+    color: "#2E7D32",
+    lineHeight: 18,
+  },
+  sportsCalloutBadgeRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginTop: 4,
+  },
+  sportsBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "#C8E6C9",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  sportsBadgeText: {
+    fontSize: 10.5,
+    fontFamily: "Inter_600SemiBold",
+    color: "#1B5E20",
+  },
+  sportsBadgeFlag: { fontSize: 11 },
 
   /* Luxury Sleep callout */
   luxurySleepCallout: {
