@@ -50,17 +50,29 @@ function Bud({ x, y, angle = 0, scale = 1 }: { x: number; y: number; angle?: num
   );
 }
 
-// ── Tight sinusoidal helix around a letter's vertical stroke ───────────────
+// ── Dense sinusoidal helix coiling around a letter's vertical stroke ────────
+// halfPeriod=2.5 px  →  ~14 half-cycles  =  7 full spirals from cap-top to cap-bottom
+// Amplitude ±2.5 px keeps the vine tight against a 4-5 px Cinzel stroke.
 function helix(cx: number): string {
-  const a = cx - 2.5, b = cx + 2.5;
-  return (
-    `M ${a} 26 C ${a} 28 ${b} 30 ${b} 32 ` +
-    `C ${b} 34 ${a} 36 ${a} 38 ` +
-    `C ${a} 40 ${b} 42 ${b} 44 ` +
-    `C ${b} 46 ${a} 48 ${a} 50 ` +
-    `C ${a} 52 ${b} 54 ${b} 56 ` +
-    `C ${b} 58 ${a} 60 ${a} 62`
-  );
+  const a = cx - 2.5;      // left side of stroke
+  const b = cx + 2.5;      // right side of stroke
+  const HALF = 2.5;        // half-period in SVG units
+  const Y0 = 62;           // start at cap-bottom (spiral upward visually)
+  const Y1 = 26;           // finish at cap-top
+  const parts: string[] = [`M ${a} ${Y0}`];
+  let y = Y0;
+  let leftStart = true;    // first half-cycle starts from left side
+  while (y > Y1 + 0.01) {
+    const nextY = Math.max(y - HALF, Y1);
+    const h = y - nextY;                // positive height of this segment
+    const from = leftStart ? a : b;
+    const to   = leftStart ? b : a;
+    // Cubic bezier control-points approximate a half-sine (smooth S-curve)
+    parts.push(`C ${from} ${y - h / 3} ${to} ${nextY + h / 3} ${to} ${nextY}`);
+    y = nextY;
+    leftStart = !leftStart;
+  }
+  return parts.join(" ");
 }
 
 export function TitleWreath() {
