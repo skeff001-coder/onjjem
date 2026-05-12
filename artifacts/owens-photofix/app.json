@@ -14,7 +14,9 @@
       "backgroundColor": "#1C1A14"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.onjjem.photorestoration",
+      "privacyPolicyUrl": "https://onjjem.co.uk/privacy"
     },
     "android": {},
     "web": {
@@ -32,8 +34,8 @@
       [
         "expo-media-library",
         {
-          "photosPermission": "Allow Owens Photofix to save enhanced photos to your library.",
-          "savePhotosPermission": "Allow Owens Photofix to save enhanced photos to your library.",
+          "photosPermission": "Allow ONJJEM to save your enhanced photos to your library.",
+          "savePhotosPermission": "Allow ONJJEM to save your enhanced photos to your library.",
           "isAccessMediaLocationEnabled": false
         }
       ]

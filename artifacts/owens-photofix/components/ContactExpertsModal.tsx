@@ -143,7 +143,7 @@ export function ContactExpertsModal({ visible, onClose }: Props) {
             <Text style={styles.label}>Your email address</Text>
             <TextInput
               style={styles.input}
-              placeholder="expert@example.com"
+              placeholder="your@email.com"
               placeholderTextColor="#9CA3AF"
               keyboardType="email-address"
               autoCapitalize="none"

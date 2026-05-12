@@ -78,7 +78,7 @@ export default function SuccessScreen() {
         >
           <Text style={styles.brandLetterSpacing}>ONJJEM</Text>
           <View style={styles.headerRule} />
-          <Text style={styles.headerSub}>PHOTO RESTORATION</Text>
+          <Text style={styles.headerSub}>RESTORE · PRINT · CHERISH</Text>
         </LinearGradient>
 
         {/* Animated gold seal */}

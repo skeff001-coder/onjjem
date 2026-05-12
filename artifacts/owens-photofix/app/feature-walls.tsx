@@ -139,7 +139,7 @@ export default function FeatureWallsScreen() {
               <View style={s.priceTopRow}>
                 <View style={s.priceLeft}>
                   <Text style={s.priceLabel}>FROM</Text>
-                  <Text style={s.priceAmount}>£409.99</Text>
+                  <Text style={s.priceAmount}>£45 / m²</Text>
                   <Text style={s.priceIncludes}>Includes Restoration & Delivery</Text>
                 </View>
               </View>

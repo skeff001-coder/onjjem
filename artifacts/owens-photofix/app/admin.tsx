@@ -119,7 +119,7 @@ export default function AdminScreen() {
             <Text style={styles.unlockBtnText}>Unlock</Text>
           </TouchableOpacity>
 
-          <Text style={[styles.pinHint, { color: colors.mutedForeground }]}>Default PIN: 1234</Text>
+          <Text style={[styles.pinHint, { color: colors.mutedForeground }]}>Contact your ONJJEM administrator for access</Text>
         </View>
       </View>
     );
