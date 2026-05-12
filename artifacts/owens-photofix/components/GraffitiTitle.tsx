@@ -97,9 +97,10 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     </React.Fragment>
   );
 
-  // Approximate total advance width (O cell + NJJEM glyphs + per-char spacing + max shadow offset)
-  const njjemAdv = Math.round(fontSize * (0.68 + 0.44 + 0.44 + 0.59 + 0.80));
-  const titleWidth = oCell + njjemAdv + letterSpacing * 5 + 8;
+  // Cinzel titling font is wide — use measured cap-width ratios per glyph + generous buffer
+  // N≈0.76, J≈0.54, J≈0.54, E≈0.66, M≈0.94
+  const njjemAdv = Math.round(fontSize * (0.76 + 0.54 + 0.54 + 0.66 + 0.94));
+  const titleWidth = oCell + njjemAdv + letterSpacing * 5 + 24;
 
   return (
     <View style={{ height: containerHeight, width: titleWidth }}>
