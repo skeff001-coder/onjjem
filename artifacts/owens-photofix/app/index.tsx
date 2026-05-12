@@ -339,7 +339,7 @@ export default function HomeScreen() {
                       Your restored photo hand-stretched on a premium gallery frame — ready to hang, delivered to your door
                     </Text>
                     <View style={s.canvasHeroChipRow}>
-                      {["A4 · A3 · A2 · A1", "Ready to Hang", "10-Year Guarantee"].map((c) => (
+                      {["A4 · A3 · A2 · A1", "Ready to Hang", "Lifetime Guarantee"].map((c) => (
                         <View key={c} style={s.canvasHeroChip}>
                           <Text style={s.canvasHeroChipText}>{c}</Text>
                         </View>
@@ -536,7 +536,7 @@ export default function HomeScreen() {
                     mode === "colorize" && { color: "#000" },
                   ]}
                 >
-                  Colorize
+                  Colourise
                 </Text>
                 <Text
                   style={[
