@@ -778,9 +778,9 @@ function makeStyles(
       height: SCREEN_H / 3,
     },
     header: {
-      paddingTop: topPad + 8,
+      paddingTop: topPad,
       paddingHorizontal: 24,
-      paddingBottom: 16,
+      paddingBottom: 8,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
@@ -839,7 +839,8 @@ function makeStyles(
       justifyContent: "center",
     },
     scroll: {
-      padding: 20,
+      paddingTop: 10,
+      paddingHorizontal: 20,
       paddingBottom: bottomPad,
       gap: 16,
     },
@@ -849,7 +850,7 @@ function makeStyles(
       borderColor: "#E8D48B",
       borderStyle: "dashed",
       backgroundColor: "#FDF6DC",
-      marginTop: 12,
+      marginTop: 0,
     },
     pressed: {
       opacity: 0.7,

@@ -18,10 +18,10 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
   } as const;
 
   // Heart jewel centred inside the counter of the 'O'
-  // Cinzel cap-top sits ~38% into the lineHeight, cap-height ~72% of fontSize
   const hW = Math.round(fontSize * 0.40);
   const hH = Math.round(fontSize * 0.31);
-  const hTop = Math.round((fontSize + 10) * 0.38 + (fontSize * 0.72) * 0.30);
+  // Empirically centred: cap-top ~19% into lineHeight, cap-centre at ~55%
+  const hTop = Math.round((fontSize + 10) * 0.55 - (hH / 2));
   const hLeft = Math.round(fontSize * 0.15);
 
   return (
