@@ -128,6 +128,18 @@ const CATEGORIES: Category[] = [
         emoji: "🖼️",
         iconBg: "#E3EDFF",
       },
+      {
+        id: "heritage_mini_canvas_trio",
+        title: "Heritage Mini Canvas Trio",
+        size: "Set of 3 · Vertical Display",
+        desc: "Three of your precious memories, expertly restored and displayed on a beautiful vertical canvas set. Perfect for a desk or a bedside table.",
+        price: "£34.99",
+        emoji: "🎨",
+        iconBg: "#FDF6DC",
+        wide: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+      },
     ],
   },
   {
