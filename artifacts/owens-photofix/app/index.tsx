@@ -419,17 +419,6 @@ export default function HomeScreen() {
               </LinearGradient>
             </TouchableOpacity>
 
-            {/* Contact Support button */}
-            <TouchableOpacity
-              style={s.contactSupportBtn}
-              onPress={() => router.push("/contact")}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="headset-outline" size={18} color={colors.mutedForeground} />
-              <Text style={s.contactSupportText}>Contact Support</Text>
-              <Ionicons name="chevron-forward" size={15} color={colors.mutedForeground} />
-            </TouchableOpacity>
-
           </>
         )}
 
@@ -731,6 +720,17 @@ export default function HomeScreen() {
         </View>
 
         <TrustFooter />
+
+        {/* Contact Support — very bottom */}
+        <TouchableOpacity
+          style={s.contactSupportBtn}
+          onPress={() => router.push("/contact")}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="headset-outline" size={18} color={colors.mutedForeground} />
+          <Text style={s.contactSupportText}>Contact Support</Text>
+          <Ionicons name="chevron-forward" size={15} color={colors.mutedForeground} />
+        </TouchableOpacity>
       </ScrollView>
 
       {/* Contact our experts button */}
