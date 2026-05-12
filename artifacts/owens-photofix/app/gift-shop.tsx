@@ -794,6 +794,70 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
+    id: "fast_gifts",
+    label: "Under £25",
+    emoji: "🎀",
+    subtitle: "Little Treasures & Fast Gifts · All under £25 · Free expert personalisation",
+    fulfillment: "ONJJEM Master Artisans · London Studio",
+    headerGradient: ["#7B3F00", "#4A2500"] as const,
+    products: [
+      {
+        id: "memory_stickers_ft",
+        title: "Memory Stickers",
+        size: "Sheet of 20 · Waterproof Vinyl",
+        desc: "Share your restored photos everywhere. Waterproof, UV-resistant vinyl stickers — perfect for laptops, water bottles, journals and scrapbooks.",
+        price: "£9.99",
+        emoji: "⭐",
+        iconBg: "#FFF9E8",
+        wide: true,
+        bestSeller: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "heritage_magnets",
+        title: "Heritage Fridge Magnets",
+        size: "Set of 5 · Premium Acrylic",
+        desc: "Share your restored memories on any magnetic surface. Five beautifully printed magnets — perfect for fridges, whiteboards and metal doors. A small gift with a big emotional impact.",
+        price: "£12.99",
+        emoji: "🧲",
+        iconBg: "#FFF4E0",
+        wide: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "master_lab_mug",
+        title: "Master Lab Photo Mug",
+        size: "11 oz · High-Gloss · Dishwasher Safe",
+        desc: "A sturdy, high-gloss mug for your morning coffee. Your expertly restored photo printed in rich, vivid colour on a robust ceramic mug — a daily reminder of your most cherished memory.",
+        price: "£19.99",
+        emoji: "☕",
+        iconBg: "#FFF3E0",
+        wide: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "nappa_keyring",
+        title: "Genuine Leather Keyring",
+        size: "Premium Nappa Leather · Handmade in London",
+        desc: "Handmade in London from buttery-soft genuine Nappa leather — the same quality found in luxury handbags. A beautiful, tactile way to carry your cherished restored memory with you every single day.",
+        price: "£24.99",
+        emoji: "🔑",
+        iconBg: "#EFEBE9",
+        wide: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+    ],
+  },
+  {
     id: "living_comforts",
     label: "Comforts",
     emoji: "🛋️",
@@ -1159,7 +1223,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["living", "heritage_jigsaws", "living_comforts", "large_format", "bargain_memories"];
+const MENU_TABS = ["living", "fast_gifts", "heritage_jigsaws", "living_comforts", "large_format", "bargain_memories"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
