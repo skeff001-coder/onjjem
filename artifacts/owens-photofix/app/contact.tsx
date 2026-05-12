@@ -21,9 +21,7 @@ const DARK = "#1C1A14";
 const MUTED = "#7A6E57";
 
 const BUSINESS_EMAIL = "hello@onjjem.co.uk";
-const BUSINESS_PHONE = "+44 20 1234 5678";
 const PRIVACY_URL = "https://onjjem.co.uk/privacy";
-const HOURS = "Mon – Fri · 9 am – 6 pm GMT";
 
 function ContactRow({
   icon,
@@ -66,11 +64,6 @@ export default function ContactScreen() {
   const openEmail = () =>
     Linking.openURL(`mailto:${BUSINESS_EMAIL}?subject=ONJJEM Enquiry`).catch(() =>
       Alert.alert("Could not open Mail", `Please email us at ${BUSINESS_EMAIL}`)
-    );
-
-  const openPhone = () =>
-    Linking.openURL(`tel:${BUSINESS_PHONE.replace(/\s/g, "")}`).catch(() =>
-      Alert.alert("Could not open Phone", `Please call us on ${BUSINESS_PHONE}`)
     );
 
   const openPrivacy = () =>
@@ -133,15 +126,6 @@ export default function ContactScreen() {
             sub="We aim to reply within 24 hours"
             onPress={openEmail}
             actionLabel="Email Us"
-          />
-          <View style={styles.rowDivider} />
-          <ContactRow
-            icon="call-outline"
-            label="Phone Number"
-            value={BUSINESS_PHONE}
-            sub={HOURS}
-            onPress={openPhone}
-            actionLabel="Call Us"
           />
         </View>
 
