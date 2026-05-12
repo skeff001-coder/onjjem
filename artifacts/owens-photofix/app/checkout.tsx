@@ -74,13 +74,13 @@ export default function CheckoutScreen() {
         contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 32 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* TEST MODE banner */}
-        <View style={styles.testBanner}>
-          <Ionicons name="flask-outline" size={18} color="#92400E" />
-          <View style={styles.testBannerText}>
-            <Text style={styles.testBannerTitle}>TEST MODE — No payment will be taken</Text>
-            <Text style={styles.testBannerSub}>
-              This is a preview of the checkout flow. Tap "Confirm Test Order" to see the order confirmation screen.
+        {/* Secure order notice */}
+        <View style={styles.secureBanner}>
+          <Ionicons name="shield-checkmark-outline" size={18} color="#1A7A4A" />
+          <View style={styles.secureBannerText}>
+            <Text style={styles.secureBannerTitle}>Secure Order · SSL Encrypted</Text>
+            <Text style={styles.secureBannerSub}>
+              Your order will be confirmed and our team will contact you within 2 hours to arrange payment and delivery.
             </Text>
           </View>
         </View>
@@ -129,7 +129,7 @@ export default function CheckoutScreen() {
             <Ionicons name="location-outline" size={20} color={GOLD} />
             <View style={styles.deliveryText}>
               <Text style={styles.deliveryTitle}>Delivery Address</Text>
-              <Text style={styles.deliveryValue}>Entered at checkout · UK delivery</Text>
+              <Text style={styles.deliveryValue}>Confirmed with our team · UK delivery</Text>
             </View>
           </View>
           <View style={styles.deliveryDivider} />
@@ -145,7 +145,7 @@ export default function CheckoutScreen() {
             <Ionicons name="card-outline" size={20} color={GOLD} />
             <View style={styles.deliveryText}>
               <Text style={styles.deliveryTitle}>Payment</Text>
-              <Text style={styles.deliveryValue}>Visa · Mastercard · PayPal accepted</Text>
+              <Text style={styles.deliveryValue}>Visa · Mastercard · PayPal · Bank Transfer</Text>
             </View>
           </View>
         </View>
@@ -154,11 +154,11 @@ export default function CheckoutScreen() {
         <View style={styles.restorationNote}>
           <Ionicons name="color-wand-outline" size={16} color={GOLD} />
           <Text style={styles.restorationText}>
-            Every order includes a complimentary 2-day expert restoration period before printing.
+            Every order includes a complimentary expert restoration review before printing. We'll send you a preview for approval.
           </Text>
         </View>
 
-        {/* Confirm Test Order button */}
+        {/* Place Order button */}
         <TouchableOpacity
           style={[styles.confirmBtn, confirming && styles.confirmBtnLoading]}
           onPress={handleConfirm}
@@ -178,9 +178,9 @@ export default function CheckoutScreen() {
             />
             <View>
               <Text style={styles.confirmBtnText}>
-                {confirming ? "Confirming…" : "Confirm Test Order"}
+                {confirming ? "Placing Order…" : "Place Order"}
               </Text>
-              <Text style={styles.confirmBtnSub}>TEST MODE · No real payment</Text>
+              <Text style={styles.confirmBtnSub}>We'll be in touch within 2 hours</Text>
             </View>
           </LinearGradient>
         </TouchableOpacity>
@@ -220,22 +220,22 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   scrollContent: { padding: 20, gap: 16 },
 
-  testBanner: {
+  secureBanner: {
     flexDirection: "row",
     gap: 12,
-    backgroundColor: "#FEF3C7",
+    backgroundColor: "#F0FFF4",
     borderWidth: 1.5,
-    borderColor: "#F59E0B",
+    borderColor: "#6EE7B7",
     borderRadius: 12,
     padding: 14,
     alignItems: "flex-start",
   },
-  testBannerText: { flex: 1 },
-  testBannerTitle: {
-    fontSize: 13, fontFamily: "Inter_700Bold", color: "#92400E", marginBottom: 4,
+  secureBannerText: { flex: 1 },
+  secureBannerTitle: {
+    fontSize: 13, fontFamily: "Inter_700Bold", color: "#1A7A4A", marginBottom: 4,
   },
-  testBannerSub: {
-    fontSize: 12, fontFamily: "Inter_400Regular", color: "#B45309", lineHeight: 17,
+  secureBannerSub: {
+    fontSize: 12, fontFamily: "Inter_400Regular", color: "#2D6A4F", lineHeight: 17,
   },
 
   summaryCard: {

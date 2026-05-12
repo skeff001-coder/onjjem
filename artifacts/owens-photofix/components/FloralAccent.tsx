@@ -21,7 +21,7 @@ export function FloralAccent({ side, size = 88 }: Props) {
         height: size,
         opacity: 0.32,
         transform: side === "right" ? [{ scaleX: -1 }] : [],
-        pointerEvents: "none",
+        pointerEvents: "none" as const,
       }}
     >
       <Svg width={size} height={size} viewBox="0 0 88 88">

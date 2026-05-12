@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "ONJJEM PHOTO RESTORATION",
+    "name": "ONJJEM Photo Restoration",
     "slug": "owens-photofix",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon_refined.png",
     "scheme": "owens-photofix",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/icon_refined.png",
@@ -21,10 +21,19 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "ONJJEM needs access to your photos so you can choose a photo to restore.",
-        "NSPhotoLibraryAddUsageDescription": "Allow ONJJEM to save your enhanced photo to your Photos library."
+        "NSPhotoLibraryAddUsageDescription": "Allow ONJJEM to save your enhanced photo to your Photos library.",
+        "NSCameraUsageDescription": "ONJJEM can use your camera to take a photo for restoration.",
+        "CFBundleLocalizations": ["en-GB"],
+        "CFBundleDevelopmentRegion": "en_GB"
       }
     },
-    "android": {},
+    "android": {
+      "package": "com.onjjem.photorestoration",
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
@@ -40,7 +49,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "ONJJEM needs access to your photos so you can choose a photo to restore."
+          "photosPermission": "ONJJEM needs access to your photos so you can choose a photo to restore.",
+          "cameraPermission": "ONJJEM can use your camera to take a photo for restoration."
         }
       ],
       [

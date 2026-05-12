@@ -47,10 +47,7 @@ function AppSplash() {
         {/* Brand name */}
         <GraffitiTitle fontSize={60} letterSpacing={8} />
         <Text style={splash.subtitle}>Bringing your Gems of Love to Life</Text>
-        <View style={splash.awardRow}>
-          <Text style={splash.awardTrophy}>🏆</Text>
-          <Text style={splash.awardText}>Expert Photo Restoration · London Studio</Text>
-        </View>
+
 
         {/* Thin divider */}
         <View style={splash.divider} />
