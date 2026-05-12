@@ -361,49 +361,6 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    id: "leather",
-    label: "Luxury Leather",
-    emoji: "👜",
-    subtitle: "Handcrafted leather goods with your photo",
-    fulfillment: "Master Leather Goods",
-    headerGradient: ["#6D4C41", "#3E2723"],
-    products: [
-      {
-        id: "leather_wallet",
-        title: "Groom's Leather Wallet",
-        desc: "A timeless gift. Hand stitched Genuine Nappa Leather with a hidden photo compartment for a truly personal touch.",
-        price: "£45",
-        emoji: "💳",
-        iconBg: "#F5F0EB",
-        wide: true,
-        premiumBadge: true,
-        photo: require("@/assets/leather/wallet_ai.png"),
-      },
-      {
-        id: "leather_purse",
-        title: "Genuine Nappa Leather Purse",
-        desc: "Expertly handmade in London using buttery soft Genuine Nappa Leather. Features a smooth or textured finish with your memories printed in high definition.",
-        price: "£109",
-        emoji: "👛",
-        iconBg: "#EFEBE9",
-        wide: true,
-        premiumBadge: true,
-        photo: require("@/assets/leather/purse_ai.png"),
-      },
-      {
-        id: "leather_handbag",
-        title: "Designer Leather Tote",
-        desc: "Make a statement with a 100% Genuine Nappa Leather handbag — durable, stylish, and completely unique to you.",
-        price: "£139",
-        emoji: "👜",
-        iconBg: "#EDE0D4",
-        wide: true,
-        premiumBadge: true,
-        photo: require("@/assets/leather/tote_ai.png"),
-      },
-    ],
-  },
-  {
     id: "large_format",
     label: "Feature Walls",
     emoji: "🏛️",
@@ -1016,7 +973,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["living", "bedroom", "junior_sports", "leather", "personal", "little_treasures", "bargain_memories", "car_keepsakes", "grand_presentation"];
+const MENU_TABS = ["living", "bedroom", "junior_sports", "personal", "little_treasures", "bargain_memories", "car_keepsakes", "grand_presentation"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
