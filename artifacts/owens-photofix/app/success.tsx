@@ -129,7 +129,7 @@ export default function SuccessScreen() {
             <View style={styles.summaryHeaderRow}>
               <View style={styles.summaryHeaderLeft}>
                 <Ionicons name="cube-outline" size={16} color={GOLD} />
-                <Text style={styles.summaryOrderLabel}>ORDER CONFIRMED</Text>
+                <Text style={styles.summaryOrderLabel}>ORDER RECEIVED</Text>
               </View>
               <View style={styles.orderNumBadge}>
                 <Text style={styles.orderNumText}>#{orderNumber}</Text>
@@ -164,7 +164,7 @@ export default function SuccessScreen() {
 
             {/* Total */}
             <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Total Paid</Text>
+              <Text style={styles.totalLabel}>Estimated Total</Text>
               <Text style={styles.totalAmount}>£{total}</Text>
             </View>
           </View>
