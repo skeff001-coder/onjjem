@@ -2492,31 +2492,41 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
     </View>
   ) : null;
 
+  const hasTopBadge = product.bestSeller || product.quickBuy || product.madeToMeasure || product.premiumBadge;
+
   return (
     <>
     <View style={[s.productCard, isWide && s.productCardWide]}>
-      {product.bestSeller && (
-        <View style={s.bestSellerBadge}>
-          <Text style={s.bestSellerStar}>★</Text>
-          <Text style={s.bestSellerText}>Best Seller</Text>
-        </View>
-      )}
-      {product.quickBuy && (
-        <View style={s.quickBuyBadge}>
-          <Text style={s.quickBuyBadgeIcon}>⚡</Text>
-          <Text style={s.quickBuyBadgeText}>Quick Buy</Text>
-        </View>
-      )}
-      {product.madeToMeasure && (
-        <View style={s.madeToMeasureBadge}>
-          <Text style={s.madeToMeasureBadgeStar}>📐</Text>
-          <Text style={s.madeToMeasureBadgeText}>Made to Measure</Text>
-        </View>
-      )}
-      {product.premiumBadge && (
-        <View style={s.premiumBadge}>
-          <Text style={s.premiumBadgeStar}>♦</Text>
-          <Text style={s.premiumBadgeText}>Premium Quality</Text>
+
+      {/* In-flow top badge strip — no overlap with images */}
+      {hasTopBadge && (
+        <View style={s.cardTopBadgeRow}>
+          <View style={s.cardTopBadgeLeft}>
+            {product.bestSeller && (
+              <View style={s.bestSellerBadge}>
+                <Text style={s.bestSellerStar}>★</Text>
+                <Text style={s.bestSellerText}>Best Seller</Text>
+              </View>
+            )}
+            {product.quickBuy && (
+              <View style={s.quickBuyBadge}>
+                <Text style={s.quickBuyBadgeIcon}>⚡</Text>
+                <Text style={s.quickBuyBadgeText}>Quick Buy</Text>
+              </View>
+            )}
+            {product.madeToMeasure && (
+              <View style={s.madeToMeasureBadge}>
+                <Text style={s.madeToMeasureBadgeStar}>📐</Text>
+                <Text style={s.madeToMeasureBadgeText}>Made to Measure</Text>
+              </View>
+            )}
+          </View>
+          {product.premiumBadge && (
+            <View style={s.premiumBadge}>
+              <Text style={s.premiumBadgeStar}>♦</Text>
+              <Text style={s.premiumBadgeText}>Premium Quality</Text>
+            </View>
+          )}
         </View>
       )}
 
@@ -2525,6 +2535,7 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
           <Image source={product.photo} style={s.productPhotoFull} resizeMode="contain" />
           <View style={s.productBody}>
             <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
+            {product.size && <Text style={s.productSizeText}>{product.size}</Text>}
             <Text style={s.productDesc}>{product.desc}</Text>
             {optionPickers}
             {uploadBtn}
@@ -2537,14 +2548,10 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
           <View style={s.productWideRow}>
             <View style={[s.productIconWrap, { backgroundColor: product.iconBg }, s.productIconWrapWide]}>
               <Text style={[s.productEmoji, s.productEmojiWide]}>{product.emoji}</Text>
-              {product.size && (
-                <View style={s.sizePill}>
-                  <Text style={s.sizePillText}>{product.size}</Text>
-                </View>
-              )}
             </View>
             <View style={[s.productBody, s.productBodyWide]}>
               <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
+              {product.size && <Text style={s.productSizeText}>{product.size}</Text>}
               <Text style={s.productDesc}>{product.desc}</Text>
               {optionPickers}
               {uploadBtn}
@@ -2557,14 +2564,10 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
           <BadgeRow product={product} />
           <View style={[s.productIconWrap, { backgroundColor: product.iconBg }]}>
             <Text style={s.productEmoji}>{product.emoji}</Text>
-            {product.size && (
-              <View style={s.sizePill}>
-                <Text style={s.sizePillText}>{product.size}</Text>
-              </View>
-            )}
           </View>
           <View style={s.productBody}>
             <Text style={s.productTitle} numberOfLines={2}>{product.title}</Text>
+            {product.size && <Text style={s.productSizeText}>{product.size}</Text>}
             <Text style={s.productDesc}>{product.desc}</Text>
             {optionPickers}
             {uploadBtn}
@@ -3529,9 +3532,25 @@ const s = StyleSheet.create({
     flexDirection: "row",
   },
 
+  cardTopBadgeRow: {
+    flexDirection: "row" as const,
+    justifyContent: "space-between" as const,
+    alignItems: "center" as const,
+    paddingHorizontal: 10,
+    paddingTop: 8,
+    paddingBottom: 4,
+    gap: 6,
+  },
+  cardTopBadgeLeft: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 5,
+    flexWrap: "wrap" as const,
+    flex: 1,
+  },
+
   bestSellerBadge: {
-    position: "absolute", top: 8, right: 8, zIndex: 10,
-    flexDirection: "row", alignItems: "center", gap: 3,
+    flexDirection: "row" as const, alignItems: "center" as const, gap: 3,
     backgroundColor: GOLD_BG, borderWidth: 1, borderColor: GOLD,
     borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3,
   },
@@ -3539,8 +3558,7 @@ const s = StyleSheet.create({
   bestSellerText: { fontSize: 10, fontWeight: "700" as const, color: GOLD, fontFamily: "Inter_700Bold" },
 
   quickBuyBadge: {
-    position: "absolute", top: 8, left: 8, zIndex: 10,
-    flexDirection: "row", alignItems: "center", gap: 3,
+    flexDirection: "row" as const, alignItems: "center" as const, gap: 3,
     backgroundColor: "#1A4D2E",
     borderWidth: 1, borderColor: "#4CAF50",
     borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3,
@@ -3549,8 +3567,7 @@ const s = StyleSheet.create({
   quickBuyBadgeText: { fontSize: 10, fontWeight: "700" as const, color: "#81C784", fontFamily: "Inter_700Bold", letterSpacing: 0.3 },
 
   madeToMeasureBadge: {
-    position: "absolute", top: 8, left: 8, zIndex: 10,
-    flexDirection: "row", alignItems: "center", gap: 3,
+    flexDirection: "row" as const, alignItems: "center" as const, gap: 3,
     backgroundColor: "#1C1A14",
     borderWidth: 1, borderColor: "#C9960C",
     borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3,
@@ -3559,8 +3576,7 @@ const s = StyleSheet.create({
   madeToMeasureBadgeText: { fontSize: 10, fontWeight: "700" as const, color: "#C9960C", fontFamily: "Inter_700Bold", letterSpacing: 0.3 },
 
   premiumBadge: {
-    position: "absolute", top: 8, right: 8, zIndex: 10,
-    flexDirection: "row", alignItems: "center", gap: 3,
+    flexDirection: "row" as const, alignItems: "center" as const, gap: 3,
     backgroundColor: "#FBF5E0",
     borderWidth: 1, borderColor: "#C9960C",
     borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3,
@@ -3815,12 +3831,13 @@ const s = StyleSheet.create({
   productEmoji: { fontSize: 36 },
   productEmojiWide: { fontSize: 30 },
 
-  sizePill: {
-    position: "absolute", bottom: 6, right: 6,
-    backgroundColor: "rgba(0,102,255,0.1)", borderRadius: 8,
-    paddingHorizontal: 6, paddingVertical: 2,
+  productSizeText: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600" as const,
+    color: BLUE,
+    marginBottom: 2,
   },
-  sizePillText: { fontSize: 9, fontWeight: "700" as const, color: BLUE, fontFamily: "Inter_700Bold" },
 
   productBody: { padding: 12, gap: 3, flex: 1 },
   productBodyWide: { justifyContent: "center" },
