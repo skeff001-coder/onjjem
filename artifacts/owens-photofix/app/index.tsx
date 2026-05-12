@@ -281,13 +281,27 @@ export default function HomeScreen() {
               style={({ pressed }) => [s.uploadArea, pressed && s.pressed]}
               onPress={pickImage}
             >
+              {/* Before → after thumbnail preview */}
+              <View style={s.uploadThumbRow}>
+                <Image source={bgImages[0]} style={s.uploadThumb} resizeMode="cover" />
+                <View style={s.uploadThumbArrow}>
+                  <Ionicons name="arrow-forward" size={13} color="#C9960C" />
+                </View>
+                <Image source={bgImages[1]} style={s.uploadThumb} resizeMode="cover" />
+                <View style={s.uploadThumbSpacer} />
+                <Image
+                  source={require("@/assets/images/icon_refined.png")}
+                  style={s.uploadThumbAppIcon}
+                />
+              </View>
+              {/* Upload prompt */}
               <View style={s.uploadInner}>
                 <View style={s.uploadIconWrap}>
-                  <Ionicons name="image-outline" size={22} color="#C9960C" />
+                  <Ionicons name="image-outline" size={20} color="#C9960C" />
                 </View>
                 <View style={s.uploadTextWrap}>
                   <Text style={s.uploadTitle}>Upload a Photo</Text>
-                  <Text style={s.uploadSub}>Tap to choose from your library</Text>
+                  <Text style={s.uploadSub}>Tap to restore your memories</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.55)" />
               </View>
@@ -340,20 +354,6 @@ export default function HomeScreen() {
               </LinearGradient>
             </TouchableOpacity>
 
-            <TouchableOpacity style={s.proBtnGlow} onPress={() => setPaywallVisible(true)} activeOpacity={0.88}>
-              <LinearGradient
-                colors={["#FFE566", "#F5C030", "#E08800"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={s.proBtn}
-              >
-                <Ionicons name="star" size={22} color="#fff" />
-                <Text style={s.proBtnText}>Unlock Pro</Text>
-                <View style={s.proBadge}>
-                  <Text style={s.proBadgeText}>✦ PREMIUM</Text>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
 
             <TouchableOpacity
               style={s.giftBtnGlow}
@@ -861,10 +861,44 @@ function makeStyles(
       paddingHorizontal: 16,
       paddingVertical: 14,
     },
+    uploadThumbRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      paddingHorizontal: 14,
+      paddingTop: 12,
+      paddingBottom: 6,
+      gap: 6,
+    },
+    uploadThumb: {
+      width: 72,
+      height: 52,
+      borderRadius: 8,
+      flex: 1,
+    },
+    uploadThumbArrow: {
+      width: 26,
+      height: 26,
+      borderRadius: 13,
+      backgroundColor: "#FDF6DC",
+      borderWidth: 1,
+      borderColor: "#E8D48B",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      flexShrink: 0,
+    },
+    uploadThumbSpacer: {
+      flex: 1,
+    },
+    uploadThumbAppIcon: {
+      width: 44,
+      height: 44,
+      borderRadius: 12,
+      flexShrink: 0,
+    },
     uploadIconWrap: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
+      width: 36,
+      height: 36,
+      borderRadius: 18,
       backgroundColor: "rgba(201,150,12,0.12)",
       borderWidth: 1,
       borderColor: "rgba(201,150,12,0.3)",
