@@ -283,49 +283,122 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    id: "jigsaws",
-    label: "Jigsaws",
+    id: "heritage_jigsaws",
+    label: "Heritage Jigsaws",
     emoji: "🧩",
-    subtitle: "Every puzzle ships in a premium metal gift tin",
-    fulfillment: "Master Print Lab",
-    headerGradient: ["#2E7D32", "#1B5E20"],
+    subtitle: "Every puzzle ships in a Luxury Presentation Tin · Cinema-Grade AI Restoration included",
+    fulfillment: "ONJJEM Master Print Lab · Luxury Presentation Tin included",
+    headerGradient: ["#1B3A1B", "#2E7D32"] as const,
     products: [
+      // — Specialty Collection —
       {
-        id: "jigsaw_30",
-        title: "Mini Wooden Jigsaw",
-        size: "30 pieces",
-        desc: "Wooden pieces · perfect for little ones",
-        price: "£19.99",
-        emoji: "🪵",
-        iconBg: "#E8F5E9",
+        id: "jigsaw_heart",
+        title: "The Anniversary Heart Jigsaw",
+        size: "Specialty Collection · Heart Shaped",
+        desc: "A romantic heart-shaped puzzle for your most precious wedding or anniversary memories.",
+        price: "£34.99",
+        emoji: "❤️",
+        iconBg: "#FFF0F0",
+        wide: true,
+        onjjemSeal: true,
+        premiumBadge: true,
       },
       {
-        id: "jigsaw_252",
-        title: "Classic Jigsaw",
-        size: "252 pieces",
-        desc: "Cardboard · great family activity",
+        id: "jigsaw_collage",
+        title: "The Generations Collage Puzzle",
+        size: "Specialty Collection · 500 Pieces",
+        desc: "Can't pick just one? Our experts will arrange your favourite restored photos into a stunning 500-piece collage.",
         price: "£29.99",
+        emoji: "🖼️",
+        iconBg: "#F0F7FF",
+        wide: true,
+        onjjemSeal: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "jigsaw_ceramic",
+        title: "The Luxury Ceramic Hexagon",
+        size: "Specialty Collection · Ceramic Pieces",
+        desc: "Our most unique puzzle. Hand-finished ceramic pieces for a truly unbelievable tactile experience.",
+        price: "£89.00",
+        emoji: "⬡",
+        iconBg: "#FDF6DC",
+        wide: true,
+        onjjemSeal: true,
+        premiumBadge: true,
+        handmadeInLondon: true,
+      },
+      // — Classic Cardboard Collection —
+      {
+        id: "jigsaw_1000",
+        title: "1000 Piece Giant Puzzle",
+        size: "Classic Cardboard · Satin-Finish",
+        desc: "A true family challenge for those big stadium or heritage shots.",
+        price: "£49.99",
         emoji: "🧩",
-        iconBg: "#F1F8E9",
+        iconBg: "#E8F5E9",
+        wide: true,
+        onjjemSeal: true,
+        bestSeller: true,
       },
       {
         id: "jigsaw_500",
-        title: "Standard Jigsaw",
-        size: "500 pieces",
-        desc: "Cardboard · satisfying challenge",
+        title: "500 Piece Standard Puzzle",
+        size: "Classic Cardboard · Satin-Finish",
+        desc: "Our most popular size for everyday memories.",
         price: "£39.99",
         emoji: "🧩",
-        iconBg: "#E8F5E9",
+        iconBg: "#F1F8E9",
+        wide: true,
+        onjjemSeal: true,
       },
       {
-        id: "jigsaw_1000",
-        title: "Deluxe Jigsaw",
-        size: "1000 pieces",
-        desc: "Cardboard · the ultimate memory puzzle",
-        price: "£49.99",
+        id: "jigsaw_250_card",
+        title: "250 Piece Small Puzzle",
+        size: "Classic Cardboard · Satin-Finish",
+        desc: "Perfect for a quick afternoon of fun.",
+        price: "£29.99",
         emoji: "🧩",
         iconBg: "#DCEDC8",
-        bestSeller: true,
+        wide: true,
+        onjjemSeal: true,
+      },
+      // — Premium Heirloom Wooden Collection —
+      {
+        id: "jigsaw_wood_xl",
+        title: "250 Piece X-Large Wooden",
+        size: "Premium Wooden · 3mm Luxury Wood",
+        desc: "The ultimate heirloom. Hand-cut from luxury wood for a perfect click.",
+        price: "£84.99",
+        emoji: "🪵",
+        iconBg: "#FFF3E0",
+        wide: true,
+        onjjemSeal: true,
+        premiumBadge: true,
+        handmadeInLondon: true,
+      },
+      {
+        id: "jigsaw_wood_100",
+        title: "100 Piece Premium Wooden",
+        size: "Premium Wooden · 3mm Luxury Wood",
+        desc: "A thick, durable masterpiece that will last for generations.",
+        price: "£64.99",
+        emoji: "🪵",
+        iconBg: "#FFF8E1",
+        wide: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+      },
+      {
+        id: "jigsaw_wood_kids",
+        title: "30 Piece Kids Wooden",
+        size: "Premium Wooden · 3mm Luxury Wood",
+        desc: "A sturdy, unbreakable puzzle for the little ones.",
+        price: "£29.99",
+        emoji: "🧸",
+        iconBg: "#FFFDE7",
+        wide: true,
+        onjjemSeal: true,
       },
     ],
   },
@@ -957,7 +1030,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["living", "bedroom", "junior_sports", "personal", "little_treasures", "bargain_memories", "car_keepsakes", "grand_presentation"];
+const MENU_TABS = ["living", "bedroom", "heritage_jigsaws", "junior_sports", "personal", "little_treasures", "bargain_memories", "car_keepsakes", "grand_presentation"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
@@ -1128,14 +1201,30 @@ export default function GiftShopScreen() {
             </View>
           </LinearGradient>
 
-          {/* Metal tin callout — jigsaws only */}
-          {activeTab === "jigsaws" && (
-            <View style={s.tinCallout}>
-              <Text style={s.tinEmoji}>🥫</Text>
-              <View style={s.tinText}>
-                <Text style={s.tinTitle}>Includes Premium Metal Gift Tin</Text>
-                <Text style={s.tinSub}>
-                  Every jigsaw ships in a professional metal tin with your photo printed on the lid — ready to gift, no wrapping needed.
+          {/* Heritage Jigsaws LTO banner */}
+          {activeTab === "heritage_jigsaws" && (
+            <View style={s.jigsawLtoBanner}>
+              <LinearGradient
+                colors={["#1B3A1B", "#2E7D32", "#1B3A1B"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.jigsawLtoGradient}
+              >
+                <View style={s.jigsawLtoLeft}>
+                  <View style={s.jigsawLtoBadge}>
+                    <Text style={s.jigsawLtoBadgeText}>LIMITED TIME</Text>
+                  </View>
+                  <Text style={s.jigsawLtoHeadline}>30% OFF ALL JIGSAWS</Text>
+                  <Text style={s.jigsawLtoSub}>
+                    Price includes Cinema-Grade AI restoration · Luxury Presentation Tin included
+                  </Text>
+                </View>
+                <Text style={s.jigsawLtoEmoji}>🧩</Text>
+              </LinearGradient>
+              <View style={s.jigsawTinRow}>
+                <Ionicons name="gift-outline" size={14} color="#2E7D32" />
+                <Text style={s.jigsawTinText}>
+                  Every puzzle ships in a premium metal tin with your photo on the lid — ready to gift
                 </Text>
               </View>
             </View>
@@ -3525,7 +3614,69 @@ const s = StyleSheet.create({
   giftWrapDescText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#5C4A00", lineHeight: 19, flex: 1, fontStyle: "italic" },
   giftWrapHint: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#8E8E93", lineHeight: 17, textAlign: "center" },
 
-  /* Metal tin callout */
+  /* Heritage Jigsaws LTO banner */
+  jigsawLtoBanner: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#C8E6C9",
+    overflow: "hidden" as const,
+  },
+  jigsawLtoGradient: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    justifyContent: "space-between" as const,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+    gap: 12,
+  },
+  jigsawLtoLeft: {
+    flex: 1,
+    gap: 4,
+  },
+  jigsawLtoBadge: {
+    alignSelf: "flex-start" as const,
+    backgroundColor: "#C9960C",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  jigsawLtoBadgeText: {
+    fontSize: 9,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: 1.5,
+  },
+  jigsawLtoHeadline: {
+    fontSize: 20,
+    fontFamily: "BebasNeue_400Regular",
+    color: "#fff",
+    letterSpacing: 2,
+  },
+  jigsawLtoSub: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.8)",
+    lineHeight: 16,
+  },
+  jigsawLtoEmoji: {
+    fontSize: 42,
+  },
+  jigsawTinRow: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 6,
+    backgroundColor: "#E8F5E9",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  jigsawTinText: {
+    flex: 1,
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "#1B5E20",
+    lineHeight: 16,
+  },
+
+  /* Metal tin callout (legacy — kept for reference) */
   tinCallout: {
     flexDirection: "row",
     alignItems: "center",
