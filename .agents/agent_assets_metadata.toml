@@ -155,3 +155,9 @@ id = "3JuNP48gqEVZ-anlPslVL"
 uri = "file://attached_assets/icon_refined.png"
 type = "image"
 title = "Refined Icon — Gold O on Before & After Restoration Background"
+
+[[outputs]]
+id = "BuP_Dn9Kva8IjN-NqHqcH"
+uri = "file://expo-go-qr.png"
+type = "image"
+title = "Expo Go QR Code — ONJJEM"

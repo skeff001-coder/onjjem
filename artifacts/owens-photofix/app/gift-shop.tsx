@@ -2082,7 +2082,7 @@ export default function GiftShopScreen() {
             onPress={() => {
               const orderNumber = `OJ-${Math.floor(1000 + Math.random() * 9000)}`;
               router.push({
-                pathname: "/success",
+                pathname: "/checkout",
                 params: {
                   orderNumber,
                   items: JSON.stringify(basketItems),

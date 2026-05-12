@@ -215,6 +215,8 @@ function RootLayoutNav() {
       <Stack.Screen name="admin" options={{ headerShown: false }} />
       <Stack.Screen name="gallery" options={{ headerShown: false }} />
       <Stack.Screen name="feature-walls" options={{ headerShown: false }} />
+      <Stack.Screen name="checkout" options={{ headerShown: false }} />
+      <Stack.Screen name="contact" options={{ headerShown: false }} />
     </Stack>
   );
 }

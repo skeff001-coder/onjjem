@@ -436,6 +436,17 @@ export default function HomeScreen() {
               </LinearGradient>
             </TouchableOpacity>
 
+            {/* Contact Support button */}
+            <TouchableOpacity
+              style={s.contactSupportBtn}
+              onPress={() => router.push("/contact")}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="headset-outline" size={18} color={colors.mutedForeground} />
+              <Text style={s.contactSupportText}>Contact Support</Text>
+              <Ionicons name="chevron-forward" size={15} color={colors.mutedForeground} />
+            </TouchableOpacity>
+
           </>
         )}
 
@@ -1580,6 +1591,25 @@ function makeStyles(
       fontWeight: "600" as const,
       fontFamily: "Inter_600SemiBold",
       color: "#A67C00",
+      textAlign: "center" as const,
+    },
+    contactSupportBtn: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 12,
+      backgroundColor: "rgba(255,255,255,0.45)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.2)",
+    },
+    contactSupportText: {
+      flex: 1,
+      fontSize: 14,
+      fontFamily: "Inter_500Medium",
+      color: "#7A6E57",
       textAlign: "center" as const,
     },
     featureWallsBtn: {
