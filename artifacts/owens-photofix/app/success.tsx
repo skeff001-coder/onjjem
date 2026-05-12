@@ -78,7 +78,9 @@ export default function SuccessScreen() {
           end={{ x: 1, y: 0 }}
           style={styles.headerBand}
         >
-          <Text style={styles.brandLetterSpacing}>ONJJEM</Text>
+          <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
+            <Text style={styles.brandLetterSpacing}>ONJJEM</Text>
+          </TouchableOpacity>
           <View style={styles.headerRule} />
           <Text style={styles.headerSub}>RESTORE · PRINT · CHERISH</Text>
         </LinearGradient>

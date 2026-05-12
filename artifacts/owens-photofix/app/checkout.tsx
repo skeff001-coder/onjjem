@@ -65,7 +65,9 @@ export default function CheckoutScreen() {
           <Ionicons name="chevron-back" size={24} color={DARK} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerEyebrow}>ONJJEM</Text>
+          <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
+            <Text style={styles.headerEyebrow}>ONJJEM</Text>
+          </TouchableOpacity>
           <Text style={styles.headerTitle}>Checkout</Text>
         </View>
         <View style={styles.headerRight} />

@@ -100,7 +100,9 @@ export default function GalleryScreen() {
           <Ionicons name="chevron-back" size={24} color={DARK} />
         </TouchableOpacity>
         <View style={s.headerCenter}>
-          <Text style={s.headerEyebrow}>ONJJEM</Text>
+          <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
+            <Text style={s.headerEyebrow}>ONJJEM</Text>
+          </TouchableOpacity>
           <Text style={s.headerTitle}>Masterpiece Gallery</Text>
         </View>
         <View style={s.headerRight} />

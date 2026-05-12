@@ -2,7 +2,7 @@ import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -58,6 +58,7 @@ export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const scrollRef = useRef<ScrollView>(null);
 
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
@@ -257,7 +258,9 @@ export default function HomeScreen() {
 
       <View style={s.header}>
         <View style={s.headerCenter}>
-          <GraffitiTitle fontSize={52} letterSpacing={9} />
+          <TouchableOpacity onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })} activeOpacity={0.8}>
+            <GraffitiTitle fontSize={52} letterSpacing={9} />
+          </TouchableOpacity>
           <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
         </View>
         {appState !== "idle" && (
@@ -268,6 +271,7 @@ export default function HomeScreen() {
       </View>
 
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={s.scroll}
         showsVerticalScrollIndicator={false}
       >
