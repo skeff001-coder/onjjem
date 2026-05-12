@@ -23,7 +23,7 @@ const MUTED = "#7A6E57";
 
 export default function SuccessScreen() {
   const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 72) : insets.top;
   const router = useRouter();
   const params = useLocalSearchParams<{
     orderNumber?: string;

@@ -81,7 +81,7 @@ const EXAMPLES = [
 
 export default function GalleryScreen() {
   const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 72) : insets.top;
   const router = useRouter();
 
   return (

@@ -1289,7 +1289,7 @@ function parsePrice(p: string): number {
 
 export default function GiftShopScreen() {
   const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 72) : insets.top;
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("canvas");
   const [giftWrap, setGiftWrap] = useState(false);

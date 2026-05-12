@@ -60,7 +60,7 @@ function ContactRow({
 
 export default function ContactScreen() {
   const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 72) : insets.top;
   const router = useRouter();
 
   const openEmail = () =>

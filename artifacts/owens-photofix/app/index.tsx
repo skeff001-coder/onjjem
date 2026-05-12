@@ -775,7 +775,7 @@ function makeStyles(
       height: SCREEN_H / 3,
     },
     header: {
-      paddingTop: topPad + 4,
+      paddingTop: 16,
       paddingHorizontal: 24,
       paddingBottom: 14,
       alignItems: "center",
@@ -1538,7 +1538,8 @@ function makeStyles(
       alignItems: "center" as const,
       justifyContent: "center" as const,
       gap: 7,
-      paddingVertical: 8,
+      paddingTop: topPad + 10,
+      paddingBottom: 10,
       paddingHorizontal: 14,
     },
     promoBannerText: {
