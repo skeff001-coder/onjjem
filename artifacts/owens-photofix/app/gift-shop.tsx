@@ -1379,6 +1379,9 @@ export default function GiftShopScreen() {
           <Ionicons name="chevron-back" size={24} color="#1C1C1E" />
         </TouchableOpacity>
         <View style={s.headerCenter}>
+          <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
+            <Text style={s.headerEyebrow}>ONJJEM</Text>
+          </TouchableOpacity>
           <Text style={s.headerTitle}>Gift Shop</Text>
           <Text style={s.headerSub}>Print · Gift · Remember</Text>
         </View>
@@ -3439,6 +3442,7 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: "#E2D9CF",
   },
   headerCenter: { flex: 1, alignItems: "center" },
+  headerEyebrow: { fontSize: 9, color: GOLD, letterSpacing: 4, fontFamily: "Inter_600SemiBold" },
   headerTitle: { fontSize: 20, fontWeight: "700" as const, color: "#1C1C1E", fontFamily: "Inter_700Bold" },
   headerSub: { fontSize: 11, color: "#8E8E93", fontFamily: "Inter_400Regular", letterSpacing: 1.5, marginTop: 1 },
   headerRight: { width: 40, alignItems: "center" },
