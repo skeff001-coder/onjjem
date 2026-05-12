@@ -23,7 +23,6 @@ import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { ProPaywall } from "@/components/ProPaywall";
-import { ProductMockup } from "@/components/ProductMockup";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 import { ReferralModal } from "@/components/ReferralModal";
 import { LivingMemoriesModal } from "@/components/LivingMemoriesModal";
@@ -34,10 +33,10 @@ type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
 
 const PRINT_PRODUCTS = [
-  { id: "canvas",  type: "canvas"  as const, title: "Premium Canvas",      price: "£29.99", emoji: "🖼️", bg: "#E8F0FE" },
-  { id: "keyring", type: "keyring" as const, title: "Photo Keyring",        price: "£9.99",  emoji: "🔑", bg: "#FFF3E0" },
-  { id: "large",   type: "large"   as const, title: "Large Format Print",   price: "£39.99", emoji: "🖨️", bg: "#E8F5E9" },
-  { id: "quilt",   type: "quilt"   as const, title: "Custom Photo Quilt",   price: "£49.99", emoji: "🧵", bg: "#FCE4EC" },
+  { id: "canvas",  title: "Premium Canvas",      category: "WALL ART",       price: "£29.99", emoji: "🖼️", g: ["#0D2137", "#183356"] as const },
+  { id: "keyring", title: "Leather Keyring",      category: "ACCESSORIES",    price: "£24.99", emoji: "🔑", g: ["#2B1600", "#57310A"] as const },
+  { id: "large",   title: "Large Format Print",   category: "PREMIUM PRINTS", price: "£39.99", emoji: "🖨️", g: ["#0D2A0D", "#1A521A"] as const },
+  { id: "gifts",   title: "Explore All Gifts",    category: "GIFT SHOP",      price: "£9.99",  emoji: "✨", g: ["#280D2A", "#521A57"] as const },
 ];
 
 const GALLERY_POOL = [
@@ -601,21 +600,22 @@ export default function HomeScreen() {
                 <Text style={s.featureWallsSub}>Custom murals up to 4m × 3m · Heritage & Wedding</Text>
               </View>
               <View style={s.featureWallsPriceWrap}>
-                <Text style={s.featureWallsPrice}>£409.99</Text>
+                <Text style={s.featureWallsPrice}>£45/m²</Text>
                 <Ionicons name="chevron-forward" size={14} color={colors.primary} />
               </View>
             </View>
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* Print Shop — always visible, upgrades to live mockups once a photo is loaded */}
+        {/* Signature Collection */}
         <View style={s.printShop}>
           <View style={s.printShopHeader}>
-            <Text style={s.printShopTitle}>Print Shop</Text>
+            <Text style={s.printShopEyebrow}>ONJJEM SIGNATURE COLLECTION</Text>
+            <Text style={s.printShopTitle}>Our Most Loved Gifts</Text>
             <Text style={s.printShopSub}>
               {previewUri
-                ? "See your photo on real products — tap to order"
-                : "Upload a photo to see it on real products"}
+                ? "Your restored photo on any of these — tap to order"
+                : "Tap any gift to explore the full range"}
             </Text>
           </View>
           <View style={s.printGrid}>
@@ -623,24 +623,32 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={product.id}
                 style={s.printCard}
-                activeOpacity={0.82}
-                onPress={() =>
-                  Alert.alert(
-                    "Coming Soon",
-                    `${product.title} ordering will be available soon!`
-                  )
-                }
+                activeOpacity={0.84}
+                onPress={() => router.push("/gift-shop")}
               >
-                <ProductMockup
-                  type={product.type}
-                  photoUri={previewUri}
-                  emoji={product.emoji}
-                  bg={product.bg}
-                />
-                <View style={s.printCardBody}>
-                  <Text style={s.printCardTitle}>{product.title}</Text>
-                  <Text style={s.printCardPrice}>From {product.price}</Text>
-                </View>
+                <LinearGradient
+                  colors={product.g}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={s.printCardGradient}
+                >
+                  <LinearGradient
+                    colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={s.printCardGoldBar}
+                  />
+                  <View style={s.printCardInner}>
+                    <View style={s.printCardEmojiRing}>
+                      <Text style={s.printCardEmoji}>{product.emoji}</Text>
+                    </View>
+                    <Text style={s.printCardCategory}>{product.category}</Text>
+                    <Text style={s.printCardTitle}>{product.title}</Text>
+                    <View style={s.printCardPriceBadge}>
+                      <Text style={s.printCardPrice}>from {product.price}</Text>
+                    </View>
+                  </View>
+                </LinearGradient>
               </TouchableOpacity>
             ))}
           </View>
@@ -1001,7 +1009,14 @@ function makeStyles(
       gap: 16,
     },
     printShopHeader: {
-      gap: 4,
+      gap: 5,
+    },
+    printShopEyebrow: {
+      fontSize: 10,
+      fontWeight: "700" as const,
+      color: colors.primary,
+      fontFamily: "Inter_700Bold",
+      letterSpacing: 2.5,
     },
     printShopTitle: {
       fontSize: 22,
@@ -1011,53 +1026,84 @@ function makeStyles(
       letterSpacing: 0.2,
     },
     printShopSub: {
-      fontSize: 14,
+      fontSize: 13,
       color: colors.mutedForeground,
       fontFamily: "Inter_400Regular",
     },
     printGrid: {
-      flexDirection: "row",
-      flexWrap: "wrap",
+      flexDirection: "row" as const,
+      flexWrap: "wrap" as const,
       gap: 12,
     },
     printCard: {
       width: "47.5%",
-      backgroundColor: colors.card,
-      borderRadius: 16,
-      overflow: "hidden",
-      borderWidth: 1,
-      borderColor: colors.border,
+      borderRadius: 18,
+      overflow: "hidden" as const,
       shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.06,
-      shadowRadius: 8,
-      elevation: 3,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.28,
+      shadowRadius: 16,
+      elevation: 10,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.28)",
     },
-    printCardImage: {
-      width: "100%",
-      aspectRatio: 1,
-      alignItems: "center",
-      justifyContent: "center",
+    printCardGradient: {
+      overflow: "hidden" as const,
+    },
+    printCardGoldBar: {
+      height: 3,
+      width: "100%" as const,
+    },
+    printCardInner: {
+      paddingTop: 18,
+      paddingBottom: 22,
+      paddingHorizontal: 12,
+      alignItems: "center" as const,
+      gap: 8,
+    },
+    printCardEmojiRing: {
+      width: 58,
+      height: 58,
+      borderRadius: 29,
+      backgroundColor: "rgba(201,150,12,0.15)",
+      borderWidth: 1.5,
+      borderColor: "rgba(201,150,12,0.5)",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      marginBottom: 2,
     },
     printCardEmoji: {
-      fontSize: 48,
+      fontSize: 26,
     },
-    printCardBody: {
-      padding: 12,
-      gap: 3,
+    printCardCategory: {
+      fontSize: 9,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "rgba(201,150,12,0.85)",
+      letterSpacing: 2.2,
     },
     printCardTitle: {
       fontSize: 14,
       fontWeight: "700" as const,
-      color: colors.foreground,
+      color: "#F5EDD8",
       fontFamily: "Inter_700Bold",
-      lineHeight: 18,
+      textAlign: "center" as const,
+      lineHeight: 19,
+    },
+    printCardPriceBadge: {
+      backgroundColor: "rgba(201,150,12,0.18)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.45)",
+      paddingHorizontal: 12,
+      paddingVertical: 4,
+      borderRadius: 20,
+      marginTop: 2,
     },
     printCardPrice: {
-      fontSize: 13,
-      fontWeight: "600" as const,
-      color: colors.primary,
-      fontFamily: "Inter_600SemiBold",
+      fontSize: 11,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
     },
     livingMemoriesBtn: {
       marginHorizontal: 16,

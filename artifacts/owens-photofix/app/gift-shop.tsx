@@ -1393,7 +1393,7 @@ export default function GiftShopScreen() {
         style={s.tabBarScroll}
         contentContainerStyle={s.tabBar}
       >
-        {CATEGORIES.filter((cat) => MENU_TABS.includes(cat.id)).map((cat) => {
+        {[...CATEGORIES].filter((cat) => MENU_TABS.includes(cat.id)).sort((a, b) => MENU_TABS.indexOf(a.id) - MENU_TABS.indexOf(b.id)).map((cat) => {
           const active = activeTab === cat.id;
           return (
             <TouchableOpacity
