@@ -28,7 +28,7 @@ import { ReferralModal } from "@/components/ReferralModal";
 import { LivingMemoriesModal } from "@/components/LivingMemoriesModal";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { FloralAccent } from "@/components/FloralAccent";
-import { TitleWreath } from "@/components/TitleWreath";
+import { TitleWreath, TitleWreathFront } from "@/components/TitleWreath";
 import { TrustFooter } from "@/components/TrustFooter";
 
 type Mode = "sharpen" | "colorize";
@@ -264,6 +264,7 @@ export default function HomeScreen() {
           <View style={{ position: "relative" }}>
             <TitleWreath />
             <GraffitiTitle fontSize={52} letterSpacing={9} />
+            <TitleWreathFront />
           </View>
           <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
         </View>
