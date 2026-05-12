@@ -282,14 +282,63 @@ export default function HomeScreen() {
               onPress={pickImage}
             >
               <View style={s.uploadInner}>
-                <Image
-                  source={require("@/assets/images/icon_refined.png")}
-                  style={s.logoIcon}
-                />
-                <Text style={s.uploadTitle}>Upload a Photo</Text>
-                <Text style={s.uploadSub}>Tap to choose from your library</Text>
+                <View style={s.uploadIconWrap}>
+                  <Ionicons name="image-outline" size={22} color="#C9960C" />
+                </View>
+                <View style={s.uploadTextWrap}>
+                  <Text style={s.uploadTitle}>Upload a Photo</Text>
+                  <Text style={s.uploadSub}>Tap to choose from your library</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.55)" />
               </View>
             </Pressable>
+
+            {/* ── CANVAS PRINTS — STANDALONE HERO ── */}
+            <TouchableOpacity
+              style={s.canvasHeroGlow}
+              onPress={() => router.push("/feature-walls")}
+              activeOpacity={0.87}
+            >
+              <LinearGradient
+                colors={["#0D1B2A", "#162236", "#0A1520"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={s.canvasHero}
+              >
+                <LinearGradient
+                  colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={s.canvasHeroGoldBar}
+                />
+                <View style={s.canvasHeroInner}>
+                  <View style={s.canvasHeroLeft}>
+                    <View style={s.canvasHeroEyebrowRow}>
+                      <Ionicons name="sparkles" size={10} color="#C9960C" />
+                      <Text style={s.canvasHeroEyebrow}>ONJJEM SIGNATURE · #1 BESTSELLER</Text>
+                    </View>
+                    <Text style={s.canvasHeroTitle}>Canvas Prints</Text>
+                    <Text style={s.canvasHeroSub}>
+                      Your restored photo hand-stretched on a premium gallery frame — ready to hang, delivered to your door
+                    </Text>
+                    <View style={s.canvasHeroChipRow}>
+                      {["A4 · A3 · A2 · A1", "Ready to Hang", "10-Year Guarantee"].map((c) => (
+                        <View key={c} style={s.canvasHeroChip}>
+                          <Text style={s.canvasHeroChipText}>{c}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                  <View style={s.canvasHeroRight}>
+                    <View style={s.canvasHeroPriceBox}>
+                      <Text style={s.canvasHeroPriceFrom}>from</Text>
+                      <Text style={s.canvasHeroPrice}>£29.99</Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.7)" />
+                  </View>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
 
             <TouchableOpacity style={s.proBtnGlow} onPress={() => setPaywallVisible(true)} activeOpacity={0.88}>
               <LinearGradient
@@ -331,7 +380,7 @@ export default function HomeScreen() {
                     </View>
                     <View style={s.giftBtnTitleWrap}>
                       <Text style={s.giftBtnLabel}>OUR GIFT STORE</Text>
-                      <Text style={s.giftBtnText}>Prints · Jigsaws · Keyrings</Text>
+                      <Text style={s.giftBtnText}>Mugs · Jigsaws · Keyrings</Text>
                     </View>
                     <View style={s.giftBtnCountBadge}>
                       <Text style={s.giftBtnCountText}>50+</Text>
@@ -340,7 +389,7 @@ export default function HomeScreen() {
                     <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.9)" />
                   </View>
                   <View style={s.giftBtnChipRow}>
-                    {["Canvas", "Mugs", "Cushions", "Throws", "Candles", "& More"].map((tag) => (
+                    {["Mugs", "Cushions", "Throws", "Candles", "Jigsaws", "& More"].map((tag) => (
                       <View key={tag} style={s.giftBtnChip}>
                         <Text style={s.giftBtnChipText}>{tag}</Text>
                       </View>
@@ -794,42 +843,152 @@ function makeStyles(
       gap: 16,
     },
     uploadArea: {
-      borderRadius: colors.radius * 1.5,
+      borderRadius: 14,
       borderWidth: 1.5,
-      borderColor: colors.border,
+      borderColor: "#E8D48B",
       borderStyle: "dashed",
-      backgroundColor: "#FAF7F2",
-      minHeight: 140,
-      alignItems: "center",
-      justifyContent: "center",
+      backgroundColor: "#FDF6DC",
       marginTop: 12,
     },
     pressed: {
       opacity: 0.7,
       transform: [{ scale: 0.98 }],
     },
-    logoIcon: {
-      width: 52,
-      height: 52,
-      borderRadius: 14,
-    },
     uploadInner: {
-      alignItems: "center",
-      gap: 8,
-      padding: 18,
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+    },
+    uploadIconWrap: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: "rgba(201,150,12,0.12)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.3)",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      flexShrink: 0,
+    },
+    uploadTextWrap: {
+      flex: 1,
+      gap: 2,
     },
     uploadTitle: {
-      fontSize: 18,
+      fontSize: 15,
       fontWeight: "700" as const,
-      color: colors.foreground,
+      color: "#1C1A14",
       fontFamily: "Inter_700Bold",
-      textAlign: "center",
     },
     uploadSub: {
-      fontSize: 13,
-      color: colors.mutedForeground,
+      fontSize: 12,
+      color: "#7A6E57",
       fontFamily: "Inter_400Regular",
-      textAlign: "center",
+    },
+    /* Canvas hero */
+    canvasHeroGlow: {
+      borderRadius: 18,
+      shadowColor: "#C9960C",
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.45,
+      shadowRadius: 20,
+      elevation: 12,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.4)",
+    },
+    canvasHero: {
+      borderRadius: 18,
+      overflow: "hidden" as const,
+    },
+    canvasHeroGoldBar: {
+      height: 4,
+    },
+    canvasHeroInner: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      paddingHorizontal: 18,
+      paddingVertical: 18,
+      gap: 14,
+    },
+    canvasHeroLeft: {
+      flex: 1,
+      gap: 8,
+    },
+    canvasHeroEyebrowRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 5,
+    },
+    canvasHeroEyebrow: {
+      fontSize: 9,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
+      letterSpacing: 1.8,
+    },
+    canvasHeroTitle: {
+      fontSize: 28,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#F5EDD8",
+      letterSpacing: 0.2,
+      lineHeight: 32,
+    },
+    canvasHeroSub: {
+      fontSize: 12,
+      fontFamily: "Inter_400Regular",
+      color: "#8BA4BA",
+      lineHeight: 18,
+    },
+    canvasHeroChipRow: {
+      flexDirection: "row" as const,
+      flexWrap: "wrap" as const,
+      gap: 6,
+      marginTop: 2,
+    },
+    canvasHeroChip: {
+      backgroundColor: "rgba(201,150,12,0.15)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.35)",
+      borderRadius: 20,
+      paddingHorizontal: 9,
+      paddingVertical: 4,
+    },
+    canvasHeroChipText: {
+      fontSize: 10,
+      fontFamily: "Inter_500Medium",
+      color: "#C9960C",
+      letterSpacing: 0.3,
+    },
+    canvasHeroRight: {
+      alignItems: "center" as const,
+      gap: 8,
+      flexShrink: 0,
+    },
+    canvasHeroPriceBox: {
+      alignItems: "center" as const,
+      backgroundColor: "rgba(201,150,12,0.15)",
+      borderWidth: 1.5,
+      borderColor: "rgba(201,150,12,0.45)",
+      borderRadius: 14,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      gap: 2,
+    },
+    canvasHeroPriceFrom: {
+      fontSize: 10,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(201,150,12,0.75)",
+      letterSpacing: 0.5,
+    },
+    canvasHeroPrice: {
+      fontSize: 22,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#F5D78E",
+      letterSpacing: -0.5,
     },
     imageBlock: {
       gap: 8,
