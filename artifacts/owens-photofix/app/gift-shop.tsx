@@ -66,31 +66,13 @@ type Category = {
 
 const CATEGORIES: Category[] = [
   {
-    id: "living",
-    label: "Living Room",
-    emoji: "🛋️",
-    subtitle: "Canvases, prints & cushions for your walls and sofas",
-    fulfillment: "Master Print Lab & Master Textiles",
-    headerGradient: ["#2E86C1", "#1A5276"],
+    id: "canvas",
+    label: "Canvas Prints",
+    emoji: "🎨",
+    subtitle: "Hand-stretched gallery canvases · Cinema-Grade AI Restoration included",
+    fulfillment: "ONJJEM Master Print Lab · UK Master Printers",
+    headerGradient: ["#091D35", "#0F3060"] as const,
     products: [
-      {
-        id: "photo_print",
-        title: "Standard Photo Print",
-        size: "7×5 inch",
-        desc: "Professional gloss finish",
-        price: "£24.99",
-        emoji: "📷",
-        iconBg: "#EEF4FF",
-      },
-      {
-        id: "poster",
-        title: "A4 Photo Poster",
-        size: "A4",
-        desc: "High quality gallery paper",
-        price: "£24.99",
-        emoji: "📜",
-        iconBg: "#E8F4FF",
-      },
       {
         id: "canvas_classic",
         title: "Classic Gallery Wrap Canvas",
@@ -102,38 +84,6 @@ const CATEGORIES: Category[] = [
         wide: true,
         onjjemSeal: true,
         ukMasterPrinters: true,
-      },
-      {
-        id: "cushion_square",
-        title: "Square Photo Cushion",
-        size: "40 cm",
-        desc: "Plump, vibrant & machine washable",
-        price: "£29.99",
-        emoji: "🟦",
-        iconBg: "#EEE8FF",
-      },
-      {
-        id: "cushion_large",
-        title: "Large Luxury Cushion",
-        size: "60 cm",
-        desc: "Our most comfortable cushion",
-        price: "£39.99",
-        emoji: "🛋️",
-        iconBg: "#F5E8FF",
-        bestSeller: true,
-      },
-      {
-        id: "silk_portrait_cushion",
-        title: "Luxury Silk Portrait Cushion",
-        size: "50 cm · 100% Natural Silk",
-        desc: "Hand-sewn in London from 100% natural silk. A sumptuously soft heirloom piece for your most cherished family portraits.",
-        price: "£59.99",
-        emoji: "✨",
-        iconBg: "#FDF6DC",
-        wide: true,
-        premiumBadge: true,
-        onjjemSeal: true,
-        handmadeInLondon: true,
       },
       {
         id: "canvas_large",
@@ -176,6 +126,32 @@ const CATEGORIES: Category[] = [
         handmadeInLondon: true,
       },
       {
+        id: "aluminium_print",
+        title: "Aluminium Heritage Print",
+        size: "Brushed Aluminium · Ready to Hang",
+        desc: "A razor-sharp, museum-quality alternative to canvas. Your restored photo is printed directly onto lightweight brushed aluminium for a contemporary, frameless wall piece with extraordinary depth and detail.",
+        price: "£44.99",
+        emoji: "🪙",
+        iconBg: "#F0F4F8",
+        wide: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
+      },
+      {
+        id: "acrylic_memory_block",
+        title: "Acrylic Memory Block",
+        size: "Crystal-Clear Acrylic · Freestanding",
+        desc: "A stunning freestanding display piece — your restored photograph printed behind crystal-clear 5mm acrylic for a luminous, gallery-quality finish that looks beautiful on any shelf, desk or mantelpiece.",
+        price: "£34.99",
+        emoji: "🔷",
+        iconBg: "#EEF6FF",
+        wide: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        handmadeInLondon: true,
+      },
+      {
         id: "gallery_diptych",
         title: "The Diptych — Heritage Gallery Panel",
         size: "2 Panels · Seamless Masterpiece",
@@ -204,30 +180,64 @@ const CATEGORIES: Category[] = [
         handmadeInLondon: true,
         ukMasterPrinters: true,
       },
+    ],
+  },
+  {
+    id: "living",
+    label: "Living Room",
+    emoji: "🛋️",
+    subtitle: "Photo prints & luxury cushions for your home",
+    fulfillment: "Master Print Lab & Master Textiles",
+    headerGradient: ["#2E86C1", "#1A5276"],
+    products: [
       {
-        id: "aluminium_print",
-        title: "Aluminium Heritage Print",
-        size: "Brushed Aluminium · Ready to Hang",
-        desc: "A razor-sharp, museum-quality alternative to canvas. Your restored photo is printed directly onto lightweight brushed aluminium for a contemporary, frameless wall piece with extraordinary depth and detail.",
-        price: "£44.99",
-        emoji: "🪙",
-        iconBg: "#F0F4F8",
-        wide: true,
-        onjjemSeal: true,
-        ukMasterPrinters: true,
-        handmadeInLondon: true,
+        id: "photo_print",
+        title: "Standard Photo Print",
+        size: "7×5 inch",
+        desc: "Professional gloss finish",
+        price: "£24.99",
+        emoji: "📷",
+        iconBg: "#EEF4FF",
       },
       {
-        id: "acrylic_memory_block",
-        title: "Acrylic Memory Block",
-        size: "Crystal-Clear Acrylic · Freestanding",
-        desc: "A stunning freestanding display piece — your restored photograph printed behind crystal-clear 5mm acrylic for a luminous, gallery-quality finish that looks beautiful on any shelf, desk or mantelpiece.",
-        price: "£34.99",
-        emoji: "🔷",
-        iconBg: "#EEF6FF",
+        id: "poster",
+        title: "A4 Photo Poster",
+        size: "A4",
+        desc: "High quality gallery paper",
+        price: "£24.99",
+        emoji: "📜",
+        iconBg: "#E8F4FF",
+      },
+      {
+        id: "cushion_square",
+        title: "Square Photo Cushion",
+        size: "40 cm",
+        desc: "Plump, vibrant & machine washable",
+        price: "£29.99",
+        emoji: "🟦",
+        iconBg: "#EEE8FF",
+      },
+      {
+        id: "cushion_large",
+        title: "Large Luxury Cushion",
+        size: "60 cm",
+        desc: "Our most comfortable cushion",
+        price: "£39.99",
+        emoji: "🛋️",
+        iconBg: "#F5E8FF",
+        bestSeller: true,
+      },
+      {
+        id: "silk_portrait_cushion",
+        title: "Luxury Silk Portrait Cushion",
+        size: "50 cm · 100% Natural Silk",
+        desc: "Hand-sewn in London from 100% natural silk. A sumptuously soft heirloom piece for your most cherished family portraits.",
+        price: "£59.99",
+        emoji: "✨",
+        iconBg: "#FDF6DC",
         wide: true,
+        premiumBadge: true,
         onjjemSeal: true,
-        ukMasterPrinters: true,
         handmadeInLondon: true,
       },
     ],
@@ -1264,7 +1274,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["large_format", "living", "little_treasures", "heritage_jigsaws", "living_comforts", "bargain_memories"];
+const MENU_TABS = ["canvas", "living", "little_treasures", "heritage_jigsaws", "living_comforts", "bargain_memories", "large_format"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
@@ -1279,7 +1289,7 @@ function parsePrice(p: string): number {
 export default function GiftShopScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("living");
+  const [activeTab, setActiveTab] = useState("canvas");
   const [giftWrap, setGiftWrap] = useState(false);
   const [heritageCardAdded, setHeritageCardAdded] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);

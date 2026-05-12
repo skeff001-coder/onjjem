@@ -281,18 +281,13 @@ export default function HomeScreen() {
               style={({ pressed }) => [s.uploadArea, pressed && s.pressed]}
               onPress={pickImage}
             >
-              {/* Before → after thumbnail preview */}
+              {/* Before → after thumbnail preview — matched pair */}
               <View style={s.uploadThumbRow}>
-                <Image source={bgImages[0]} style={s.uploadThumb} resizeMode="cover" />
+                <Image source={require("@/assets/gallery/grandma_before.png")} style={s.uploadThumb} resizeMode="cover" />
                 <View style={s.uploadThumbArrow}>
                   <Ionicons name="arrow-forward" size={13} color="#C9960C" />
                 </View>
-                <Image source={bgImages[1]} style={s.uploadThumb} resizeMode="cover" />
-                <View style={s.uploadThumbSpacer} />
-                <Image
-                  source={require("@/assets/images/icon_refined.png")}
-                  style={s.uploadThumbAppIcon}
-                />
+                <Image source={require("@/assets/gallery/grandma_after.png")} style={s.uploadThumb} resizeMode="cover" />
               </View>
               {/* Upload prompt */}
               <View style={s.uploadInner}>
@@ -310,7 +305,7 @@ export default function HomeScreen() {
             {/* ── CANVAS PRINTS — STANDALONE HERO ── */}
             <TouchableOpacity
               style={s.canvasHeroGlow}
-              onPress={() => router.push("/feature-walls")}
+              onPress={() => router.push("/gift-shop")}
               activeOpacity={0.87}
             >
               <LinearGradient
