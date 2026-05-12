@@ -47,23 +47,34 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     lineHeight: lineH,
   } as const;
 
+  // Heart rendered 18% larger, centred on the same cap position
+  const heartScale = 1.18;
+  const heartW = Math.round(oAdvance * heartScale);
+  const heartH = Math.round(capH * heartScale);
+
   const renderLayer = (dt: number, dl: number, color: string, glow?: boolean) => (
     <React.Fragment key={`${dt}-${dl}`}>
-      {/* Heart-O at this layer's offset */}
+      {/* Heart-O at this layer's offset — slightly enlarged and re-centred */}
       <View
         style={[
           styles.abs,
-          { top: dt + capTop, left: dl, width: oAdvance, height: capH },
+          {
+            top: dt + capTop - Math.round((heartH - capH) / 2),
+            left: dl - Math.round((heartW - oAdvance) / 2),
+            width: heartW,
+            height: heartH,
+          },
         ]}
         pointerEvents="none"
       >
-        <Svg width={oAdvance} height={capH} viewBox="0 0 20 18">
+        <Svg width={heartW} height={heartH} viewBox="0 0 20 18">
           <Path d={HEART_RING} fill={color} fillRule="evenodd" />
         </Svg>
       </View>
 
-      {/* NJJEM text — starts right after the O's cell */}
+      {/* NJJEM text — starts right after the O's cell, never wraps */}
       <Text
+        numberOfLines={1}
         style={[
           styles.abs,
           textStyle,
