@@ -86,8 +86,12 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     </React.Fragment>
   );
 
+  // Approximate total advance width (O cell + NJJEM glyphs + per-char spacing + max shadow offset)
+  const njjemAdv = Math.round(fontSize * (0.68 + 0.44 + 0.44 + 0.59 + 0.80));
+  const titleWidth = oCell + njjemAdv + letterSpacing * 5 + 8;
+
   return (
-    <View style={{ height: containerHeight }}>
+    <View style={{ height: containerHeight, width: titleWidth }}>
       {LAYERS.map(({ dt, dl, color }) => renderLayer(dt, dl, color))}
       {renderLayer(TOP.dt, TOP.dl, TOP.color, true)}
     </View>

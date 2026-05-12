@@ -27,8 +27,6 @@ import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 import { ReferralModal } from "@/components/ReferralModal";
 import { LivingMemoriesModal } from "@/components/LivingMemoriesModal";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
-import { FloralAccent } from "@/components/FloralAccent";
-import { TitleWreath, TitleWreathFront } from "@/components/TitleWreath";
 import { TrustFooter } from "@/components/TrustFooter";
 
 type Mode = "sharpen" | "colorize";
@@ -258,14 +256,8 @@ export default function HomeScreen() {
       </LinearGradient>
 
       <View style={s.header}>
-        <FloralAccent side="left" size={88} />
-        <FloralAccent side="right" size={88} />
-        <View>
-          <View style={{ position: "relative" }}>
-            <TitleWreath />
-            <GraffitiTitle fontSize={52} letterSpacing={9} />
-            <TitleWreathFront />
-          </View>
+        <View style={s.headerCenter}>
+          <GraffitiTitle fontSize={52} letterSpacing={9} />
           <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
         </View>
         {appState !== "idle" && (
@@ -783,14 +775,15 @@ function makeStyles(
       height: SCREEN_H / 3,
     },
     header: {
-      paddingTop: topPad,
+      paddingTop: topPad + 4,
       paddingHorizontal: 24,
-      paddingBottom: 8,
-      flexDirection: "row",
+      paddingBottom: 14,
       alignItems: "center",
-      justifyContent: "space-between",
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: colors.border,
+    },
+    headerCenter: {
+      alignItems: "center" as const,
     },
     headerTitleTop: {
       fontSize: 52,
@@ -806,6 +799,7 @@ function makeStyles(
       letterSpacing: 0.5,
       marginTop: 5,
       fontStyle: "italic" as const,
+      textAlign: "center" as const,
     },
     headerTaglineHeart: {
       fontSize: 17,
