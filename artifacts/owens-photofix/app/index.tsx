@@ -283,11 +283,19 @@ export default function HomeScreen() {
             >
               {/* Before → after thumbnail preview — matched pair */}
               <View style={s.uploadThumbRow}>
-                <Image source={require("@/assets/gallery/childhood_before.png")} style={s.uploadThumb} resizeMode="cover" />
+                <Image
+                  source={require("@/assets/gallery/victorian_after.png")}
+                  style={[s.uploadThumb, { filter: "grayscale(1) contrast(1.1)" } as any]}
+                  resizeMode="cover"
+                />
                 <View style={s.uploadThumbArrow}>
                   <Ionicons name="arrow-forward" size={13} color="#C9960C" />
                 </View>
-                <Image source={require("@/assets/gallery/childhood_after.png")} style={s.uploadThumb} resizeMode="cover" />
+                <Image
+                  source={require("@/assets/gallery/victorian_after.png")}
+                  style={s.uploadThumb}
+                  resizeMode="cover"
+                />
               </View>
               {/* Upload prompt */}
               <View style={s.uploadInner}>
