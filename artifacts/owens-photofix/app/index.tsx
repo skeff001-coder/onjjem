@@ -797,9 +797,9 @@ function makeStyles(
     },
     headerTagline: {
       fontSize: 14,
-      fontFamily: "Cinzel_400Regular",
+      fontFamily: "Inter_400Regular",
       color: "rgba(160,110,5,0.97)",
-      letterSpacing: 0.3,
+      letterSpacing: 0.5,
       marginTop: 5,
       fontStyle: "italic" as const,
     },

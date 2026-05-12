@@ -133,9 +133,10 @@ const splash = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Inter_400Regular",
+    fontStyle: "italic" as const,
     color: "#7A5500",
-    letterSpacing: 5,
+    letterSpacing: 0.5,
     marginBottom: 4,
   },
   awardRow: {
