@@ -1,6 +1,27 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Svg, { Path, Circle } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
+
+// Heart-ring path: outer heart + inner heart (0.60× scale) with evenOdd fill
+// The inner path creates the transparent centre, matching the O-ring proportions of Cinzel
+const HEART_RING =
+  "M 10 17.5 C 10 17.5 0.5 11 0.5 5 C 0.5 1.5 3 0 5.5 0 C 7.3 0 9.2 1.2 10 3.2 " +
+  "C 10.8 1.2 12.7 0 14.5 0 C 17 0 19.5 1.5 19.5 5 C 19.5 11 10 17.5 10 17.5 Z " +
+  "M 10 13.9 C 10 13.9 4.3 10.0 4.3 6.4 C 4.3 4.3 5.8 3.4 7.3 3.4 " +
+  "C 8.38 3.4 9.52 4.12 10 5.32 C 10.48 4.12 11.62 3.4 12.7 3.4 " +
+  "C 14.2 3.4 15.7 4.3 15.7 6.4 C 15.7 10.0 10 13.9 10 13.9 Z";
+
+// Shadow + highlight layers, matching the text depth stack
+const LAYERS = [
+  { dt: 5, dl: 3, color: "rgba(60,38,0,0.55)" },
+  { dt: 4, dl: 2, color: "rgba(80,52,0,0.45)" },
+  { dt: 3, dl: 1, color: "rgba(110,72,0,0.40)" },
+  { dt: 2, dl: 1, color: "rgba(140,96,0,0.32)" },
+  { dt: 1, dl: 0, color: "rgba(170,120,0,0.22)" },
+  { dt: -1, dl: -1, color: "rgba(255,240,180,0.22)" },
+] as const;
+
+const TOP = { dt: 0, dl: 0, color: "#E2B54A" } as const;
 
 interface Props {
   fontSize?: number;
@@ -8,86 +29,70 @@ interface Props {
 }
 
 export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
+  const lineH = fontSize + 10;
   const containerHeight = fontSize + 16;
+
+  // Cinzel O metrics at this font size
+  const oAdvance = Math.round(fontSize * 0.72);   // O glyph advance width ≈ cap height
+  const oCell = oAdvance + letterSpacing;           // O cell (advance + letter spacing gap)
+  const capH = Math.round(fontSize * 0.72);        // cap height
+  // Cap top sits at ~16% of lineHeight inside the line box
+  const capTop = Math.round(lineH * 0.16);
 
   const textStyle = {
     fontSize,
     fontFamily: "Cinzel_400Regular",
     letterSpacing,
-    lineHeight: fontSize + 10,
+    lineHeight: lineH,
   } as const;
 
-  // Heart jewel centred inside the counter of the 'O'
-  const hW = Math.round(fontSize * 0.40);
-  const hH = Math.round(fontSize * 0.31);
-  // Empirically centred: cap-top ~19% into lineHeight, cap-centre at ~55%
-  const hTop = Math.round((fontSize + 10) * 0.55 - (hH / 2));
-  const hLeft = Math.round(fontSize * 0.15);
+  const renderLayer = (dt: number, dl: number, color: string, glow?: boolean) => (
+    <React.Fragment key={`${dt}-${dl}`}>
+      {/* Heart-O at this layer's offset */}
+      <View
+        style={[
+          styles.abs,
+          { top: dt + capTop, left: dl, width: oAdvance, height: capH },
+        ]}
+        pointerEvents="none"
+      >
+        <Svg width={oAdvance} height={capH} viewBox="0 0 20 18">
+          <Path d={HEART_RING} fill={color} fillRule="evenodd" />
+        </Svg>
+      </View>
 
-  return (
-    <View style={{ height: containerHeight }}>
-      {/* 3-D letterpress depth — stacked dark layers going down-right */}
-      <Text style={[styles.abs, textStyle, { top: 5, left: 3, color: "rgba(60,38,0,0.55)" }]}>ONJJEM</Text>
-      <Text style={[styles.abs, textStyle, { top: 4, left: 2, color: "rgba(80,52,0,0.45)" }]}>ONJJEM</Text>
-      <Text style={[styles.abs, textStyle, { top: 3, left: 1, color: "rgba(110,72,0,0.40)" }]}>ONJJEM</Text>
-      <Text style={[styles.abs, textStyle, { top: 2, left: 1, color: "rgba(140,96,0,0.32)" }]}>ONJJEM</Text>
-      <Text style={[styles.abs, textStyle, { top: 1, left: 0, color: "rgba(170,120,0,0.22)" }]}>ONJJEM</Text>
-
-      {/* Specular highlight — light catching top-left edge */}
-      <Text style={[styles.abs, textStyle, { top: -1, left: -1, color: "rgba(255,240,180,0.22)" }]}>
-        ONJJEM
-      </Text>
-
-      {/* Top face — warm cream-gold with ambient glow */}
+      {/* NJJEM text — starts right after the O's cell */}
       <Text
         style={[
           styles.abs,
           textStyle,
           {
-            top: 0,
-            left: 0,
-            color: "#E2B54A",
-            textShadowColor: "rgba(220,170,50,0.55)",
-            textShadowOffset: { width: 0, height: 0 },
-            textShadowRadius: 14,
+            top: dt,
+            left: dl + oCell,
+            color,
+            ...(glow
+              ? {
+                  textShadowColor: "rgba(220,170,50,0.55)",
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: 14,
+                }
+              : {}),
           },
         ]}
       >
-        ONJJEM
+        NJJEM
       </Text>
+    </React.Fragment>
+  );
 
-      {/* Gold heart jewel sitting inside the counter of the 'O' */}
-      {/* Gold heart jewel sitting inside the counter of the 'O' */}
-      <View
-        style={[
-          styles.abs,
-          { top: hTop, left: hLeft, width: hW, height: hH, opacity: 0.88 },
-        ]}
-        pointerEvents="none"
-      >
-        <Svg width={hW} height={hH} viewBox="0 0 20 16">
-          {/* Warm amber fill — visible against the cream background in the O counter */}
-          <Path
-            d="M 10 15 C 10 15 0.5 9 0.5 4.2 C 0.5 1.5 2.8 0 5.2 0 C 7 0 9 1.2 10 3 C 11 1.2 13 0 14.8 0 C 17.2 0 19.5 1.5 19.5 4.2 C 19.5 9 10 15 10 15 Z"
-            fill="rgba(160,90,5,0.32)"
-          />
-          {/* Dark amber outline — contrasts against both cream background and gold letter */}
-          <Path
-            d="M 10 15 C 10 15 0.5 9 0.5 4.2 C 0.5 1.5 2.8 0 5.2 0 C 7 0 9 1.2 10 3 C 11 1.2 13 0 14.8 0 C 17.2 0 19.5 1.5 19.5 4.2 C 19.5 9 10 15 10 15 Z"
-            stroke="#8B4800"
-            strokeWidth={1.6}
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </Svg>
-      </View>
+  return (
+    <View style={{ height: containerHeight }}>
+      {LAYERS.map(({ dt, dl, color }) => renderLayer(dt, dl, color))}
+      {renderLayer(TOP.dt, TOP.dl, TOP.color, true)}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  abs: {
-    position: "absolute",
-  },
+  abs: { position: "absolute" },
 });
