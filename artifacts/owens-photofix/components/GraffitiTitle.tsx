@@ -17,11 +17,12 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     lineHeight: fontSize + 10,
   } as const;
 
-  // Heart overlay positioned inside the counter of the 'O' (first character)
-  const hW = Math.round(fontSize * 0.28);
-  const hH = Math.round(fontSize * 0.22);
-  const hTop = Math.round(fontSize * 0.3);
-  const hLeft = Math.round(fontSize * 0.18);
+  // Heart jewel centred inside the counter of the 'O'
+  // Cinzel cap-top sits ~38% into the lineHeight, cap-height ~72% of fontSize
+  const hW = Math.round(fontSize * 0.40);
+  const hH = Math.round(fontSize * 0.31);
+  const hTop = Math.round((fontSize + 10) * 0.38 + (fontSize * 0.72) * 0.30);
+  const hLeft = Math.round(fontSize * 0.15);
 
   return (
     <View style={{ height: containerHeight }}>
@@ -55,24 +56,30 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
         ONJJEM
       </Text>
 
-      {/* Subtle heart outline hidden inside the counter of the 'O' — reveals itself on close inspection */}
+      {/* Gold heart jewel sitting inside the counter of the 'O' */}
+      {/* Gold heart jewel sitting inside the counter of the 'O' */}
       <View
         style={[
           styles.abs,
-          { top: hTop, left: hLeft, width: hW, height: hH, opacity: 0.26 },
+          { top: hTop, left: hLeft, width: hW, height: hH, opacity: 0.88 },
         ]}
         pointerEvents="none"
       >
         <Svg width={hW} height={hH} viewBox="0 0 20 16">
+          {/* Warm amber fill — visible against the cream background in the O counter */}
           <Path
             d="M 10 15 C 10 15 0.5 9 0.5 4.2 C 0.5 1.5 2.8 0 5.2 0 C 7 0 9 1.2 10 3 C 11 1.2 13 0 14.8 0 C 17.2 0 19.5 1.5 19.5 4.2 C 19.5 9 10 15 10 15 Z"
-            stroke="#E2B54A"
-            strokeWidth={1.1}
+            fill="rgba(160,90,5,0.32)"
+          />
+          {/* Dark amber outline — contrasts against both cream background and gold letter */}
+          <Path
+            d="M 10 15 C 10 15 0.5 9 0.5 4.2 C 0.5 1.5 2.8 0 5.2 0 C 7 0 9 1.2 10 3 C 11 1.2 13 0 14.8 0 C 17.2 0 19.5 1.5 19.5 4.2 C 19.5 9 10 15 10 15 Z"
+            stroke="#8B4800"
+            strokeWidth={1.6}
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <Circle cx="10" cy="7" r="0.8" fill="#E2B54A" opacity={0.5} />
         </Svg>
       </View>
     </View>
