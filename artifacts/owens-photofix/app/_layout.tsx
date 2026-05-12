@@ -1,5 +1,9 @@
 import { BebasNeue_400Regular } from "@expo-google-fonts/bebas-neue";
 import {
+  Cinzel_400Regular,
+  Cinzel_700Bold,
+} from "@expo-google-fonts/cinzel";
+import {
   Inter_400Regular,
   Inter_500Medium,
   Inter_600SemiBold,
@@ -200,6 +204,8 @@ function RootLayoutNav() {
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     BebasNeue_400Regular,
+    Cinzel_400Regular,
+    Cinzel_700Bold,
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
