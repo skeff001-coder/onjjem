@@ -258,7 +258,11 @@ export default function HomeScreen() {
       <View style={s.header}>
         <View>
           <GraffitiTitle fontSize={52} letterSpacing={9} />
-          <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
+          <Text style={s.headerTagline}>
+            {"Bringing your Gems of L"}
+            <Text style={s.headerTaglineHeart}>♥</Text>
+            {"ve to Life"}
+          </Text>
         </View>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
@@ -798,6 +802,11 @@ function makeStyles(
       letterSpacing: 0.5,
       marginTop: 5,
       fontStyle: "italic" as const,
+    },
+    headerTaglineHeart: {
+      fontSize: 13,
+      color: "rgba(180,55,55,0.75)",
+      fontStyle: "normal" as const,
     },
     headerAwardRow: {
       flexDirection: "row" as const,

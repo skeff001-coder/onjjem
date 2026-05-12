@@ -58,21 +58,6 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
         ONJJEM
       </Text>
 
-      {/* Subtle heart nestled inside the counter of the O — only visible on close inspection */}
-      <Text
-        style={[
-          styles.abs,
-          {
-            top: heartTop,
-            left: heartLeft,
-            fontSize: heartSize,
-            lineHeight: heartSize + 2,
-            color: "rgba(160,60,60,0.28)",
-          },
-        ]}
-      >
-        ♥
-      </Text>
     </View>
   );
 }
