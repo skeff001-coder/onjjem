@@ -139,20 +139,6 @@ const CATEGORIES: Category[] = [
     headerGradient: ["#2D1B69", "#5B2D9E"] as const,
     products: [
       {
-        id: "fitted_sheets",
-        title: "Custom Fitted Sheets",
-        size: "All standard UK sizes",
-        desc: "Expertly printed edge-to-edge on high-quality fabric — your restored photo wraps seamlessly around every corner. A beautifully personal touch for any bedroom, made to order in our London studio.",
-        price: "£34.95",
-        emoji: "🛏️",
-        iconBg: "#F0EBFF",
-        wide: true,
-        onjjemSeal: true,
-        ukMasterPrinters: true,
-        handmadeInLondon: true,
-        freePersonalisation: true,
-      },
-      {
         id: "pillowcase",
         title: "Luxury Photo Pillowcases",
         size: "Matching set of 2",
