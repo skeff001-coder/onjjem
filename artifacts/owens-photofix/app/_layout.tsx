@@ -132,9 +132,9 @@ const splash = StyleSheet.create({
     marginBottom: 4,
   },
   subtitle: {
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: "600",
-    color: "#C9960C",
+    color: "#7A5500",
     letterSpacing: 5,
     marginBottom: 4,
   },
