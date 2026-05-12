@@ -261,7 +261,7 @@ export default function HomeScreen() {
           <Text style={s.headerTagline}>RESTORE · PRINT · CHERISH</Text>
           <View style={s.headerAwardRow}>
             <Text style={s.headerAwardStar}>🏆</Text>
-            <Text style={s.headerAwardText}>UK's #1 Photo Restoration Studio</Text>
+            <Text style={s.headerAwardText}>Expert Photo Restoration · London Studio</Text>
           </View>
         </View>
         {appState !== "idle" && (

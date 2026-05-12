@@ -89,7 +89,7 @@ const CATEGORIES: Category[] = [
         id: "canvas_large",
         title: "Large Gallery Wrap Canvas",
         size: "60×40 cm",
-        desc: "Cinema-Grade AI Restoration included. Our most popular canvas size — hand-stretched over a 2.5cm deep FSC-certified wooden frame with a 10-Year Fade-Resistant Guarantee. A true statement piece.",
+        desc: "Cinema-Grade AI Restoration included. Our most popular canvas size — hand-stretched over a 2.5cm deep FSC-certified wooden frame. Lifetime Fade-Resistant Guarantee. A true statement piece.",
         price: "£49.99",
         emoji: "🖼️",
         iconBg: "#E3EDFF",
@@ -211,18 +211,18 @@ const CATEGORIES: Category[] = [
       {
         id: "cushion_square",
         title: "Square Photo Cushion",
-        size: "40 cm",
-        desc: "Plump, vibrant & machine washable",
-        price: "£29.99",
+        size: "40 cm · Soft Velvet",
+        desc: "Soft Velvet front with your expertly restored photo, plush poly-fibre fill and a plain backing in your choice of colour. Machine washable. Backed by a 5-Year Print Guarantee.",
+        price: "£44.99",
         emoji: "🟦",
         iconBg: "#EEE8FF",
       },
       {
         id: "cushion_large",
         title: "Large Luxury Cushion",
-        size: "60 cm",
-        desc: "Our most comfortable cushion",
-        price: "£39.99",
+        size: "60 cm · Soft Velvet",
+        desc: "Our largest and most popular cushion. Soft Velvet front with a generous plush fill — the perfect centrepiece for any sofa or bed. Your restored photo printed in rich, vivid colour. 5-Year Print Guarantee.",
+        price: "£59.99",
         emoji: "🛋️",
         iconBg: "#F5E8FF",
         bestSeller: true,
@@ -231,8 +231,8 @@ const CATEGORIES: Category[] = [
         id: "silk_portrait_cushion",
         title: "Luxury Silk Portrait Cushion",
         size: "50 cm · 100% Natural Silk",
-        desc: "Hand-sewn in London from 100% natural silk. A sumptuously soft heirloom piece for your most cherished family portraits.",
-        price: "£59.99",
+        desc: "Hand-sewn in London from 100% natural silk — the finest material we offer. A sumptuously soft heirloom piece for your most cherished family portraits. 5-Year Print Guarantee.",
+        price: "£84.99",
         emoji: "✨",
         iconBg: "#FDF6DC",
         wide: true,
@@ -362,7 +362,7 @@ const CATEGORIES: Category[] = [
         id: "leather_keyring",
         title: "Handmade Leather Keyring",
         size: "Genuine Nappa Leather",
-        desc: "Crafted from buttery-soft Genuine Nappa Leather — the same quality as our designer bags. A beautiful, tactile way to carry your cherished memory with you every day.",
+        desc: "Crafted from buttery-soft Genuine Nappa Leather — water-based eco-friendly inks that won't peel, rub or scratch. A beautiful, tactile way to carry your cherished memory with you every day.",
         price: "£34.99",
         emoji: "🔑",
         iconBg: "#EFEBE9",
@@ -386,8 +386,8 @@ const CATEGORIES: Category[] = [
     id: "heritage_jigsaws",
     label: "Heritage Jigsaws",
     emoji: "🧩",
-    subtitle: "Every puzzle ships in a Luxury Presentation Tin · Cinema-Grade AI Restoration included",
-    fulfillment: "ONJJEM Master Print Lab · Luxury Presentation Tin included",
+    subtitle: "Every puzzle includes a Luxury Printed Metal Tin · Cinema-Grade AI Restoration included",
+    fulfillment: "ONJJEM Master Print Lab · Luxury Printed Metal Tin included",
     headerGradient: ["#1B3A1B", "#2E7D32"] as const,
     products: [
       // — Specialty Collection —
@@ -416,17 +416,17 @@ const CATEGORIES: Category[] = [
         freePersonalisation: true,
       },
       {
-        id: "jigsaw_ceramic",
-        title: "The Luxury Ceramic Hexagon",
-        size: "Specialty Collection · Ceramic Pieces",
-        desc: "Our most unique puzzle. Hand-finished ceramic pieces for a truly unbelievable tactile experience.",
-        price: "£89.00",
-        emoji: "⬡",
+        id: "jigsaw_face",
+        title: "The Portrait Face Jigsaw",
+        size: "Specialty Collection · 500 Pieces",
+        desc: "A show-stopping gift. Our experts zoom in on the most important face in your photo and produce a giant, detail-rich portrait puzzle — perfect for grandparents, parents and anyone who loves a challenge.",
+        price: "£74.99",
+        emoji: "🧩",
         iconBg: "#FDF6DC",
         wide: true,
         onjjemSeal: true,
         premiumBadge: true,
-        handmadeInLondon: true,
+        freePersonalisation: true,
       },
       // — Classic Cardboard Collection —
       {
@@ -453,12 +453,12 @@ const CATEGORIES: Category[] = [
         onjjemSeal: true,
       },
       {
-        id: "jigsaw_250_card",
-        title: "250 Piece Small Puzzle",
-        size: "Classic Cardboard · Satin-Finish",
-        desc: "Perfect for a quick afternoon of fun.",
-        price: "£34.99",
-        emoji: "🧩",
+        id: "jigsaw_250_wood",
+        title: "250 Piece Classic Wooden",
+        size: "Premium Solid Wood · Gloss Laminate",
+        desc: "Solid wood pieces with a satin-gloss laminate finish — satisfying to handle and built to last. A perfect afternoon puzzle for all ages.",
+        price: "£49.99",
+        emoji: "🪵",
         iconBg: "#DCEDC8",
         wide: true,
         onjjemSeal: true,
@@ -912,15 +912,15 @@ const CATEGORIES: Category[] = [
     id: "living_comforts",
     label: "Comforts",
     emoji: "🛋️",
-    subtitle: "Ultra-soft fleece throws · Hand-finished in London",
+    subtitle: "Plush Velvet & Sherpa throws · Hand-finished in London",
     fulfillment: "ONJJEM Master Artisans · London Studio",
     headerGradient: ["#2D4A2D", "#1B3020"] as const,
     products: [
       {
         id: "throw_small",
         title: "Luxury Photo Throw Blanket",
-        size: "100×75cm",
-        desc: "Ultra-soft fleece, hand-finished in London. Vibrant, permanent print of your restored memory — perfect draped over the back of your sofa.",
+        size: "100×75cm · Plush Velvet",
+        desc: "Plush Velvet front with your expertly restored photo, hand-finished in London. Vibrant, permanent print — perfect draped over the back of your sofa. Note: a small natural border frames the print edge.",
         price: "£69.99",
         emoji: "🛋️",
         iconBg: "#F0F7F0",
@@ -931,8 +931,8 @@ const CATEGORIES: Category[] = [
       {
         id: "throw_medium",
         title: "Luxury Photo Throw Blanket",
-        size: "145×106cm",
-        desc: "Our most popular size — drapes beautifully over sofas and armchairs. Ultra-soft fleece with a vibrant, permanent photographic print.",
+        size: "145×106cm · Plush Velvet",
+        desc: "Our most popular size — drapes beautifully over sofas and armchairs. Plush Velvet front with a vibrant, permanent photographic print, hand-finished in London. Note: a small natural border frames the print edge.",
         price: "£84.99",
         emoji: "🛋️",
         iconBg: "#EBF5EB",
@@ -944,8 +944,8 @@ const CATEGORIES: Category[] = [
       {
         id: "throw_large",
         title: "Luxury Photo Throw Blanket",
-        size: "198×145cm",
-        desc: "The ultimate statement piece. Generous king-size dimensions for wrapping in warmth — and in memories. Hand-finished by our London artisans.",
+        size: "198×145cm · Plush Velvet",
+        desc: "The ultimate statement piece. Generous king-size dimensions for wrapping in warmth — and in memories. Plush Velvet front, hand-finished by our London artisans. Note: a small natural border frames the print edge.",
         price: "£94.99",
         emoji: "🛋️",
         iconBg: "#E6F0E6",
@@ -957,8 +957,8 @@ const CATEGORIES: Category[] = [
       {
         id: "throw_sherpa",
         title: "The Luxury Sherpa Masterpiece",
-        size: "198×145cm · Sherpa Reverse",
-        desc: "Our most luxurious throw. Features your restored photo on silky smooth fleece with a sumptuously soft woolly Sherpa reverse. Hand-finished in London with a 10-year guarantee.",
+        size: "198×145cm · Plush Velvet & Sherpa Reverse",
+        desc: "Our most luxurious throw. Plush Velvet front featuring your restored photo with a sumptuously soft Sherpa fleece reverse — six colour choices. Hand-finished in London. Note: a small natural border frames the print edge.",
         price: "£94.99",
         emoji: "✨",
         iconBg: "#FDF6DC",
@@ -1458,9 +1458,9 @@ export default function GiftShopScreen() {
                   <View style={s.jigsawLtoBadge}>
                     <Text style={s.jigsawLtoBadgeText}>LIMITED TIME</Text>
                   </View>
-                  <Text style={s.jigsawLtoHeadline}>30% OFF ALL JIGSAWS</Text>
+                  <Text style={s.jigsawLtoHeadline}>FREE LUXURY PRESENTATION TIN</Text>
                   <Text style={s.jigsawLtoSub}>
-                    Price includes Cinema-Grade AI restoration · Luxury Presentation Tin included
+                    Every order includes Cinema-Grade AI restoration · Luxury printed metal tin with every puzzle
                   </Text>
                 </View>
                 <Text style={s.jigsawLtoEmoji}>🧩</Text>
