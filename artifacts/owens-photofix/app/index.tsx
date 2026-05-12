@@ -258,7 +258,7 @@ export default function HomeScreen() {
       <View style={s.header}>
         <View>
           <GraffitiTitle fontSize={52} letterSpacing={9} />
-          <Text style={s.headerTagline}>Preserving your family legacy{"\n"}for the next generation</Text>
+          <Text style={s.headerTagline}>Bringing your gems of love to life</Text>
           <View style={s.headerAwardRow}>
             <Text style={s.headerAwardStar}>🏆</Text>
             <Text style={s.headerAwardText}>Expert Photo Restoration · London Studio</Text>
