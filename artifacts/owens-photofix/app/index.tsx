@@ -27,6 +27,7 @@ import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 import { ReferralModal } from "@/components/ReferralModal";
 import { LivingMemoriesModal } from "@/components/LivingMemoriesModal";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
+import { FloralAccent } from "@/components/FloralAccent";
 import { TrustFooter } from "@/components/TrustFooter";
 
 type Mode = "sharpen" | "colorize";
@@ -256,6 +257,8 @@ export default function HomeScreen() {
       </LinearGradient>
 
       <View style={s.header}>
+        <FloralAccent side="left" size={88} />
+        <FloralAccent side="right" size={88} />
         <View>
           <GraffitiTitle fontSize={52} letterSpacing={9} />
           <Text style={s.headerTagline}>
