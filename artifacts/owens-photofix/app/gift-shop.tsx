@@ -1801,6 +1801,41 @@ export default function GiftShopScreen() {
           </View>
         </View>
 
+        {/* Place Order button — only shown when basket has items */}
+        {basketItems.length > 0 && (
+          <TouchableOpacity
+            style={s.placeOrderBtn}
+            onPress={() => {
+              const orderNumber = `OJ-${Math.floor(1000 + Math.random() * 9000)}`;
+              router.push({
+                pathname: "/success",
+                params: {
+                  orderNumber,
+                  items: JSON.stringify(basketItems),
+                  total: basketTotal.toFixed(2),
+                },
+              });
+            }}
+            activeOpacity={0.88}
+          >
+            <LinearGradient
+              colors={[GOLD, "#A67C00"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={s.placeOrderGradient}
+            >
+              <Ionicons name="bag-check-outline" size={22} color="#fff" />
+              <View style={s.placeOrderTextWrap}>
+                <Text style={s.placeOrderBtnText}>Place Order</Text>
+                <Text style={s.placeOrderBtnSub}>
+                  {basketItems.length} item{basketItems.length !== 1 ? "s" : ""} · £{basketTotal.toFixed(2)} total
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.8)" />
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
+
         {/* Contact our experts button */}
         <TouchableOpacity
           style={s.contactBtn}
@@ -3659,6 +3694,41 @@ const s = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     color: "#7A6E57",
     lineHeight: 17,
+  },
+
+  /* Place Order button */
+  placeOrderBtn: {
+    borderRadius: 16,
+    overflow: "hidden" as const,
+    marginBottom: 14,
+    shadowColor: "#C9960C",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 14,
+    elevation: 10,
+  },
+  placeOrderGradient: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 12,
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+  },
+  placeOrderTextWrap: {
+    flex: 1,
+    gap: 2,
+  },
+  placeOrderBtnText: {
+    fontSize: 20,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: 0.3,
+  },
+  placeOrderBtnSub: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.8)",
   },
 
   /* Contact experts button */
