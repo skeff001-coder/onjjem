@@ -258,11 +258,7 @@ export default function HomeScreen() {
       <View style={s.header}>
         <View>
           <GraffitiTitle fontSize={52} letterSpacing={9} />
-          <Text style={s.headerTagline}>Bringing your gems of love to life</Text>
-          <View style={s.headerAwardRow}>
-            <Text style={s.headerAwardStar}>🏆</Text>
-            <Text style={s.headerAwardText}>Expert Photo Restoration · London Studio</Text>
-          </View>
+          <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
         </View>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>

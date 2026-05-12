@@ -16,6 +16,10 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     lineHeight: fontSize + 10,
   } as const;
 
+  const heartSize = Math.round(fontSize * 0.24);
+  const heartTop = Math.round(fontSize * 0.19);
+  const heartLeft = Math.round(fontSize * 0.085);
+
   return (
     <View style={{ height: containerHeight }}>
       {/* 3-D letterpress depth — stacked dark layers going down-right */}
@@ -30,11 +34,7 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
         style={[
           styles.abs,
           textStyle,
-          {
-            top: -1,
-            left: -1,
-            color: "rgba(255,240,180,0.22)",
-          },
+          { top: -1, left: -1, color: "rgba(255,240,180,0.22)" },
         ]}
       >
         ONJJEM
@@ -56,6 +56,22 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
         ]}
       >
         ONJJEM
+      </Text>
+
+      {/* Subtle heart nestled inside the counter of the O — only visible on close inspection */}
+      <Text
+        style={[
+          styles.abs,
+          {
+            top: heartTop,
+            left: heartLeft,
+            fontSize: heartSize,
+            lineHeight: heartSize + 2,
+            color: "rgba(160,60,60,0.28)",
+          },
+        ]}
+      >
+        ♥
       </Text>
     </View>
   );
