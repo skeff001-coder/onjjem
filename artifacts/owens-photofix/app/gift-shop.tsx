@@ -139,20 +139,6 @@ const CATEGORIES: Category[] = [
     headerGradient: ["#2D1B69", "#5B2D9E"] as const,
     products: [
       {
-        id: "pillowcase",
-        title: "Luxury Photo Pillowcases",
-        size: "Matching set of 2",
-        desc: "A perfect companion to the Heirloom Quilt. Satin-smooth 200-thread-count cotton with your restored photo printed edge-to-edge. Complete the set and transform your bedroom into a gallery of cherished memories.",
-        price: "£34.99",
-        emoji: "🌙",
-        iconBg: "#F3E8FF",
-        wide: true,
-        onjjemSeal: true,
-        ukMasterPrinters: true,
-        handmadeInLondon: true,
-        freePersonalisation: true,
-      },
-      {
         id: "duvet_set",
         title: "Master Lab Duvet Set",
         size: "All standard UK sizes",
