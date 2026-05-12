@@ -2,6 +2,7 @@ import React from "react";
 import {
   Alert,
   Linking,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -59,6 +60,7 @@ function ContactRow({
 
 export default function ContactScreen() {
   const insets = useSafeAreaInsets();
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
   const router = useRouter();
 
   const openEmail = () =>
@@ -72,7 +74,7 @@ export default function ContactScreen() {
     );
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top }]}>
+    <View style={[styles.root, { paddingTop: topPad }]}>
       {/* Gold top bar */}
       <LinearGradient
         colors={[GOLD, "#F5D78E", GOLD, "#A67C00"]}

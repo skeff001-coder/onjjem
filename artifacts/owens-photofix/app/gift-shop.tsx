@@ -4,6 +4,7 @@ import {
   Animated,
   Image,
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -1288,6 +1289,7 @@ function parsePrice(p: string): number {
 
 export default function GiftShopScreen() {
   const insets = useSafeAreaInsets();
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("canvas");
   const [giftWrap, setGiftWrap] = useState(false);
@@ -1348,7 +1350,7 @@ export default function GiftShopScreen() {
   };
 
   return (
-    <View style={[s.root, { paddingTop: insets.top }]}>
+    <View style={[s.root, { paddingTop: topPad }]}>
       {/* Promo announcement banner */}
       <LinearGradient
         colors={["#1C1A14", "#2E2818"]}
@@ -3447,26 +3449,26 @@ const s = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E2D9CF",
     flexGrow: 0,
-    minHeight: 70,
+    minHeight: 86,
   },
   tabBar: {
     flexDirection: "row",
     paddingHorizontal: 4,
-    paddingTop: 6,
-    paddingBottom: 4,
+    paddingTop: 10,
+    paddingBottom: 8,
     alignItems: "center",
   },
   tab: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     position: "relative",
-    gap: 3,
-    minWidth: 88,
+    gap: 4,
+    minWidth: 92,
   },
   tabActive: {},
-  tabEmoji: { fontSize: 18 },
+  tabEmoji: { fontSize: 22 },
   tabLabel: {
     fontSize: 11,
     fontWeight: "600" as const,
@@ -3591,6 +3593,7 @@ const s = StyleSheet.create({
     gap: 5,
     paddingHorizontal: 10,
     paddingTop: 8,
+    paddingBottom: 6,
   },
   productGoldBadge: {
     flexDirection: "row" as const,

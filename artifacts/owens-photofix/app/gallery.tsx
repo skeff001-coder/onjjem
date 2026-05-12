@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -80,10 +81,11 @@ const EXAMPLES = [
 
 export default function GalleryScreen() {
   const insets = useSafeAreaInsets();
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
   const router = useRouter();
 
   return (
-    <View style={[s.root, { paddingTop: insets.top }]}>
+    <View style={[s.root, { paddingTop: topPad }]}>
       {/* Gold rainbow top bar */}
       <LinearGradient
         colors={["#C9960C", "#F5D78E", "#C9960C", "#A67C00"]}

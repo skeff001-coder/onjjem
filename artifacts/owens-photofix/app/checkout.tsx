@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -21,6 +22,7 @@ const MUTED = "#7A6E57";
 
 export default function CheckoutScreen() {
   const insets = useSafeAreaInsets();
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
   const router = useRouter();
   const params = useLocalSearchParams<{
     orderNumber?: string;
@@ -48,7 +50,7 @@ export default function CheckoutScreen() {
   };
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top }]}>
+    <View style={[styles.root, { paddingTop: topPad }]}>
       {/* Gold top bar */}
       <LinearGradient
         colors={[GOLD, "#F5D78E", GOLD, "#A67C00"]}

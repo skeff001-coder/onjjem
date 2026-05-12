@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import {
   Animated,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -22,6 +23,7 @@ const MUTED = "#7A6E57";
 
 export default function SuccessScreen() {
   const insets = useSafeAreaInsets();
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
   const router = useRouter();
   const params = useLocalSearchParams<{
     orderNumber?: string;
@@ -64,7 +66,7 @@ export default function SuccessScreen() {
   }, []);
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top }]}>
+    <View style={[styles.root, { paddingTop: topPad }]}>
       <ScrollView
         contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + 32 }]}
         showsVerticalScrollIndicator={false}

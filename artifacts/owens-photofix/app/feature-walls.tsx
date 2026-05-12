@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Dimensions,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -68,11 +69,12 @@ const ROOM_STYLES = [
 
 export default function FeatureWallsScreen() {
   const insets = useSafeAreaInsets();
+  const topPad = Platform.OS === "web" ? Math.max(insets.top, 60) : insets.top;
   const router = useRouter();
   const [contactVisible, setContactVisible] = useState(false);
 
   return (
-    <View style={[s.root, { paddingTop: insets.top }]}>
+    <View style={[s.root, { paddingTop: topPad }]}>
       {/* Gold top bar */}
       <LinearGradient
         colors={[GOLD, "#F5D78E", GOLD, "#A67C00"]}
