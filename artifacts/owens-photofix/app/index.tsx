@@ -281,26 +281,9 @@ export default function HomeScreen() {
               style={({ pressed }) => [s.uploadArea, pressed && s.pressed]}
               onPress={pickImage}
             >
-              {/* Before → after thumbnail preview — matched pair */}
-              <View style={s.uploadThumbRow}>
-                <Image
-                  source={require("@/assets/gallery/victorian_before.png")}
-                  style={s.uploadThumb}
-                  resizeMode="cover"
-                />
-                <View style={s.uploadThumbArrow}>
-                  <Ionicons name="arrow-forward" size={13} color="#C9960C" />
-                </View>
-                <Image
-                  source={require("@/assets/gallery/victorian_after.png")}
-                  style={s.uploadThumb}
-                  resizeMode="cover"
-                />
-              </View>
-              {/* Upload prompt */}
               <View style={s.uploadInner}>
                 <View style={s.uploadIconWrap}>
-                  <Ionicons name="image-outline" size={20} color="#C9960C" />
+                  <Ionicons name="image-outline" size={28} color="#C9960C" />
                 </View>
                 <View style={s.uploadTextWrap}>
                   <Text style={s.uploadTitle}>Upload a Photo</Text>
