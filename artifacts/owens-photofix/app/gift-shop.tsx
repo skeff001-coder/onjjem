@@ -1052,7 +1052,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["living", "bedroom", "heritage_jigsaws", "junior_sports", "personal", "little_treasures", "bargain_memories", "car_keepsakes", "grand_presentation"];
+const MENU_TABS = ["living", "heritage_jigsaws", "living_comforts", "large_format", "bargain_memories"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
