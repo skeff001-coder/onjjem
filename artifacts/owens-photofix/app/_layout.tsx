@@ -46,7 +46,7 @@ function AppSplash() {
 
         {/* Brand name */}
         <GraffitiTitle fontSize={60} letterSpacing={8} />
-        <Text style={splash.subtitle}>RESTORE · PRINT · CHERISH</Text>
+        <Text style={splash.subtitle}>Bringing your history back to life</Text>
         <View style={splash.awardRow}>
           <Text style={splash.awardTrophy}>🏆</Text>
           <Text style={splash.awardText}>Expert Photo Restoration · London Studio</Text>

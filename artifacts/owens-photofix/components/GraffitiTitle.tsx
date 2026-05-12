@@ -6,57 +6,30 @@ interface Props {
   letterSpacing?: number;
 }
 
-const SHADOW_LAYERS: { top: number; left: number; color: string }[] = [
-  { top: 4, left: 0,  color: "rgba(100,70,0,0.55)" },
-  { top: 3, left: 0,  color: "rgba(130,90,0,0.45)" },
-  { top: 2, left: 0,  color: "rgba(160,110,0,0.35)" },
-  { top: 1, left: 0,  color: "rgba(180,130,0,0.25)" },
-  { top: 0, left: -1, color: "rgba(80,55,0,0.3)" },
-  { top: 0, left: 1,  color: "rgba(80,55,0,0.3)" },
-];
-
-export function GraffitiTitle({ fontSize = 52, letterSpacing = 5 }: Props) {
-  const containerHeight = fontSize + 8 + 4;
+export function GraffitiTitle({ fontSize = 52, letterSpacing = 8 }: Props) {
+  const containerHeight = fontSize + 12;
 
   const textStyle = {
     fontSize,
-    fontFamily: "Cinzel_700Bold",
+    fontFamily: "Cinzel_400Regular",
     letterSpacing,
-    lineHeight: fontSize + 4,
+    lineHeight: fontSize + 8,
   } as const;
 
   return (
     <View style={{ height: containerHeight }}>
-      {SHADOW_LAYERS.map((layer, i) => (
-        <Text
-          key={i}
-          style={[
-            styles.abs,
-            textStyle,
-            { top: layer.top, left: layer.left, color: layer.color },
-          ]}
-        >
-          ONJJEM
-        </Text>
-      ))}
-
-      {/* Mid shimmer layer — warm gold */}
+      {/* Subtle warm drop shadow for depth */}
       <Text
         style={[
           styles.abs,
           textStyle,
-          {
-            top: 0,
-            left: 0,
-            color: "#C9960C",
-            opacity: 0.35,
-          },
+          { top: 3, left: 0, color: "rgba(100,68,0,0.28)" },
         ]}
       >
         ONJJEM
       </Text>
 
-      {/* Top layer — cream gold */}
+      {/* Top layer — refined cream-gold with soft glow */}
       <Text
         style={[
           styles.abs,
@@ -64,10 +37,10 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 5 }: Props) {
           {
             top: 0,
             left: 0,
-            color: "#F5E4A0",
-            textShadowColor: "rgba(201,150,12,0.7)",
+            color: "#D4A843",
+            textShadowColor: "rgba(212,168,67,0.45)",
             textShadowOffset: { width: 0, height: 0 },
-            textShadowRadius: 18,
+            textShadowRadius: 12,
           },
         ]}
       >

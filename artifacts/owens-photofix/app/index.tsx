@@ -258,7 +258,7 @@ export default function HomeScreen() {
       <View style={s.header}>
         <View>
           <GraffitiTitle fontSize={52} letterSpacing={5} />
-          <Text style={s.headerTagline}>RESTORE · PRINT · CHERISH</Text>
+          <Text style={s.headerTagline}>Bringing your history back to life</Text>
           <View style={s.headerAwardRow}>
             <Text style={s.headerAwardStar}>🏆</Text>
             <Text style={s.headerAwardText}>Expert Photo Restoration · London Studio</Text>
@@ -796,12 +796,12 @@ function makeStyles(
       lineHeight: 54,
     },
     headerTagline: {
-      fontSize: 12,
-      fontWeight: "700" as const,
-      color: colors.primary,
-      fontFamily: "Inter_700Bold",
-      letterSpacing: 2.8,
-      marginTop: 2,
+      fontSize: 13,
+      fontFamily: "Cinzel_400Regular",
+      color: "rgba(180,138,20,0.9)",
+      letterSpacing: 0.4,
+      marginTop: 4,
+      fontStyle: "italic" as const,
     },
     headerAwardRow: {
       flexDirection: "row" as const,
