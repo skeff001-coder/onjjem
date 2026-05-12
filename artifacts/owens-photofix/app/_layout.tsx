@@ -46,8 +46,11 @@ function AppSplash() {
 
         {/* Brand name */}
         <GraffitiTitle fontSize={60} letterSpacing={8} />
-        <Text style={splash.subtitle}>PHOTO RESTORATION</Text>
-        <Text style={splash.subtitleGifts}>PERSONALISED GIFTS</Text>
+        <Text style={splash.subtitle}>RESTORE · PRINT · CHERISH</Text>
+        <View style={splash.awardRow}>
+          <Text style={splash.awardTrophy}>🏆</Text>
+          <Text style={splash.awardText}>UK's #1 Photo Restoration Studio</Text>
+        </View>
 
         {/* Thin divider */}
         <View style={splash.divider} />
@@ -135,12 +138,27 @@ const splash = StyleSheet.create({
     letterSpacing: 5,
     marginBottom: 4,
   },
-  subtitleGifts: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#C9960C",
-    letterSpacing: 5,
+  awardRow: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 6,
+    backgroundColor: "rgba(201,150,12,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.4)",
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+    marginTop: 6,
     marginBottom: 20,
+  },
+  awardTrophy: {
+    fontSize: 14,
+  },
+  awardText: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    color: "#C9960C",
+    letterSpacing: 0.4,
   },
 
   /* Divider */

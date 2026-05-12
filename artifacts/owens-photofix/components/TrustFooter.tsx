@@ -37,6 +37,16 @@ const BADGES = [
 export function TrustFooter() {
   return (
     <View style={styles.root}>
+      {/* #1 Award Banner */}
+      <LinearGradient
+        colors={["#C9960C", "#F5D78E", "#C9960C"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.awardBanner}
+      >
+        <Text style={styles.awardBannerText}>★  UK'S #1 PHOTO RESTORATION & GIFT STUDIO  ★</Text>
+      </LinearGradient>
+
       <LinearGradient
         colors={[DARK, "#2E2818"]}
         start={{ x: 0, y: 0 }}
@@ -79,6 +89,20 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: GOLD_BORDER,
     overflow: "hidden",
+  },
+  awardBanner: {
+    paddingVertical: 9,
+    paddingHorizontal: 16,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+  },
+  awardBannerText: {
+    fontSize: 10,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#1C1A14",
+    letterSpacing: 1.8,
+    textAlign: "center" as const,
   },
   heading: {
     flexDirection: "row",

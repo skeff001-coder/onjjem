@@ -258,8 +258,11 @@ export default function HomeScreen() {
       <View style={s.header}>
         <View>
           <GraffitiTitle fontSize={52} letterSpacing={5} />
-          <Text style={s.headerTitleBottom}>PHOTO RESTORATION</Text>
-          <Text style={s.headerTitleGifts}>PERSONALISED GIFTS</Text>
+          <Text style={s.headerTagline}>RESTORE · PRINT · CHERISH</Text>
+          <View style={s.headerAwardRow}>
+            <Text style={s.headerAwardStar}>🏆</Text>
+            <Text style={s.headerAwardText}>UK's #1 Photo Restoration Studio</Text>
+          </View>
         </View>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
@@ -719,25 +722,36 @@ function makeStyles(
       letterSpacing: 6,
       lineHeight: 54,
     },
-    headerTitleBottom: {
-      fontSize: 13,
+    headerTagline: {
+      fontSize: 12,
       fontWeight: "700" as const,
       color: colors.primary,
       fontFamily: "Inter_700Bold",
-      letterSpacing: 2.5,
-      textShadowColor: "rgba(0,85,255,0.25)",
-      textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 4,
+      letterSpacing: 2.8,
+      marginTop: 2,
     },
-    headerTitleGifts: {
-      fontSize: 13,
+    headerAwardRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 5,
+      marginTop: 5,
+      backgroundColor: "rgba(201,150,12,0.12)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.35)",
+      borderRadius: 20,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      alignSelf: "flex-start" as const,
+    },
+    headerAwardStar: {
+      fontSize: 12,
+    },
+    headerAwardText: {
+      fontSize: 10,
       fontWeight: "700" as const,
-      color: colors.primary,
+      color: "#A67C00",
       fontFamily: "Inter_700Bold",
-      letterSpacing: 2.5,
-      textShadowColor: "rgba(0,85,255,0.25)",
-      textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 4,
+      letterSpacing: 0.3,
     },
     resetBtn: {
       width: 40,
