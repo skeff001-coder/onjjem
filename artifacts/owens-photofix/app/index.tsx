@@ -284,8 +284,8 @@ export default function HomeScreen() {
               {/* Before → after thumbnail preview — matched pair */}
               <View style={s.uploadThumbRow}>
                 <Image
-                  source={require("@/assets/gallery/victorian_after.png")}
-                  style={[s.uploadThumb, { filter: "grayscale(1) contrast(1.1)" } as any]}
+                  source={require("@/assets/gallery/victorian_before.png")}
+                  style={s.uploadThumb}
                   resizeMode="cover"
                 />
                 <View style={s.uploadThumbArrow}>
