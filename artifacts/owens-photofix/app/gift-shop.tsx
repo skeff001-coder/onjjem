@@ -139,21 +139,6 @@ const CATEGORIES: Category[] = [
     headerGradient: ["#2D1B69", "#5B2D9E"] as const,
     products: [
       {
-        id: "quilt_king",
-        title: "King-Size Heirloom Quilt",
-        size: "King — 220×230 cm",
-        desc: "Our finest creation. Each quilt is individually hand-stitched by our London artisans using 300-thread-count cotton and filled with premium hollowfibre. Your restored photo is reproduced in extraordinary detail across the full face — a genuine family heirloom built to last generations.",
-        price: "£195",
-        emoji: "👑",
-        iconBg: "#EDE0FF",
-        wide: true,
-        bestSeller: true,
-        premiumBadge: true,
-        onjjemSeal: true,
-        ukMasterPrinters: true,
-        handmadeInLondon: true,
-      },
-      {
         id: "fitted_sheets",
         title: "Custom Fitted Sheets",
         size: "All standard UK sizes",
