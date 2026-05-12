@@ -478,8 +478,8 @@ const CATEGORIES: Category[] = [
         id: "masterpiece_mural",
         title: "The Masterpiece Wall Mural",
         size: "Any size — made to measure",
-        desc: "Turn your entire wall into a high-definition sports stadium or heritage family portrait. Printed on premium, easy-to-hang wallpaper with eco-friendly, fade-resistant inks.\n\nPriced by the square metre — starts at £14.99 for small sections. Click 'Request Custom Size Quote' and share your wall width and height for an exact price.",
-        price: "from £14.99 / m²",
+        desc: "Turn your entire wall into a stunning, life-sized heritage portrait or landscape. Printed on premium 180gsm paste-the-wall paper for an unbelievable 3D finish that is easy for anyone to install.\n\nPriced at £45.00 per square metre. Tap 'Request a Quote' and tell us your wall Width and Height in cm — we'll send you an exact price within the hour.",
+        price: "£45.00 / m²",
         emoji: "🖼️",
         iconBg: "#FDF6DC",
         wide: true,
@@ -492,14 +492,13 @@ const CATEGORIES: Category[] = [
       },
       {
         id: "bespoke_mural",
-        title: "Bespoke Wall Mural (Custom Sizes to Fit Your Room)",
+        title: "Bespoke Wall Mural — Full Room",
         size: "Any size — made to measure",
-        desc: "The ultimate statement wall. Your restored photo reproduced at life-sized scale using UV-resistant inks on 180gsm satin paper — printed, matched, and hand-trimmed to fit your exact wall. No standard sizes. No compromise.\n\nFinal price depends on your wall dimensions. Click 'Get a Quote' for a master restorer to calculate your exact price.",
-        price: "from £149.00",
+        desc: "The ultimate statement wall. Your restored photo reproduced at life-sized scale on premium 180gsm paste-the-wall paper — an unbelievable 3D finish that is easy for anyone to install. Printed, matched, and hand-trimmed to fit your exact wall.\n\nPriced at £45.00 per square metre. Tap 'Request a Quote' with your wall Width and Height in cm for an exact price.",
+        price: "£45.00 / m²",
         emoji: "🏛️",
         iconBg: "#FDF6DC",
         wide: true,
-        bestSeller: true,
         premiumBadge: true,
         onjjemSeal: true,
         ukMasterPrinters: true,
@@ -1568,9 +1567,9 @@ export default function GiftShopScreen() {
                   <Text style={s.largeFormatIconEmoji}>🏛️</Text>
                 </View>
                 <View style={s.largeFormatText}>
-                  <Text style={s.largeFormatTitle}>Museum-Grade Production</Text>
+                  <Text style={s.largeFormatTitle}>Museum-Grade · 180gsm Paste-the-Wall Paper</Text>
                   <Text style={s.largeFormatDesc}>
-                    All our large-format prints are created using UV-resistant inks on professional 180gsm satin paper. Every order is expertly restored and shipped in heavy-duty architectural tubes to ensure a flawless arrival.
+                    Our master lab uses premium 180gsm paste-the-wall paper for an unbelievable 3D finish that is easy for anyone to install. Priced at £45.00 per m² — tap 'Request a Quote' with your wall Width and Height in cm for an exact price.
                   </Text>
                 </View>
               </View>
