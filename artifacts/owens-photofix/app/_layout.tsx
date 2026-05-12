@@ -49,7 +49,7 @@ function AppSplash() {
         <Text style={splash.subtitle}>RESTORE · PRINT · CHERISH</Text>
         <View style={splash.awardRow}>
           <Text style={splash.awardTrophy}>🏆</Text>
-          <Text style={splash.awardText}>UK's #1 Photo Restoration Studio</Text>
+          <Text style={splash.awardText}>Expert Photo Restoration · London Studio</Text>
         </View>
 
         {/* Thin divider */}

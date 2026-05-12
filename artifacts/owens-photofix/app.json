@@ -16,7 +16,13 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.photorestoration",
-      "privacyPolicyUrl": "https://onjjem.co.uk/privacy"
+      "buildNumber": "1",
+      "privacyPolicyUrl": "https://onjjem.co.uk/privacy",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "ONJJEM needs access to your photos so you can choose a photo to restore.",
+        "NSPhotoLibraryAddUsageDescription": "Allow ONJJEM to save your enhanced photo to your Photos library."
+      }
     },
     "android": {},
     "web": {
@@ -31,6 +37,12 @@
       ],
       "expo-font",
       "expo-web-browser",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "ONJJEM needs access to your photos so you can choose a photo to restore."
+        }
+      ],
       [
         "expo-media-library",
         {
