@@ -33,10 +33,10 @@ type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
 
 const PRINT_PRODUCTS = [
-  { id: "canvas",  title: "Premium Canvas",      category: "WALL ART",       price: "£29.99", emoji: "🖼️", g: ["#0D2137", "#183356"] as const },
-  { id: "keyring", title: "Leather Keyring",      category: "ACCESSORIES",    price: "£24.99", emoji: "🔑", g: ["#2B1600", "#57310A"] as const },
-  { id: "large",   title: "Large Format Print",   category: "PREMIUM PRINTS", price: "£39.99", emoji: "🖨️", g: ["#0D2A0D", "#1A521A"] as const },
-  { id: "gifts",   title: "Explore All Gifts",    category: "GIFT SHOP",      price: "£9.99",  emoji: "✨", g: ["#280D2A", "#521A57"] as const },
+  { id: "canvas",  title: "Premium Canvas",      category: "WALL ART",       price: "£29.99", emoji: "🖼️", g: ["#091D35", "#0F3060"] as const, catColor: "#5BA3FF", ringColor: "rgba(91,163,255,0.35)" },
+  { id: "keyring", title: "Leather Keyring",      category: "ACCESSORIES",    price: "£24.99", emoji: "🔑", g: ["#2B1400", "#5C2E00"] as const, catColor: "#FF9F2E", ringColor: "rgba(255,159,46,0.35)" },
+  { id: "large",   title: "Large Format Print",   category: "PREMIUM PRINTS", price: "£39.99", emoji: "🖨️", g: ["#082A08", "#0F4D0F"] as const, catColor: "#4CD964", ringColor: "rgba(76,217,100,0.35)" },
+  { id: "gifts",   title: "Explore All Gifts",    category: "GIFT SHOP",      price: "£9.99",  emoji: "✨", g: ["#22082A", "#451060"] as const, catColor: "#CF7AFF", ringColor: "rgba(207,122,255,0.35)" },
 ];
 
 const GALLERY_POOL = [
@@ -312,14 +312,41 @@ export default function HomeScreen() {
               activeOpacity={0.88}
             >
               <LinearGradient
-                colors={["#FF6B6B", "#FF9F0A", "#BF5AF2"]}
+                colors={["#C0390B", "#E8600A", "#BF5AF2"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={s.giftBtn}
               >
-                <Ionicons name="gift" size={24} color="#fff" />
-                <Text style={s.giftBtnText}>Print Your Memories</Text>
-                <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.8)" />
+                {/* Gold top accent bar */}
+                <LinearGradient
+                  colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={s.giftBtnGoldBar}
+                />
+                <View style={s.giftBtnInner}>
+                  <View style={s.giftBtnTop}>
+                    <View style={s.giftBtnIconWrap}>
+                      <Text style={s.giftBtnIconEmoji}>🎁</Text>
+                    </View>
+                    <View style={s.giftBtnTitleWrap}>
+                      <Text style={s.giftBtnLabel}>OUR GIFT STORE</Text>
+                      <Text style={s.giftBtnText}>Prints · Jigsaws · Keyrings</Text>
+                    </View>
+                    <View style={s.giftBtnCountBadge}>
+                      <Text style={s.giftBtnCountText}>50+</Text>
+                      <Text style={s.giftBtnCountSub}>gifts</Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.9)" />
+                  </View>
+                  <View style={s.giftBtnChipRow}>
+                    {["Canvas", "Mugs", "Cushions", "Throws", "Candles", "& More"].map((tag) => (
+                      <View key={tag} style={s.giftBtnChip}>
+                        <Text style={s.giftBtnChipText}>{tag}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
               </LinearGradient>
             </TouchableOpacity>
 
@@ -642,10 +669,10 @@ export default function HomeScreen() {
                     style={s.printCardGoldBar}
                   />
                   <View style={s.printCardInner}>
-                    <View style={s.printCardEmojiRing}>
+                    <View style={[s.printCardEmojiRing, { borderColor: product.catColor, backgroundColor: product.ringColor }]}>
                       <Text style={s.printCardEmoji}>{product.emoji}</Text>
                     </View>
-                    <Text style={s.printCardCategory}>{product.category}</Text>
+                    <Text style={[s.printCardCategory, { color: product.catColor }]}>{product.category}</Text>
                     <Text style={s.printCardTitle}>{product.title}</Text>
                     <View style={s.printCardPriceBadge}>
                       <Text style={s.printCardPrice}>from {product.price}</Text>
@@ -953,30 +980,95 @@ function makeStyles(
     },
     giftBtnGlow: {
       borderRadius: colors.radius,
-      shadowColor: "#FF6B6B",
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.45,
-      shadowRadius: 14,
-      elevation: 8,
+      shadowColor: "#BF5AF2",
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.5,
+      shadowRadius: 18,
+      elevation: 10,
     },
     giftBtn: {
       borderRadius: colors.radius,
-      paddingVertical: 18,
-      paddingHorizontal: 24,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 10,
+      overflow: "hidden" as const,
+    },
+    giftBtnGoldBar: {
+      height: 3,
+    },
+    giftBtnInner: {
+      paddingHorizontal: 18,
+      paddingVertical: 14,
+      gap: 12,
+    },
+    giftBtnTop: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 12,
+    },
+    giftBtnIconWrap: {
+      width: 46,
+      height: 46,
+      borderRadius: 23,
+      backgroundColor: "rgba(255,255,255,0.18)",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    giftBtnIconEmoji: {
+      fontSize: 24,
+    },
+    giftBtnTitleWrap: {
+      flex: 1,
+      gap: 2,
+    },
+    giftBtnLabel: {
+      fontSize: 10,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#F5D78E",
+      letterSpacing: 2.5,
     },
     giftBtnText: {
-      fontSize: 22,
+      fontSize: 17,
       fontWeight: "700" as const,
       color: "#fff",
       fontFamily: "Inter_700Bold",
-      flex: 1,
-      textShadowColor: "rgba(0,0,0,0.2)",
-      textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 3,
+      letterSpacing: 0.2,
+    },
+    giftBtnCountBadge: {
+      alignItems: "center" as const,
+      backgroundColor: "rgba(255,255,255,0.2)",
+      borderRadius: 10,
+      paddingHorizontal: 10,
+      paddingVertical: 6,
+    },
+    giftBtnCountText: {
+      fontSize: 18,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#fff",
+      lineHeight: 20,
+    },
+    giftBtnCountSub: {
+      fontSize: 9,
+      color: "rgba(255,255,255,0.8)",
+      fontFamily: "Inter_400Regular",
+      letterSpacing: 0.5,
+    },
+    giftBtnChipRow: {
+      flexDirection: "row" as const,
+      flexWrap: "wrap" as const,
+      gap: 6,
+    },
+    giftBtnChip: {
+      backgroundColor: "rgba(255,255,255,0.15)",
+      borderRadius: 20,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderWidth: 1,
+      borderColor: "rgba(255,255,255,0.25)",
+    },
+    giftBtnChipText: {
+      fontSize: 11,
+      color: "rgba(255,255,255,0.92)",
+      fontFamily: "Inter_500Medium",
     },
     proBtnGlow: {
       borderRadius: colors.radius,
