@@ -28,6 +28,7 @@ import { ReferralModal } from "@/components/ReferralModal";
 import { LivingMemoriesModal } from "@/components/LivingMemoriesModal";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { FloralAccent } from "@/components/FloralAccent";
+import { TitleWreath } from "@/components/TitleWreath";
 import { TrustFooter } from "@/components/TrustFooter";
 
 type Mode = "sharpen" | "colorize";
@@ -260,12 +261,11 @@ export default function HomeScreen() {
         <FloralAccent side="left" size={88} />
         <FloralAccent side="right" size={88} />
         <View>
-          <GraffitiTitle fontSize={52} letterSpacing={9} />
-          <Text style={s.headerTagline}>
-            {"Bringing your Gems of L"}
-            <Text style={s.headerTaglineHeart}>♥</Text>
-            {"ve to Life"}
-          </Text>
+          <View style={{ position: "relative" }}>
+            <TitleWreath />
+            <GraffitiTitle fontSize={52} letterSpacing={9} />
+          </View>
+          <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
         </View>
         {appState !== "idle" && (
           <TouchableOpacity onPress={resetApp} style={s.resetBtn}>

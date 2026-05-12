@@ -2,13 +2,14 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-// Heart-ring path: outer heart + inner heart (0.60× scale) with evenOdd fill
-// The inner path creates the transparent centre, matching the O-ring proportions of Cinzel
+// Heart-ring path: outer heart + inner heart (0.60× scale) with evenOdd fill.
+// Top notch is very shallow (y=1.5) so the shape reads as a rounded classic O
+// with just a hint of heart — elegant rather than cartoonish.
 const HEART_RING =
-  "M 10 17.5 C 10 17.5 0.5 11 0.5 5 C 0.5 1.5 3 0 5.5 0 C 7.3 0 9.2 1.2 10 3.2 " +
-  "C 10.8 1.2 12.7 0 14.5 0 C 17 0 19.5 1.5 19.5 5 C 19.5 11 10 17.5 10 17.5 Z " +
+  "M 10 17.5 C 10 17.5 0.5 11 0.5 5 C 0.5 1.5 3 0 5.5 0 C 7.3 0 9.5 0.5 10 1.5 " +
+  "C 10.5 0.5 12.7 0 14.5 0 C 17 0 19.5 1.5 19.5 5 C 19.5 11 10 17.5 10 17.5 Z " +
   "M 10 13.9 C 10 13.9 4.3 10.0 4.3 6.4 C 4.3 4.3 5.8 3.4 7.3 3.4 " +
-  "C 8.38 3.4 9.52 4.12 10 5.32 C 10.48 4.12 11.62 3.4 12.7 3.4 " +
+  "C 8.38 3.4 9.7 3.7 10 4.3 C 10.3 3.7 11.62 3.4 12.7 3.4 " +
   "C 14.2 3.4 15.7 4.3 15.7 6.4 C 15.7 10.0 10 13.9 10 13.9 Z";
 
 // Shadow + highlight layers, matching the text depth stack
