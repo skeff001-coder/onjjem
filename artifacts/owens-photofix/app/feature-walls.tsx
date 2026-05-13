@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Dimensions,
+  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -55,6 +56,36 @@ const FEATURES = [
     icon: "ribbon-outline" as const,
     title: "10-Year Colour Guarantee",
     sub: "Our inks are rated to look perfect for a decade",
+  },
+];
+
+const CUSTOMER_STORIES = [
+  {
+    id: "anniversary",
+    image: require("@/assets/gallery/mural_anniversary.png"),
+    tag: "50TH ANNIVERSARY",
+    title: "A Golden Anniversary to Remember",
+    story:
+      "For their parents' 50th golden wedding anniversary, the family secretly commissioned ONJJEM to restore and enlarge the original 1974 wedding photo to fill the entire end wall of the function room. When the couple walked in, the room fell silent. Their wedding day — in full, vivid colour — greeted them at life-size scale. There was not a dry eye in the house.",
+    detail: "360×260 cm · 6 panels · function room, Cheshire",
+  },
+  {
+    id: "living_room",
+    image: require("@/assets/gallery/mural_living_room.png"),
+    tag: "HERITAGE PORTRAIT",
+    title: "A Victorian Ancestor, Restored to Life",
+    story:
+      "A faded daguerreotype of a great-great-grandmother — barely visible, heavily cracked — became the centrepiece of an elegant London living room. Our master restorers spent two days on the colour science alone. The result: a floor-to-ceiling feature wall that guests mistake for a commissioned oil painting.",
+    detail: "240×240 cm · 4 panels · private residence, London",
+  },
+  {
+    id: "hallway",
+    image: require("@/assets/gallery/mural_hallway.png"),
+    tag: "FAMILY LEGACY",
+    title: "Three Generations in One Hallway",
+    story:
+      "A composite of three restored family photographs spanning the 1930s, 1960s, and 1990s. Each era brought back with full colour and remarkable clarity, printed as a single continuous mural along a 4.5-metre hallway. The family calls it 'the corridor of time'.",
+    detail: "450×220 cm · 8 panels · family home, Manchester",
   },
 ];
 
@@ -175,6 +206,61 @@ export default function FeatureWallsScreen() {
             <Ionicons name="chevron-forward" size={18} color="rgba(255,255,255,0.7)" />
           </LinearGradient>
         </TouchableOpacity>
+
+        {/* Seam Preview Tool */}
+        <TouchableOpacity
+          style={s.seamPreviewCard}
+          onPress={() => router.push("/wall-preview")}
+          activeOpacity={0.87}
+        >
+          <LinearGradient colors={["#0D1B2A", "#162236"]} style={s.seamPreviewGradient}>
+            <View style={s.seamPreviewLeft}>
+              <View style={s.seamPreviewBadge}>
+                <Ionicons name="eye-outline" size={11} color={GOLD} />
+                <Text style={s.seamPreviewBadgeText}>NEW TOOL</Text>
+              </View>
+              <Text style={s.seamPreviewTitle}>Preview Your Seam Lines</Text>
+              <Text style={s.seamPreviewSub}>
+                See exactly where each 62.5 cm panel joins before you order — so you can plan your crop around the seams.
+              </Text>
+            </View>
+            <View style={s.seamPreviewLines}>
+              {[0, 1, 2, 3].map((i) => (
+                <View key={i} style={[s.seamPreviewLine, i === 1 && s.seamPreviewLineGold]} />
+              ))}
+            </View>
+            <Ionicons name="chevron-forward" size={20} color={GOLD} />
+          </LinearGradient>
+        </TouchableOpacity>
+
+        {/* Customer Stories */}
+        <View style={s.storiesSection}>
+          <Text style={s.sectionEyebrow}>CUSTOMER COMMISSIONS</Text>
+          <Text style={s.sectionTitle}>Real Murals. Real Moments.</Text>
+          {CUSTOMER_STORIES.map((story) => (
+            <View key={story.id} style={s.storyCard}>
+              <Image source={story.image} style={s.storyImage} resizeMode="cover" />
+              <LinearGradient
+                colors={["transparent", "rgba(28,26,20,0.92)"]}
+                style={s.storyImageOverlay}
+              />
+              <View style={s.storyTagWrap}>
+                <View style={s.storyTag}>
+                  <Ionicons name="sparkles" size={9} color={GOLD} />
+                  <Text style={s.storyTagText}>{story.tag}</Text>
+                </View>
+              </View>
+              <View style={s.storyBody}>
+                <Text style={s.storyTitle}>{story.title}</Text>
+                <Text style={s.storyText}>{story.story}</Text>
+                <View style={s.storyDetail}>
+                  <Ionicons name="resize-outline" size={12} color={GOLD} />
+                  <Text style={s.storyDetailText}>{story.detail}</Text>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
 
         {/* Room style selector — visual inspiration */}
         <View style={s.roomSection}>
@@ -644,6 +730,165 @@ const s = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     color: MUTED,
     lineHeight: 20,
+  },
+
+  /* Seam Preview Card */
+  seamPreviewCard: {
+    marginHorizontal: 18,
+    marginTop: 20,
+    marginBottom: 4,
+    borderRadius: 14,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.35)",
+    shadowColor: DARK,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  seamPreviewGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 18,
+    paddingHorizontal: 18,
+    gap: 12,
+  },
+  seamPreviewLeft: {
+    flex: 1,
+    gap: 5,
+  },
+  seamPreviewBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(201,150,12,0.18)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.35)",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  seamPreviewBadgeText: {
+    fontSize: 8,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 1.5,
+  },
+  seamPreviewTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+    color: "#F5EDD8",
+  },
+  seamPreviewSub: {
+    fontSize: 11,
+    color: "rgba(245,237,216,0.6)",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 16,
+  },
+  seamPreviewLines: {
+    flexDirection: "row",
+    gap: 5,
+    alignItems: "center",
+    marginRight: 4,
+  },
+  seamPreviewLine: {
+    width: 2,
+    height: 36,
+    borderRadius: 1,
+    backgroundColor: "rgba(255,255,255,0.2)",
+  },
+  seamPreviewLineGold: {
+    backgroundColor: GOLD,
+    height: 44,
+  },
+
+  /* Customer Stories */
+  storiesSection: {
+    paddingHorizontal: 18,
+    paddingTop: 28,
+    paddingBottom: 8,
+    gap: 6,
+  },
+  storyCard: {
+    borderRadius: 18,
+    overflow: "hidden",
+    marginTop: 14,
+    borderWidth: 1,
+    borderColor: GOLD_BORDER,
+    shadowColor: "#B8960A",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  storyImage: {
+    width: "100%",
+    height: 200,
+  },
+  storyImageOverlay: {
+    position: "absolute",
+    top: 100,
+    left: 0,
+    right: 0,
+    height: 100,
+  },
+  storyTagWrap: {
+    position: "absolute",
+    top: 12,
+    left: 12,
+  },
+  storyTag: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "rgba(28,26,20,0.75)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.5)",
+    borderRadius: 20,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  storyTagText: {
+    fontSize: 9,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 1.5,
+  },
+  storyBody: {
+    backgroundColor: "#fff",
+    padding: 16,
+    gap: 7,
+  },
+  storyTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+    color: DARK,
+    lineHeight: 21,
+  },
+  storyText: {
+    fontSize: 13,
+    color: MUTED,
+    fontFamily: "Inter_400Regular",
+    lineHeight: 20,
+  },
+  storyDetail: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginTop: 2,
+  },
+  storyDetailText: {
+    fontSize: 11,
+    color: GOLD,
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
 
   /* Pull quote */

@@ -102,6 +102,24 @@ uri = "file://artifacts/owens-photofix/assets/gallery/childhood_after.png"
 type = "image"
 title = "childhood after restored color"
 
+[[generated]]
+id = "WjAfPeMAnFIMEPhz0w4CU"
+uri = "file://artifacts/owens-photofix/assets/gallery/mural_anniversary.png"
+type = "image"
+title = "anniversary wall mural function room"
+
+[[generated]]
+id = "f5mFqxSwJVCWK_kR3izwj"
+uri = "file://artifacts/owens-photofix/assets/gallery/mural_living_room.png"
+type = "image"
+title = "victorian portrait living room mural"
+
+[[generated]]
+id = "EcEYMFiD_is-RPqbPbnjm"
+uri = "file://artifacts/owens-photofix/assets/gallery/mural_hallway.png"
+type = "image"
+title = "family portrait hallway mural"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
