@@ -646,7 +646,7 @@ export default function HomeScreen() {
                   </View>
                 </View>
                 <Text style={s.livingMemoriesSub}>
-                  AI Motion Video · Watch it move
+                  Unfreeze your favourite moments. Watch your memories come to life.
                 </Text>
               </View>
               <Ionicons name="chevron-forward" size={14} color={colors.primary} />
