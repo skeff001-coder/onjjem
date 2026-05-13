@@ -79,8 +79,8 @@ const CATEGORIES: Category[] = [
       {
         id: "cushion_square",
         title: "Square Photo Cushion",
-        size: "40×40 cm · soft velvet front · poly-fibre fill · zip fastening",
-        desc: "Your restored photo printed on a soft velvet-touch front with a plain colour-matched backing. Plump poly-fibre fill included. Zip fastening. Machine washable. 5-Year Print Guarantee.",
+        size: "40×40 cm · soft velvet-touch front · duck feather & down or poly-fibre fill · zip fastening",
+        desc: "Your restored photo printed on a soft velvet-touch front with a plain colour-matched backing. Fill of your choice: duck feather & down or poly-fibre. Zip fastening. Machine washable. 5-Year Print Guarantee.",
         price: "£44.99",
         emoji: "🟦",
         iconBg: "#EEE8FF",
@@ -88,8 +88,8 @@ const CATEGORIES: Category[] = [
       {
         id: "cushion_large",
         title: "Large Luxury Cushion",
-        size: "60×60 cm · soft velvet front · poly-fibre fill · zip fastening",
-        desc: "Our largest cushion — a bold centrepiece for any sofa. Soft velvet-touch front with your expertly restored photo, plump poly-fibre fill and a plain colour-matched backing. Machine washable. 5-Year Print Guarantee.",
+        size: "60×60 cm · soft velvet-touch front · duck feather & down or poly-fibre fill · zip fastening",
+        desc: "Our largest cushion — a bold centrepiece for any sofa. Soft velvet-touch front with your expertly restored photo, and a plain colour-matched backing. Fill of your choice: duck feather & down or poly-fibre. Machine washable. 5-Year Print Guarantee.",
         price: "£59.99",
         emoji: "🛋️",
         iconBg: "#F5E8FF",
@@ -98,8 +98,8 @@ const CATEGORIES: Category[] = [
       {
         id: "silk_portrait_cushion",
         title: "Luxury Silk Portrait Cushion",
-        size: "50×50 cm · 100% natural silk front · poly-fibre fill · zip fastening",
-        desc: "Your restored photo printed directly onto 100% natural silk — the finest fabric we offer. Hand-sewn in London with a plump poly-fibre fill and hidden zip fastening. Dry-clean recommended. 5-Year Print Guarantee.",
+        size: "50×50 cm · 100% natural silk front · duck feather & down or poly-fibre fill · zip fastening",
+        desc: "Your restored photo printed directly onto 100% natural silk — the finest fabric we offer. Hand-sewn in London with your choice of plump duck feather & down or poly-fibre fill, and hidden zip fastening. Dry-clean recommended. 5-Year Print Guarantee.",
         price: "£84.99",
         emoji: "✨",
         iconBg: "#FDF6DC",
@@ -178,9 +178,9 @@ const CATEGORIES: Category[] = [
     products: [
       {
         id: "duvet_set",
-        title: "Master Lab Duvet Set",
-        size: "All standard UK sizes",
-        desc: "Fully reversible with your restored photo on one side and a tonal backing on the other. Choose from crisp 100% cotton or silky-smooth poly-sheeting — both woven to Master Lab specification. Backed by our 5-Year Master Guarantee: if the print fades, we replace it free of charge.",
+        title: "Photo Duvet Cover",
+        size: "Single 140×198cm · Double 218×229cm · King · Super King · 100% Organic Cotton",
+        desc: "Your restored photo printed across the full face of a 100% organic cotton duvet cover. Crisp, breathable, machine washable at 40°C. Zip fastening. Available in four standard UK sizes. Duvet cover only — insert not included. 5-Year Print Guarantee.",
         price: "£59.00",
         emoji: "🌟",
         iconBg: "#EDE8FF",
@@ -190,14 +190,14 @@ const CATEGORIES: Category[] = [
         handmadeInLondon: true,
         freePersonalisation: true,
         options: [
-          { label: "Fabric", choices: ["100% Cotton", "Poly-Sheeting"] },
+          { label: "Size", choices: ["Single (140×198cm)", "Double (218×229cm)", "King (225×220cm)", "Super King (260×220cm)"] },
         ],
       },
       {
         id: "bedside_rug",
         title: "Plush Bedside Rug",
-        size: "60×90 cm",
-        desc: "Wake up to your most treasured memory every morning. Crafted in ultra-plush velvet with a non-slip latex base. Your restored photo is reproduced in vivid, deep colour — soft underfoot and beautiful to look at.",
+        size: "90×63 cm · plush velour print surface · non-slip rubber base",
+        desc: "Wake up to your most treasured memory every morning. Your restored photo reproduced in vivid, deep colour on a plush velour surface with a non-slip rubber base — soft underfoot and beautiful to look at. Wipe-clean.",
         price: "£99",
         emoji: "🏡",
         iconBg: "#EDE0FF",
@@ -210,7 +210,7 @@ const CATEGORIES: Category[] = [
       {
         id: "silk_duvet",
         title: "Pure Silk Duvet Cover",
-        size: "All standard UK sizes",
+        size: "Single 140×198cm · Double 218×229cm · King 225×220cm · Super King 260×220cm · duvet cover only",
         desc: "The ultimate in bedroom luxury. Hand-sewn in London from natural silk satin — renowned for being gentle on skin and hair and naturally temperature-regulating throughout the year. Your restored photo is reproduced in breathtaking clarity across the full face. Backed by our 10-Year Master Guarantee: print, fabric and stitching covered for a decade.",
         price: "£129.00",
         emoji: "✨",
@@ -225,9 +225,9 @@ const CATEGORIES: Category[] = [
       },
       {
         id: "quilt_single",
-        title: "Single Photo Quilt",
-        size: "Single — 135×200 cm",
-        desc: "Hand-stitched by our London artisans using premium hollowfibre fill and 300-thread-count cotton. Your restored photo printed in stunning detail — delightfully cosy and deeply personal.",
+        title: "Photo Duvet Cover — Single",
+        size: "Single — 140×198 cm · 100% Organic Cotton · zip fastening",
+        desc: "Your restored photo printed across the full face of a single duvet cover in 100% organic cotton. Breathable, machine washable at 40°C, zip fastening. Duvet cover only — insert not included.",
         price: "£135",
         emoji: "🛏️",
         iconBg: "#F5EEFF",
@@ -238,9 +238,9 @@ const CATEGORIES: Category[] = [
       },
       {
         id: "quilt_double",
-        title: "Double Photo Quilt",
-        size: "Double — 200×200 cm",
-        desc: "All the craftsmanship of the Single in a generous double size. Perfect for sharing a memory. Hand-stitched by our London artisans with premium comfort and lasting colour.",
+        title: "Photo Duvet Cover — Double",
+        size: "Double — 218×229 cm · 100% Organic Cotton · zip fastening",
+        desc: "Your restored photo printed across the full face of a double duvet cover in 100% organic cotton. Breathable, machine washable at 40°C, zip fastening. Duvet cover only — insert not included.",
         price: "£165",
         emoji: "🛏️",
         iconBg: "#EDE0FF",
@@ -262,7 +262,8 @@ const CATEGORIES: Category[] = [
       {
         id: "magnet",
         title: "Fridge Magnet",
-        desc: "Acrylic memory for your kitchen",
+        size: "Round 60mm diameter or Rectangular 65×46mm · acrylic finish",
+        desc: "Your restored photo on a premium acrylic-finish magnet. Choose round (60mm) or rectangular (65×46mm). Heat-proof gloss surface — wipe clean.",
         price: "£24.99",
         emoji: "🧲",
         iconBg: "#FFF4E0",
@@ -287,8 +288,8 @@ const CATEGORIES: Category[] = [
       {
         id: "leather_keyring",
         title: "Handmade Leather Keyring",
-        size: "Genuine Nappa Leather",
-        desc: "Crafted from buttery-soft Genuine Nappa Leather — water-based eco-friendly inks that won't peel, rub or scratch. A beautiful, tactile way to carry your cherished memory with you every day.",
+        size: "Heart 6.4×7.9cm or Rectangle 7.1×7.6cm · Genuine Nappa calf leather · double-sided print",
+        desc: "Crafted from buttery-soft Genuine Nappa calf leather — the same quality found in luxury handbags. Double-sided photo print using water-based eco-friendly inks that won't peel, rub or scratch. Available in heart or rectangle shape.",
         price: "£34.99",
         emoji: "🔑",
         iconBg: "#EFEBE9",
@@ -358,8 +359,8 @@ const CATEGORIES: Category[] = [
       {
         id: "jigsaw_1000",
         title: "1000 Piece Giant Puzzle",
-        size: "Classic Cardboard · Satin-Finish",
-        desc: "A true family challenge for those big stadium or heritage shots.",
+        size: "66×40.6 cm · 2mm reinforced cardboard · satin-gloss finish",
+        desc: "Our largest cardboard puzzle — 66×40.6cm when complete. 1,000 precision-cut pieces on 2mm reinforced cardboard with a satin-gloss surface. A true family challenge for those big heritage and group shots.",
         price: "£49.99",
         emoji: "🧩",
         iconBg: "#E8F5E9",
@@ -370,8 +371,8 @@ const CATEGORIES: Category[] = [
       {
         id: "jigsaw_500",
         title: "500 Piece Standard Puzzle",
-        size: "Classic Cardboard · Satin-Finish",
-        desc: "Our most popular size for everyday memories.",
+        size: "33×47 cm · 2mm reinforced cardboard · satin-gloss finish",
+        desc: "Our most popular puzzle — 33×47cm when complete. 500 precision-cut pieces on 2mm reinforced cardboard with a satin-gloss surface. Perfect for everyday portraits and family memories.",
         price: "£39.99",
         emoji: "🧩",
         iconBg: "#F1F8E9",
@@ -380,9 +381,9 @@ const CATEGORIES: Category[] = [
       },
       {
         id: "jigsaw_250_wood",
-        title: "250 Piece Classic Wooden",
-        size: "Premium Solid Wood · Gloss Laminate",
-        desc: "Solid wood pieces with a satin-gloss laminate finish — satisfying to handle and built to last. A perfect afternoon puzzle for all ages.",
+        title: "252 Piece Classic Cardboard",
+        size: "27×33.5 cm · 2mm reinforced cardboard · satin-gloss finish",
+        desc: "27×33.5cm when complete — 252 precision-cut cardboard pieces with a satin-gloss laminate surface. Satisfying to handle and built to last. A perfect afternoon puzzle for all ages.",
         price: "£49.99",
         emoji: "🪵",
         iconBg: "#DCEDC8",
@@ -392,9 +393,9 @@ const CATEGORIES: Category[] = [
       // — Premium Heirloom Wooden Collection —
       {
         id: "jigsaw_wood_xl",
-        title: "250 Piece X-Large Wooden",
-        size: "Premium Wooden · 3mm Luxury Wood",
-        desc: "The ultimate heirloom. Hand-cut from luxury wood for a perfect click.",
+        title: "96 Piece Classic Wooden",
+        size: "36×25 cm · 2.5mm chunky wood · gloss-top finish",
+        desc: "36×25cm when complete — 96 chunky, hand-cut wooden pieces with a satisfying click. 2.5mm thick, gloss-finished top. Ideal for adults and older children. Includes luxury printed metal tin.",
         price: "£84.99",
         emoji: "🪵",
         iconBg: "#FFF3E0",
@@ -405,9 +406,9 @@ const CATEGORIES: Category[] = [
       },
       {
         id: "jigsaw_wood_100",
-        title: "100 Piece Premium Wooden",
-        size: "Premium Wooden · 3mm Luxury Wood",
-        desc: "A thick, durable masterpiece that will last for generations.",
+        title: "96 Piece Wooden — Heritage Edition",
+        size: "36×25 cm · 2.5mm chunky wood · gloss-top finish · ONJJEM Certificate of Authenticity",
+        desc: "Our premium wooden puzzle — identical satisfying 2.5mm chunky wood pieces at 36×25cm — presented in a luxury ONJJEM Heritage Gift Box with a Certificate of Authenticity. The ultimate heirloom gift.",
         price: "£89.99",
         emoji: "🪵",
         iconBg: "#FFF8E1",
@@ -418,8 +419,8 @@ const CATEGORIES: Category[] = [
       {
         id: "jigsaw_wood_kids",
         title: "30 Piece Kids Wooden",
-        size: "Premium Wooden · 3mm Luxury Wood",
-        desc: "A sturdy, unbreakable puzzle for the little ones.",
+        size: "25×17.5 cm · 2.5mm chunky wood · gloss-top finish",
+        desc: "25×17.5cm when complete — 30 extra-chunky 2.5mm wooden pieces sized perfectly for small hands. Smooth gloss surface, easy to wipe clean. A wonderful personalised gift for little ones.",
         price: "£64.99",
         emoji: "🧸",
         iconBg: "#FFFDE7",
@@ -439,8 +440,8 @@ const CATEGORIES: Category[] = [
       {
         id: "photo_print",
         title: "Standard Photo Print",
-        size: "7×5 inch",
-        desc: "Classic gloss finish — a timeless print of your restored memory, ready to frame.",
+        size: "7×5 inch · premium gloss photo paper",
+        desc: "Printed on premium gloss photo paper — vibrant, true-to-life colour. A timeless print of your restored memory, ready to frame or display.",
         price: "£24.99",
         emoji: "📷",
         iconBg: "#EEF4FF",
@@ -451,8 +452,8 @@ const CATEGORIES: Category[] = [
       {
         id: "poster_a4",
         title: "A4 Photo Poster",
-        size: "A4 · 21×29.7 cm",
-        desc: "High-quality gallery paper — sharp, vivid, and perfect for any frame.",
+        size: "A4 · 21×29.7 cm · 160gsm satin paper · white border",
+        desc: "Printed on 160gsm semi-gloss satin paper with a smart white border — sharp, vivid, and ready to frame.",
         price: "£24.99",
         emoji: "📜",
         iconBg: "#E8F4FF",
@@ -463,8 +464,8 @@ const CATEGORIES: Category[] = [
       {
         id: "standard_photo_poster",
         title: "A3 Photo Poster",
-        size: "A3 · 30×42 cm",
-        desc: "A crisp, gallery-quality print of your restored photo — ready to frame and hang in minutes.",
+        size: "A3 · 29.7×42 cm · 160gsm satin paper · white border",
+        desc: "Printed on 160gsm semi-gloss satin paper with a smart white border — crisp, gallery-quality print ready to frame and hang in minutes.",
         price: "£29.99",
         emoji: "🖼️",
         iconBg: "#E5EEFF",
@@ -477,8 +478,8 @@ const CATEGORIES: Category[] = [
       {
         id: "poster_a2",
         title: "A2 Boutique Poster",
-        size: "A2 · 42×59 cm",
-        desc: "A refined, gallery-quality finish that commands any wall. Perfect for framing.",
+        size: "A2 · 42×59.4 cm · 189gsm smooth matte fine art paper",
+        desc: "Printed on 189gsm smooth matte fine art paper — rich, true-to-life colour with no glare. A refined gallery print that commands any wall, perfect for framing.",
         price: "£34.99",
         emoji: "🖼️",
         iconBg: "#E0EBFF",
@@ -490,8 +491,8 @@ const CATEGORIES: Category[] = [
       {
         id: "poster_a1",
         title: "A1 Statement Poster",
-        size: "A1 · 59×84 cm",
-        desc: "A high-impact gallery look that fills the room — your restored memory at its most powerful.",
+        size: "A1 · 59.4×84.1 cm · 189gsm smooth matte fine art paper",
+        desc: "Printed on 189gsm smooth matte fine art paper — a high-impact gallery print that fills the room. Your restored memory at its most powerful.",
         price: "£54.99",
         emoji: "📐",
         iconBg: "#DCE8FF",
@@ -502,8 +503,8 @@ const CATEGORIES: Category[] = [
       {
         id: "poster_a0",
         title: "A0 Giant Poster",
-        size: "A0 · 84×119 cm",
-        desc: "Our largest standard paper print — truly commanding. A statement piece for any space.",
+        size: "A0 · 84.1×118.9 cm · 189gsm smooth matte fine art paper",
+        desc: "Printed on 189gsm smooth matte fine art paper — our largest print, truly commanding at A0 scale. A statement centrepiece for any room.",
         price: "£89.99",
         emoji: "🌄",
         iconBg: "#D8E5FF",
@@ -592,8 +593,8 @@ const CATEGORIES: Category[] = [
       {
         id: "tee_kids",
         title: "Personalised Kids Tee",
-        size: "Ages 2–12",
-        desc: "Perfect for family reunions or gifts — vivid, washable, joyful.",
+        size: "Ages 2–12 · all-over print · choice of soft jersey fabric",
+        desc: "Your restored photo printed edge-to-edge. Choose from cotton jersey, Supima cotton, recycled polyester jersey or Tencel cotton jersey. Vivid, machine washable.",
         price: "£34.99",
         emoji: "🧒",
         iconBg: "#EDE0FF",
@@ -602,8 +603,8 @@ const CATEGORIES: Category[] = [
       {
         id: "tee_adult",
         title: "Custom All-Over Print Tee",
-        size: "XS–3XL",
-        desc: "Your restored photo printed edge-to-edge on soft jersey fabric.",
+        size: "XS–3XL · all-over print · choice of soft jersey fabric",
+        desc: "Your restored photo printed edge-to-edge. Choose from Bounce Cotton Jersey, Supima Cotton Candy Jersey, Lifestyle Recycled Poly Jersey or Tencel Cotton Jersey. Machine washable.",
         price: "£44.99",
         emoji: "👕",
         iconBg: "#F3E8FF",
@@ -651,8 +652,8 @@ const CATEGORIES: Category[] = [
       {
         id: "mouse_mat",
         title: "Photo Mouse Mat",
-        size: "6mm Non-Slip Rubber",
-        desc: "Smooth cloth surface, non-slip base — your memory on your desk every day.",
+        size: "Smooth polyester surface · 6mm non-slip rubber base · dye-sublimation print",
+        desc: "Smooth polyester surface for easy mouse glide, with a 6mm non-slip rubber base. Dye-sublimation print — vivid, permanent colour. Wipe-clean with a damp cloth.",
         price: "£19.99",
         emoji: "🖱️",
         iconBg: "#FFFBF0",
@@ -678,8 +679,8 @@ const CATEGORIES: Category[] = [
       {
         id: "coasters",
         title: "High-Gloss Coasters",
-        size: "Set of 4",
-        desc: "Heat-resistant, solid wooden base. Your photo sealed under a mirror-gloss finish.",
+        size: "Set of 4 · 10×10 cm each · wooden core · heat-proof gloss finish",
+        desc: "Set of four 10×10cm photo coasters — each with a sturdy wooden core sealed under a heat-proof gloss surface. Each coaster can carry a different photo. Wipe-clean only; do not submerge in water.",
         price: "£24.99",
         emoji: "🟫",
         iconBg: "#FDF3E3",
@@ -692,8 +693,8 @@ const CATEGORIES: Category[] = [
       {
         id: "nappa_keyring_lt",
         title: "Genuine Leather Keyring",
-        size: "Premium Nappa Leather · Handmade in London",
-        desc: "Buttery-soft Nappa leather — carry your cherished memory every day.",
+        size: "Heart 6.4×7.9cm or Rectangle 7.1×7.6cm · Genuine Nappa calf leather · double-sided print",
+        desc: "Carry your cherished memory every day. Buttery-soft genuine Nappa calf leather in heart or rectangle shape — double-sided photo print using water-based inks that won't peel or scratch.",
         price: "£24.99",
         emoji: "🔑",
         iconBg: "#EFEBE9",
@@ -719,8 +720,8 @@ const CATEGORIES: Category[] = [
       {
         id: "heritage_drawstring_bag",
         title: "Heritage Drawstring Bag",
-        size: "Eco Cotton · Natural",
-        desc: "Sustainable cotton bag with your restored photo. Perfect for gym, beach or shopping.",
+        size: "44.5×31.8 cm · eco calico cotton · natural drawstring",
+        desc: "44.5×31.8cm sustainable eco calico cotton bag with your restored photo on the front. Natural drawstring closure. Reusable, lightweight and washable — perfect for gym, beach or shopping.",
         price: "£24.99",
         emoji: "🎒",
         iconBg: "#F5F0E8",
@@ -732,8 +733,8 @@ const CATEGORIES: Category[] = [
       {
         id: "notebook",
         title: "Handmade Notebook",
-        size: "A5",
-        desc: "Ivory paper interior with a hand-stitched spine. A keepsake you'll write in every day.",
+        size: "A5 · 20.5×15 cm · 75 sheets (150 sides) · thick ivory artists paper · approx. 380g",
+        desc: "75 sheets of thick ivory artists paper that handles pencils, ballpoints, gel pens and fountain pens beautifully with minimal show-through. Your restored photo printed on the cover. A5 format (20.5×15cm).",
         price: "£24.99",
         emoji: "📔",
         iconBg: "#FFF9EE",
@@ -758,8 +759,8 @@ const CATEGORIES: Category[] = [
       {
         id: "face_socks",
         title: "Face Socks",
-        size: "One Size",
-        desc: "Soft, stretchy and brilliantly printed — put a favourite face on someone's feet.",
+        size: "Available in S / M / L — please select size",
+        desc: "Soft, stretchy and brilliantly printed — put a favourite face on someone's feet. Available in three sizes (S / M / L). Face printed all over. Machine washable.",
         price: "£29.99",
         emoji: "🧦",
         iconBg: "#FFF8E1",
@@ -772,8 +773,8 @@ const CATEGORIES: Category[] = [
       {
         id: "heritage_calendar",
         title: "Heritage Photo Calendar",
-        size: "A4 · 12 Months",
-        desc: "A full year of your finest restored memories on premium gallery-quality paper.",
+        size: "A4 (21×29.7cm) or A3 (29.7×42cm) · 12 months · white metal wire binding · hanging hook",
+        desc: "A full year of your finest restored memories. White metal wire binding with a built-in hanging hook for instant wall display. Choose A4 or A3 size.",
         price: "£29.99",
         emoji: "📅",
         iconBg: "#FFF0DC",
@@ -798,8 +799,8 @@ const CATEGORIES: Category[] = [
       {
         id: "bone_china_mug",
         title: "Fine Bone China Mug",
-        size: "Fine Bone China · Dishwasher Safe",
-        desc: "Finer & lighter than ceramic — your restored photo on authentic Fine Bone China.",
+        size: "Large 300ml (8.3cm dia × 9.3cm tall) · Fine Bone China · hand wash recommended",
+        desc: "Finer and lighter than ceramic — your restored photo on authentic Fine Bone China. Large size: 300ml, 8.3cm diameter, 9.3cm tall. Hand wash recommended to protect the print and glaze.",
         price: "£39.99",
         emoji: "☕",
         iconBg: "#FFF8F0",
@@ -862,8 +863,8 @@ const CATEGORIES: Category[] = [
       {
         id: "nappa_keyring",
         title: "Genuine Leather Keyring",
-        size: "Premium Nappa Leather · Handmade in London",
-        desc: "Handmade in London from buttery-soft genuine Nappa leather — the same quality found in luxury handbags. A beautiful, tactile way to carry your cherished restored memory with you every single day.",
+        size: "Heart 6.4×7.9cm or Rectangle 7.1×7.6cm · Genuine Nappa calf leather · double-sided print",
+        desc: "Genuine Nappa calf leather in heart (6.4×7.9cm) or rectangle (7.1×7.6cm). Double-sided photo print using water-based inks that won't peel, rub or scratch. The same leather quality found in luxury handbags.",
         price: "£24.99",
         emoji: "🔑",
         iconBg: "#EFEBE9",
@@ -879,15 +880,15 @@ const CATEGORIES: Category[] = [
     id: "home_rugs",
     label: "Rugs",
     emoji: "🏡",
-    subtitle: "Marbled Velvet · Non-slip latex base · 10-year print guarantee",
+    subtitle: "Plush velour print surface · Non-slip rubber base · 10-year print guarantee",
     fulfillment: "ONJJEM Master Artisans · London Studio",
     headerGradient: ["#3B2A1A", "#5C3D1E"] as const,
     products: [
       {
         id: "rug_hallway",
         title: "The Hallway Runner",
-        size: "180×63cm",
-        desc: "Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Every rug is expertly restored and features a 10-year print guarantee. Perfect for high-traffic memories.",
+        size: "180×63cm · plush velour print surface · non-slip rubber base",
+        desc: "Your restored photo printed on a plush velour surface with a non-slip rubber base. 180×63cm — the ideal runner for hallways and high-traffic areas. Wipe-clean surface. 10-year print guarantee.",
         price: "£145.00",
         emoji: "🏡",
         iconBg: "#FDF5EC",
@@ -899,8 +900,8 @@ const CATEGORIES: Category[] = [
       {
         id: "rug_square",
         title: "Large Square Rug",
-        size: "128×128cm",
-        desc: "Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Every rug is expertly restored and features a 10-year print guarantee. Unique modern styling.",
+        size: "128×128cm · plush velour print surface · non-slip rubber base",
+        desc: "Your restored photo printed on a plush velour surface with a non-slip rubber base. 128×128cm square — a striking centrepiece for any living room. Wipe-clean surface. 10-year print guarantee.",
         price: "£155.00",
         emoji: "🏡",
         iconBg: "#F7EDE2",
@@ -912,8 +913,8 @@ const CATEGORIES: Category[] = [
       {
         id: "rug_classic",
         title: "Classic Area Rug",
-        size: "135×105cm",
-        desc: "Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Every rug is expertly restored and features a 10-year print guarantee. A beautiful centrepiece for any room.",
+        size: "135×105cm · plush velour print surface · non-slip rubber base",
+        desc: "Your restored photo printed on a plush velour surface with a non-slip rubber base. A beautiful area rug for any room — vivid print with a rich, textured feel underfoot. Wipe-clean surface. 10-year print guarantee.",
         price: "£165.00",
         emoji: "🏡",
         iconBg: "#FBF2E8",
@@ -926,8 +927,8 @@ const CATEGORIES: Category[] = [
       {
         id: "rug_statement",
         title: "The Statement Rug",
-        size: "128×200cm",
-        desc: "Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Every rug is expertly restored and features a 10-year print guarantee. Our largest velvet-finish rug.",
+        size: "128×200cm · plush velour print surface · non-slip rubber base",
+        desc: "Your restored photo printed on a plush velour surface with a non-slip rubber base. Our largest rug at 128×200cm — a true statement piece for any room. Wipe-clean surface. 10-year print guarantee.",
         price: "£195.00",
         emoji: "🏡",
         iconBg: "#F9EFE4",
@@ -1017,8 +1018,8 @@ const CATEGORIES: Category[] = [
       {
         id: "junior_throw",
         title: "Junior Throw Blanket",
-        size: "100×75 cm — Super Soft Fleece",
-        desc: "A soft, snuggly fleece throw featuring their local team or sports hero — the perfect bedroom companion for any young champion. " + "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.",
+        size: "100×73 cm · 570gsm anti-pilling polar fleece · handstitched in London",
+        desc: "A soft, snuggly throw featuring their local team or sports hero — the perfect bedroom companion for any young champion. Printed on 570gsm double-layer anti-pilling polar fleece, handstitched in London. Machine washable. Our master restorers will professionally enhance your team's colours to ensure they look sharp and vivid on every item.",
         price: "£54.99",
         emoji: "🏆",
         iconBg: "#E8F5E9",
@@ -1032,9 +1033,9 @@ const CATEGORIES: Category[] = [
       },
       {
         id: "sports_duvet",
-        title: "Sports Hero Duvet Set",
-        size: "All standard UK sizes",
-        desc: "Personalised bedding set in vibrant colours that never fade in the wash. Send us your favourite team photo or stadium shot and we'll do the rest. " + "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.",
+        title: "Sports Hero Duvet Cover",
+        size: "Junior 119×150cm · Single 140×198cm · Double 218×229cm · King 225×220cm · 100% Organic Cotton",
+        desc: "Your team's photo printed across the full face of a 100% organic cotton duvet cover. Vibrant colours, machine washable at 40°C. Duvet cover only — insert not included. Our master restorers will professionally enhance your team's colours to ensure they look sharp and vivid on every item.",
         price: "£69.00",
         emoji: "🛏️",
         iconBg: "#F1F8E9",
@@ -1559,9 +1560,9 @@ export default function GiftShopScreen() {
                   <Text style={{ fontSize: 24 }}>🏡</Text>
                 </View>
                 <View style={s.rugsCalloutText}>
-                  <Text style={s.rugsCalloutTitle}>Marbled Velvet Rugs</Text>
+                  <Text style={s.rugsCalloutTitle}>Plush Velour Photo Rugs</Text>
                   <Text style={s.rugsCalloutSub}>
-                    Handmade in London using luxurious Marbled Velvet with a non-slip latex base. Your restored photo is woven into the fabric — vivid, deep, and built to last.
+                    Your restored photo printed on a plush velour surface with a non-slip rubber base. Vivid, deep colour — built to last. 10-year print guarantee.
                   </Text>
                   <View style={s.rugsCalloutBadgeRow}>
                     <View style={s.rugsCalloutBadge}>
