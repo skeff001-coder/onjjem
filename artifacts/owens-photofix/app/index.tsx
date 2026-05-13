@@ -2,7 +2,7 @@ import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -70,6 +70,29 @@ export default function HomeScreen() {
   const [resultLocalUri, setResultLocalUri] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("sharpen");
   const [statusMessage, setStatusMessage] = useState("Preparing...");
+  const msgIndexRef = useRef(0);
+
+  const COMFORT_MESSAGES = [
+    "Restoring your photo to our highest standards…",
+    "Analysing every precious detail of your photograph…",
+    "Applying our Cinema-Grade AI restoration…",
+    "Our master process is working its magic…",
+    "Bringing out every fine detail with care…",
+    "Calibrating tones and colour with expert precision…",
+    "Almost there — perfecting the final touches…",
+    "Your masterpiece is nearly ready…",
+  ];
+
+  useEffect(() => {
+    if (appState !== "processing") return;
+    msgIndexRef.current = 0;
+    setStatusMessage(COMFORT_MESSAGES[0]);
+    const interval = setInterval(() => {
+      msgIndexRef.current = (msgIndexRef.current + 1) % COMFORT_MESSAGES.length;
+      setStatusMessage(COMFORT_MESSAGES[msgIndexRef.current]);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [appState]);
 
   const bgImages = useMemo(() => {
     const shuffled = [...GALLERY_POOL].sort(() => Math.random() - 0.5);
@@ -113,18 +136,11 @@ export default function HomeScreen() {
 
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     setAppState("processing");
-    setStatusMessage("Reading your photo...");
 
     try {
       const base64 = await FileSystem.readAsStringAsync(originalUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
-
-      setStatusMessage(
-        mode === "sharpen"
-          ? "Sharpening your photo..."
-          : "Restoring colour to your photo...",
-      );
 
       const domain = process.env.EXPO_PUBLIC_DOMAIN;
       const apiUrl = `https://${domain}/api/process`;
@@ -450,10 +466,21 @@ export default function HomeScreen() {
         )}
 
         {appState === "processing" && (
-          <View style={s.processingBox}>
-            <ActivityIndicator size="large" color={colors.primary} />
+          <LinearGradient
+            colors={["#1C1A14", "#2E2A1E"]}
+            style={s.processingBox}
+          >
+            <View style={s.processingCrownWrap}>
+              <Text style={s.processingCrown}>👑</Text>
+            </View>
+            <ActivityIndicator size="large" color="#C9960C" />
+            <Text style={s.processingTitle}>ONJJEM Master Restoration</Text>
             <Text style={s.processingText}>{statusMessage}</Text>
-          </View>
+            <View style={s.processingDivider} />
+            <Text style={s.processingNote}>
+              Our Cinema-Grade AI is working on your photograph with the care it deserves.
+            </Text>
+          </LinearGradient>
         )}
 
         {appState === "done" && originalUri && resultBase64 && (
@@ -1106,18 +1133,57 @@ function makeStyles(
       backgroundColor: colors.card,
     },
     processingBox: {
-      backgroundColor: colors.card,
       borderRadius: colors.radius,
-      padding: 40,
+      padding: 32,
       alignItems: "center",
-      gap: 16,
+      gap: 14,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.25)",
+    },
+    processingCrownWrap: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      backgroundColor: "rgba(201,150,12,0.12)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.35)",
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 4,
+    },
+    processingCrown: {
+      fontSize: 26,
+    },
+    processingTitle: {
+      fontSize: 12,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
+      letterSpacing: 2.5,
+      textAlign: "center",
     },
     processingText: {
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: "600" as const,
-      color: colors.foreground,
+      color: "#F5EDD8",
       fontFamily: "Inter_600SemiBold",
       textAlign: "center",
+      lineHeight: 23,
+      paddingHorizontal: 8,
+    },
+    processingDivider: {
+      width: 44,
+      height: 1.5,
+      borderRadius: 1,
+      backgroundColor: "rgba(201,150,12,0.4)",
+    },
+    processingNote: {
+      fontSize: 12,
+      color: "rgba(245,237,216,0.5)",
+      fontFamily: "Inter_400Regular",
+      textAlign: "center",
+      lineHeight: 18,
+      paddingHorizontal: 4,
     },
     sectionTitle: {
       fontSize: 22,
