@@ -127,7 +127,7 @@ export default function WallPreviewScreen() {
 
   const panelCount = Math.ceil(widthCm / PANEL_WIDTH_CM);
   const areaSqM = (widthCm / 100) * (heightCm / 100);
-  const estimatedCost = Math.ceil(areaSqM * 45);
+  const estimatedCost = Math.round(((widthCm * heightCm) / 10000) * 28 * 100) / 100;
 
   function changeWidth(delta: number) {
     setWidthCm((w) => Math.max(50, Math.min(600, w + delta)));

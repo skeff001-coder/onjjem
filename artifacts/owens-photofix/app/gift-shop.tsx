@@ -532,9 +532,9 @@ const CATEGORIES: Category[] = [
       {
         id: "masterpiece_mural",
         title: "The Masterpiece Wall Mural",
-        size: "Any size — made to measure",
-        desc: "Turn your entire wall into a stunning, life-sized heritage portrait or landscape. Printed on premium 180gsm paste-the-wall paper for an unbelievable 3D finish that is easy for anyone to install.\n\nPriced at £45.00 per square metre. Tap 'Request a Quote' and tell us your wall Width and Height in cm — we'll send you an exact price within the hour.",
-        price: "£45.00 / m²",
+        size: "Any size — no limits",
+        desc: "Turn your entire wall into a stunning, life-sized heritage portrait or landscape. Printed on premium 180gsm paste-the-wall paper for an unbelievable 3D finish that is easy for anyone to install.\n\nPriced at £28/m² — enter your wall dimensions below for an instant price. A 4 cm bleed is added to each edge at no extra charge.",
+        price: "from £28 / m²",
         emoji: "🖼️",
         iconBg: "#FDF6DC",
         wide: true,
@@ -548,9 +548,9 @@ const CATEGORIES: Category[] = [
       {
         id: "bespoke_mural",
         title: "Bespoke Wall Mural — Full Room",
-        size: "Any size — made to measure",
-        desc: "The ultimate statement wall. Your restored photo reproduced at life-sized scale on premium 180gsm paste-the-wall paper — an unbelievable 3D finish that is easy for anyone to install. Printed, matched, and hand-trimmed to fit your exact wall.\n\nPriced at £45.00 per square metre. Tap 'Request a Quote' with your wall Width and Height in cm for an exact price.",
-        price: "£45.00 / m²",
+        size: "Any size — no limits",
+        desc: "The ultimate statement wall. Your restored photo reproduced at life-sized scale on premium 180gsm paste-the-wall paper. Printed, matched, and hand-trimmed to fit your exact wall — any width, any height.\n\nPriced at £28/m². Enter your dimensions for an instant price. 8 cm bleed (4 cm each side) added automatically at no charge.",
+        price: "from £28 / m²",
         emoji: "🏛️",
         iconBg: "#FDF6DC",
         wide: true,
@@ -2156,7 +2156,7 @@ function ProductCard({ product, onPress, compact }: { product: Product; compact?
                 </TouchableOpacity>
               </View>
               <Text style={s.quoteNote}>
-                Final price depends on your {dimLabel.toLowerCase()} dimensions. A master restorer will calculate your exact price and contact you within 24 hours.
+                Enter your exact wall dimensions below — your price is calculated instantly. A 4 cm bleed is added to each edge automatically at no extra charge.
               </Text>
               <Text style={s.quoteFormLabel}>{dimLabel} Width (cm)</Text>
               <TextInput
@@ -2176,6 +2176,41 @@ function ProductCard({ product, onPress, compact }: { product: Product; compact?
                 keyboardType="numeric"
                 placeholderTextColor="#B0A898"
               />
+              {/* Live price preview — only for wall quotes */}
+              {product.quoteType === "wall" && quoteWidth.trim() && quoteHeight.trim() && (() => {
+                const w = parseFloat(quoteWidth) || 0;
+                const h = parseFloat(quoteHeight) || 0;
+                const livePrice = Math.round(((w * h) / 10000) * 28 * 100) / 100;
+                const livePanels = w > 0 ? Math.ceil(w / 62.5) : 0;
+                const overHeight = h > 1000;
+                return (
+                  <View style={s.quoteLivePrice}>
+                    <View style={s.quoteLivePriceRow}>
+                      <View style={s.quoteLiveStat}>
+                        <Text style={s.quoteLiveValue}>{livePanels}</Text>
+                        <Text style={s.quoteLiveLabel}>Panels</Text>
+                      </View>
+                      <View style={s.quoteLiveStatDivider} />
+                      <View style={s.quoteLiveStat}>
+                        <Text style={s.quoteLiveValue}>{(w / 100).toFixed(1)}m × {(h / 100).toFixed(1)}m</Text>
+                        <Text style={s.quoteLiveLabel}>Wall size</Text>
+                      </View>
+                      <View style={s.quoteLiveStatDivider} />
+                      <View style={s.quoteLiveStat}>
+                        <Text style={[s.quoteLiveValue, s.quoteLivePriceVal]}>£{livePrice.toFixed(2)}</Text>
+                        <Text style={s.quoteLiveLabel}>Your price</Text>
+                      </View>
+                    </View>
+                    {overHeight && (
+                      <View style={s.quoteLiveWarning}>
+                        <Ionicons name="warning-outline" size={12} color="#F59E0B" />
+                        <Text style={s.quoteLiveWarningText}>Heights over 10 m — contact us for a bespoke quote.</Text>
+                      </View>
+                    )}
+                    <Text style={s.quoteLiveNote}>£28/m² · 8 cm bleed added automatically · no extra charge</Text>
+                  </View>
+                );
+              })()}
               <Text style={s.quoteFormLabel}>Upload Your Photo</Text>
               <TouchableOpacity
                 style={[s.uploadTeamBtn, quotePhotoUri ? s.uploadTeamBtnDone : null]}
@@ -2924,6 +2959,69 @@ const s = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter_400Regular",
     color: "#1C1A14",
+  },
+  quoteLivePrice: {
+    backgroundColor: "#F5F0E8",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.3)",
+    padding: 12,
+    gap: 8,
+    marginBottom: 4,
+  },
+  quoteLivePriceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  quoteLiveStat: {
+    flex: 1,
+    alignItems: "center",
+    gap: 2,
+  },
+  quoteLiveStatDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: "rgba(201,150,12,0.25)",
+  },
+  quoteLiveValue: {
+    fontSize: 14,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#1C1A14",
+    textAlign: "center",
+  },
+  quoteLivePriceVal: {
+    color: GOLD,
+    fontSize: 16,
+  },
+  quoteLiveLabel: {
+    fontSize: 10,
+    color: "#9E8E6E",
+    fontFamily: "Inter_400Regular",
+  },
+  quoteLiveWarning: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 5,
+    backgroundColor: "rgba(245,158,11,0.1)",
+    borderRadius: 6,
+    padding: 7,
+    borderWidth: 1,
+    borderColor: "rgba(245,158,11,0.3)",
+  },
+  quoteLiveWarningText: {
+    flex: 1,
+    fontSize: 11,
+    color: "#B45309",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 16,
+  },
+  quoteLiveNote: {
+    fontSize: 10,
+    color: "#9E8E6E",
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+    letterSpacing: 0.2,
   },
   quoteSubmitBtn: {
     flexDirection: "row",

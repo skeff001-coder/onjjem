@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -98,11 +99,27 @@ const ROOM_STYLES = [
   { emoji: "🖼️", label: "Gallery Wall" },
 ];
 
+const PANEL_CM = 62.5;
+const PRICE_PER_SQM = 28;
+const MAX_HEIGHT_CM = 1000;
+
+function calcPrice(w: number, h: number) {
+  return Math.round(((w * h) / 10000) * PRICE_PER_SQM * 100) / 100;
+}
+
 export default function FeatureWallsScreen() {
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? Math.max(insets.top, 72) : insets.top;
   const router = useRouter();
   const [contactVisible, setContactVisible] = useState(false);
+  const [calcW, setCalcW] = useState("300");
+  const [calcH, setCalcH] = useState("240");
+
+  const wNum = Math.max(1, parseFloat(calcW) || 0);
+  const hNum = Math.max(1, parseFloat(calcH) || 0);
+  const panelCount = wNum > 0 ? Math.ceil(wNum / PANEL_CM) : 0;
+  const price = calcPrice(wNum, hNum);
+  const heightWarning = hNum > MAX_HEIGHT_CM;
 
   return (
     <View style={[s.root, { paddingTop: topPad }]}>
@@ -158,31 +175,90 @@ export default function FeatureWallsScreen() {
 
             <Text style={s.heroHeadline}>Turn Your Wall into{"\n"}a Masterpiece.</Text>
             <Text style={s.heroProduct}>Custom Wedding & Heritage Murals</Text>
-            <Text style={s.heroSize}>Up to 4m × 3m</Text>
 
             <View style={s.heroDivider} />
 
             <Text style={s.heroDesc}>
-              Our master restorers take your precious photograph and transform it
-              into a life-sized feature wall. Printed on premium, easy-to-hang
-              wallpaper with eco-friendly inks — including expert restoration and
-              specialist protective shipping.
+              Any size, any wall — no limits. Our master restorers transform your
+              photograph into a life-sized feature wall printed on premium
+              easy-to-hang wallpaper with eco-friendly inks.
             </Text>
 
-            <View style={s.priceRight}>
-                <View style={s.priceFeature}>
-                  <Ionicons name="checkmark-circle" size={15} color={GOLD} />
-                  <Text style={s.priceFeatureText}>Expert restoration</Text>
+            {/* ── Live Price Calculator ── */}
+            <View style={s.calcCard}>
+              <Text style={s.calcTitle}>INSTANT PRICE CALCULATOR</Text>
+              <View style={s.calcRow}>
+                <View style={s.calcField}>
+                  <Text style={s.calcLabel}>Width (cm)</Text>
+                  <TextInput
+                    style={s.calcInput}
+                    value={calcW}
+                    onChangeText={setCalcW}
+                    keyboardType="numeric"
+                    placeholder="e.g. 300"
+                    placeholderTextColor="rgba(245,237,216,0.3)"
+                    selectTextOnFocus
+                  />
                 </View>
-                <View style={s.priceFeature}>
-                  <Ionicons name="checkmark-circle" size={15} color={GOLD} />
-                  <Text style={s.priceFeatureText}>Premium wallpaper</Text>
-                </View>
-                <View style={s.priceFeature}>
-                  <Ionicons name="checkmark-circle" size={15} color={GOLD} />
-                  <Text style={s.priceFeatureText}>UK delivery included</Text>
+                <Text style={s.calcX}>×</Text>
+                <View style={s.calcField}>
+                  <Text style={s.calcLabel}>Height (cm)</Text>
+                  <TextInput
+                    style={s.calcInput}
+                    value={calcH}
+                    onChangeText={setCalcH}
+                    keyboardType="numeric"
+                    placeholder="e.g. 240"
+                    placeholderTextColor="rgba(245,237,216,0.3)"
+                    selectTextOnFocus
+                  />
                 </View>
               </View>
+
+              {heightWarning && (
+                <View style={s.calcWarning}>
+                  <Ionicons name="warning-outline" size={14} color="#F59E0B" />
+                  <Text style={s.calcWarningText}>
+                    Heights over 10 m require a bespoke consultation — contact us for a quote.
+                  </Text>
+                </View>
+              )}
+
+              <View style={s.calcResults}>
+                <View style={s.calcStat}>
+                  <Text style={s.calcStatValue}>{panelCount}</Text>
+                  <Text style={s.calcStatLabel}>Panels</Text>
+                </View>
+                <View style={s.calcStatDivider} />
+                <View style={s.calcStat}>
+                  <Text style={s.calcStatValue}>{wNum > 0 ? (wNum / 100).toFixed(1) : "—"}m × {hNum > 0 ? (hNum / 100).toFixed(1) : "—"}m</Text>
+                  <Text style={s.calcStatLabel}>Your wall size</Text>
+                </View>
+                <View style={s.calcStatDivider} />
+                <View style={s.calcStat}>
+                  <Text style={[s.calcStatValue, s.calcPrice]}>£{price.toFixed(2)}</Text>
+                  <Text style={s.calcStatLabel}>Your price</Text>
+                </View>
+              </View>
+              <Text style={s.calcNote}>
+                £28/m² · Priced on your exact dimensions · 8 cm bleed added at no charge
+              </Text>
+            </View>
+
+            <View style={s.priceRight}>
+              <View style={s.priceFeature}>
+                <Ionicons name="checkmark-circle" size={15} color={GOLD} />
+                <Text style={s.priceFeatureText}>Expert restoration included</Text>
+              </View>
+              <View style={s.priceFeature}>
+                <Ionicons name="checkmark-circle" size={15} color={GOLD} />
+                <Text style={s.priceFeatureText}>Premium 180gsm wallpaper</Text>
+              </View>
+              <View style={s.priceFeature}>
+                <Ionicons name="checkmark-circle" size={15} color={GOLD} />
+                <Text style={s.priceFeatureText}>UK delivery included</Text>
+              </View>
+            </View>
           </View>
         </LinearGradient>
 
@@ -493,6 +569,116 @@ const s = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     color: "rgba(245,237,216,0.75)",
     lineHeight: 22,
+  },
+
+  /* ── Inline Calculator ── */
+  calcCard: {
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.35)",
+    borderRadius: 14,
+    padding: 16,
+    gap: 12,
+    marginTop: 4,
+  },
+  calcTitle: {
+    fontSize: 9,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 2.5,
+  },
+  calcRow: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 8,
+  },
+  calcField: {
+    flex: 1,
+    gap: 4,
+  },
+  calcLabel: {
+    fontSize: 10,
+    color: "rgba(245,237,216,0.55)",
+    fontFamily: "Inter_400Regular",
+    letterSpacing: 0.3,
+  },
+  calcInput: {
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.4)",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 18,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+    color: "#F5EDD8",
+    textAlign: "center",
+  },
+  calcX: {
+    fontSize: 20,
+    color: "rgba(245,237,216,0.4)",
+    fontFamily: "Inter_700Bold",
+    fontWeight: "700",
+    paddingBottom: 8,
+  },
+  calcWarning: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 7,
+    backgroundColor: "rgba(245,158,11,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(245,158,11,0.35)",
+    borderRadius: 8,
+    padding: 10,
+  },
+  calcWarningText: {
+    flex: 1,
+    fontSize: 12,
+    color: "#F59E0B",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 17,
+  },
+  calcResults: {
+    flexDirection: "row",
+    backgroundColor: "rgba(0,0,0,0.25)",
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  calcStat: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 12,
+    gap: 2,
+  },
+  calcStatDivider: {
+    width: 1,
+    backgroundColor: "rgba(201,150,12,0.2)",
+    marginVertical: 8,
+  },
+  calcStatValue: {
+    fontSize: 15,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+    color: "#F5EDD8",
+    textAlign: "center",
+  },
+  calcPrice: {
+    color: GOLD,
+    fontSize: 17,
+  },
+  calcStatLabel: {
+    fontSize: 10,
+    color: "rgba(245,237,216,0.45)",
+    fontFamily: "Inter_400Regular",
+  },
+  calcNote: {
+    fontSize: 10,
+    color: "rgba(245,237,216,0.4)",
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+    letterSpacing: 0.2,
   },
 
   /* Price block */
