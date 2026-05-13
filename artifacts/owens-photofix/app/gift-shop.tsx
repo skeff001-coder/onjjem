@@ -67,123 +67,6 @@ type Category = {
 
 const CATEGORIES: Category[] = [
   {
-    id: "canvas",
-    label: "Canvas Prints",
-    emoji: "🎨",
-    subtitle: "Hand-stretched gallery canvases · Cinema-Grade AI Restoration included",
-    fulfillment: "ONJJEM Master Print Lab · UK Master Printers",
-    headerGradient: ["#091D35", "#0F3060"] as const,
-    products: [
-      {
-        id: "canvas_classic",
-        title: "Classic Gallery Wrap Canvas",
-        size: "30×20 cm",
-        desc: "Cinema-Grade AI Restoration included. Hand-stretched over a 2.5cm deep FSC-certified wooden frame for a stunning gallery wrap finish. A beautiful addition to any wall.",
-        price: "£29.99",
-        emoji: "🎨",
-        iconBg: "#EAF4FF",
-        wide: true,
-        onjjemSeal: true,
-        ukMasterPrinters: true,
-      },
-      {
-        id: "canvas_large",
-        title: "Large Gallery Wrap Canvas",
-        size: "60×40 cm",
-        desc: "Cinema-Grade AI Restoration included. Our most popular canvas size — hand-stretched over a 2.5cm deep FSC-certified wooden frame. Lifetime Fade-Resistant Guarantee. A true statement piece.",
-        price: "£49.99",
-        emoji: "🖼️",
-        iconBg: "#E3EDFF",
-        wide: true,
-        bestSeller: true,
-        onjjemSeal: true,
-        ukMasterPrinters: true,
-      },
-      {
-        id: "canvas_bespoke",
-        title: "Bespoke Canvas — Any Size",
-        size: "Made to Measure · Any Dimensions",
-        desc: "Want an exact size for your wall? Our master printers will produce your canvas at any custom dimensions. Cinema-Grade AI Restoration included. Hand-stretched over a 2.5cm deep FSC-certified wooden frame.\n\nSmall bespoke sizes from £49.99. Larger bespoke sizes (e.g. 90×60 cm) from £225. Tap 'Request a Quote' with your exact width and height for a precise price.",
-        price: "from £49.99",
-        emoji: "📐",
-        iconBg: "#FDF6DC",
-        wide: true,
-        onjjemSeal: true,
-        ukMasterPrinters: true,
-        madeToMeasure: true,
-        getQuote: true,
-        quoteType: "wall" as const,
-      },
-      {
-        id: "heritage_mini_canvas_trio",
-        title: "Heritage Mini Canvas Trio",
-        size: "Set of 3 · Vertical Display",
-        desc: "Three of your precious memories, expertly restored and displayed on a beautiful vertical canvas set. Perfect for a desk or a bedside table.",
-        price: "£34.99",
-        emoji: "🎨",
-        iconBg: "#FDF6DC",
-        wide: true,
-        onjjemSeal: true,
-        handmadeInLondon: true,
-      },
-      {
-        id: "aluminium_print",
-        title: "Aluminium Heritage Print",
-        size: "Brushed Aluminium · Ready to Hang",
-        desc: "A razor-sharp, museum-quality alternative to canvas. Your restored photo is printed directly onto lightweight brushed aluminium for a contemporary, frameless wall piece with extraordinary depth and detail.",
-        price: "£44.99",
-        emoji: "🪙",
-        iconBg: "#F0F4F8",
-        wide: true,
-        onjjemSeal: true,
-        ukMasterPrinters: true,
-        handmadeInLondon: true,
-      },
-      {
-        id: "acrylic_memory_block",
-        title: "Acrylic Memory Block",
-        size: "Crystal-Clear Acrylic · Freestanding",
-        desc: "A stunning freestanding display piece — your restored photograph printed behind crystal-clear 5mm acrylic for a luminous, gallery-quality finish that looks beautiful on any shelf, desk or mantelpiece.",
-        price: "£34.99",
-        emoji: "🔷",
-        iconBg: "#EEF6FF",
-        wide: true,
-        onjjemSeal: true,
-        ukMasterPrinters: true,
-        handmadeInLondon: true,
-      },
-      {
-        id: "gallery_diptych",
-        title: "The Diptych — Heritage Gallery Panel",
-        size: "2 Panels · Seamless Masterpiece",
-        desc: "Turn your favourite restored memory into a professional art installation. Two panels that create one seamless masterpiece — hand-stretched over deep wooden frames in London.",
-        price: "£125.00",
-        emoji: "🖼️",
-        iconBg: "#EAF4FF",
-        wide: true,
-        premiumBadge: true,
-        onjjemSeal: true,
-        handmadeInLondon: true,
-        ukMasterPrinters: true,
-      },
-      {
-        id: "gallery_triptych",
-        title: "The Triptych — Heritage Gallery Panel",
-        size: "3 Panels · Large-Scale Gallery Feel",
-        desc: "Turn your favourite restored memory into a professional art installation. Three stunning panels for a large-scale gallery feel — hand-stretched over deep wooden frames in London.",
-        price: "£145.00",
-        emoji: "🖼️",
-        iconBg: "#E3EDFF",
-        wide: true,
-        bestSeller: true,
-        premiumBadge: true,
-        onjjemSeal: true,
-        handmadeInLondon: true,
-        ukMasterPrinters: true,
-      },
-    ],
-  },
-  {
     id: "living",
     label: "Living Room",
     emoji: "🛋️",
@@ -1275,7 +1158,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["canvas", "living", "little_treasures", "heritage_jigsaws", "living_comforts", "bargain_memories", "large_format"];
+const MENU_TABS = ["living", "little_treasures", "heritage_jigsaws", "living_comforts", "bargain_memories", "large_format"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
@@ -1291,7 +1174,7 @@ export default function GiftShopScreen() {
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? Math.max(insets.top, 72) : insets.top;
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("canvas");
+  const [activeTab, setActiveTab] = useState("living");
   const [giftWrap, setGiftWrap] = useState(false);
   const [heritageCardAdded, setHeritageCardAdded] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
