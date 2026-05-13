@@ -963,8 +963,8 @@ function makeStyles(
     uploadTitle: {
       fontSize: 15,
       fontWeight: "700" as const,
-      color: "#1C1A14",
-      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
+      fontFamily: "Cinzel_400Regular",
     },
     uploadSub: {
       fontSize: 12,
@@ -1014,11 +1014,11 @@ function makeStyles(
     },
     canvasHeroTitle: {
       fontSize: 20,
-      fontWeight: "700" as const,
-      fontFamily: "Inter_700Bold",
-      color: "#F5EDD8",
+      fontWeight: "400" as const,
+      fontFamily: "Cinzel_400Regular",
+      color: "#C9960C",
       letterSpacing: 0.2,
-      lineHeight: 24,
+      lineHeight: 26,
     },
     canvasHeroSub: {
       fontSize: 11,
@@ -1269,11 +1269,11 @@ function makeStyles(
       letterSpacing: 2.5,
     },
     giftBtnText: {
-      fontSize: 17,
-      fontWeight: "700" as const,
-      color: "#fff",
-      fontFamily: "Inter_700Bold",
-      letterSpacing: 0.2,
+      fontSize: 14,
+      fontWeight: "400" as const,
+      color: "#C9960C",
+      fontFamily: "Cinzel_400Regular",
+      letterSpacing: 0.1,
     },
     giftBtnCountBadge: {
       alignItems: "center" as const,
@@ -1369,9 +1369,9 @@ function makeStyles(
     },
     printShopTitle: {
       fontSize: 22,
-      fontWeight: "700" as const,
-      color: colors.foreground,
-      fontFamily: "Inter_700Bold",
+      fontWeight: "400" as const,
+      color: "#C9960C",
+      fontFamily: "Cinzel_400Regular",
       letterSpacing: 0.2,
     },
     printShopSub: {
@@ -1501,9 +1501,9 @@ function makeStyles(
     },
     livingMemoriesTitle: {
       fontSize: 14,
-      fontWeight: "700" as const,
-      fontFamily: "Inter_700Bold",
-      color: "#F5EDD8",
+      fontWeight: "400" as const,
+      fontFamily: "Cinzel_400Regular",
+      color: "#C9960C",
     },
     livingMemoriesAiBadge: {
       flexDirection: "row" as const,
@@ -1625,9 +1625,9 @@ function makeStyles(
     galleryBtnText: {
       flex: 1,
       fontSize: 15,
-      fontWeight: "600" as const,
-      fontFamily: "Inter_600SemiBold",
-      color: "#A67C00",
+      fontWeight: "400" as const,
+      fontFamily: "Cinzel_400Regular",
+      color: "#C9960C",
       textAlign: "center" as const,
     },
     contactSupportBtn: {
@@ -1690,9 +1690,9 @@ function makeStyles(
     },
     featureWallsTitle: {
       fontSize: 15,
-      fontWeight: "700" as const,
-      fontFamily: "Inter_700Bold",
-      color: "#F5EDD8",
+      fontWeight: "400" as const,
+      fontFamily: "Cinzel_400Regular",
+      color: "#C9960C",
     },
     featureWallsSub: {
       fontSize: 11,
