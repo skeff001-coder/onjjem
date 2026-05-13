@@ -16,29 +16,34 @@ interface Props {
 
 export function BeforeAfterSlider({ beforeUri, afterBase64 }: Props) {
   const colors = useColors();
+  const containerWidthRef = useRef(300);
   const [containerWidth, setContainerWidth] = useState(300);
   const startPositionRef = useRef(0.5);
   const positionRef = useRef(0.5);
   const [sliderPos, setSliderPos] = useState(0.5);
 
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => {
-      startPositionRef.current = positionRef.current;
-    },
-    onPanResponderMove: (_, gestureState) => {
-      const newPos = Math.max(
-        0.03,
-        Math.min(
-          0.97,
-          startPositionRef.current + gestureState.dx / containerWidth,
-        ),
-      );
-      positionRef.current = newPos;
-      setSliderPos(newPos);
-    },
-  });
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+      onPanResponderGrant: () => {
+        startPositionRef.current = positionRef.current;
+      },
+      onPanResponderMove: (_, gestureState) => {
+        const newPos = Math.max(
+          0.03,
+          Math.min(
+            0.97,
+            startPositionRef.current + gestureState.dx / containerWidthRef.current,
+          ),
+        );
+        positionRef.current = newPos;
+        setSliderPos(newPos);
+      },
+    })
+  ).current;
 
   const clipWidth = sliderPos * containerWidth;
   const afterSource = { uri: `data:image/jpeg;base64,${afterBase64}` };
@@ -46,7 +51,10 @@ export function BeforeAfterSlider({ beforeUri, afterBase64 }: Props) {
   return (
     <View
       style={[s.container, { borderRadius: colors.radius }]}
-      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+      onLayout={(e) => {
+        containerWidthRef.current = e.nativeEvent.layout.width;
+        setContainerWidth(e.nativeEvent.layout.width);
+      }}
     >
       <Image
         source={afterSource}
@@ -57,7 +65,7 @@ export function BeforeAfterSlider({ beforeUri, afterBase64 }: Props) {
       <View style={[s.beforeClip, { width: clipWidth }]}>
         <Image
           source={{ uri: beforeUri }}
-          style={[s.image, { width: containerWidth }]}
+          style={[s.image, { width: containerWidthRef.current }]}
           resizeMode="cover"
         />
       </View>
