@@ -770,7 +770,7 @@ export default function HomeScreen() {
                 <Text style={s.featureWallsEmoji}>🖼️</Text>
               </View>
               <View style={s.featureWallsTextWrap}>
-                <Text style={s.featureWallsTitle}>Life-Sized Feature Walls</Text>
+                <Text style={s.featureWallsTitle}>Bespoke Feature Walls</Text>
                 <Text style={s.featureWallsSub}>Custom murals up to 4m × 3m · Heritage & Wedding</Text>
               </View>
               <Ionicons name="chevron-forward" size={14} color={colors.primary} />
