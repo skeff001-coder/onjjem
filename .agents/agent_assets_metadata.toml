@@ -109,12 +109,6 @@ type = "image"
 title = "ONJJEM SNAP LAB — App Icon"
 
 [[outputs]]
-id = "Xlz2xC360E_nLv63xKBfF"
-uri = "file://artifacts/owens-photofix/assets/leather/purse.jpg"
-type = "image"
-title = "Nappa Leather Purse — tan crossbody, made in Britain"
-
-[[outputs]]
 id = "qpQ7hHs7X8LJs4kMX3-sl"
 uri = "file://artifacts/owens-photofix/assets/leather/wallet.jpg"
 type = "image"

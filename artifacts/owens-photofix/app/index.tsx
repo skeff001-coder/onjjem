@@ -291,6 +291,30 @@ export default function HomeScreen() {
                 </View>
                 <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.55)" />
               </View>
+              {/* Before / After preview strip */}
+              <View style={s.uploadBARow}>
+                <View style={s.uploadBAPair}>
+                  <Image source={require("@/assets/gallery/grandma_before.png")} style={s.uploadBAImg} resizeMode="cover" />
+                  <Text style={s.uploadBALabel}>Before</Text>
+                </View>
+                <Ionicons name="arrow-forward" size={14} color="#C9960C" style={s.uploadBAArrow} />
+                <View style={s.uploadBAPair}>
+                  <Image source={require("@/assets/gallery/grandma_after.png")} style={s.uploadBAImg} resizeMode="cover" />
+                  <Text style={s.uploadBALabel}>After</Text>
+                </View>
+
+                <View style={s.uploadBADivider} />
+
+                <View style={s.uploadBAPair}>
+                  <Image source={require("@/assets/gallery/portrait_before.png")} style={s.uploadBAImg} resizeMode="cover" />
+                  <Text style={s.uploadBALabel}>Before</Text>
+                </View>
+                <Ionicons name="arrow-forward" size={14} color="#C9960C" style={s.uploadBAArrow} />
+                <View style={s.uploadBAPair}>
+                  <Image source={require("@/assets/gallery/portrait_after.png")} style={s.uploadBAImg} resizeMode="cover" />
+                  <Text style={s.uploadBALabel}>After</Text>
+                </View>
+              </View>
             </Pressable>
 
             {/* ── CANVAS PRINTS — STANDALONE HERO ── */}
@@ -911,6 +935,38 @@ function makeStyles(
       justifyContent: "center" as const,
       flexShrink: 0,
     },
+    uploadBARow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      paddingHorizontal: 14,
+      paddingBottom: 12,
+      gap: 6,
+    },
+    uploadBAPair: {
+      alignItems: "center" as const,
+      gap: 3,
+    },
+    uploadBAImg: {
+      width: 62,
+      height: 52,
+      borderRadius: 7,
+      backgroundColor: "#EDE8DC",
+    },
+    uploadBALabel: {
+      fontSize: 9,
+      fontFamily: "Inter_500Medium",
+      color: "#7A6E57",
+      letterSpacing: 0.3,
+    },
+    uploadBAArrow: {
+      marginBottom: 12,
+    },
+    uploadBADivider: {
+      width: 1,
+      height: 44,
+      backgroundColor: "rgba(201,150,12,0.25)",
+      marginHorizontal: 2,
+    },
     uploadTextWrap: {
       flex: 1,
       gap: 2,
@@ -947,63 +1003,63 @@ function makeStyles(
     canvasHeroInner: {
       flexDirection: "row" as const,
       alignItems: "center" as const,
-      paddingHorizontal: 18,
-      paddingVertical: 18,
-      gap: 14,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      gap: 10,
     },
     canvasHeroLeft: {
       flex: 1,
-      gap: 8,
+      gap: 4,
     },
     canvasHeroEyebrowRow: {
       flexDirection: "row" as const,
       alignItems: "center" as const,
-      gap: 5,
+      gap: 4,
     },
     canvasHeroEyebrow: {
-      fontSize: 9,
+      fontSize: 8,
       fontWeight: "700" as const,
       fontFamily: "Inter_700Bold",
       color: "#C9960C",
-      letterSpacing: 1.8,
+      letterSpacing: 1.5,
     },
     canvasHeroTitle: {
-      fontSize: 28,
+      fontSize: 20,
       fontWeight: "700" as const,
       fontFamily: "Inter_700Bold",
       color: "#F5EDD8",
       letterSpacing: 0.2,
-      lineHeight: 32,
+      lineHeight: 24,
     },
     canvasHeroSub: {
-      fontSize: 12,
+      fontSize: 11,
       fontFamily: "Inter_400Regular",
       color: "#8BA4BA",
-      lineHeight: 18,
+      lineHeight: 16,
     },
     canvasHeroChipRow: {
       flexDirection: "row" as const,
       flexWrap: "wrap" as const,
-      gap: 6,
-      marginTop: 2,
+      gap: 4,
+      marginTop: 0,
     },
     canvasHeroChip: {
       backgroundColor: "rgba(201,150,12,0.15)",
       borderWidth: 1,
       borderColor: "rgba(201,150,12,0.35)",
       borderRadius: 20,
-      paddingHorizontal: 9,
-      paddingVertical: 4,
+      paddingHorizontal: 7,
+      paddingVertical: 3,
     },
     canvasHeroChipText: {
-      fontSize: 10,
+      fontSize: 9,
       fontFamily: "Inter_500Medium",
       color: "#C9960C",
       letterSpacing: 0.3,
     },
     canvasHeroRight: {
       alignItems: "center" as const,
-      gap: 8,
+      gap: 6,
       flexShrink: 0,
     },
     canvasHeroPriceBox: {
@@ -1011,19 +1067,19 @@ function makeStyles(
       backgroundColor: "rgba(201,150,12,0.15)",
       borderWidth: 1.5,
       borderColor: "rgba(201,150,12,0.45)",
-      borderRadius: 14,
-      paddingHorizontal: 14,
-      paddingVertical: 10,
-      gap: 2,
+      borderRadius: 12,
+      paddingHorizontal: 10,
+      paddingVertical: 7,
+      gap: 1,
     },
     canvasHeroPriceFrom: {
-      fontSize: 10,
+      fontSize: 9,
       fontFamily: "Inter_400Regular",
       color: "rgba(201,150,12,0.75)",
       letterSpacing: 0.5,
     },
     canvasHeroPrice: {
-      fontSize: 22,
+      fontSize: 18,
       fontWeight: "700" as const,
       fontFamily: "Inter_700Bold",
       color: "#F5D78E",
