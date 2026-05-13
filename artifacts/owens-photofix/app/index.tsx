@@ -33,9 +33,9 @@ type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
 
 const PRINT_PRODUCTS = [
-  { id: "canvas",  title: "Premium Canvas",      category: "WALL ART",       price: "£29.99", emoji: "🖼️", g: ["#091D35", "#0F3060"] as const, catColor: "#5BA3FF", ringColor: "rgba(91,163,255,0.35)" },
   { id: "keyring", title: "Leather Keyring",      category: "ACCESSORIES",    price: "£24.99", emoji: "🔑", g: ["#2B1400", "#5C2E00"] as const, catColor: "#FF9F2E", ringColor: "rgba(255,159,46,0.35)" },
   { id: "large",   title: "Large Format Print",   category: "PREMIUM PRINTS", price: "£39.99", emoji: "🖨️", g: ["#082A08", "#0F4D0F"] as const, catColor: "#4CD964", ringColor: "rgba(76,217,100,0.35)" },
+  { id: "mugs",    title: "Photo Mugs",           category: "GIFTS",          price: "£14.99", emoji: "☕", g: ["#1A0A2A", "#2E1050"] as const, catColor: "#CF7AFF", ringColor: "rgba(207,122,255,0.35)" },
   { id: "gifts",   title: "Explore All Gifts",    category: "GIFT SHOP",      price: "£5.00",  emoji: "✨", g: ["#22082A", "#451060"] as const, catColor: "#CF7AFF", ringColor: "rgba(207,122,255,0.35)" },
 ];
 
