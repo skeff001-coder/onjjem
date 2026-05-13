@@ -261,6 +261,14 @@ export default function HomeScreen() {
           <TouchableOpacity onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })} activeOpacity={0.8}>
             <GraffitiTitle fontSize={52} letterSpacing={9} />
           </TouchableOpacity>
+
+          {/* Gem divider row */}
+          <View style={s.gemRow}>
+            {(["#D47E7E","#7EB8D8","#C9960C","#E2B54A","#7DC48A","#E2B54A","#C9960C","#7EB8D8","#D47E7E"] as const).map((c, i) => (
+              <Text key={i} style={[s.gemDot, { color: c }]}>◆</Text>
+            ))}
+          </View>
+
           <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
         </View>
         {appState !== "idle" && (
@@ -646,7 +654,7 @@ export default function HomeScreen() {
                   </View>
                 </View>
                 <Text style={s.livingMemoriesSub}>
-                  Unfreeze your favourite moments. Watch your memories come to life.
+                  For the moments that were never meant to stand still.
                 </Text>
               </View>
               <Ionicons name="chevron-forward" size={14} color={colors.primary} />
@@ -810,13 +818,28 @@ function makeStyles(
       lineHeight: 54,
     },
     headerTagline: {
-      fontSize: 14,
-      fontFamily: "Inter_400Regular",
-      color: "rgba(160,110,5,0.97)",
-      letterSpacing: 0.5,
+      fontSize: 16,
+      fontFamily: "Cinzel_400Regular",
+      color: "#C9960C",
+      letterSpacing: 1,
       marginTop: 5,
       fontStyle: "italic" as const,
       textAlign: "center" as const,
+      textShadowColor: "rgba(201,150,12,0.55)",
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 8,
+    },
+    gemRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 5,
+      marginTop: 6,
+      marginBottom: 2,
+    },
+    gemDot: {
+      fontSize: 9,
+      opacity: 0.85,
     },
     headerTaglineHeart: {
       fontSize: 17,
@@ -855,7 +878,7 @@ function makeStyles(
       justifyContent: "center",
     },
     scroll: {
-      paddingTop: 10,
+      paddingTop: 22,
       paddingHorizontal: 20,
       paddingBottom: bottomPad,
       gap: 16,
@@ -1525,8 +1548,12 @@ function makeStyles(
     },
     livingMemoriesSub: {
       fontSize: 11,
-      color: "#8BA4BA",
+      color: "#D4A843",
       fontFamily: "Inter_400Regular",
+      fontStyle: "italic" as const,
+      textShadowColor: "rgba(201,150,12,0.45)",
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 6,
     },
     livingMemoriesPriceWrap: {
       alignItems: "flex-end" as const,
