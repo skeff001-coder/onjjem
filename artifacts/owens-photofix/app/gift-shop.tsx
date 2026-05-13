@@ -71,7 +71,7 @@ const CATEGORIES: Category[] = [
     id: "living",
     label: "Lounge",
     emoji: "🛋️",
-    subtitle: "Luxury photo prints & plush cushions for your lounge",
+    subtitle: "Luxury prints · Plush cushions · Velvet throws — all for your lounge",
     fulfillment: "Master Print Lab & Master Textiles",
     headerGradient: ["#8B1A1A", "#5C0A0A"],
     products: [
@@ -124,6 +124,59 @@ const CATEGORIES: Category[] = [
         premiumBadge: true,
         onjjemSeal: true,
         handmadeInLondon: true,
+      },
+      {
+        id: "throw_small",
+        title: "Luxury Photo Throw Blanket",
+        size: "100×75cm · Plush Velvet",
+        desc: "Plush Velvet front with your expertly restored photo, hand-finished in London. Vibrant, permanent print — perfect draped over the back of your sofa.",
+        price: "£69.99",
+        emoji: "🛋️",
+        iconBg: "#F0F7F0",
+        wide: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "throw_medium",
+        title: "Luxury Photo Throw Blanket",
+        size: "145×106cm · Plush Velvet",
+        desc: "Our most popular size — drapes beautifully over sofas and armchairs. Plush Velvet front with a vibrant, permanent photographic print, hand-finished in London.",
+        price: "£84.99",
+        emoji: "🛋️",
+        iconBg: "#EBF5EB",
+        wide: true,
+        bestSeller: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "throw_large",
+        title: "Luxury Photo Throw Blanket",
+        size: "198×145cm · Plush Velvet",
+        desc: "The ultimate statement piece. Generous king-size dimensions for wrapping in warmth and in memories. Plush Velvet front, hand-finished by our London artisans.",
+        price: "£94.99",
+        emoji: "🛋️",
+        iconBg: "#E6F0E6",
+        wide: true,
+        premiumBadge: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "throw_sherpa",
+        title: "The Luxury Sherpa Masterpiece",
+        size: "198×145cm · Plush Velvet & Sherpa Reverse",
+        desc: "Our most luxurious throw. Plush Velvet front with a sumptuously soft Sherpa fleece reverse — six colour choices. Hand-finished in London.",
+        price: "£94.99",
+        emoji: "✨",
+        iconBg: "#FDF6DC",
+        wide: true,
+        bestSeller: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
       },
     ],
   },
@@ -788,69 +841,6 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    id: "living_comforts",
-    label: "Comforts",
-    emoji: "🛋️",
-    subtitle: "Plush Velvet & Sherpa throws · Hand-finished in London",
-    fulfillment: "ONJJEM Master Artisans · London Studio",
-    headerGradient: ["#2D4A2D", "#1B3020"] as const,
-    products: [
-      {
-        id: "throw_small",
-        title: "Luxury Photo Throw Blanket",
-        size: "100×75cm · Plush Velvet",
-        desc: "Plush Velvet front with your expertly restored photo, hand-finished in London. Vibrant, permanent print — perfect draped over the back of your sofa. Note: a small natural border frames the print edge.",
-        price: "£69.99",
-        emoji: "🛋️",
-        iconBg: "#F0F7F0",
-        wide: true,
-        handmadeInLondon: true,
-        freePersonalisation: true,
-      },
-      {
-        id: "throw_medium",
-        title: "Luxury Photo Throw Blanket",
-        size: "145×106cm · Plush Velvet",
-        desc: "Our most popular size — drapes beautifully over sofas and armchairs. Plush Velvet front with a vibrant, permanent photographic print, hand-finished in London. Note: a small natural border frames the print edge.",
-        price: "£84.99",
-        emoji: "🛋️",
-        iconBg: "#EBF5EB",
-        wide: true,
-        bestSeller: true,
-        handmadeInLondon: true,
-        freePersonalisation: true,
-      },
-      {
-        id: "throw_large",
-        title: "Luxury Photo Throw Blanket",
-        size: "198×145cm · Plush Velvet",
-        desc: "The ultimate statement piece. Generous king-size dimensions for wrapping in warmth — and in memories. Plush Velvet front, hand-finished by our London artisans. Note: a small natural border frames the print edge.",
-        price: "£94.99",
-        emoji: "🛋️",
-        iconBg: "#E6F0E6",
-        wide: true,
-        premiumBadge: true,
-        handmadeInLondon: true,
-        freePersonalisation: true,
-      },
-      {
-        id: "throw_sherpa",
-        title: "The Luxury Sherpa Masterpiece",
-        size: "198×145cm · Plush Velvet & Sherpa Reverse",
-        desc: "Our most luxurious throw. Plush Velvet front featuring your restored photo with a sumptuously soft Sherpa fleece reverse — six colour choices. Hand-finished in London. Note: a small natural border frames the print edge.",
-        price: "£94.99",
-        emoji: "✨",
-        iconBg: "#FDF6DC",
-        wide: true,
-        bestSeller: true,
-        premiumBadge: true,
-        onjjemSeal: true,
-        handmadeInLondon: true,
-        freePersonalisation: true,
-      },
-    ],
-  },
-  {
     id: "home_rugs",
     label: "Rugs",
     emoji: "🏡",
@@ -1153,7 +1143,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["living", "heritage_jigsaws", "living_comforts", "bargain_memories", "large_format"];
+const MENU_TABS = ["living", "heritage_jigsaws", "bargain_memories", "large_format"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
@@ -1394,38 +1384,6 @@ export default function GiftShopScreen() {
             </View>
           )}
 
-          {/* Living Room Comforts callout */}
-          {activeTab === "living_comforts" && (
-            <View style={s.livingComfortsCallout}>
-              <LinearGradient
-                colors={["#2D4A2D", "#3A5C3A", "#2D4A2D"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={s.livingComfortsBar}
-              />
-              <View style={s.livingComfortsInner}>
-                <View style={s.livingComfortsIconWrap}>
-                  <Text style={{ fontSize: 24 }}>🛋️</Text>
-                </View>
-                <View style={s.livingComfortsText}>
-                  <Text style={s.livingComfortsTitle}>Ultra-Soft Fleece Throws</Text>
-                  <Text style={s.livingComfortsSub}>
-                    Hand-finished by our London artisans using vibrant, permanent dye-sublimation printing. Your restored memory stays vivid wash after wash — and looks stunning on any sofa.
-                  </Text>
-                  <View style={s.livingComfortsBadgeRow}>
-                    <View style={s.livingComfortsBadge}>
-                      <Text style={s.livingComfortsBadgeFlag}>🇬🇧</Text>
-                      <Text style={s.livingComfortsBadgeText}>Hand-finished in London</Text>
-                    </View>
-                    <View style={[s.livingComfortsBadge, s.livingComfortsBadgeGold]}>
-                      <Ionicons name="water-outline" size={10} color="#15803D" />
-                      <Text style={[s.livingComfortsBadgeText, { color: "#15803D" }]}>Machine Washable</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-          )}
 
 
           {/* Wearable Memories callout */}
