@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Circle } from "react-native-svg";
 
 // Heart-ring path: outer heart + inner heart (0.60× scale) with evenOdd fill.
 // Top notch is very shallow (y=1.5) so the shape reads as a rounded classic O
@@ -99,13 +99,54 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
 
   // Cinzel titling font is wide — use measured cap-width ratios per glyph + generous buffer
   // N≈0.76, J≈0.54, J≈0.54, E≈0.66, M≈0.94
-  const njjemAdv = Math.round(fontSize * (0.76 + 0.54 + 0.54 + 0.66 + 0.94));
+  const nAdv = Math.round(fontSize * 0.76);
+  const jAdv = Math.round(fontSize * 0.54);
+  const eAdv = Math.round(fontSize * 0.66);
+  const mAdv = Math.round(fontSize * 0.94);
+  const njjemAdv = nAdv + jAdv + jAdv + eAdv + mAdv;
   const titleWidth = oCell + njjemAdv + letterSpacing * 5 + 24;
+
+  // Centers of the second J, E, M (the "JEM" in ONJJEM)
+  const ls = letterSpacing;
+  const j2Center = oCell + nAdv + ls + jAdv + ls + jAdv / 2;
+  const eCenter  = oCell + nAdv + ls + jAdv + ls + jAdv + ls + eAdv / 2;
+  const mCenter  = oCell + nAdv + ls + jAdv + ls + jAdv + ls + eAdv + ls + mAdv / 2;
+
+  const gemS = Math.round(fontSize * 0.13); // ~7px at fontSize=52 — subtle
+  const gemY = capTop - Math.round(gemS * 1.4); // float just above the cap line
+
+  // Faceted diamond gem path (within 0,0→10,12 viewBox)
+  const GEM_PATH_BODY      = "M 5 0 L 10 4.5 L 5 12 L 0 4.5 Z";
+  const GEM_PATH_CROWN     = "M 5 0 L 10 4.5 L 5 5.5 L 0 4.5 Z"; // top crown facet (lighter)
+  const GEM_PATH_LEFT_DARK = "M 0 4.5 L 5 5.5 L 5 12 Z";          // left pavilion (darker)
+
+  const GEMS = [
+    { cx: j2Center, body: "#7EB8D8", crown: "rgba(210,240,255,0.55)", dark: "rgba(0,0,0,0.18)" }, // sapphire
+    { cx: eCenter,  body: "#7DC48A", crown: "rgba(200,255,210,0.50)", dark: "rgba(0,0,0,0.15)" }, // emerald
+    { cx: mCenter,  body: "#D47E7E", crown: "rgba(255,210,210,0.55)", dark: "rgba(0,0,0,0.18)" }, // ruby
+  ];
 
   return (
     <View style={{ height: containerHeight, width: titleWidth }}>
       {LAYERS.map(({ dt, dl, color }) => renderLayer(dt, dl, color))}
       {renderLayer(TOP.dt, TOP.dl, TOP.color, true)}
+
+      {/* Subtle gem sparkles above J · E · M */}
+      {GEMS.map(({ cx, body, crown, dark }, i) => (
+        <View
+          key={`gem-${i}`}
+          style={[styles.abs, { left: cx - gemS / 2, top: gemY, width: gemS, height: gemS }]}
+          pointerEvents="none"
+        >
+          <Svg width={gemS} height={gemS} viewBox="0 0 10 12">
+            <Path d={GEM_PATH_BODY}      fill={body} />
+            <Path d={GEM_PATH_CROWN}     fill={crown} />
+            <Path d={GEM_PATH_LEFT_DARK} fill={dark} />
+            {/* tiny glint dot at top */}
+            <Circle cx={5} cy={0.8} r={0.9} fill="rgba(255,255,255,0.75)" />
+          </Svg>
+        </View>
+      ))}
     </View>
   );
 }
