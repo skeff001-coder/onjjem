@@ -69,11 +69,11 @@ type Category = {
 const CATEGORIES: Category[] = [
   {
     id: "living",
-    label: "Living Room",
+    label: "Lounge",
     emoji: "🛋️",
-    subtitle: "Photo prints & luxury cushions for your home",
+    subtitle: "Luxury photo prints & plush cushions for your lounge",
     fulfillment: "Master Print Lab & Master Textiles",
-    headerGradient: ["#2E86C1", "#1A5276"],
+    headerGradient: ["#8B1A1A", "#5C0A0A"],
     products: [
       {
         id: "photo_print",
