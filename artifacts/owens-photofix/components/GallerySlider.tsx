@@ -18,40 +18,52 @@ interface Props {
 }
 
 export function GallerySlider({ beforeSource, afterSource, initialPos = 0.5 }: Props) {
+  const containerWidthRef = useRef(320);
   const [containerWidth, setContainerWidth] = useState(320);
   const startRef = useRef(initialPos);
   const posRef = useRef(initialPos);
   const [sliderPos, setSliderPos] = useState(initialPos);
 
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => {
-      startRef.current = posRef.current;
-    },
-    onPanResponderMove: (_, g) => {
-      const next = Math.max(0.03, Math.min(0.97, startRef.current + g.dx / containerWidth));
-      posRef.current = next;
-      setSliderPos(next);
-    },
-  });
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+      onPanResponderGrant: () => {
+        startRef.current = posRef.current;
+      },
+      onPanResponderMove: (_, g) => {
+        const next = Math.max(
+          0.03,
+          Math.min(0.97, startRef.current + g.dx / containerWidthRef.current)
+        );
+        posRef.current = next;
+        setSliderPos(next);
+      },
+    })
+  ).current;
 
   const clipWidth = sliderPos * containerWidth;
 
   return (
     <View
       style={s.container}
-      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+      onLayout={(e) => {
+        containerWidthRef.current = e.nativeEvent.layout.width;
+        setContainerWidth(e.nativeEvent.layout.width);
+      }}
     >
-      {/* After image — full width behind */}
       <Image source={afterSource} style={s.image} resizeMode="cover" />
 
-      {/* Before image — clipped on the left */}
       <View style={[s.clip, { width: clipWidth }]}>
-        <Image source={beforeSource} style={[s.image, { width: containerWidth }]} resizeMode="cover" />
+        <Image
+          source={beforeSource}
+          style={[s.image, { width: containerWidthRef.current }]}
+          resizeMode="cover"
+        />
       </View>
 
-      {/* Corner labels */}
       <View style={[s.label, s.labelLeft]}>
         <Text style={s.labelText}>BEFORE</Text>
       </View>
@@ -59,7 +71,6 @@ export function GallerySlider({ beforeSource, afterSource, initialPos = 0.5 }: P
         <Text style={[s.labelText, s.labelAfter]}>AFTER</Text>
       </View>
 
-      {/* Drag handle */}
       <View style={[s.dividerWrap, { left: clipWidth - 1 }]} {...panResponder.panHandlers}>
         <View style={s.line} />
         <View style={s.handle}>

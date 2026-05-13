@@ -28,7 +28,7 @@ const EXAMPLES = [
     tag: "DAMAGE RESTORED",
     tagIcon: "sparkles" as const,
     description:
-      "Heavy scratches, water stains and torn edges erased. Every face brought back with remarkable clarity.",
+      "Heavy scratches, water stains and torn edges erased. Every face brought back with remarkable clarity — as sharp and vivid as the day it was taken.",
     before: require("@/assets/gallery/portrait_before.png"),
     after: require("@/assets/gallery/portrait_after.png"),
     initialPos: 0.45,
@@ -39,7 +39,7 @@ const EXAMPLES = [
     tag: "COLOURISED",
     tagIcon: "color-palette-outline" as const,
     description:
-      "A black-and-white 1960s ceremony brought to life with warm, natural colour — exactly as it looked on the day.",
+      "A black-and-white 1960s ceremony brought to life with warm, natural colour — exactly as it looked on the day. Every shade chosen with meticulous care.",
     before: require("@/assets/gallery/wedding_before.png"),
     after: require("@/assets/gallery/wedding_after.png"),
     initialPos: 0.5,
@@ -50,7 +50,7 @@ const EXAMPLES = [
     tag: "TEARS REPAIRED",
     tagIcon: "construct-outline" as const,
     description:
-      "Torn in two and held together with tape for decades — now seamlessly restored as if it never happened.",
+      "Torn in two and held together with tape for decades — now seamlessly restored as if it never happened. Not a trace of damage remains.",
     before: require("@/assets/gallery/childhood_before.png"),
     after: require("@/assets/gallery/childhood_after.png"),
     initialPos: 0.42,
@@ -61,7 +61,7 @@ const EXAMPLES = [
     tag: "AI SHARPENED",
     tagIcon: "eye-outline" as const,
     description:
-      "A cherished but out-of-focus portrait made razor sharp — preserving every gentle detail of her expression.",
+      "A cherished but out-of-focus portrait made razor sharp — preserving every gentle detail of her expression for the generations that follow.",
     before: require("@/assets/gallery/grandma_before.png"),
     after: require("@/assets/gallery/grandma_after.png"),
     initialPos: 0.48,
@@ -72,10 +72,28 @@ const EXAMPLES = [
     tag: "COLOURISED & RESTORED",
     tagIcon: "time-outline" as const,
     description:
-      "An 1890s family portrait rescued from near-total decay and colourised to show them as the world once saw them.",
+      "An 1890s family portrait rescued from near-total decay and colourised to show them as the world once saw them — proud, vivid, and timeless.",
     before: require("@/assets/gallery/victorian_before.png"),
     after: require("@/assets/gallery/victorian_after.png"),
     initialPos: 0.5,
+  },
+];
+
+const PROCESS_STEPS = [
+  {
+    icon: "cloud-upload-outline" as const,
+    title: "You send us your photo",
+    body: "Any format, any condition. A cracked print, a faded scan, a blurry snapshot — we have seen it all.",
+  },
+  {
+    icon: "sparkles" as const,
+    title: "Our masters go to work",
+    body: "Cinema-Grade AI restoration is guided by our expert team — colour, detail, and emotion restored with human judgement at every step.",
+  },
+  {
+    icon: "gift-outline" as const,
+    title: "You receive a masterpiece",
+    body: "A full-resolution digital file and, if you wish, a museum-quality print delivered straight to your door.",
   },
 ];
 
@@ -86,7 +104,6 @@ export default function GalleryScreen() {
 
   return (
     <View style={[s.root, { paddingTop: topPad }]}>
-      {/* Gold rainbow top bar */}
       <LinearGradient
         colors={["#C9960C", "#F5D78E", "#C9960C", "#A67C00"]}
         start={{ x: 0, y: 0 }}
@@ -94,7 +111,6 @@ export default function GalleryScreen() {
         style={s.goldBar}
       />
 
-      {/* Header */}
       <View style={s.header}>
         <TouchableOpacity style={s.backBtn} onPress={() => router.back()} activeOpacity={0.7}>
           <Ionicons name="chevron-back" size={24} color={DARK} />
@@ -113,22 +129,40 @@ export default function GalleryScreen() {
         contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 32 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Hero intro */}
+        {/* ── Hero ── */}
         <View style={s.heroBlock}>
           <View style={s.crownWrap}>
             <Text style={s.crownEmoji}>👑</Text>
           </View>
           <Text style={s.heroTitle}>The Art of Restoration</Text>
-          <Text style={s.heroSub}>
-            Drag the handle on each photo to reveal the transformation. These are real AI restorations — no tricks, no composites.
-          </Text>
           <View style={s.goldDivider} />
+          <Text style={s.heroBody}>
+            At ONJJEM, we believe that every photograph deserves to be seen at its very best — not locked away in a drawer, faded beyond recognition. We were founded on a single conviction: that the moments your family lived through are too precious to be lost to time.
+          </Text>
+          <Text style={s.heroBody}>
+            Our Master Restorers combine Cinema-Grade AI with years of hand-finishing expertise to return your photographs to a standard that no darkroom could ever achieve — and then some. We do not simply "fix" photos. We resurrect them.
+          </Text>
         </View>
 
-        {/* Example cards */}
+        {/* ── How the Gallery Works ── */}
+        <View style={s.galleryGuide}>
+          <LinearGradient colors={["#1C1A14", "#2E2A1E"]} style={s.guideGradient}>
+            <View style={s.guideHeaderRow}>
+              <Ionicons name="information-circle-outline" size={18} color={GOLD} />
+              <Text style={s.guideHeading}>How to Read This Gallery</Text>
+            </View>
+            <Text style={s.guideBody}>
+              Every image below is a real restoration — no composites, no stock photography, no tricks. Drag the gold handle left and right across any photo to reveal exactly what we received versus what we returned. The transformation you see is precisely what you can expect for your own treasured memories.
+            </Text>
+            <Text style={s.guideBody}>
+              Each card describes the specific challenge we faced and the technique we used to overcome it — from colour science to structural repair. Browse at your own pace, then come to us when you are ready.
+            </Text>
+          </LinearGradient>
+        </View>
+
+        {/* ── Example Cards ── */}
         {EXAMPLES.map((ex, index) => (
           <View key={ex.id} style={s.card}>
-            {/* Card header */}
             <View style={s.cardHeader}>
               <View style={s.cardNumberWrap}>
                 <Text style={s.cardNumber}>{String(index + 1).padStart(2, "0")}</Text>
@@ -142,7 +176,6 @@ export default function GalleryScreen() {
               </View>
             </View>
 
-            {/* Interactive slider */}
             <View style={s.sliderWrap}>
               <GallerySlider
                 beforeSource={ex.before}
@@ -151,33 +184,61 @@ export default function GalleryScreen() {
               />
               <View style={s.dragHint}>
                 <Ionicons name="swap-horizontal-outline" size={13} color={MUTED} />
-                <Text style={s.dragHintText}>Drag to compare</Text>
+                <Text style={s.dragHintText}>Drag the handle to compare</Text>
               </View>
             </View>
 
-            {/* Description */}
             <Text style={s.cardDesc}>{ex.description}</Text>
-
-            {/* Gold bottom rule */}
-            {index < EXAMPLES.length - 1 && <View style={s.cardRule} />}
           </View>
         ))}
 
-        {/* Testimonial pull-quote */}
-        <View style={s.quoteCard}>
-          <LinearGradient
-            colors={["#1C1A14", "#2E2A1E"]}
-            style={s.quoteGradient}
-          >
-            <Text style={s.quoteMarks}>"</Text>
-            <Text style={s.quoteText}>
-              I had given up hope of ever seeing my grandmother's face clearly. ONJJEM restored it in minutes. I cried.
-            </Text>
-            <Text style={s.quoteAuthor}>— Margaret H., London</Text>
-          </LinearGradient>
+        {/* ── Our Process ── */}
+        <View style={s.processBlock}>
+          <Text style={s.sectionEyebrow}>OUR CRAFT</Text>
+          <Text style={s.sectionTitle}>How Every Restoration Is Made</Text>
+          <View style={s.goldDividerCentre} />
+          {PROCESS_STEPS.map((step, i) => (
+            <View key={i} style={s.processStep}>
+              <View style={s.processIconWrap}>
+                <Ionicons name={step.icon} size={22} color={GOLD} />
+              </View>
+              <View style={s.processText}>
+                <Text style={s.processTitle}>{step.title}</Text>
+                <Text style={s.processBody}>{step.body}</Text>
+              </View>
+            </View>
+          ))}
         </View>
 
-        {/* CTA button */}
+        {/* ── Why Choose ONJJEM ── */}
+        <LinearGradient colors={["#1C1A14", "#2A2215"]} style={s.whyBlock}>
+          <Text style={s.whyEyebrow}>FOR PERSONAL & BUSINESS CLIENTS</Text>
+          <Text style={s.whyTitle}>Why Organisations Choose ONJJEM</Text>
+          <View style={s.whyDivider} />
+          <Text style={s.whyBody}>
+            Our work does not stop at family memories. Funeral homes, heritage societies, museums, publishers, production companies, and luxury brands commission us for restoration projects ranging from single portraits to entire historical archives.
+          </Text>
+          <Text style={s.whyBody}>
+            We offer dedicated account management, volume pricing, NDA agreements, and delivery guaranteed to your timeline. Every restoration carries our Certificate of Authenticity — a signed document attesting to the provenance, techniques used, and our quality guarantee.
+          </Text>
+          <View style={s.whyFeatures}>
+            {[
+              { icon: "shield-checkmark-outline" as const, text: "10-Year Quality Guarantee on every print" },
+              { icon: "time-outline" as const, text: "Rush 24-hour turnaround available" },
+              { icon: "business-outline" as const, text: "Business accounts with volume pricing" },
+              { icon: "ribbon-outline" as const, text: "Certificate of Authenticity included" },
+              { icon: "lock-closed-outline" as const, text: "NDA & confidentiality agreements available" },
+              { icon: "call-outline" as const, text: "Dedicated account manager for commissions" },
+            ].map((f, i) => (
+              <View key={i} style={s.whyFeatureRow}>
+                <Ionicons name={f.icon} size={15} color={GOLD} />
+                <Text style={s.whyFeatureText}>{f.text}</Text>
+              </View>
+            ))}
+          </View>
+        </LinearGradient>
+
+        {/* ── CTA ── */}
         <View style={s.ctaBlock}>
           <Text style={s.ctaEyebrow}>YOUR TURN</Text>
           <TouchableOpacity
@@ -193,13 +254,13 @@ export default function GalleryScreen() {
             >
               <Ionicons name="sparkles" size={22} color="#fff" />
               <View style={s.ctaBtnText}>
-                <Text style={s.ctaBtnPrimary}>Ready to Restore Your Memories?</Text>
-                <Text style={s.ctaBtnSecondary}>Get Started Now →</Text>
+                <Text style={s.ctaBtnPrimary}>Restore Your Memories Now</Text>
+                <Text style={s.ctaBtnSecondary}>Free preview · Results in under 60 seconds →</Text>
               </View>
             </LinearGradient>
           </TouchableOpacity>
           <Text style={s.ctaNote}>
-            Free preview · No account required · Results in under 60 seconds
+            No account required · Every restoration is private and confidential
           </Text>
         </View>
 
@@ -263,17 +324,17 @@ const s = StyleSheet.create({
     gap: 0,
   },
 
-  /* Hero */
+  /* ── Hero ── */
   heroBlock: {
     alignItems: "center",
-    paddingTop: 28,
-    paddingBottom: 8,
-    gap: 10,
+    paddingTop: 32,
+    paddingBottom: 4,
+    gap: 14,
   },
   crownWrap: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: GOLD_BG,
     borderWidth: 1.5,
     borderColor: GOLD_BORDER,
@@ -281,33 +342,66 @@ const s = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 4,
   },
-  crownEmoji: { fontSize: 28 },
+  crownEmoji: { fontSize: 30 },
   heroTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     color: DARK,
     textAlign: "center",
     letterSpacing: 0.3,
   },
-  heroSub: {
-    fontSize: 14,
-    color: MUTED,
-    fontFamily: "Inter_400Regular",
-    textAlign: "center",
-    lineHeight: 21,
-    paddingHorizontal: 8,
-  },
   goldDivider: {
     width: 56,
     height: 2.5,
     borderRadius: 2,
     backgroundColor: GOLD,
-    marginTop: 6,
-    marginBottom: 18,
+    marginTop: 2,
+    marginBottom: 4,
+  },
+  heroBody: {
+    fontSize: 14,
+    color: MUTED,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+    lineHeight: 22,
+    paddingHorizontal: 4,
   },
 
-  /* Example card */
+  /* ── Gallery Guide ── */
+  galleryGuide: {
+    borderRadius: 20,
+    overflow: "hidden",
+    marginTop: 24,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: GOLD_BORDER,
+  },
+  guideGradient: {
+    padding: 20,
+    gap: 10,
+  },
+  guideHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 4,
+  },
+  guideHeading: {
+    fontSize: 14,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 0.3,
+  },
+  guideBody: {
+    fontSize: 13,
+    color: "#D4C9A8",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 21,
+  },
+
+  /* ── Example card ── */
   card: {
     backgroundColor: "#fff",
     borderRadius: 20,
@@ -390,45 +484,130 @@ const s = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     lineHeight: 20,
   },
-  cardRule: {
-    display: "none",
+
+  /* ── Process ── */
+  processBlock: {
+    alignItems: "center",
+    paddingVertical: 28,
+    gap: 0,
+    marginBottom: 8,
+  },
+  sectionEyebrow: {
+    fontSize: 10,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 3,
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: DARK,
+    textAlign: "center",
+    letterSpacing: 0.2,
+  },
+  goldDividerCentre: {
+    width: 48,
+    height: 2.5,
+    borderRadius: 2,
+    backgroundColor: GOLD,
+    marginTop: 10,
+    marginBottom: 22,
+  },
+  processStep: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 14,
+    width: "100%",
+    marginBottom: 18,
+  },
+  processIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: GOLD_BG,
+    borderWidth: 1,
+    borderColor: GOLD_BORDER,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  processText: {
+    flex: 1,
+    gap: 4,
+    paddingTop: 2,
+  },
+  processTitle: {
+    fontSize: 14,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: DARK,
+    lineHeight: 19,
+  },
+  processBody: {
+    fontSize: 13,
+    color: MUTED,
+    fontFamily: "Inter_400Regular",
+    lineHeight: 20,
   },
 
-  /* Testimonial */
-  quoteCard: {
+  /* ── Why ONJJEM ── */
+  whyBlock: {
     borderRadius: 20,
-    overflow: "hidden",
+    padding: 22,
     marginBottom: 24,
+    gap: 12,
     borderWidth: 1,
     borderColor: GOLD_BORDER,
   },
-  quoteGradient: {
-    padding: 22,
+  whyEyebrow: {
+    fontSize: 9,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 2.5,
+  },
+  whyTitle: {
+    fontSize: 19,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#FAF7F2",
+    lineHeight: 25,
+    letterSpacing: 0.2,
+  },
+  whyDivider: {
+    width: 44,
+    height: 2,
+    borderRadius: 2,
+    backgroundColor: GOLD,
+    marginVertical: 2,
+  },
+  whyBody: {
+    fontSize: 13,
+    color: "#C8BBAA",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 21,
+  },
+  whyFeatures: {
+    marginTop: 6,
     gap: 10,
   },
-  quoteMarks: {
-    fontSize: 42,
-    color: GOLD,
-    fontFamily: "Inter_700Bold",
-    lineHeight: 36,
-    marginBottom: -4,
+  whyFeatureRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
-  quoteText: {
-    fontSize: 15,
-    color: "#F5EDD8",
+  whyFeatureText: {
+    fontSize: 13,
+    color: "#E8DBC0",
     fontFamily: "Inter_400Regular",
-    lineHeight: 23,
-    fontStyle: "italic",
-  },
-  quoteAuthor: {
-    fontSize: 12,
-    color: GOLD,
-    fontFamily: "Inter_600SemiBold",
-    fontWeight: "600" as const,
-    letterSpacing: 0.5,
+    lineHeight: 19,
+    flex: 1,
   },
 
-  /* CTA */
+  /* ── CTA ── */
   ctaBlock: {
     alignItems: "center",
     gap: 12,
