@@ -53,6 +53,7 @@ type Product = {
   quoteType?: "wall" | "window";
   madeToMeasure?: boolean;
   quickBuy?: boolean;
+  dealPrice?: boolean;
 };
 
 type Category = {
@@ -524,23 +525,24 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    id: "little_treasures",
-    label: "Little Treasures",
-    emoji: "✨",
+    id: "bargain_memories",
+    label: "Everyday Gifts",
+    emoji: "🎁",
     subtitle: "Small gifts, big memories · Handmade in London · Free expert personalisation",
-    fulfillment: "Bags of Love · Master Artisans · London Studio",
-    headerGradient: ["#7B4F00", "#4A2D00"] as const,
+    fulfillment: "ONJJEM Master Artisans · London Studio",
+    headerGradient: ["#7A4500", "#4A2800"] as const,
     products: [
       {
         id: "memory_stickers_lt",
         title: "Memory Stickers",
         size: "Sheet of 20 · Waterproof Vinyl",
-        desc: "Share your restored photos everywhere. Waterproof, UV-resistant vinyl stickers — perfect for laptops, water bottles, journals and scrapbooks.",
+        desc: "Waterproof, UV-resistant vinyl stickers — great for laptops, bottles & journals.",
         price: "£9.99",
         emoji: "⭐",
         iconBg: "#FFF9E8",
         wide: true,
         bestSeller: true,
+        dealPrice: true,
         onjjemSeal: true,
         handmadeInLondon: true,
         freePersonalisation: true,
@@ -549,7 +551,7 @@ const CATEGORIES: Category[] = [
         id: "heritage_magnets_lt",
         title: "Heritage Fridge Magnets",
         size: "Set of 5 · Premium Acrylic",
-        desc: "Share your restored memories on any magnetic surface. Five beautifully printed magnets — perfect for fridges, whiteboards and metal doors.",
+        desc: "Five beautifully printed acrylic magnets for any magnetic surface.",
         price: "£12.99",
         emoji: "🧲",
         iconBg: "#FFF4E0",
@@ -561,11 +563,13 @@ const CATEGORIES: Category[] = [
       {
         id: "mouse_mat",
         title: "Photo Mouse Mat",
-        size: "6mm thick",
-        desc: "Non-slip rubber base with a smooth cloth surface — your memory on your desk, every single day.",
+        size: "6mm Non-Slip Rubber",
+        desc: "Smooth cloth surface, non-slip base — your memory on your desk every day.",
         price: "£19.99",
         emoji: "🖱️",
         iconBg: "#FFFBF0",
+        wide: true,
+        dealPrice: true,
         onjjemSeal: true,
         handmadeInLondon: true,
         freePersonalisation: true,
@@ -574,7 +578,7 @@ const CATEGORIES: Category[] = [
         id: "master_lab_mug_lt",
         title: "Master Lab Photo Mug",
         size: "11 oz · High-Gloss · Dishwasher Safe",
-        desc: "A sturdy, high-gloss mug for your morning coffee. Your expertly restored photo printed in rich, vivid colour on a robust ceramic mug — a daily reminder of your most cherished memory.",
+        desc: "High-gloss ceramic mug with your restored photo in rich, vivid colour.",
         price: "£19.99",
         emoji: "☕",
         iconBg: "#FFF3E0",
@@ -587,7 +591,7 @@ const CATEGORIES: Category[] = [
         id: "coasters",
         title: "High-Gloss Coasters",
         size: "Set of 4",
-        desc: "Heat-resistant with a solid wooden base. Your restored photo sealed under a mirror-gloss finish.",
+        desc: "Heat-resistant, solid wooden base. Your photo sealed under a mirror-gloss finish.",
         price: "£24.99",
         emoji: "🟫",
         iconBg: "#FDF3E3",
@@ -601,7 +605,7 @@ const CATEGORIES: Category[] = [
         id: "nappa_keyring_lt",
         title: "Genuine Leather Keyring",
         size: "Premium Nappa Leather · Handmade in London",
-        desc: "Handmade in London from buttery-soft genuine Nappa leather. A beautiful, tactile way to carry your cherished restored memory with you every single day.",
+        desc: "Buttery-soft Nappa leather — carry your cherished memory every day.",
         price: "£24.99",
         emoji: "🔑",
         iconBg: "#EFEBE9",
@@ -612,45 +616,10 @@ const CATEGORIES: Category[] = [
         freePersonalisation: true,
       },
       {
-        id: "notebook",
-        title: "Handmade Notebook",
-        size: "A5",
-        desc: "Premium ivory paper interior with a hand-stitched spine. A keepsake that writes as beautifully as it looks.",
-        price: "£24.99",
-        emoji: "📔",
-        iconBg: "#FFF9EE",
-        onjjemSeal: true,
-        handmadeInLondon: true,
-        freePersonalisation: true,
-      },
-      {
-        id: "scented_candle",
-        title: "Glass Scented Candle",
-        size: "50-hour burn",
-        desc: "100% vegan soy wax in a luxury gift box. A personalised memory you can see, smell and treasure.",
-        price: "£29.99",
-        emoji: "🕯️",
-        iconBg: "#FFF8E7",
-        wide: true,
-        onjjemSeal: true,
-        handmadeInLondon: true,
-        freePersonalisation: true,
-      },
-    ],
-  },
-  {
-    id: "bargain_memories",
-    label: "Everyday Gifts",
-    emoji: "🎁",
-    subtitle: "Wonderful everyday gifts · Free expert personalisation · Prices exclude shipping",
-    fulfillment: "ONJJEM Master Artisans · London Studio",
-    headerGradient: ["#7A4500", "#4A2800"] as const,
-    products: [
-      {
         id: "fabric_labels",
         title: "Custom Fabric Labels",
         size: "Sheet of 12",
-        desc: "Perfect for crafters and hobbyists. Your restored photo woven into iron-on fabric labels — a unique finishing touch for quilts, cushions and handmade gifts.",
+        desc: "Iron-on fabric labels — a beautiful finishing touch for quilts & handmade gifts.",
         price: "£24.99",
         emoji: "🏷️",
         iconBg: "#FFF3E0",
@@ -660,10 +629,36 @@ const CATEGORIES: Category[] = [
         freePersonalisation: true,
       },
       {
+        id: "heritage_drawstring_bag",
+        title: "Heritage Drawstring Bag",
+        size: "Eco Cotton · Natural",
+        desc: "Sustainable cotton bag with your restored photo. Perfect for gym, beach or shopping.",
+        price: "£24.99",
+        emoji: "🎒",
+        iconBg: "#F5F0E8",
+        wide: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "notebook",
+        title: "Handmade Notebook",
+        size: "A5",
+        desc: "Ivory paper interior with a hand-stitched spine. A keepsake you'll write in every day.",
+        price: "£24.99",
+        emoji: "📔",
+        iconBg: "#FFF9EE",
+        wide: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        freePersonalisation: true,
+      },
+      {
         id: "tea_towel",
         title: "Heritage Tea Towel",
-        size: "50×70 cm",
-        desc: "A kitchen staple made beautiful. 100% cotton with a vivid dye-sublimation print of your restored photograph — machine washable and colour-fast.",
+        size: "50×70 cm · 100% Cotton",
+        desc: "Vivid dye-sublimation print on 100% cotton. Machine washable and colour-fast.",
         price: "£29.99",
         emoji: "🧺",
         iconBg: "#FBF3E8",
@@ -676,7 +671,7 @@ const CATEGORIES: Category[] = [
         id: "face_socks",
         title: "Face Socks",
         size: "One Size",
-        desc: "Our most fun way to wear a memory. Soft, stretchy and brilliantly printed — put your favourite face on someone's feet. Perfect gift every time.",
+        desc: "Soft, stretchy and brilliantly printed — put a favourite face on someone's feet.",
         price: "£29.99",
         emoji: "🧦",
         iconBg: "#FFF8E1",
@@ -689,8 +684,8 @@ const CATEGORIES: Category[] = [
       {
         id: "heritage_calendar",
         title: "Heritage Photo Calendar",
-        size: "A4 · 12 months",
-        desc: "A full year of your most precious restored memories. Printed on premium gallery-quality paper — a meaningful gift that hangs in the home all year long.",
+        size: "A4 · 12 Months",
+        desc: "A full year of your finest restored memories on premium gallery-quality paper.",
         price: "£29.99",
         emoji: "📅",
         iconBg: "#FFF0DC",
@@ -700,13 +695,13 @@ const CATEGORIES: Category[] = [
         freePersonalisation: true,
       },
       {
-        id: "heritage_drawstring_bag",
-        title: "Heritage Drawstring Bag",
-        size: "Eco Cotton · Natural",
-        desc: "A soft, sustainable cotton bag printed with your restored photo. Ideal for gym, beach or shopping — a meaningful, everyday keepsake that goes wherever life takes you.",
-        price: "£24.99",
-        emoji: "🎒",
-        iconBg: "#F5F0E8",
+        id: "scented_candle",
+        title: "Glass Scented Candle",
+        size: "50-Hour Burn",
+        desc: "100% vegan soy wax in a luxury gift box. A memory you can see, smell and treasure.",
+        price: "£29.99",
+        emoji: "🕯️",
+        iconBg: "#FFF8E7",
         wide: true,
         onjjemSeal: true,
         handmadeInLondon: true,
@@ -716,7 +711,7 @@ const CATEGORIES: Category[] = [
         id: "bone_china_mug",
         title: "Fine Bone China Mug",
         size: "Fine Bone China · Dishwasher Safe",
-        desc: "Lighter and finer than a standard photo mug — the upgrade your morning deserves. Your expertly restored photo printed in rich, true-to-life colour on authentic Fine Bone China. A thoughtful gift that truly lasts.",
+        desc: "Finer & lighter than ceramic — your restored photo on authentic Fine Bone China.",
         price: "£39.99",
         emoji: "☕",
         iconBg: "#FFF8F0",
@@ -1158,7 +1153,7 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-const MENU_TABS = ["living", "little_treasures", "heritage_jigsaws", "living_comforts", "bargain_memories", "large_format"];
+const MENU_TABS = ["living", "heritage_jigsaws", "living_comforts", "bargain_memories", "large_format"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
@@ -1432,34 +1427,6 @@ export default function GiftShopScreen() {
             </View>
           )}
 
-          {/* Little Treasures callout */}
-          {activeTab === "little_treasures" && (
-            <View style={s.littleTreasuresCallout}>
-              <LinearGradient
-                colors={["#C9960C", "#F5D78E", "#C9960C"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={s.littleTreasuresBar}
-              />
-              <View style={s.littleTreasuresInner}>
-                <View style={s.littleTreasuresBadgeCol}>
-                  <View style={s.ltBadge}>
-                    <Text style={s.ltBadgeFlag}>🇬🇧</Text>
-                    <Text style={s.ltBadgeText}>Handmade in London</Text>
-                  </View>
-                  <View style={[s.ltBadge, s.ltBadgeFree]}>
-                    <Ionicons name="ribbon" size={12} color="#8B6200" />
-                    <Text style={s.ltBadgeText}>FREE: Expert Personalisation Included</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={s.littleTreasuresDesc}>
-                <Text style={s.littleTreasuresDescText}>
-                  Every Little Treasures item is individually handmade by London artisans and shipped in premium gift packaging — ready to give, no wrapping needed.
-                </Text>
-              </View>
-            </View>
-          )}
 
           {/* Wearable Memories callout */}
           {activeTab === "wearable" && (
@@ -1650,6 +1617,7 @@ export default function GiftShopScreen() {
               <ProductCard
                 key={product.id}
                 product={product}
+                compact={activeTab === "bargain_memories"}
                 onPress={(scent) => {
                   if (product.freePersonalisation) {
                     setPersonalisingProduct(product);
@@ -2106,7 +2074,7 @@ function BadgeRow({ product }: { product: Product }) {
   );
 }
 
-function ProductCard({ product, onPress }: { product: Product; onPress: (summary?: string) => void }) {
+function ProductCard({ product, onPress, compact }: { product: Product; compact?: boolean; onPress: (summary?: string) => void }) {
   const isWide = product.wide && !product.photo;
 
   const allOptions = [
@@ -2381,6 +2349,62 @@ function ProductCard({ product, onPress }: { product: Product; onPress: (summary
   ) : null;
 
   const hasTopBadge = product.bestSeller || product.quickBuy || product.madeToMeasure || product.premiumBadge;
+
+  if (compact) {
+    return (
+      <>
+      <TouchableOpacity
+        style={s.compactCard}
+        activeOpacity={0.82}
+        onPress={() => onPress(fullSummary)}
+      >
+        {/* Emoji icon */}
+        <View style={[s.compactIcon, { backgroundColor: product.iconBg }]}>
+          <Text style={s.compactEmoji}>{product.emoji}</Text>
+        </View>
+
+        {/* Main content */}
+        <View style={s.compactBody}>
+          <View style={s.compactTitleRow}>
+            <Text style={s.compactTitle} numberOfLines={1}>{product.title}</Text>
+            <View style={s.compactRightCol}>
+              <Text style={s.compactPrice}>{product.price}</Text>
+              {product.dealPrice && (
+                <View style={s.dealBadge}>
+                  <Text style={s.dealBadgeText}>🏷 Deal</Text>
+                </View>
+              )}
+            </View>
+          </View>
+          <Text style={s.compactDesc} numberOfLines={2}>{product.desc}</Text>
+          <View style={s.compactBadgeRow}>
+            {product.bestSeller && (
+              <View style={s.compactBadge}>
+                <Text style={s.compactBadgeText}>★ Best Seller</Text>
+              </View>
+            )}
+            {product.premiumBadge && (
+              <View style={[s.compactBadge, s.compactBadgePremium]}>
+                <Text style={[s.compactBadgeText, { color: GOLD }]}>♦ Premium</Text>
+              </View>
+            )}
+            {product.handmadeInLondon && (
+              <View style={s.compactBadge}>
+                <Text style={s.compactBadgeText}>🇬🇧 Handmade</Text>
+              </View>
+            )}
+            {product.freePersonalisation && (
+              <View style={[s.compactBadge, s.compactBadgeFree]}>
+                <Text style={[s.compactBadgeText, { color: "#15803D" }]}>🎀 Free Personalisation</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </TouchableOpacity>
+      {quoteModal}
+      </>
+    );
+  }
 
   return (
     <>
@@ -3408,6 +3432,68 @@ const s = StyleSheet.create({
     flexDirection: "row", flexWrap: "wrap",
     padding: 10, gap: 8, backgroundColor: "#F5F0EA",
   },
+
+  compactCard: {
+    width: "100%",
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E2D9CF",
+    padding: 10,
+    gap: 10,
+  },
+  compactIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    flexShrink: 0,
+  },
+  compactEmoji: { fontSize: 22 },
+  compactBody: { flex: 1, gap: 4 },
+  compactTitleRow: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    justifyContent: "space-between" as const,
+    gap: 6,
+  },
+  compactTitle: {
+    fontSize: 13,
+    fontFamily: "Inter_700Bold",
+    color: "#1C1A14",
+    flex: 1,
+    lineHeight: 17,
+  },
+  compactRightCol: { alignItems: "flex-end" as const, gap: 2, flexShrink: 0 },
+  compactPrice: { fontSize: 13, fontFamily: "Inter_700Bold", color: "#C9960C" },
+  dealBadge: {
+    backgroundColor: "#FFF0C0",
+    borderRadius: 6,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    borderWidth: 1,
+    borderColor: "#E8B800",
+  },
+  dealBadgeText: { fontSize: 9, fontFamily: "Inter_700Bold", color: "#7A5F00" },
+  compactDesc: { fontSize: 11, color: "#7A6E57", lineHeight: 15 },
+  compactBadgeRow: {
+    flexDirection: "row" as const,
+    flexWrap: "wrap" as const,
+    gap: 4,
+    marginTop: 2,
+  },
+  compactBadge: {
+    backgroundColor: "#F5F0E8",
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  compactBadgePremium: { backgroundColor: "#1C1A14" },
+  compactBadgeFree: { backgroundColor: "#DCFCE7" },
+  compactBadgeText: { fontSize: 9, fontFamily: "Inter_600SemiBold", color: "#5C5040" },
 
   productCard: {
     width: "48%", flexGrow: 1,
