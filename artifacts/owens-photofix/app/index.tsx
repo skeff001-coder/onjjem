@@ -342,7 +342,7 @@ export default function HomeScreen() {
                     </View>
                     <View style={s.giftBtnTitleWrap}>
                       <Text style={s.giftBtnLabel}>OUR GIFT STORE</Text>
-                      <Text style={s.giftBtnText}>Mugs · Jigsaws · Keyrings</Text>
+                      <Text style={s.giftBtnText}>Candles · Cushions · Jigsaws · Throws</Text>
                     </View>
                     <View style={s.giftBtnCountBadge}>
                       <Text style={s.giftBtnCountText}>50+</Text>
@@ -351,7 +351,7 @@ export default function HomeScreen() {
                     <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.9)" />
                   </View>
                   <View style={s.giftBtnChipRow}>
-                    {["Mugs", "Cushions", "Throws", "Candles", "Jigsaws", "& More"].map((tag) => (
+                    {["Candles", "Cushions", "Jigsaws", "Throws", "& More"].map((tag) => (
                       <View key={tag} style={s.giftBtnChip}>
                         <Text style={s.giftBtnChipText}>{tag}</Text>
                       </View>
@@ -409,10 +409,6 @@ export default function HomeScreen() {
                     </View>
                   </View>
                   <View style={s.canvasHeroRight}>
-                    <View style={s.canvasHeroPriceBox}>
-                      <Text style={s.canvasHeroPriceFrom}>from</Text>
-                      <Text style={s.canvasHeroPrice}>£29.99</Text>
-                    </View>
                     <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.7)" />
                   </View>
                 </View>
@@ -642,7 +638,7 @@ export default function HomeScreen() {
               <View style={s.livingMemoriesTextWrap}>
                 <View style={s.livingMemoriesTopRow}>
                   <Text style={s.livingMemoriesTitle}>
-                    ✨ Bring This Photo to Life
+                    ✨ Bring Photographs to Life
                   </Text>
                   <View style={s.livingMemoriesAiBadge}>
                     <Ionicons name="sparkles" size={9} color={colors.primary} />
@@ -653,10 +649,7 @@ export default function HomeScreen() {
                   AI Motion Video · Watch it move
                 </Text>
               </View>
-              <View style={s.livingMemoriesPriceWrap}>
-                <Text style={s.livingMemoriesPrice}>£14.99</Text>
-                <Ionicons name="chevron-forward" size={14} color={colors.primary} />
-              </View>
+              <Ionicons name="chevron-forward" size={14} color={colors.primary} />
             </View>
           </LinearGradient>
         </TouchableOpacity>
@@ -687,10 +680,7 @@ export default function HomeScreen() {
                 <Text style={s.featureWallsTitle}>Life-Sized Feature Walls</Text>
                 <Text style={s.featureWallsSub}>Custom murals up to 4m × 3m · Heritage & Wedding</Text>
               </View>
-              <View style={s.featureWallsPriceWrap}>
-                <Text style={s.featureWallsPrice}>£45/m²</Text>
-                <Ionicons name="chevron-forward" size={14} color={colors.primary} />
-              </View>
+              <Ionicons name="chevron-forward" size={14} color={colors.primary} />
             </View>
           </LinearGradient>
         </TouchableOpacity>

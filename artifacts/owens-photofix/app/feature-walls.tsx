@@ -138,17 +138,7 @@ export default function FeatureWallsScreen() {
               specialist protective shipping.
             </Text>
 
-            {/* Price block */}
-            <View style={s.priceBlock}>
-              <View style={s.priceTopRow}>
-                <View style={s.priceLeft}>
-                  <Text style={s.priceLabel}>FROM</Text>
-                  <Text style={s.priceAmount}>£45 / m²</Text>
-                  <Text style={s.priceIncludes}>Includes Restoration & Delivery</Text>
-                </View>
-              </View>
-              <View style={s.priceDividerH} />
-              <View style={s.priceRight}>
+            <View style={s.priceRight}>
                 <View style={s.priceFeature}>
                   <Ionicons name="checkmark-circle" size={15} color={GOLD} />
                   <Text style={s.priceFeatureText}>Expert restoration</Text>
@@ -162,7 +152,6 @@ export default function FeatureWallsScreen() {
                   <Text style={s.priceFeatureText}>UK delivery included</Text>
                 </View>
               </View>
-            </View>
           </View>
         </LinearGradient>
 
