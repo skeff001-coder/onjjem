@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { useLocalSearchParams } from "expo-router";
 import {
   Animated,
   Image,
@@ -1170,9 +1171,167 @@ const CATEGORIES: Category[] = [
       },
     ],
   },
+  /* ─────────────────────────────────────────────────────────── */
+  /*  ANNIVERSARIES & JUBILEES                                   */
+  /* ─────────────────────────────────────────────────────────── */
+  {
+    id: "anniversaries",
+    label: "Jubilees",
+    emoji: "💎",
+    subtitle: "Silver · Ruby · Golden · Diamond · Platinum — every precious milestone",
+    fulfillment: "ONJJEM Master Print Lab · Heritage Handcraft Studio",
+    headerGradient: ["#10103A", "#1E1B5E"] as const,
+    products: [
+      {
+        id: "diamond_jubilee_portrait",
+        title: "Diamond Jubilee Heritage Portrait",
+        size: "60th Wedding Anniversary · Large format, ready to frame",
+        desc: "Sixty years of love deserves the most precious gift of all. We take your most treasured wedding photograph — however aged or faded — and restore it to breath-taking clarity. Printed on our finest 300gsm museum-grade archival paper and double-mounted in a premium cream board, ready for a frame of your choice.\n\nEvery line of a face, every fold of lace, every smile is brought back with painstaking care by our master restorers. A keepsake to last the next sixty years and beyond.",
+        price: "£149.99",
+        emoji: "💎",
+        iconBg: "#E8F4FF",
+        wide: true,
+        bestSeller: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        teamPhotoUpload: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "golden_jubilee_canvas",
+        title: "Golden Jubilee Gallery Canvas",
+        size: "50th Wedding Anniversary · Gallery-stretched, ready to hang",
+        desc: "Half a century of marriage — a golden love story told in one magnificent image. Your restored wedding photo hand-stretched onto a solid pine frame, printed with fade-proof inks on 400gsm artist canvas. Arrives ready to hang with a gold-cord hanging system.\n\nA true heirloom piece that will grace your wall for generations to come.",
+        price: "£119.99",
+        emoji: "🥇",
+        iconBg: "#FDF6DC",
+        wide: true,
+        bestSeller: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        teamPhotoUpload: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "platinum_jubilee_mural",
+        title: "Platinum Jubilee Feature Wall Mural",
+        size: "70th Wedding Anniversary · Any size — made to measure",
+        desc: "Seventy years. An achievement that fewer than one in a thousand couples ever reach. Honour this extraordinary milestone by filling an entire wall with your wedding photograph — restored to life-sized perfection.\n\nPriced at £28/m². Tap 'Request a Quote' with your wall dimensions for an instant price. Expert restoration and UK delivery included.",
+        price: "from £28 / m²",
+        emoji: "👑",
+        iconBg: "#F0F0F0",
+        wide: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        madeToMeasure: true,
+        getQuote: true,
+        quoteType: "wall" as const,
+      },
+      {
+        id: "ruby_jubilee_silk_cushion",
+        title: "Ruby Jubilee Silk Heirloom Cushion",
+        size: "40th Wedding Anniversary · 50 cm · 100% Natural Silk",
+        desc: "Forty years of marriage — a ruby love, rich and deep. Your restored photograph hand-sewn into 100% natural silk, the most sumptuously soft material we offer. A statement heirloom piece for the bedroom or lounge.\n\nHand-finished in London by our master craftspeople. 5-Year Print Guarantee.",
+        price: "£84.99",
+        emoji: "❤️",
+        iconBg: "#FFF0F0",
+        wide: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        teamPhotoUpload: true,
+        freePersonalisation: true,
+        premiumBadge: true,
+      },
+      {
+        id: "silver_jubilee_frame",
+        title: "Silver Jubilee Heritage Framed Print",
+        size: "25th Wedding Anniversary · A2 · Double-mounted",
+        desc: "Twenty-five years — a silver love, steady and radiant. Your restored wedding photo presented in a premium double-mounted cream board, sized to fit a standard A2 frame. Printed on 300gsm archival paper so it will never fade.\n\nA timeless gift that captures exactly who they were on the day they said 'I do'.",
+        price: "£64.99",
+        emoji: "🥈",
+        iconBg: "#F5F5F5",
+        onjjemSeal: true,
+        ukMasterPrinters: true,
+        teamPhotoUpload: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "pearl_jubilee_throw",
+        title: "Pearl Jubilee Luxury Velvet Throw",
+        size: "30th Wedding Anniversary · 150×100cm · Plush Velvet",
+        desc: "Thirty years of warmth and togetherness — a pearl love, luminous and rare. Your restored wedding photograph printed across a generous plush velvet throw, hand-finished in London with a satin edge binding.\n\nThe perfect gift to drape over a favourite chair and wrap themselves in memories.",
+        price: "£79.99",
+        emoji: "🤍",
+        iconBg: "#F8F8FF",
+        handmadeInLondon: true,
+        teamPhotoUpload: true,
+        freePersonalisation: true,
+      },
+      {
+        id: "emerald_jubilee_photobook",
+        title: "Emerald Jubilee Heritage Photo Book",
+        size: "55th Wedding Anniversary · A4 Hardback · 60 pages",
+        desc: "Fifty-five years of a love story that deserves its own book — and now it has one. Our master craftspeople curate your restored photographs into a stunning 60-page hardback, printed on silk-coated 200gsm paper and bound in a rich forest-green linen cover.\n\nA truly extraordinary keepsake to be passed down through generations.",
+        price: "£89.99",
+        emoji: "💚",
+        iconBg: "#F0FFF4",
+        wide: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        ukMasterPrinters: true,
+        teamPhotoUpload: true,
+      },
+      {
+        id: "sapphire_jubilee_candle",
+        title: "Sapphire Jubilee Heritage Candle",
+        size: "45th or 65th Anniversary · 300g · 55-hour burn",
+        desc: "A deep, rich sapphire love — the most serene of all the jubilee gems. Our 300g luxury soy-wax candle arrives in a hand-etched crystal-glass vessel, paired with a mini restored photo print in a gold-foil presentation box.\n\nAvailable in Sandalwood & Amber, Rose & Ylang-Ylang, or Cedarwood & Vetiver. Burns for 55 hours.",
+        price: "£44.99",
+        emoji: "💙",
+        iconBg: "#EFF6FF",
+        scents: ["Sandalwood & Amber", "Rose & Ylang-Ylang", "Cedarwood & Vetiver"],
+        teamPhotoUpload: true,
+        freePersonalisation: true,
+        handmadeInLondon: true,
+      },
+      {
+        id: "coral_jubilee_candle",
+        title: "Coral Jubilee Luxury Candle",
+        size: "35th Anniversary · 300g · 55-hour burn",
+        desc: "Thirty-five years — a warm coral love, glowing and alive. Our 300g luxury soy-wax candle in a hand-etched crystal-glass vessel, paired with a mini restored photo print in a gold-foil presentation box.\n\nAvailable in Jasmine & Neroli, Peony & Patchouli, or Warm Vanilla & Spice.",
+        price: "£39.99",
+        emoji: "🩷",
+        iconBg: "#FFF0F5",
+        scents: ["Jasmine & Neroli", "Peony & Patchouli", "Warm Vanilla & Spice"],
+        teamPhotoUpload: true,
+        freePersonalisation: true,
+        handmadeInLondon: true,
+      },
+      {
+        id: "jubilee_gift_collection",
+        title: "The Jubilee Complete Gift Collection",
+        size: "Any milestone anniversary · Full luxury set",
+        desc: "Our most celebrated gift — the complete ONJJEM anniversary experience. Everything beautifully wrapped together in a rigid keepsake box:\n\n• Your restored photo as a large heritage framed print\n• One luxury silk cushion\n• One 300g heritage candle in your chosen scent\n• A personalised hand-written anniversary card from our team\n• Presented in our signature gold-ribbon gift box\n\nThe most treasured gift you can give for any jubilee anniversary.",
+        price: "£199.99",
+        emoji: "✨",
+        iconBg: "#FDF6DC",
+        wide: true,
+        bestSeller: true,
+        premiumBadge: true,
+        onjjemSeal: true,
+        handmadeInLondon: true,
+        ukMasterPrinters: true,
+        teamPhotoUpload: true,
+        freePersonalisation: true,
+      },
+    ],
+  },
 ];
 
-const MENU_TABS = ["living", "prints", "heritage_jigsaws", "bargain_memories", "large_format"];
+const MENU_TABS = ["anniversaries", "living", "prints", "heritage_jigsaws", "bargain_memories", "large_format"];
 
 const MASTER_RESTORER_NOTE = "Our master restorers will professionally enhance your team's colours to ensure they look sharp and vibrant on every item.";
 
@@ -1188,7 +1347,11 @@ export default function GiftShopScreen() {
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? Math.max(insets.top, 72) : insets.top;
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("living");
+  const { tab: tabParam } = useLocalSearchParams<{ tab?: string }>();
+  const [activeTab, setActiveTab] = useState(() => {
+    if (tabParam && MENU_TABS.includes(tabParam)) return tabParam;
+    return MENU_TABS[0];
+  });
   const [giftWrap, setGiftWrap] = useState(false);
   const [heritageCardAdded, setHeritageCardAdded] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);

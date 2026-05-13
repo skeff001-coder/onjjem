@@ -689,6 +689,64 @@ export default function HomeScreen() {
           </LinearGradient>
         </TouchableOpacity>
 
+        {/* Anniversary & Jubilee Collection */}
+        <TouchableOpacity
+          style={s.jubileeBtn}
+          onPress={() => router.push("/gift-shop?tab=anniversaries")}
+          activeOpacity={0.87}
+        >
+          <LinearGradient
+            colors={["#10103A", "#1A1650", "#0D0D2E"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={s.jubileeGradient}
+          >
+            <LinearGradient
+              colors={["#C9960C", "#F5D78E", "#A8E6FF", "#F5D78E", "#C9960C"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={s.jubileeGoldBar}
+            />
+            <View style={s.jubileeInner}>
+              {/* Header row */}
+              <View style={s.jubileeHeaderRow}>
+                <View style={s.jubileeIconWrap}>
+                  <Text style={s.jubileeEmoji}>💎</Text>
+                </View>
+                <View style={s.jubileeTextWrap}>
+                  <Text style={s.jubileeEyebrow}>ANNIVERSARY &amp; JUBILEE COLLECTION</Text>
+                  <Text style={s.jubileeTitle}>Celebrate a Lifetime of Love</Text>
+                  <Text style={s.jubileeSub}>
+                    From Silver to Diamond — precious gifts for every milestone
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={14} color="#C9960C" />
+              </View>
+
+              {/* Milestone chips */}
+              <View style={s.jubileeMilestones}>
+                {[
+                  { year: "25th", gem: "Silver",   emoji: "🥈", color: "#9CA3AF" },
+                  { year: "30th", gem: "Pearl",    emoji: "🤍", color: "#D1D5DB" },
+                  { year: "40th", gem: "Ruby",     emoji: "❤️", color: "#F87171" },
+                  { year: "50th", gem: "Golden",   emoji: "🥇", color: "#FBBF24" },
+                  { year: "55th", gem: "Emerald",  emoji: "💚", color: "#34D399" },
+                  { year: "60th", gem: "Diamond",  emoji: "💎", color: "#93C5FD" },
+                  { year: "70th", gem: "Platinum", emoji: "👑", color: "#E5E7EB" },
+                ].map((m) => (
+                  <View key={m.year} style={[s.jubileeMilestoneChip, { borderColor: m.color + "55" }]}>
+                    <Text style={s.jubileeMilestoneEmoji}>{m.emoji}</Text>
+                    <View>
+                      <Text style={[s.jubileeMilestoneYear, { color: m.color }]}>{m.year}</Text>
+                      <Text style={s.jubileeMilestoneGem}>{m.gem}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+
         {/* Feature Walls */}
         <TouchableOpacity
           style={s.featureWallsBtn}
@@ -1742,6 +1800,100 @@ function makeStyles(
       color: "#7A6E57",
       textAlign: "center" as const,
     },
+    /* ── Jubilee Banner ── */
+    jubileeBtn: {
+      marginHorizontal: 16,
+      marginTop: 14,
+      borderRadius: 16,
+      overflow: "hidden" as const,
+      borderWidth: 1,
+      borderColor: "rgba(147,197,253,0.25)",
+    },
+    jubileeGradient: {
+      borderRadius: 16,
+      overflow: "hidden" as const,
+    },
+    jubileeGoldBar: {
+      height: 2,
+    },
+    jubileeInner: {
+      padding: 16,
+      gap: 14,
+    },
+    jubileeHeaderRow: {
+      flexDirection: "row" as const,
+      alignItems: "flex-start" as const,
+      gap: 12,
+    },
+    jubileeIconWrap: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: "rgba(147,197,253,0.12)",
+      borderWidth: 1,
+      borderColor: "rgba(147,197,253,0.3)",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      flexShrink: 0,
+    },
+    jubileeEmoji: {
+      fontSize: 22,
+    },
+    jubileeTextWrap: {
+      flex: 1,
+      gap: 3,
+    },
+    jubileeEyebrow: {
+      fontSize: 8,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#93C5FD",
+      letterSpacing: 2.2,
+    },
+    jubileeTitle: {
+      fontSize: 17,
+      fontFamily: "Cinzel_400Regular",
+      fontWeight: "400" as const,
+      color: "#F5D78E",
+      lineHeight: 22,
+    },
+    jubileeSub: {
+      fontSize: 11,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(200,210,240,0.65)",
+      lineHeight: 16,
+    },
+    jubileeMilestones: {
+      flexDirection: "row" as const,
+      flexWrap: "wrap" as const,
+      gap: 7,
+    },
+    jubileeMilestoneChip: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 5,
+      backgroundColor: "rgba(255,255,255,0.05)",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 9,
+      paddingVertical: 6,
+    },
+    jubileeMilestoneEmoji: {
+      fontSize: 13,
+    },
+    jubileeMilestoneYear: {
+      fontSize: 11,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      lineHeight: 14,
+    },
+    jubileeMilestoneGem: {
+      fontSize: 9,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(200,210,240,0.55)",
+      lineHeight: 12,
+    },
+
     featureWallsBtn: {
       marginHorizontal: 16,
       marginTop: 14,
