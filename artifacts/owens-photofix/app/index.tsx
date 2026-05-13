@@ -317,54 +317,6 @@ export default function HomeScreen() {
               </View>
             </Pressable>
 
-            {/* ── CANVAS PRINTS — STANDALONE HERO ── */}
-            <TouchableOpacity
-              style={s.canvasHeroGlow}
-              onPress={() => router.push("/gift-shop")}
-              activeOpacity={0.87}
-            >
-              <LinearGradient
-                colors={["#0D1B2A", "#162236", "#0A1520"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={s.canvasHero}
-              >
-                <LinearGradient
-                  colors={["#C9960C", "#F5D78E", "#C9960C"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={s.canvasHeroGoldBar}
-                />
-                <View style={s.canvasHeroInner}>
-                  <View style={s.canvasHeroLeft}>
-                    <View style={s.canvasHeroEyebrowRow}>
-                      <Ionicons name="sparkles" size={10} color="#C9960C" />
-                      <Text style={s.canvasHeroEyebrow}>ONJJEM SIGNATURE · #1 BESTSELLER</Text>
-                    </View>
-                    <Text style={s.canvasHeroTitle}>Canvas Prints</Text>
-                    <Text style={s.canvasHeroSub}>
-                      Your restored photo hand-stretched on a premium gallery frame — ready to hang, delivered to your door
-                    </Text>
-                    <View style={s.canvasHeroChipRow}>
-                      {["A4 · A3 · A2 · A1", "Ready to Hang", "Lifetime Guarantee"].map((c) => (
-                        <View key={c} style={s.canvasHeroChip}>
-                          <Text style={s.canvasHeroChipText}>{c}</Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                  <View style={s.canvasHeroRight}>
-                    <View style={s.canvasHeroPriceBox}>
-                      <Text style={s.canvasHeroPriceFrom}>from</Text>
-                      <Text style={s.canvasHeroPrice}>£29.99</Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.7)" />
-                  </View>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-
-
             <TouchableOpacity
               style={s.giftBtnGlow}
               onPress={() => router.push("/gift-shop")}
@@ -418,6 +370,53 @@ export default function HomeScreen() {
               <Ionicons name="images-outline" size={20} color="#C9960C" />
               <Text style={s.galleryBtnText}>Masterpiece Gallery</Text>
               <Ionicons name="chevron-forward" size={16} color="#C9960C" />
+            </TouchableOpacity>
+
+            {/* ── CANVAS PRINTS — STANDALONE HERO ── */}
+            <TouchableOpacity
+              style={s.canvasHeroGlow}
+              onPress={() => router.push("/gift-shop")}
+              activeOpacity={0.87}
+            >
+              <LinearGradient
+                colors={["#0D1B2A", "#162236", "#0A1520"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={s.canvasHero}
+              >
+                <LinearGradient
+                  colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={s.canvasHeroGoldBar}
+                />
+                <View style={s.canvasHeroInner}>
+                  <View style={s.canvasHeroLeft}>
+                    <View style={s.canvasHeroEyebrowRow}>
+                      <Ionicons name="sparkles" size={10} color="#C9960C" />
+                      <Text style={s.canvasHeroEyebrow}>ONJJEM SIGNATURE · #1 BESTSELLER</Text>
+                    </View>
+                    <Text style={s.canvasHeroTitle}>Canvas Prints</Text>
+                    <Text style={s.canvasHeroSub}>
+                      Your restored photo hand-stretched on a premium gallery frame — ready to hang, delivered to your door
+                    </Text>
+                    <View style={s.canvasHeroChipRow}>
+                      {["A4 · A3 · A2 · A1", "Ready to Hang", "Lifetime Guarantee"].map((c) => (
+                        <View key={c} style={s.canvasHeroChip}>
+                          <Text style={s.canvasHeroChipText}>{c}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                  <View style={s.canvasHeroRight}>
+                    <View style={s.canvasHeroPriceBox}>
+                      <Text style={s.canvasHeroPriceFrom}>from</Text>
+                      <Text style={s.canvasHeroPrice}>£29.99</Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.7)" />
+                  </View>
+                </View>
+              </LinearGradient>
             </TouchableOpacity>
 
             {/* Referral button */}
