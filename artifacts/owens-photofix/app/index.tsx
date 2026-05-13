@@ -376,7 +376,7 @@ export default function HomeScreen() {
             {/* ── CANVAS PRINTS — STANDALONE HERO ── */}
             <TouchableOpacity
               style={s.canvasHeroGlow}
-              onPress={() => router.push("/gift-shop")}
+              onPress={() => router.push("/canvas-prints")}
               activeOpacity={0.87}
             >
               <LinearGradient
