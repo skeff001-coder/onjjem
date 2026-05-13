@@ -131,22 +131,6 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
       {LAYERS.map(({ dt, dl, color }) => renderLayer(dt, dl, color))}
       {renderLayer(TOP.dt, TOP.dl, TOP.color, true)}
 
-      {/* Subtle gem sparkles above J · E · M */}
-      {GEMS.map(({ cx, body, crown, dark }, i) => (
-        <View
-          key={`gem-${i}`}
-          style={[styles.abs, { left: cx - gemS / 2, top: gemY, width: gemS, height: gemS }]}
-          pointerEvents="none"
-        >
-          <Svg width={gemS} height={gemS} viewBox="0 0 10 12">
-            <Path d={GEM_PATH_BODY}      fill={body} />
-            <Path d={GEM_PATH_CROWN}     fill={crown} />
-            <Path d={GEM_PATH_LEFT_DARK} fill={dark} />
-            {/* tiny glint dot at top */}
-            <Circle cx={5} cy={0.8} r={0.9} fill="rgba(255,255,255,0.75)" />
-          </Svg>
-        </View>
-      ))}
     </View>
   );
 }

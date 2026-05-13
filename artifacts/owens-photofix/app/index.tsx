@@ -262,13 +262,6 @@ export default function HomeScreen() {
             <GraffitiTitle fontSize={52} letterSpacing={9} />
           </TouchableOpacity>
 
-          {/* Gem divider row */}
-          <View style={s.gemRow}>
-            {(["#D47E7E","#7EB8D8","#C9960C","#E2B54A","#7DC48A","#E2B54A","#C9960C","#7EB8D8","#D47E7E"] as const).map((c, i) => (
-              <Text key={i} style={[s.gemDot, { color: c }]}>◆</Text>
-            ))}
-          </View>
-
           <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
         </View>
         {appState !== "idle" && (
