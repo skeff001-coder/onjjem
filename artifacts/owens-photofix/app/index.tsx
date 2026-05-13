@@ -639,16 +639,13 @@ export default function HomeScreen() {
               <View style={s.livingMemoriesTextWrap}>
                 <View style={s.livingMemoriesTopRow}>
                   <Text style={s.livingMemoriesTitle}>
-                    ✨ Bring Photographs to Life
+                    For the moments that were never meant to stand still.
                   </Text>
                   <View style={s.livingMemoriesAiBadge}>
                     <Ionicons name="sparkles" size={9} color={colors.primary} />
                     <Text style={s.livingMemoriesAiBadgeText}>AI</Text>
                   </View>
                 </View>
-                <Text style={s.livingMemoriesSub}>
-                  For the moments that were never meant to stand still.
-                </Text>
               </View>
               <Ionicons name="chevron-forward" size={14} color={colors.primary} />
             </View>
