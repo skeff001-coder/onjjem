@@ -100,11 +100,46 @@ const ROOM_STYLES = [
 ];
 
 const PANEL_CM = 62.5;
-const PRICE_PER_SQM = 28;
+const MARKUP = 2.0;
 const MAX_HEIGHT_CM = 1000;
 
-function calcPrice(w: number, h: number) {
-  return Math.round(((w * h) / 10000) * PRICE_PER_SQM * 100) / 100;
+const PAPER_TYPES = [
+  {
+    id: "satin",
+    name: "Standard Satin",
+    spec: "180gsm",
+    baseCost: 20,
+    retailPerSqm: 40,
+    badge: "MOST POPULAR" as const,
+    badgeColor: "#34D399",
+    desc: "A high-quality, vibrant finish with a slight sheen. Best for modern wedding photos and high-contrast colours.",
+  },
+  {
+    id: "fineart",
+    name: "Fine Art / Giclée",
+    spec: "300gsm",
+    baseCost: 35,
+    retailPerSqm: 70,
+    badge: "HERITAGE CHOICE" as const,
+    badgeColor: GOLD,
+    desc: "Museum-grade, thick matte paper. Acid-free and archival, designed to last 100+ years without fading. Best for heritage and black & white restoration.",
+  },
+  {
+    id: "canvas",
+    name: "Textured Canvas",
+    spec: "Heavyweight",
+    baseCost: 45,
+    retailPerSqm: 90,
+    badge: "PREMIUM" as const,
+    badgeColor: "#93C5FD",
+    desc: "Heavyweight paper with a woven canvas texture. Adds depth and a hand-painted feel to your feature wall.",
+  },
+] as const;
+
+type PaperTypeId = typeof PAPER_TYPES[number]["id"];
+
+function calcPrice(w: number, h: number, baseCost: number) {
+  return Math.round(((w * h) / 10000) * baseCost * MARKUP * 100) / 100;
 }
 
 export default function FeatureWallsScreen() {
@@ -114,11 +149,14 @@ export default function FeatureWallsScreen() {
   const [contactVisible, setContactVisible] = useState(false);
   const [calcW, setCalcW] = useState("300");
   const [calcH, setCalcH] = useState("240");
+  const [paperType, setPaperType] = useState<PaperTypeId>("satin");
+  const [showInfoFor, setShowInfoFor] = useState<PaperTypeId | null>(null);
 
+  const selectedPaper = PAPER_TYPES.find((p) => p.id === paperType) ?? PAPER_TYPES[0];
   const wNum = Math.max(1, parseFloat(calcW) || 0);
   const hNum = Math.max(1, parseFloat(calcH) || 0);
   const panelCount = wNum > 0 ? Math.ceil(wNum / PANEL_CM) : 0;
-  const price = calcPrice(wNum, hNum);
+  const price = calcPrice(wNum, hNum, selectedPaper.baseCost);
   const heightWarning = hNum > MAX_HEIGHT_CM;
 
   return (
@@ -187,6 +225,68 @@ export default function FeatureWallsScreen() {
             {/* ── Live Price Calculator ── */}
             <View style={s.calcCard}>
               <Text style={s.calcTitle}>INSTANT PRICE CALCULATOR</Text>
+
+              {/* ── Paper Type Selector ── */}
+              <View style={s.paperSection}>
+                <Text style={s.paperSectionLabel}>PAPER TYPE</Text>
+                {PAPER_TYPES.map((p) => {
+                  const selected = paperType === p.id;
+                  const infoOpen = showInfoFor === p.id;
+                  return (
+                    <TouchableOpacity
+                      key={p.id}
+                      style={[s.paperOption, selected && s.paperOptionSelected]}
+                      onPress={() => { setPaperType(p.id); setShowInfoFor(null); }}
+                      activeOpacity={0.82}
+                    >
+                      <View style={s.paperOptionTop}>
+                        {/* Radio */}
+                        <View style={[s.paperRadio, selected && s.paperRadioSelected]}>
+                          {selected && <View style={s.paperRadioDot} />}
+                        </View>
+                        {/* Name + spec */}
+                        <View style={s.paperNameWrap}>
+                          <Text style={[s.paperName, selected && s.paperNameSelected]}>
+                            {p.name}
+                          </Text>
+                          <Text style={s.paperSpec}>{p.spec}</Text>
+                        </View>
+                        {/* Badge */}
+                        <View style={[s.paperBadge, { borderColor: p.badgeColor + "55" }]}>
+                          <Text style={[s.paperBadgeText, { color: p.badgeColor }]}>{p.badge}</Text>
+                        </View>
+                        {/* Info icon */}
+                        <TouchableOpacity
+                          hitSlop={10}
+                          onPress={(e) => {
+                            e.stopPropagation();
+                            setShowInfoFor(infoOpen ? null : p.id);
+                          }}
+                        >
+                          <Ionicons
+                            name={infoOpen ? "information-circle" : "information-circle-outline"}
+                            size={17}
+                            color={selected ? GOLD : "rgba(245,237,216,0.35)"}
+                          />
+                        </TouchableOpacity>
+                        {/* Price */}
+                        <Text style={[s.paperPrice, selected && s.paperPriceSelected]}>
+                          £{p.retailPerSqm}/m²
+                        </Text>
+                      </View>
+
+                      {/* Expandable quality description */}
+                      {infoOpen && (
+                        <View style={s.paperDescBox}>
+                          <Text style={s.paperDescText}>{p.desc}</Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              {/* ── Dimensions ── */}
               <View style={s.calcRow}>
                 <View style={s.calcField}>
                   <Text style={s.calcLabel}>Width (cm)</Text>
@@ -224,6 +324,7 @@ export default function FeatureWallsScreen() {
                 </View>
               )}
 
+              {/* ── Results row ── */}
               <View style={s.calcResults}>
                 <View style={s.calcStat}>
                   <Text style={s.calcStatValue}>{panelCount}</Text>
@@ -231,7 +332,9 @@ export default function FeatureWallsScreen() {
                 </View>
                 <View style={s.calcStatDivider} />
                 <View style={s.calcStat}>
-                  <Text style={s.calcStatValue}>{wNum > 0 ? (wNum / 100).toFixed(1) : "—"}m × {hNum > 0 ? (hNum / 100).toFixed(1) : "—"}m</Text>
+                  <Text style={s.calcStatValue}>
+                    {wNum > 0 ? (wNum / 100).toFixed(1) : "—"}m × {hNum > 0 ? (hNum / 100).toFixed(1) : "—"}m
+                  </Text>
                   <Text style={s.calcStatLabel}>Your wall size</Text>
                 </View>
                 <View style={s.calcStatDivider} />
@@ -240,8 +343,23 @@ export default function FeatureWallsScreen() {
                   <Text style={s.calcStatLabel}>Your price</Text>
                 </View>
               </View>
+
+              {/* ── Quality description for selected paper ── */}
+              <View style={s.qualityDescBox}>
+                <Ionicons name="document-text-outline" size={13} color={GOLD} />
+                <Text style={s.qualityDescText}>{selectedPaper.desc}</Text>
+              </View>
+
+              {/* ── Quality Guarantee badge ── */}
+              <View style={s.qualityGuarantee}>
+                <Ionicons name="ribbon" size={14} color={GOLD} />
+                <Text style={s.qualityGuaranteeText}>
+                  All prints are master-crafted in London using eco-friendly, UV-resistant inks.
+                </Text>
+              </View>
+
               <Text style={s.calcNote}>
-                £28/m² · Priced on your exact dimensions · 8 cm bleed added at no charge
+                £{selectedPaper.retailPerSqm}/m² · {selectedPaper.name} · 8 cm bleed at no charge
               </Text>
             </View>
 
@@ -569,6 +687,142 @@ const s = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     color: "rgba(245,237,216,0.75)",
     lineHeight: 22,
+  },
+
+  /* ── Paper Selector ── */
+  paperSection: {
+    gap: 6,
+  },
+  paperSectionLabel: {
+    fontSize: 8,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "rgba(245,237,216,0.45)",
+    letterSpacing: 2,
+  },
+  paperOption: {
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(245,237,216,0.1)",
+    borderRadius: 10,
+    padding: 10,
+    gap: 0,
+  },
+  paperOptionSelected: {
+    backgroundColor: "rgba(201,150,12,0.1)",
+    borderColor: "rgba(201,150,12,0.5)",
+  },
+  paperOptionTop: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 8,
+  },
+  paperRadio: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: "rgba(245,237,216,0.25)",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    flexShrink: 0,
+  },
+  paperRadioSelected: {
+    borderColor: GOLD,
+  },
+  paperRadioDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: GOLD,
+  },
+  paperNameWrap: {
+    flex: 1,
+    gap: 1,
+  },
+  paperName: {
+    fontSize: 12,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+    color: "rgba(245,237,216,0.6)",
+  },
+  paperNameSelected: {
+    color: "#F5EDD8",
+  },
+  paperSpec: {
+    fontSize: 9,
+    color: "rgba(245,237,216,0.35)",
+    fontFamily: "Inter_400Regular",
+  },
+  paperBadge: {
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    flexShrink: 0,
+  },
+  paperBadgeText: {
+    fontSize: 7,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 0.8,
+  },
+  paperPrice: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "rgba(245,237,216,0.4)",
+    flexShrink: 0,
+  },
+  paperPriceSelected: {
+    color: GOLD,
+  },
+  paperDescBox: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(201,150,12,0.2)",
+  },
+  paperDescText: {
+    fontSize: 11,
+    color: "rgba(245,237,216,0.6)",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 17,
+  },
+  qualityDescBox: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: 7,
+    backgroundColor: "rgba(201,150,12,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.2)",
+    borderRadius: 8,
+    padding: 10,
+  },
+  qualityDescText: {
+    flex: 1,
+    fontSize: 11,
+    color: "rgba(245,237,216,0.65)",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 17,
+  },
+  qualityGuarantee: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start" as const,
+    gap: 7,
+    backgroundColor: "rgba(201,150,12,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.3)",
+    borderRadius: 8,
+    padding: 10,
+  },
+  qualityGuaranteeText: {
+    flex: 1,
+    fontSize: 11,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+    color: "#F5D78E",
+    lineHeight: 17,
   },
 
   /* ── Inline Calculator ── */
