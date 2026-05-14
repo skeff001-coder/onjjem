@@ -123,11 +123,34 @@ export default function HomeScreen() {
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      setOriginalUri(result.assets[0].uri);
-      setResultBase64(null);
-      setResultLocalUri(null);
-      setAppState("selected");
+      const asset = result.assets[0];
+
+      const commitPhoto = async () => {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        setOriginalUri(asset.uri);
+        setResultBase64(null);
+        setResultLocalUri(null);
+        setAppState("selected");
+      };
+
+      // Hard-stop quality gate: 200 DPI minimum for a 4-inch minimum print dimension
+      const imgW = asset.width ?? 0;
+      const imgH = asset.height ?? 0;
+      const MIN_PX = 800; // 200 DPI × 4 inches
+      if (imgW > 0 && imgH > 0 && Math.min(imgW, imgH) < MIN_PX) {
+        Alert.alert(
+          "Low Quality Photo",
+          `This image is only ${imgW}×${imgH} pixels.\n\nFor print-quality results at 200 DPI we recommend at least 1600×1200 pixels. At this resolution the maximum print size is approximately ${(imgW / 200).toFixed(1)}″ × ${(imgH / 200).toFixed(1)}″.\n\nFor the best prints, please choose a higher-resolution photo.`,
+          [
+            { text: "Choose Different Photo", style: "cancel" },
+            { text: "Use Anyway", onPress: commitPhoto },
+          ],
+          { cancelable: false },
+        );
+        return;
+      }
+
+      await commitPhoto();
     }
   };
 

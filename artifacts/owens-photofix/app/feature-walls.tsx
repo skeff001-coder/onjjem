@@ -105,34 +105,34 @@ const MAX_HEIGHT_CM = 1000;
 
 const PAPER_TYPES = [
   {
-    id: "satin",
-    name: "Standard Satin",
-    spec: "180gsm",
+    id: "standard",
+    name: "Standard",
+    spec: "Paste-the-wall · matte textured finish",
     baseCost: 20,
     retailPerSqm: 40,
     badge: "MOST POPULAR" as const,
     badgeColor: "#34D399",
-    desc: "A high-quality, vibrant finish with a slight sheen. Best for modern wedding photos and high-contrast colours.",
+    desc: "Matte, textured finish. Apply paste directly to the wall, then hang — traditional method, permanent result. Long-lasting, non-fade print. Greenguard Gold-certified eco-friendly, solvent-free inks.",
   },
   {
-    id: "fineart",
-    name: "Fine Art / Giclée",
-    spec: "300gsm",
+    id: "premium",
+    name: "Premium",
+    spec: "Water-activated · lightly textured · 10-yr guarantee",
     baseCost: 35,
     retailPerSqm: 70,
     badge: "HERITAGE CHOICE" as const,
     badgeColor: GOLD,
-    desc: "Museum-grade, thick matte paper. Acid-free and archival, designed to last 100+ years without fading. Best for heritage and black & white restoration.",
+    desc: "Water-activated adhesive — simply spray the wall, then slide into place. Matte, lightly textured finish. Scratch and abrasion resistant. 10-year non-fade guarantee. Greenguard Gold-certified eco-friendly inks.",
   },
   {
-    id: "canvas",
-    name: "Textured Canvas",
-    spec: "Heavyweight",
+    id: "selfadhesive",
+    name: "Self-Adhesive",
+    spec: "Peel-and-stick · repositionable · 10-yr guarantee",
     baseCost: 45,
     retailPerSqm: 90,
     badge: "PREMIUM" as const,
     badgeColor: "#93C5FD",
-    desc: "Heavyweight paper with a woven canvas texture. Adds depth and a hand-painted feel to your feature wall.",
+    desc: "Peel-and-stick — no paste or water needed. Fully repositionable: can be removed and reapplied countless times. Perfect for renters and temporary displays. 10-year non-fade guarantee. Greenguard Gold-certified inks.",
   },
 ] as const;
 
@@ -149,7 +149,7 @@ export default function FeatureWallsScreen() {
   const [contactVisible, setContactVisible] = useState(false);
   const [calcW, setCalcW] = useState("300");
   const [calcH, setCalcH] = useState("240");
-  const [paperType, setPaperType] = useState<PaperTypeId>("satin");
+  const [paperType, setPaperType] = useState<PaperTypeId>("standard");
   const [showInfoFor, setShowInfoFor] = useState<PaperTypeId | null>(null);
 
   const selectedPaper = PAPER_TYPES.find((p) => p.id === paperType) ?? PAPER_TYPES[0];
@@ -359,7 +359,7 @@ export default function FeatureWallsScreen() {
               </View>
 
               <Text style={s.calcNote}>
-                £{selectedPaper.retailPerSqm}/m² · {selectedPaper.name} · 8 cm bleed at no charge
+                £{selectedPaper.retailPerSqm}/m² · {selectedPaper.name} · 8 cm bleed (4 cm each side) added automatically · panel width 62.5 cm
               </Text>
             </View>
 
@@ -370,7 +370,7 @@ export default function FeatureWallsScreen() {
               </View>
               <View style={s.priceFeature}>
                 <Ionicons name="checkmark-circle" size={15} color={GOLD} />
-                <Text style={s.priceFeatureText}>Premium 180gsm wallpaper</Text>
+                <Text style={s.priceFeatureText}>Premium wallpaper — 3 finish options</Text>
               </View>
               <View style={s.priceFeature}>
                 <Ionicons name="checkmark-circle" size={15} color={GOLD} />

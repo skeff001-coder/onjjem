@@ -539,9 +539,9 @@ const CATEGORIES: Category[] = [
       {
         id: "masterpiece_mural",
         title: "The Masterpiece Wall Mural",
-        size: "Any size — no limits",
-        desc: "Turn your entire wall into a stunning, life-sized heritage portrait or landscape. Printed on premium 180gsm paste-the-wall paper for an unbelievable 3D finish that is easy for anyone to install.\n\nPriced at £28/m² — enter your wall dimensions below for an instant price. A 4 cm bleed is added to each edge at no extra charge.",
-        price: "from £28 / m²",
+        size: "Any size — no limits · panel width 62.5 cm · 8 cm bleed added automatically",
+        desc: "Turn your entire wall into a stunning, life-sized heritage portrait or landscape. Choose Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Greenguard Gold-certified inks, 10-year non-fade guarantee.\n\nFrom £40/m² — enter your wall dimensions for an instant price. 8 cm bleed (4 cm each side) added at no extra charge.",
+        price: "from £40 / m²",
         emoji: "🖼️",
         iconBg: "#FDF6DC",
         wide: true,
@@ -555,9 +555,9 @@ const CATEGORIES: Category[] = [
       {
         id: "bespoke_mural",
         title: "Bespoke Wall Mural — Full Room",
-        size: "Any size — no limits",
-        desc: "The ultimate statement wall. Your restored photo reproduced at life-sized scale on premium 180gsm paste-the-wall paper. Printed, matched, and hand-trimmed to fit your exact wall — any width, any height.\n\nPriced at £28/m². Enter your dimensions for an instant price. 8 cm bleed (4 cm each side) added automatically at no charge.",
-        price: "from £28 / m²",
+        size: "Any size — no limits · panel width 62.5 cm drops · 8 cm bleed added automatically",
+        desc: "The ultimate statement wall. Your restored photo reproduced at life-sized scale. Choose Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Supplied as 62.5 cm drops, printed to fit your exact wall — any width, any height.\n\nFrom £40/m². Enter your dimensions for an instant price. 8 cm bleed (4 cm each side) added automatically at no charge.",
+        price: "from £40 / m²",
         emoji: "🏛️",
         iconBg: "#FDF6DC",
         wide: true,
@@ -1760,9 +1760,9 @@ export default function GiftShopScreen() {
                   <Text style={s.largeFormatIconEmoji}>🏛️</Text>
                 </View>
                 <View style={s.largeFormatText}>
-                  <Text style={s.largeFormatTitle}>Museum-Grade · 180gsm Paste-the-Wall Paper</Text>
+                  <Text style={s.largeFormatTitle}>Museum-Grade · Three Wallpaper Finishes Available</Text>
                   <Text style={s.largeFormatDesc}>
-                    Our master lab uses premium 180gsm paste-the-wall paper for an unbelievable 3D finish that is easy for anyone to install. Priced at £45.00 per m² — tap 'Request a Quote' with your wall Width and Height in cm for an exact price.
+                    Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Greenguard Gold-certified inks · 10-year non-fade guarantee · 62.5 cm panel width · 8 cm bleed added automatically. Tap 'Request a Quote' with your wall dimensions for an exact price.
                   </Text>
                 </View>
               </View>
