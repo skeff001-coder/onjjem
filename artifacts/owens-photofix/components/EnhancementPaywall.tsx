@@ -24,19 +24,57 @@ const SINGLE_FEATURES = [
   "Save to Photos library",
 ];
 
-const UNLIMITED_FEATURES = [
-  "True HD output — full studio resolution",
-  "Proper pixels: sharp, crisp, beautiful detail",
-  "Extra quality — not just free, but the best",
-  "All 6 enhancement modes, unlimited photos",
+const MONTHLY_FEATURES = [
+  "Unlimited HD photos — no cap, ever",
+  "Ultra-sharp, crystal-clear studio output",
+  "Professional-grade colour & contrast",
+  "All 6 enhancement modes combined",
   "Priority AI processing queue",
   "Cancel anytime",
 ];
 
+const ANNUAL_FEATURES = [
+  "Ultra-HD · 4K-Grade · Cinema-Sharp",
+  "Gallery-Quality · Exhibition-Grade · Frame-Worthy",
+  "Studio-Perfect · Archival-Resolution · Magazine-Ready",
+  "Professional-Finish · Crystal-Clear · Broadcast-Quality",
+  "All 6 modes · Unlimited photos · Priority queue",
+  "The absolute best your memories have ever looked",
+];
+
+const UNLIMITED_FEATURES = MONTHLY_FEATURES;
+
 const PLANS = [
-  { id: "monthly",  label: "Monthly",   price: "£11.99", period: "/month",    saving: null,          accent: "#4A90D9" },
-  { id: "biannual", label: "6 Months",  price: "£19.99", period: "/6 months", saving: "Save 17%",    accent: "#C9960C" },
-  { id: "annual",   label: "Annual",    price: "£24.99", period: "/year",     saving: "Save 83%",    accent: "#27AE60" },
+  {
+    id: "monthly",
+    label: "Monthly",
+    price: "£11.99",
+    period: "/month",
+    saving: null,
+    accent: "#4A90D9",
+    tagline: "Unlimited photos · Same studio-grade quality as annual · Cancel anytime",
+    features: MONTHLY_FEATURES,
+  },
+  {
+    id: "biannual",
+    label: "6 Months",
+    price: "£19.99",
+    period: "/6 months",
+    saving: "Save 17%",
+    accent: "#C9960C",
+    tagline: "Unlimited photos · Ultra-HD studio quality · Cancel anytime",
+    features: MONTHLY_FEATURES,
+  },
+  {
+    id: "annual",
+    label: "Annual",
+    price: "£24.99",
+    period: "/year",
+    saving: "Save 83%",
+    accent: "#27AE60",
+    tagline: "The deal of the decade — every quality word you can think of, for one incredible price",
+    features: ANNUAL_FEATURES,
+  },
 ] as const;
 
 type PlanId = typeof PLANS[number]["id"];
@@ -193,10 +231,10 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
                 </View>
               )}
               <Text style={[s.planCardTagline, { color: "rgba(250,247,242,0.6)" }]}>
-                Unlimited photos · Cancel anytime
+                {plan.tagline}
               </Text>
               <View style={s.planCardFeatures}>
-                {UNLIMITED_FEATURES.map((f) => (
+                {plan.features.map((f) => (
                   <View key={f} style={s.featurePill}>
                     <Ionicons name="checkmark-circle" size={16} color={plan.accent} />
                     <Text style={[s.featurePillText, { color: "#FAF7F2" }]}>{f}</Text>

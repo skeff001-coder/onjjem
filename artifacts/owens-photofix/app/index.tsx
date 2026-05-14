@@ -625,10 +625,10 @@ export default function HomeScreen() {
               >
                 <View style={s.pricingFreeChip}>
                   <Ionicons name="sparkles" size={11} color="#27AE60" />
-                  <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>Try now for free</Text>
+                  <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>Try for free — basic</Text>
                 </View>
                 <Text style={s.pricingDivider}>·</Text>
-                <Text style={s.pricingUnlimited}>HD &amp; extra quality from £11.99/mo</Text>
+                <Text style={s.pricingUnlimited}>Ultra-HD Studio Quality — £24.99/yr</Text>
               </LinearGradient>
             </View>
 
