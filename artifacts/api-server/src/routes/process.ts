@@ -118,17 +118,68 @@ async function applyEnhancements(
   return sharp(buf).jpeg({ quality: 93 }).toBuffer();
 }
 
+// ── Free preview downgrade ────────────────────────────────────────────────────
+// Free tier: scale to 50 % of original dimensions, apply weaker effects,
+// then scale back up. This produces a noticeably softer result compared with
+// the paid HD output so users can see a real difference.
+async function makeFreePreview(inputBuffer: Buffer, modes: EnhancementMode[]): Promise<Buffer> {
+  // EXIF-correct first
+  const oriented = await sharp(inputBuffer).rotate().toBuffer();
+  const meta = await sharp(oriented).metadata();
+
+  const w = meta.width  ?? 800;
+  const h = meta.height ?? 800;
+
+  // Scale down to 50 %
+  const smallBuf = await sharp(oriented)
+    .resize(Math.round(w * 0.5), Math.round(h * 0.5))
+    .toBuffer();
+
+  // Apply reduced-strength versions of each mode
+  let buf = smallBuf;
+  for (const mode of modes) {
+    switch (mode) {
+      case "sharpen":
+        buf = await sharp(buf).sharpen({ sigma: 0.7, m1: 0.8, m2: 1.0 }).toBuffer();
+        break;
+      case "brighten":
+        buf = await sharp(buf).modulate({ brightness: 1.08 }).gamma(0.93).toBuffer();
+        break;
+      case "denoise":
+        buf = await sharp(buf).median(3).toBuffer();
+        break;
+      case "restore":
+        buf = await sharp(buf).normalise({ lower: 5, upper: 95 }).median(3).toBuffer();
+        break;
+      case "vivid":
+        buf = await sharp(buf).modulate({ saturation: 1.2 }).toBuffer();
+        break;
+      case "colourize":
+        buf = await applyColourize(buf);
+        break;
+    }
+  }
+
+  // Scale back up to original size (bilinear — creates visible softness)
+  return sharp(buf)
+    .resize(w, h, { kernel: sharp.kernel.linear })
+    .jpeg({ quality: 72 }) // lower quality = visible compression vs HD
+    .toBuffer();
+}
+
 // ── Route ─────────────────────────────────────────────────────────────────────
 
 router.post("/process", async (req: Request, res: Response) => {
   const body = req.body as {
     imageBase64?: string;
     modes?: EnhancementMode[];
+    freePreview?: boolean;
     // Legacy single-mode support
     mode?: string;
   };
 
   const { imageBase64 } = body;
+  const freePreview = body.freePreview !== false; // default true (all public requests are free tier)
 
   // Accept both new `modes[]` and legacy `mode` string
   const modes: EnhancementMode[] =
@@ -154,7 +205,9 @@ router.post("/process", async (req: Request, res: Response) => {
 
   try {
     const inputBuffer = Buffer.from(imageBase64, "base64");
-    const outputBuffer = await applyEnhancements(inputBuffer, modes);
+    const outputBuffer = freePreview
+      ? await makeFreePreview(inputBuffer, modes)
+      : await applyEnhancements(inputBuffer, modes);
     const resultBase64 = outputBuffer.toString("base64");
     res.json({ resultBase64 });
   } catch (error) {

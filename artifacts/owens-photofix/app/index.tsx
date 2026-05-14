@@ -30,6 +30,7 @@ import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { ProPaywall } from "@/components/ProPaywall";
+import { EnhancementPaywall } from "@/components/EnhancementPaywall";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
 import { ReferralModal } from "@/components/ReferralModal";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
@@ -591,9 +592,15 @@ export default function HomeScreen() {
 
         {appState === "done" && originalUri && resultBase64 && (
           <View style={s.imageBlock}>
-            <Text style={s.imageLabel}>
-              {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).join(" + ")} — drag to compare
-            </Text>
+            <View style={s.sampleBadgeRow}>
+              <View style={s.sampleBadge}>
+                <Ionicons name="eye-outline" size={12} color="#fff" />
+                <Text style={s.sampleBadgeText}>FREE SAMPLE</Text>
+              </View>
+              <Text style={s.imageLabel}>
+                {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).join(" + ")} — drag to compare
+              </Text>
+            </View>
             <BeforeAfterSlider
               beforeUri={originalUri}
               afterBase64={resultBase64}
@@ -721,36 +728,23 @@ export default function HomeScreen() {
 
         {appState === "done" && (
           <>
-            <TouchableOpacity
-              style={s.saveBtn}
-              onPress={saveToLibrary}
-              activeOpacity={0.85}
-            >
-              <Ionicons name="download-outline" size={26} color="#fff" />
-              <Text style={s.saveBtnText}>Save to Photos</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={s.whatsappBtn}
-              onPress={shareOnWhatsApp}
-              activeOpacity={0.85}
-            >
-              <Ionicons name="logo-whatsapp" size={28} color="#fff" />
-              <Text style={s.whatsappBtnText}>Share on WhatsApp</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={s.secondaryBtn}
-              onPress={() => {
-                setResultBase64(null);
-                setResultLocalUri(null);
-                setAppState("selected");
-              }}
-              activeOpacity={0.7}
-            >
-              <Text style={s.secondaryBtnText}>Try Different Enhancement</Text>
-            </TouchableOpacity>
-
+            <EnhancementPaywall
+              selectedModeCount={selectedModes.size}
+              onUpgradeSingle={() =>
+                Alert.alert(
+                  "Single Photo HD Enhancement — £1.99",
+                  "Full HD quality with all 6 enhancement modes at 100% strength, no watermark, and save to Photos. Payments are coming very soon — you'll be first to know!",
+                  [{ text: "Can't Wait!" }],
+                )
+              }
+              onUpgradeUnlimited={() =>
+                Alert.alert(
+                  "Unlimited — £11.99/month",
+                  "Process as many photos as you like every month — unlimited HD restorations, priority processing, and early access to new tools. Payments coming very soon!",
+                  [{ text: "Can't Wait!" }],
+                )
+              }
+            />
             <TouchableOpacity
               style={s.ghostBtn}
               onPress={resetApp}
@@ -1229,6 +1223,29 @@ function makeStyles(
       fontFamily: "Inter_700Bold",
       color: "#F5D78E",
       letterSpacing: -0.5,
+    },
+    sampleBadgeRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 10,
+      marginBottom: 8,
+      flexWrap: "wrap" as const,
+    },
+    sampleBadge: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 5,
+      backgroundColor: "#E74C3C",
+      borderRadius: 6,
+      paddingHorizontal: 9,
+      paddingVertical: 4,
+    },
+    sampleBadgeText: {
+      fontSize: 10,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#fff",
+      letterSpacing: 1,
     },
     imageBlock: {
       gap: 8,
