@@ -648,16 +648,42 @@ export default function HomeScreen() {
             {/* Pricing strip */}
             <View style={s.pricingStrip}>
               <LinearGradient
-                colors={["#1C1A14", "#2E2818"]}
+                colors={hasUsedFreeTrial ? ["#0E1A0E", "#152015"] : ["#1C1A14", "#2E2818"]}
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                 style={s.pricingStripGradient}
               >
-                <View style={s.pricingFreeChip}>
-                  <Ionicons name="sparkles" size={11} color="#27AE60" />
-                  <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>Try for free — basic</Text>
-                </View>
-                <Text style={s.pricingDivider}>·</Text>
-                <Text style={s.pricingUnlimited}>Just a taste of what the real machine can do</Text>
+                {hasUsedFreeTrial ? (
+                  <>
+                    <TouchableOpacity
+                      style={[s.pricingFreeChip, { backgroundColor: "rgba(74,144,217,0.18)", borderColor: "rgba(74,144,217,0.45)" }]}
+                      onPress={() => setSubscribeVisible(true)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="infinite" size={11} color="#4A90D9" />
+                      <Text style={[s.pricingFreeText, { color: "#4A90D9" }]}>£11.99/mo</Text>
+                    </TouchableOpacity>
+                    <Text style={s.pricingDivider}>·</Text>
+                    <TouchableOpacity
+                      style={[s.pricingFreeChip, { backgroundColor: "rgba(39,174,96,0.18)", borderColor: "rgba(39,174,96,0.45)" }]}
+                      onPress={() => setSubscribeVisible(true)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="star" size={11} color="#27AE60" />
+                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>£24.99/yr — Best</Text>
+                    </TouchableOpacity>
+                    <Text style={s.pricingDivider}>·</Text>
+                    <Text style={[s.pricingUnlimited, { color: "rgba(250,247,242,0.5)" }]}>Tap to subscribe</Text>
+                  </>
+                ) : (
+                  <>
+                    <View style={s.pricingFreeChip}>
+                      <Ionicons name="sparkles" size={11} color="#27AE60" />
+                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>Try for free</Text>
+                    </View>
+                    <Text style={s.pricingDivider}>·</Text>
+                    <Text style={s.pricingUnlimited}>Professional AI photo restoration</Text>
+                  </>
+                )}
               </LinearGradient>
             </View>
 
