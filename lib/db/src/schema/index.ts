@@ -1,20 +1,27 @@
-// Export your models here. Add one export per file
-// export * from "./posts";
-//
-// Each model/table should ideally be split into different files.
-// Each model/table should define a Drizzle table, insert schema, and types:
-//
-//   import { pgTable, text, serial } from "drizzle-orm/pg-core";
-//   import { createInsertSchema } from "drizzle-zod";
-//   import { z } from "zod/v4";
-//
-//   export const postsTable = pgTable("posts", {
-//     id: serial("id").primaryKey(),
-//     title: text("title").notNull(),
-//   });
-//
-//   export const insertPostSchema = createInsertSchema(postsTable).omit({ id: true });
-//   export type InsertPost = z.infer<typeof insertPostSchema>;
-//   export type Post = typeof postsTable.$inferSelect;
+import { pgTable, serial, text, boolean, timestamp } from "drizzle-orm/pg-core";
 
-export {}
+export const pendingAnimations = pgTable("pending_animations", {
+  ref:             text("ref").primaryKey(),
+  email:           text("email").notNull(),
+  plan:            text("plan").notNull(), // 'single' | 'monthly' | 'annual'
+  stripeSessionId: text("stripe_session_id"),
+  paid:            boolean("paid").default(false).notNull(),
+  animated:        boolean("animated").default(false).notNull(),
+  imageB64:        text("image_b64"), // cleared after animation
+  expiresAt:       timestamp("expires_at").notNull(),
+  createdAt:       timestamp("created_at").defaultNow().notNull(),
+});
+
+export const videoSubscriptions = pgTable("video_subscriptions", {
+  id:                   serial("id").primaryKey(),
+  email:                text("email").notNull(),
+  plan:                 text("plan").notNull(),
+  stripeCustomerId:     text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  accessUntil:          timestamp("access_until"), // null = single-use (check animated flag instead)
+  isActive:             boolean("is_active").default(true).notNull(),
+  createdAt:            timestamp("created_at").defaultNow().notNull(),
+});
+
+export type PendingAnimation   = typeof pendingAnimations.$inferSelect;
+export type VideoSubscription  = typeof videoSubscriptions.$inferSelect;
