@@ -1721,8 +1721,8 @@ function makeStyles(
     },
     giftBtnLabel: {
       fontSize: 20,
-      fontWeight: "700" as const,
-      fontFamily: "Inter_700Bold",
+      fontWeight: "400" as const,
+      fontFamily: "Cinzel_400Regular",
       color: "#FFFFFF",
       letterSpacing: 1.5,
     },
