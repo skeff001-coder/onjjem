@@ -7,22 +7,10 @@ type = "image"
 title = "generated_image"
 
 [[generated]]
-id = "Vwmz7XQ2zstKFTGtAH4E1"
-uri = "file://artifacts/owens-photofix/assets/leather/purse_ai.png"
-type = "image"
-title = "cream leather crossbody luxury studio"
-
-[[generated]]
 id = "Ebjb8mylKIKo22H-x8iEV"
 uri = "file://artifacts/owens-photofix/assets/leather/wallet_ai.png"
 type = "image"
 title = "luxury leather mens wallet studio"
-
-[[generated]]
-id = "fC3LJKCtZH2QOBUIqaHSC"
-uri = "file://artifacts/owens-photofix/assets/leather/tote_ai.png"
-type = "image"
-title = "luxury leather tote bag studio"
 
 [[generated]]
 id = "I6S5U0MKZsPfdgwTITZzf"

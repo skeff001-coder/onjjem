@@ -32,12 +32,6 @@ import { TrustFooter } from "@/components/TrustFooter";
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
 
-const PRINT_PRODUCTS = [
-  { id: "keyring", title: "Leather Keyring",      category: "ACCESSORIES",    price: "£24.99", emoji: "🔑", g: ["#2B1400", "#5C2E00"] as const, catColor: "#FF9F2E", ringColor: "rgba(255,159,46,0.35)" },
-  { id: "large",   title: "Large Format Print",   category: "PREMIUM PRINTS", price: "£39.99", emoji: "🖨️", g: ["#082A08", "#0F4D0F"] as const, catColor: "#4CD964", ringColor: "rgba(76,217,100,0.35)" },
-  { id: "mugs",    title: "Photo Mugs",           category: "GIFTS",          price: "£14.99", emoji: "☕", g: ["#1A0A2A", "#2E1050"] as const, catColor: "#CF7AFF", ringColor: "rgba(207,122,255,0.35)" },
-  { id: "gifts",   title: "Explore All Gifts",    category: "GIFT SHOP",      price: "£5.00",  emoji: "✨", g: ["#22082A", "#451060"] as const, catColor: "#CF7AFF", ringColor: "rgba(207,122,255,0.35)" },
-];
 
 const GALLERY_POOL = [
   require("@/assets/gallery/childhood_before.png"),
@@ -745,7 +739,7 @@ export default function HomeScreen() {
           activeOpacity={0.87}
         >
           <LinearGradient
-            colors={["#10103A", "#1A1650", "#0D0D2E"]}
+            colors={["#080808", "#0E0E0E", "#050505"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={s.jubileeGradient}
@@ -803,51 +797,59 @@ export default function HomeScreen() {
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* Signature Collection */}
-        <View style={s.printShop}>
-          <View style={s.printShopHeader}>
-            <Text style={s.printShopEyebrow}>ONJJEM SIGNATURE COLLECTION</Text>
-            <Text style={s.printShopTitle}>Our Most Loved Gifts</Text>
-            <Text style={s.printShopSub}>
-              {previewUri
-                ? "Your restored photo on any of these — tap to order"
-                : "Tap any gift to explore the full range"}
-            </Text>
+        {/* Collections Directory */}
+        <View style={s.collectionsDir}>
+          <View style={s.collectionsDirHeader}>
+            <Text style={s.collectionsDirEyebrow}>ONJJEM COLLECTIONS</Text>
+            <Text style={s.collectionsDirTitle}>Explore Our Gift Range</Text>
           </View>
-          <View style={s.printGrid}>
-            {PRINT_PRODUCTS.map((product) => (
+          <View style={s.collectionsDirCard}>
+            <LinearGradient
+              colors={["#C9960C", "#F5D78E", "#C9960C"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={s.collectionsDirGoldBar}
+            />
+            {([
+              { label: "Jubilees & Anniversaries", sub: "Silver · Ruby · Golden · Diamond · Platinum", icon: "diamond-outline" as const, route: "/gift-shop?tab=anniversaries" },
+              { label: "Canvas & Fine Art Prints",  sub: "Gallery-stretched · A4 to A0 · Ready to hang", icon: "image-outline" as const,   route: "/gift-shop?tab=prints" },
+              { label: "Lounge & Home Gifts",       sub: "Cushions · Luxury throws · Silk keepsakes",   icon: "home-outline" as const,    route: "/gift-shop?tab=lounge" },
+              { label: "Heritage Jigsaws",           sub: "Heart · Collage · Cardboard · Premium wood",  icon: "grid-outline" as const,    route: "/gift-shop?tab=heritage_jigsaws" },
+            ] as const).map((col, i, arr) => (
               <TouchableOpacity
-                key={product.id}
-                style={s.printCard}
-                activeOpacity={0.84}
-                onPress={() => router.push("/gift-shop")}
+                key={col.label}
+                style={[s.collectionRow, i < arr.length - 1 && s.collectionRowBorder]}
+                onPress={() => router.push(col.route as Parameters<typeof router.push>[0])}
+                activeOpacity={0.8}
               >
-                <LinearGradient
-                  colors={product.g}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={s.printCardGradient}
-                >
-                  <LinearGradient
-                    colors={["#C9960C", "#F5D78E", "#C9960C"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={s.printCardGoldBar}
-                  />
-                  <View style={s.printCardInner}>
-                    <View style={[s.printCardEmojiRing, { borderColor: product.catColor, backgroundColor: product.ringColor }]}>
-                      <Text style={s.printCardEmoji}>{product.emoji}</Text>
-                    </View>
-                    <Text style={[s.printCardCategory, { color: product.catColor }]}>{product.category}</Text>
-                    <Text style={s.printCardTitle}>{product.title}</Text>
-                    <View style={s.printCardPriceBadge}>
-                      <Text style={s.printCardPrice}>from {product.price}</Text>
-                    </View>
-                  </View>
-                </LinearGradient>
+                <View style={s.collectionRowIconWrap}>
+                  <Ionicons name={col.icon} size={18} color="#C9960C" />
+                </View>
+                <View style={s.collectionRowText}>
+                  <Text style={s.collectionRowLabel}>{col.label}</Text>
+                  <Text style={s.collectionRowSub}>{col.sub}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={14} color="rgba(201,150,12,0.6)" />
               </TouchableOpacity>
             ))}
           </View>
+
+          <TouchableOpacity
+            style={s.collectionsCtaBtn}
+            onPress={() => router.push("/gift-shop")}
+            activeOpacity={0.87}
+          >
+            <LinearGradient
+              colors={["#C9960C", "#A67C00"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={s.collectionsCtaGradient}
+            >
+              <Ionicons name="gift-outline" size={18} color="#fff" />
+              <Text style={s.collectionsCtaText}>Browse the Full Gift Shop</Text>
+              <Ionicons name="chevron-forward" size={16} color="rgba(255,255,255,0.8)" />
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
 
         <TrustFooter />
@@ -1626,6 +1628,96 @@ function makeStyles(
       fontFamily: "Inter_700Bold",
       color: "#C9960C",
     },
+
+    /* Collections Directory */
+    collectionsDir: {
+      marginTop: 28,
+      gap: 14,
+    },
+    collectionsDirHeader: {
+      gap: 5,
+    },
+    collectionsDirEyebrow: {
+      fontSize: 10,
+      fontWeight: "700" as const,
+      color: "#C9960C",
+      fontFamily: "Inter_700Bold",
+      letterSpacing: 2.5,
+    },
+    collectionsDirTitle: {
+      fontSize: 22,
+      fontWeight: "400" as const,
+      color: "#C9960C",
+      fontFamily: "Cinzel_400Regular",
+      letterSpacing: 0.2,
+    },
+    collectionsDirCard: {
+      borderRadius: 16,
+      overflow: "hidden" as const,
+      backgroundColor: "#0D1B2A",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.25)",
+    },
+    collectionsDirGoldBar: {
+      height: 2,
+    },
+    collectionRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 14,
+      paddingVertical: 16,
+      paddingHorizontal: 18,
+    },
+    collectionRowBorder: {
+      borderBottomWidth: 1,
+      borderBottomColor: "rgba(201,150,12,0.12)",
+    },
+    collectionRowIconWrap: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      backgroundColor: "rgba(201,150,12,0.1)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.25)",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    collectionRowText: {
+      flex: 1,
+      gap: 3,
+    },
+    collectionRowLabel: {
+      fontSize: 14,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#F5EDD8",
+    },
+    collectionRowSub: {
+      fontSize: 11,
+      color: "#6B8EA8",
+      fontFamily: "Inter_400Regular",
+    },
+    collectionsCtaBtn: {
+      borderRadius: 14,
+      overflow: "hidden" as const,
+    },
+    collectionsCtaGradient: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 10,
+      paddingVertical: 16,
+      paddingHorizontal: 24,
+    },
+    collectionsCtaText: {
+      fontSize: 15,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#fff",
+      flex: 1,
+      textAlign: "center" as const,
+    },
+
     livingMemoriesBtn: {
       marginHorizontal: 16,
       marginBottom: 14,

@@ -2719,7 +2719,7 @@ function ProductCard({ product, onPress, compact }: { product: Product; compact?
 }
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: CREAM },
+  root: { flex: 1, backgroundColor: "#000000" },
   rainbowBar: { height: 4, width: "100%" },
 
   /* Promo announcement banner */
@@ -3686,7 +3686,7 @@ const s = StyleSheet.create({
     backgroundColor: BLUE,
   },
 
-  scrollView: { backgroundColor: CREAM },
+  scrollView: { backgroundColor: "#000000" },
   scroll: { padding: 16, gap: 16 },
 
   /* Section */
