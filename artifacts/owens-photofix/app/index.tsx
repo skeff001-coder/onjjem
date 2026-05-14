@@ -428,7 +428,7 @@ export default function HomeScreen() {
                 ] as const
               ).map((f) => (
                 <View key={f.text} style={s.masterLabChip}>
-                  <Ionicons name={f.icon} size={11} color="#C9960C" />
+                  <Ionicons name={f.icon} size={11} color="#F5D78E" />
                   <Text style={s.masterLabChipText}>{f.text}</Text>
                 </View>
               ))}
@@ -1196,9 +1196,9 @@ function makeStyles(
       flexDirection: "row" as const,
       alignItems: "center" as const,
       gap: 5,
-      backgroundColor: "rgba(201,150,12,0.10)",
+      backgroundColor: "rgba(0,0,0,0.45)",
       borderWidth: 1,
-      borderColor: "rgba(201,150,12,0.28)",
+      borderColor: "rgba(245,215,142,0.45)",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 5,
@@ -1206,7 +1206,7 @@ function makeStyles(
     masterLabChipText: {
       fontSize: 11,
       fontFamily: "Inter_600SemiBold",
-      color: "#C9960C",
+      color: "#F5D78E",
     },
     headerTagline: {
       fontSize: 16,
