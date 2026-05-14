@@ -17,7 +17,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, {
   Defs,
@@ -36,8 +36,23 @@ import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { TrustFooter } from "@/components/TrustFooter";
 import { RubyHeartIcon } from "@/components/RubyHeartIcon";
 
-type Mode = "sharpen" | "colorize";
+type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
 type AppState = "idle" | "selected" | "processing" | "done";
+
+const ENHANCEMENTS: {
+  id: EnhancementMode;
+  title: string;
+  subtitle: string;
+  icon: React.ComponentProps<typeof Ionicons>["name"];
+  accent: string;
+}[] = [
+  { id: "sharpen",   title: "Sharpen",   subtitle: "Fix soft &\nblurry photos",    icon: "aperture-outline",       accent: "#4A90D9" },
+  { id: "brighten",  title: "Brighten",  subtitle: "Lift dark &\nunderexposed",     icon: "sunny-outline",          accent: "#F5A623" },
+  { id: "denoise",   title: "Denoise",   subtitle: "Remove grain\n& film noise",    icon: "water-outline",          accent: "#9B59B6" },
+  { id: "restore",   title: "Restore",   subtitle: "Full old photo\nrestoration",   icon: "time-outline",           accent: "#27AE60" },
+  { id: "vivid",     title: "Vivid",     subtitle: "Bold colours\n& contrast",      icon: "color-filter-outline",   accent: "#E74C3C" },
+  { id: "colourize", title: "Colourize", subtitle: "Add colour to\nold B&W photos", icon: "color-palette-outline",  accent: "#C9960C" },
+];
 
 
 const GALLERY_POOL = [
@@ -68,7 +83,7 @@ export default function HomeScreen() {
   const [originalUri, setOriginalUri] = useState<string | null>(null);
   const [resultBase64, setResultBase64] = useState<string | null>(null);
   const [resultLocalUri, setResultLocalUri] = useState<string | null>(null);
-  const [mode, setMode] = useState<Mode>("sharpen");
+  const [selectedModes, setSelectedModes] = useState<Set<EnhancementMode>>(new Set(["sharpen"]));
   const [statusMessage, setStatusMessage] = useState("Preparing...");
   const msgIndexRef = useRef(0);
   const cancelledRef = useRef(false);
@@ -207,7 +222,7 @@ export default function HomeScreen() {
         response = await fetch(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageBase64: base64, mode }),
+          body: JSON.stringify({ imageBase64: base64, modes: Array.from(selectedModes) }),
           signal: controller.signal,
         });
       } finally {
@@ -310,6 +325,7 @@ export default function HomeScreen() {
     setOriginalUri(null);
     setResultBase64(null);
     setResultLocalUri(null);
+    setSelectedModes(new Set(["sharpen"]));
   };
 
   const s = makeStyles(colors, insets);
@@ -576,8 +592,7 @@ export default function HomeScreen() {
         {appState === "done" && originalUri && resultBase64 && (
           <View style={s.imageBlock}>
             <Text style={s.imageLabel}>
-              {mode === "sharpen" ? "Sharpened" : "Colour Restored"} — drag to
-              compare
+              {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).join(" + ")} — drag to compare
             </Text>
             <BeforeAfterSlider
               beforeUri={originalUri}
@@ -588,94 +603,110 @@ export default function HomeScreen() {
 
         {appState === "selected" && (
           <>
-            <Text style={s.sectionTitle}>Choose Enhancement</Text>
-            <View style={s.modeRow}>
-              <TouchableOpacity
-                style={[
-                  s.modeBtn,
-                  mode === "sharpen" && {
-                    backgroundColor: colors.primary,
-                    borderColor: colors.primary,
-                  },
-                ]}
-                onPress={() => {
-                  setMode("sharpen");
-                  Haptics.selectionAsync();
-                }}
-                activeOpacity={0.8}
-              >
-                <Ionicons
-                  name="sparkles"
-                  size={28}
-                  color={mode === "sharpen" ? "#fff" : colors.mutedForeground}
-                />
-                <Text
-                  style={[
-                    s.modeBtnTitle,
-                    mode === "sharpen" && { color: "#fff" },
-                  ]}
-                >
-                  Sharpen
-                </Text>
-                <Text
-                  style={[
-                    s.modeBtnSub,
-                    mode === "sharpen" && {
-                      color: "rgba(255,255,255,0.75)",
-                    },
-                  ]}
-                >
-                  Fix blurry{"\n"}photos
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  s.modeBtn,
-                  mode === "colorize" && {
-                    backgroundColor: colors.accent,
-                    borderColor: colors.accent,
-                  },
-                ]}
-                onPress={() => {
-                  setMode("colorize");
-                  Haptics.selectionAsync();
-                }}
-                activeOpacity={0.8}
-              >
-                <MaterialCommunityIcons
-                  name="palette-outline"
-                  size={28}
-                  color={
-                    mode === "colorize" ? "#000" : colors.mutedForeground
-                  }
-                />
-                <Text
-                  style={[
-                    s.modeBtnTitle,
-                    mode === "colorize" && { color: "#000" },
-                  ]}
-                >
-                  Colourise
-                </Text>
-                <Text
-                  style={[
-                    s.modeBtnSub,
-                    mode === "colorize" && { color: "rgba(0,0,0,0.6)" },
-                  ]}
-                >
-                  Restore colour{"\n"}to old photos
-                </Text>
-              </TouchableOpacity>
+            {/* ── Enhancement picker ── */}
+            <View style={s.enhanceHeader}>
+              <Text style={s.enhanceTitle}>Choose Your Enhancements</Text>
+              <Text style={s.enhanceSub}>Select up to 3 — they stack together</Text>
             </View>
 
+            {/* Pricing strip */}
+            <View style={s.pricingStrip}>
+              <LinearGradient
+                colors={["#1C1A14", "#2E2818"]}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={s.pricingStripGradient}
+              >
+                <View style={s.pricingFreeChip}>
+                  <Text style={s.pricingFreeText}>1st FREE</Text>
+                </View>
+                <Text style={s.pricingDivider}>·</Text>
+                <Text style={s.pricingPaidText}>then £1.99/photo</Text>
+                <Text style={s.pricingDivider}>·</Text>
+                <Text style={s.pricingUnlimited}>£11.99/month unlimited</Text>
+              </LinearGradient>
+            </View>
+
+            {/* 3×2 grid */}
+            <View style={s.enhanceGrid}>
+              {ENHANCEMENTS.map((enh) => {
+                const isSelected = selectedModes.has(enh.id);
+                const atLimit = selectedModes.size >= 3 && !isSelected;
+                return (
+                  <TouchableOpacity
+                    key={enh.id}
+                    style={[
+                      s.enhanceCard,
+                      isSelected && { borderColor: enh.accent, borderWidth: 2 },
+                      atLimit && { opacity: 0.45 },
+                    ]}
+                    onPress={() => {
+                      if (atLimit) return;
+                      Haptics.selectionAsync();
+                      setSelectedModes((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(enh.id)) next.delete(enh.id);
+                        else next.add(enh.id);
+                        return next;
+                      });
+                    }}
+                    activeOpacity={0.8}
+                  >
+                    <LinearGradient
+                      colors={
+                        isSelected
+                          ? [`${enh.accent}28`, `${enh.accent}12`]
+                          : ["#1C1A14", "#16140F"]
+                      }
+                      style={s.enhanceCardGradient}
+                    >
+                      {isSelected && (
+                        <View style={[s.enhanceCheckBadge, { backgroundColor: enh.accent }]}>
+                          <Ionicons name="checkmark" size={11} color="#fff" />
+                        </View>
+                      )}
+                      <View style={[s.enhanceIconCircle, isSelected && { backgroundColor: `${enh.accent}30` }]}>
+                        <Ionicons
+                          name={enh.icon}
+                          size={26}
+                          color={isSelected ? enh.accent : "#888"}
+                        />
+                      </View>
+                      <Text style={[s.enhanceCardTitle, isSelected && { color: enh.accent }]}>
+                        {enh.title}
+                      </Text>
+                      <Text style={s.enhanceCardSub}>{enh.subtitle}</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {/* Selected combo label */}
+            {selectedModes.size > 1 && (
+              <View style={s.comboLabel}>
+                <Ionicons name="layers-outline" size={14} color="#C9960C" />
+                <Text style={s.comboLabelText}>
+                  Combo: {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).join(" + ")}
+                </Text>
+              </View>
+            )}
+
+            {/* Main CTA */}
             <TouchableOpacity
-              style={s.processBtn}
-              onPress={processPhoto}
+              style={[s.processBtn, selectedModes.size === 0 && { opacity: 0.45 }]}
+              onPress={selectedModes.size > 0 ? processPhoto : undefined}
               activeOpacity={0.85}
             >
-              <Ionicons name="color-wand" size={26} color="#fff" />
-              <Text style={s.processBtnText}>Fix My Photo</Text>
+              <LinearGradient
+                colors={["#A67C00", "#C9960C", "#E8B422", "#C9960C"]}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={s.processBtnGradient}
+              >
+                <Ionicons name="color-wand" size={24} color="#fff" />
+                <Text style={s.processBtnText}>
+                  Enhance My Photo{selectedModes.size > 1 ? ` (${selectedModes.size})` : ""}
+                </Text>
+              </LinearGradient>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -1280,50 +1311,160 @@ function makeStyles(
       textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 0,
     },
-    modeRow: {
-      flexDirection: "row",
-      gap: 12,
+    // ── Enhancement picker ──────────────────────────────────────────
+    enhanceHeader: {
+      alignItems: "center" as const,
+      paddingTop: 4,
+      paddingBottom: 2,
     },
-    modeBtn: {
-      flex: 1,
-      borderRadius: colors.radius,
-      borderWidth: 2,
-      borderColor: colors.border,
-      backgroundColor: colors.card,
-      padding: 18,
-      gap: 8,
-      alignItems: "flex-start",
-    },
-    modeBtnTitle: {
-      fontSize: 20,
+    enhanceTitle: {
+      fontSize: 22,
       fontWeight: "700" as const,
-      color: colors.foreground,
       fontFamily: "Inter_700Bold",
+      color: colors.foreground,
+      textAlign: "center" as const,
     },
-    modeBtnSub: {
-      fontSize: 14,
+    enhanceSub: {
+      fontSize: 13,
       color: colors.mutedForeground,
       fontFamily: "Inter_400Regular",
-      lineHeight: 20,
+      marginTop: 4,
+      textAlign: "center" as const,
+    },
+    pricingStrip: {
+      borderRadius: 50,
+      overflow: "hidden" as const,
+    },
+    pricingStripGradient: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      gap: 8,
+      borderRadius: 50,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.25)",
+    },
+    pricingFreeChip: {
+      backgroundColor: "#C9960C",
+      borderRadius: 20,
+      paddingHorizontal: 10,
+      paddingVertical: 3,
+    },
+    pricingFreeText: {
+      fontSize: 11,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#fff",
+      letterSpacing: 0.5,
+    },
+    pricingDivider: {
+      fontSize: 14,
+      color: "rgba(201,150,12,0.5)",
+      fontFamily: "Inter_400Regular",
+    },
+    pricingPaidText: {
+      fontSize: 12,
+      color: colors.mutedForeground,
+      fontFamily: "Inter_400Regular",
+    },
+    pricingUnlimited: {
+      fontSize: 12,
+      color: "#C9960C",
+      fontFamily: "Inter_700Bold",
+      fontWeight: "700" as const,
+    },
+    enhanceGrid: {
+      flexDirection: "row" as const,
+      flexWrap: "wrap" as const,
+      gap: 10,
+    },
+    enhanceCard: {
+      width: "31.5%" as const,
+      borderRadius: 14,
+      borderWidth: 1.5,
+      borderColor: "rgba(255,255,255,0.08)",
+      overflow: "hidden" as const,
+    },
+    enhanceCardGradient: {
+      paddingVertical: 16,
+      paddingHorizontal: 10,
+      alignItems: "center" as const,
+      gap: 6,
+      minHeight: 120,
+      position: "relative" as const,
+    },
+    enhanceCheckBadge: {
+      position: "absolute" as const,
+      top: 8,
+      right: 8,
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    enhanceIconCircle: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      backgroundColor: "rgba(255,255,255,0.06)",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    enhanceCardTitle: {
+      fontSize: 13,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: colors.foreground,
+      textAlign: "center" as const,
+    },
+    enhanceCardSub: {
+      fontSize: 10.5,
+      color: colors.mutedForeground,
+      fontFamily: "Inter_400Regular",
+      textAlign: "center" as const,
+      lineHeight: 14,
+    },
+    comboLabel: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 6,
+      backgroundColor: "rgba(201,150,12,0.1)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.3)",
+      borderRadius: 50,
+      paddingVertical: 7,
+      paddingHorizontal: 14,
+    },
+    comboLabelText: {
+      fontSize: 12,
+      color: "#C9960C",
+      fontFamily: "Inter_700Bold",
+      fontWeight: "700" as const,
     },
     processBtn: {
-      backgroundColor: colors.primary,
       borderRadius: colors.radius,
+      overflow: "hidden" as const,
+    },
+    processBtnGradient: {
       paddingVertical: 22,
       paddingHorizontal: 24,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
       gap: 10,
     },
     processBtnText: {
-      fontSize: 26,
+      fontSize: 22,
       fontWeight: "700" as const,
       color: "#fff",
       fontFamily: "Inter_700Bold",
-      textShadowColor: "rgba(0,0,100,0.3)",
-      textShadowOffset: { width: 0, height: 2 },
-      textShadowRadius: 4,
+      textShadowColor: "rgba(0,0,0,0.3)",
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 3,
     },
     saveBtn: {
       backgroundColor: "#0A84FF",

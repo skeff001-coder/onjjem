@@ -4,72 +4,157 @@ import sharp from "sharp";
 
 const router = Router();
 
-async function sharpenImage(inputBuffer: Buffer): Promise<Buffer> {
-  return sharp(inputBuffer)
-    .rotate()
-    .sharpen({
-      sigma: 1.8,
-      m1: 2.5,
-      m2: 3.5,
-      x1: 2.0,
-      y2: 12.0,
-      y3: 25.0,
-    })
-    .normalise()
-    .jpeg({ quality: 92 })
+type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
+
+// ── Individual processors ─────────────────────────────────────────────────────
+
+async function applySharpen(buf: Buffer): Promise<Buffer> {
+  return sharp(buf)
+    .sharpen({ sigma: 1.6, m1: 2.0, m2: 3.0, x1: 2.0, y2: 10.0, y3: 20.0 })
     .toBuffer();
 }
 
-async function colorizeImage(inputBuffer: Buffer): Promise<Buffer> {
-  const oriented = sharp(inputBuffer).rotate();
-  const rotatedBuffer = await oriented.toBuffer();
-  const meta = await sharp(rotatedBuffer).metadata();
+async function applyBrighten(buf: Buffer): Promise<Buffer> {
+  // Auto-levels first then lift midtones
+  return sharp(buf)
+    .normalise({ lower: 1, upper: 99 })
+    .modulate({ brightness: 1.18 })
+    .gamma(0.82)
+    .toBuffer();
+}
+
+async function applyDenoise(buf: Buffer): Promise<Buffer> {
+  // Median filter kills salt-and-pepper + grain, then recover micro-detail
+  return sharp(buf)
+    .median(3)
+    .sharpen({ sigma: 0.5, m1: 0.5, m2: 1.5 })
+    .toBuffer();
+}
+
+async function applyRestore(buf: Buffer): Promise<Buffer> {
+  // Full old-photo pipeline: normalise contrast → denoise → gentle sharpen → warm tone balance
+  const stage1 = await sharp(buf)
+    .normalise({ lower: 2, upper: 98 })
+    .median(3)
+    .toBuffer();
+
+  return sharp(stage1)
+    .sharpen({ sigma: 1.0, m1: 1.0, m2: 2.0 })
+    .modulate({ brightness: 1.05, saturation: 1.15 })
+    .gamma(0.95)
+    // Warm the shadows slightly
+    .linear([1.04, 1.0, 0.96], [4, 0, -4])
+    .toBuffer();
+}
+
+async function applyVivid(buf: Buffer): Promise<Buffer> {
+  // Strong colour pop + contrast boost
+  return sharp(buf)
+    .normalise({ lower: 1, upper: 99 })
+    .modulate({ saturation: 1.65, brightness: 1.05 })
+    .gamma(0.88)
+    // Boost reds/warmth, gentle cyan pull
+    .linear([1.08, 1.0, 0.93], [6, 0, -6])
+    .toBuffer();
+}
+
+async function applyColourize(buf: Buffer): Promise<Buffer> {
+  const meta = await sharp(buf).metadata();
   const isGreyscale =
     meta.channels === 1 ||
     meta.space === "b-w" ||
     meta.space === "grey16";
 
   if (isGreyscale) {
-    return sharp(rotatedBuffer)
+    // B&W → natural warm sepia-to-colour using recomb matrix
+    // Produces a believable historical colour look: warm midtones, bright highlights
+    const stage1 = await sharp(buf)
       .toColourspace("srgb")
-      .normalise()
-      .modulate({ saturation: 1.0, brightness: 1.05 })
-      .tint({ r: 210, g: 185, b: 150 })
-      .modulate({ saturation: 2.2 })
-      .gamma(1.1)
-      .linear([1.08, 1.0, 0.88], [6, 2, -4])
-      .jpeg({ quality: 92 })
+      .normalise({ lower: 1, upper: 99 })
+      .toBuffer();
+
+    return sharp(stage1)
+      // Sepia-ish matrix that stays natural — not orange
+      .recomb([
+        [1.00, 0.12, 0.00],
+        [0.00, 0.92, 0.06],
+        [0.00, 0.05, 0.84],
+      ])
+      .modulate({ saturation: 1.3, brightness: 1.03 })
+      .gamma(1.05)
       .toBuffer();
   }
 
-  return sharp(rotatedBuffer)
-    .normalise()
-    .modulate({ saturation: 1.9, brightness: 1.05 })
-    .gamma(1.08)
-    .linear([1.06, 1.0, 0.92], [4, 1, -3])
-    .jpeg({ quality: 92 })
+  // Already colour — just revive faded/washed-out colours
+  return sharp(buf)
+    .normalise({ lower: 2, upper: 98 })
+    .modulate({ saturation: 1.4, brightness: 1.03 })
+    .gamma(0.97)
+    .linear([1.04, 1.0, 0.97], [3, 0, -3])
     .toBuffer();
 }
 
+// ── Compose all selected modes in order ───────────────────────────────────────
+
+async function applyEnhancements(
+  inputBuffer: Buffer,
+  modes: EnhancementMode[],
+): Promise<Buffer> {
+  // Always correct EXIF orientation first
+  let buf = await sharp(inputBuffer).rotate().toBuffer();
+
+  for (const mode of modes) {
+    switch (mode) {
+      case "sharpen":   buf = await applySharpen(buf);   break;
+      case "brighten":  buf = await applyBrighten(buf);  break;
+      case "denoise":   buf = await applyDenoise(buf);   break;
+      case "restore":   buf = await applyRestore(buf);   break;
+      case "vivid":     buf = await applyVivid(buf);     break;
+      case "colourize": buf = await applyColourize(buf); break;
+    }
+  }
+
+  // Final JPEG output
+  return sharp(buf).jpeg({ quality: 93 }).toBuffer();
+}
+
+// ── Route ─────────────────────────────────────────────────────────────────────
+
 router.post("/process", async (req: Request, res: Response) => {
-  const { imageBase64, mode } = req.body as {
-    imageBase64: string;
-    mode: "sharpen" | "colorize";
+  const body = req.body as {
+    imageBase64?: string;
+    modes?: EnhancementMode[];
+    // Legacy single-mode support
+    mode?: string;
   };
 
-  if (!imageBase64 || !mode) {
-    res.status(400).json({ error: "imageBase64 and mode are required" });
+  const { imageBase64 } = body;
+
+  // Accept both new `modes[]` and legacy `mode` string
+  const modes: EnhancementMode[] =
+    body.modes && body.modes.length > 0
+      ? body.modes
+      : body.mode === "colorize" || body.mode === "colourize"
+        ? ["colourize"]
+        : body.mode === "sharpen"
+          ? ["sharpen"]
+          : [];
+
+  if (!imageBase64 || modes.length === 0) {
+    res
+      .status(400)
+      .json({ error: "imageBase64 and at least one mode are required" });
+    return;
+  }
+
+  if (modes.length > 3) {
+    res.status(400).json({ error: "A maximum of 3 enhancements can be combined" });
     return;
   }
 
   try {
     const inputBuffer = Buffer.from(imageBase64, "base64");
-
-    const outputBuffer =
-      mode === "sharpen"
-        ? await sharpenImage(inputBuffer)
-        : await colorizeImage(inputBuffer);
-
+    const outputBuffer = await applyEnhancements(inputBuffer, modes);
     const resultBase64 = outputBuffer.toString("base64");
     res.json({ resultBase64 });
   } catch (error) {
