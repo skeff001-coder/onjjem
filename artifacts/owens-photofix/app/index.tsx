@@ -367,50 +367,6 @@ export default function HomeScreen() {
               </View>
             </Pressable>
 
-            <TouchableOpacity
-              style={s.giftBtnGlow}
-              onPress={() => router.push("/gift-shop")}
-              activeOpacity={0.88}
-            >
-              <LinearGradient
-                colors={["#C0390B", "#E8600A", "#BF5AF2"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={s.giftBtn}
-              >
-                {/* Gold top accent bar */}
-                <LinearGradient
-                  colors={["#C9960C", "#F5D78E", "#C9960C"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={s.giftBtnGoldBar}
-                />
-                <View style={s.giftBtnInner}>
-                  <View style={s.giftBtnTop}>
-                    <View style={s.giftBtnIconWrap}>
-                      <Text style={s.giftBtnIconEmoji}>🎁</Text>
-                    </View>
-                    <View style={s.giftBtnTitleWrap}>
-                      <Text style={s.giftBtnLabel}>OUR GIFT STORE</Text>
-                      <Text style={s.giftBtnText}>Candles · Cushions · Jigsaws · Throws</Text>
-                    </View>
-                    <View style={s.giftBtnCountBadge}>
-                      <Text style={s.giftBtnCountText}>50+</Text>
-                      <Text style={s.giftBtnCountSub}>gifts</Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.9)" />
-                  </View>
-                  <View style={s.giftBtnChipRow}>
-                    {["Candles", "Cushions", "Jigsaws", "Throws", "& More"].map((tag) => (
-                      <View key={tag} style={s.giftBtnChip}>
-                        <Text style={s.giftBtnChipText}>{tag}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-
             {/* Masterpiece Gallery button */}
             <TouchableOpacity
               style={s.galleryBtn}
@@ -420,6 +376,44 @@ export default function HomeScreen() {
               <Ionicons name="images-outline" size={20} color="#C9960C" />
               <Text style={s.galleryBtnText}>Masterpiece Gallery</Text>
               <Ionicons name="chevron-forward" size={16} color="#C9960C" />
+            </TouchableOpacity>
+
+            {/* Living Memories */}
+            <TouchableOpacity
+              style={s.livingMemoriesBtn}
+              onPress={() => setLivingMemoriesVisible(true)}
+              activeOpacity={0.87}
+            >
+              <LinearGradient
+                colors={["#0D1B2A", "#162236"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.livingMemoriesBtnGradient}
+              >
+                <LinearGradient
+                  colors={[colors.primary, "#F5D78E", colors.primary]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={s.livingMemoriesGoldBar}
+                />
+                <View style={s.livingMemoriesRow}>
+                  <View style={s.livingMemoriesIconWrap}>
+                    <Text style={s.livingMemoriesIconEmoji}>🎬</Text>
+                  </View>
+                  <View style={s.livingMemoriesTextWrap}>
+                    <View style={s.livingMemoriesTopRow}>
+                      <Text style={s.livingMemoriesTitle}>
+                        For the moments that were never meant to stand still.
+                      </Text>
+                      <View style={s.livingMemoriesAiBadge}>
+                        <Ionicons name="sparkles" size={9} color={colors.primary} />
+                        <Text style={s.livingMemoriesAiBadgeText}>AI</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <Ionicons name="chevron-forward" size={14} color={colors.primary} />
+                </View>
+              </LinearGradient>
             </TouchableOpacity>
 
             {/* ── CANVAS PRINTS — STANDALONE HERO ── */}
@@ -460,6 +454,49 @@ export default function HomeScreen() {
                   </View>
                   <View style={s.canvasHeroRight}>
                     <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.7)" />
+                  </View>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={s.giftBtnGlow}
+              onPress={() => router.push("/gift-shop")}
+              activeOpacity={0.88}
+            >
+              <LinearGradient
+                colors={["#C0390B", "#E8600A", "#BF5AF2"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.giftBtn}
+              >
+                <LinearGradient
+                  colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={s.giftBtnGoldBar}
+                />
+                <View style={s.giftBtnInner}>
+                  <View style={s.giftBtnTop}>
+                    <View style={s.giftBtnIconWrap}>
+                      <Text style={s.giftBtnIconEmoji}>🎁</Text>
+                    </View>
+                    <View style={s.giftBtnTitleWrap}>
+                      <Text style={s.giftBtnLabel}>OUR GIFT STORE</Text>
+                      <Text style={s.giftBtnText}>Candles · Cushions · Jigsaws · Throws</Text>
+                    </View>
+                    <View style={s.giftBtnCountBadge}>
+                      <Text style={s.giftBtnCountText}>50+</Text>
+                      <Text style={s.giftBtnCountSub}>gifts</Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.9)" />
+                  </View>
+                  <View style={s.giftBtnChipRow}>
+                    {["Candles", "Cushions", "Jigsaws", "Throws", "& More"].map((tag) => (
+                      <View key={tag} style={s.giftBtnChip}>
+                        <Text style={s.giftBtnChipText}>{tag}</Text>
+                      </View>
+                    ))}
                   </View>
                 </View>
               </LinearGradient>
@@ -673,45 +710,6 @@ export default function HomeScreen() {
           </>
         )}
 
-        {/* Living Memories */}
-        <TouchableOpacity
-          style={s.livingMemoriesBtn}
-          onPress={() => setLivingMemoriesVisible(true)}
-          activeOpacity={0.87}
-        >
-          <LinearGradient
-            colors={["#0D1B2A", "#162236"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={s.livingMemoriesBtnGradient}
-          >
-            {/* Top gold shimmer bar */}
-            <LinearGradient
-              colors={[colors.primary, "#F5D78E", colors.primary]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={s.livingMemoriesGoldBar}
-            />
-            <View style={s.livingMemoriesRow}>
-              <View style={s.livingMemoriesIconWrap}>
-                <Text style={s.livingMemoriesIconEmoji}>🎬</Text>
-              </View>
-              <View style={s.livingMemoriesTextWrap}>
-                <View style={s.livingMemoriesTopRow}>
-                  <Text style={s.livingMemoriesTitle}>
-                    For the moments that were never meant to stand still.
-                  </Text>
-                  <View style={s.livingMemoriesAiBadge}>
-                    <Ionicons name="sparkles" size={9} color={colors.primary} />
-                    <Text style={s.livingMemoriesAiBadgeText}>AI</Text>
-                  </View>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={14} color={colors.primary} />
-            </View>
-          </LinearGradient>
-        </TouchableOpacity>
-
         {/* Anniversary & Jubilee Collection */}
         <TouchableOpacity
           style={s.jubileeBtn}
@@ -739,32 +737,8 @@ export default function HomeScreen() {
                 <View style={s.jubileeTextWrap}>
                   <Text style={s.jubileeEyebrow}>ANNIVERSARY &amp; JUBILEE COLLECTION</Text>
                   <Text style={s.jubileeTitle}>Celebrate a Lifetime of Love</Text>
-                  <Text style={s.jubileeSub}>
-                    From Silver to Diamond — precious gifts for every milestone
-                  </Text>
                 </View>
                 <Ionicons name="chevron-forward" size={14} color="#C9960C" />
-              </View>
-
-              {/* Milestone chips */}
-              <View style={s.jubileeMilestones}>
-                {[
-                  { year: "25th", gem: "Silver",   emoji: "🥈", color: "#9CA3AF" },
-                  { year: "30th", gem: "Pearl",    emoji: "🤍", color: "#D1D5DB" },
-                  { year: "40th", gem: "Ruby",     emoji: "❤️", color: "#F87171" },
-                  { year: "50th", gem: "Golden",   emoji: "🥇", color: "#FBBF24" },
-                  { year: "55th", gem: "Emerald",  emoji: "💚", color: "#34D399" },
-                  { year: "60th", gem: "Diamond",  emoji: "💎", color: "#93C5FD" },
-                  { year: "70th", gem: "Platinum", emoji: "👑", color: "#E5E7EB" },
-                ].map((m) => (
-                  <View key={m.year} style={[s.jubileeMilestoneChip, { borderColor: m.color + "55" }]}>
-                    <Text style={s.jubileeMilestoneEmoji}>{m.emoji}</Text>
-                    <View>
-                      <Text style={[s.jubileeMilestoneYear, { color: m.color }]}>{m.year}</Text>
-                      <Text style={s.jubileeMilestoneGem}>{m.gem}</Text>
-                    </View>
-                  </View>
-                ))}
               </View>
             </View>
           </LinearGradient>
