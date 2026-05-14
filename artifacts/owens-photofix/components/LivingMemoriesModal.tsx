@@ -226,26 +226,54 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
 
       <View style={styles.body}>
         <Text style={styles.bodyTitle}>Watch your photo come alive</Text>
+
+        {/* Rich evocative description */}
         <Text style={styles.bodyDesc}>
-          Our Cinema-Grade AI subtly animates the eyes, hair and atmosphere of
-          your cherished photograph — creating a beautiful, haunting video you
-          can keep and share with family forever.
+          Imagine watching your grandmother's eyes slowly blink open. Her hair shifts softly in an unseen breeze. The light in the room seems to breathe. That smile — captured decades ago — flickers with life, just for a moment.
+        </Text>
+        <Text style={styles.bodyDesc}>
+          That is what a Living Memory does. Our Cinema-Grade AI has been trained on millions of portraits to understand how real people actually move — the subtle drift of a gaze, the gentle rise and fall of breathing, the way emotion lives in a face. It does not simply animate your photograph. It imagines the person inside it.
         </Text>
 
-        {/* Feature list */}
-        {[
-          { icon: "eye-outline" as const,          label: "Subtle eye & face movement" },
-          { icon: "partly-sunny-outline" as const, label: "Hair, light & atmosphere motion" },
-          { icon: "film-outline" as const,         label: "~8 seconds · delivered as MP4" },
-          { icon: "share-social-outline" as const, label: "Share instantly to WhatsApp & Photos" },
-        ].map((f) => (
-          <View key={f.label} style={styles.featureRow}>
-            <View style={styles.featureIconWrap}>
-              <Ionicons name={f.icon} size={16} color={GOLD} />
+        {/* What you'll see — detailed breakdown */}
+        <View style={styles.whatYoullSeeCard}>
+          <LinearGradient
+            colors={["rgba(201,150,12,0.12)", "rgba(201,150,12,0.04)"]}
+            style={styles.whatYoullSeeGradient}
+          >
+            <View style={styles.whatYoullSeeHeader}>
+              <Ionicons name="sparkles" size={13} color={GOLD} />
+              <Text style={styles.whatYoullSeeTitle}>What you will see in your video</Text>
             </View>
-            <Text style={styles.featureLabel}>{f.label}</Text>
-          </View>
-        ))}
+            {[
+              { icon: "eye-outline" as const,            label: "Eyes that blink naturally",            detail: "Pupils shift with subtle awareness, lids close and reopen just as they would in real life" },
+              { icon: "partly-sunny-outline" as const,   label: "Hair breathing in a gentle breeze",    detail: "Individual strands lift and settle — no exaggeration, just the lightest, most natural motion" },
+              { icon: "body-outline" as const,           label: "A living, breathing presence",         detail: "The shoulders and chest carry a subtle rhythm of breath, giving your loved one back their vitality" },
+              { icon: "sunny-outline" as const,          label: "Light that pulses and shifts",         detail: "Shadows soften, highlights warm — as if a lamp in the room flickered for just a moment" },
+              { icon: "color-palette-outline" as const,  label: "Atmosphere that deepens",             detail: "Backgrounds gently pulse with life, making the scene feel like a memory recalled, not just a picture frozen" },
+              { icon: "film-outline" as const,           label: "~8 seconds of HD video · MP4",        detail: "Silently looping · perfectly sized for WhatsApp, Instagram, iCloud and digital photo frames" },
+            ].map((f) => (
+              <View key={f.label} style={styles.whatYoullSeeRow}>
+                <View style={styles.whatYoullSeeIconWrap}>
+                  <Ionicons name={f.icon} size={15} color={GOLD} />
+                </View>
+                <View style={styles.whatYoullSeeText}>
+                  <Text style={styles.whatYoullSeeLabel}>{f.label}</Text>
+                  <Text style={styles.whatYoullSeeDetail}>{f.detail}</Text>
+                </View>
+              </View>
+            ))}
+          </LinearGradient>
+        </View>
+
+        {/* Emotional testimonial-style quote */}
+        <View style={styles.quoteCard}>
+          <Ionicons name="chatbubble-ellipses-outline" size={18} color={GOLD} style={{ marginBottom: 6 }} />
+          <Text style={styles.quoteText}>
+            "I had not seen my father move in thirty years. Watching this video, I burst into tears. It is the greatest gift I have ever received."
+          </Text>
+          <Text style={styles.quoteAuthor}>— Margaret, Suffolk</Text>
+        </View>
 
         {/* ── PRICING ── */}
         {!hasUsedFree ? (
@@ -320,7 +348,7 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
                 </View>
                 <View style={styles.planInfo}>
                   <Text style={styles.planName}>Single video</Text>
-                  <Text style={styles.planDesc}>One-off · MP4 delivered instantly</Text>
+                  <Text style={styles.planDesc}>One Living Memory · MP4 delivered · yours to keep</Text>
                 </View>
                 <Text style={styles.planPrice}>£5.99</Text>
               </TouchableOpacity>
@@ -336,7 +364,7 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
                 </View>
                 <View style={styles.planInfo}>
                   <Text style={styles.planName}>Monthly</Text>
-                  <Text style={styles.planDesc}>Unlimited videos · cancel anytime</Text>
+                  <Text style={styles.planDesc}>Unlimited Living Memories · cancel anytime</Text>
                 </View>
                 <View style={styles.planPriceWrap}>
                   <Text style={styles.planPrice}>£17.99</Text>
@@ -357,8 +385,8 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
                   {selectedPlan === "annual" && <View style={styles.planRadioDot} />}
                 </View>
                 <View style={styles.planInfo}>
-                  <Text style={styles.planName}>Annual</Text>
-                  <Text style={styles.planDesc}>Unlimited videos · save 58%</Text>
+                  <Text style={styles.planName}>Annual — Best Value</Text>
+                  <Text style={styles.planDesc}>Unlimited all year · less than 58p per week</Text>
                 </View>
                 <View style={styles.planPriceWrap}>
                   <Text style={styles.planPrice}>£29.99</Text>
@@ -368,6 +396,43 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
                   <Text style={styles.popularBadgeText}>BEST VALUE</Text>
                 </View>
               </TouchableOpacity>
+
+              {/* Annual expanded detail — shown when annual is selected */}
+              {selectedPlan === "annual" && (
+                <View style={styles.annualDetailCard}>
+                  <LinearGradient
+                    colors={["rgba(52,211,153,0.08)", "rgba(52,211,153,0.03)"]}
+                    style={styles.annualDetailGradient}
+                  >
+                    <View style={styles.annualDetailHeader}>
+                      <Ionicons name="checkmark-circle" size={14} color="#34D399" />
+                      <Text style={styles.annualDetailHeading}>Everything included in your £29.99 annual plan</Text>
+                    </View>
+                    {[
+                      { icon: "infinite-outline" as const,        text: "Unlimited Living Memory videos — every person, every occasion, all year long" },
+                      { icon: "flash-outline" as const,           text: "Priority AI processing — your video goes to the front of the queue, every time" },
+                      { icon: "film-outline" as const,            text: "Full HD 1080p output — the sharpest, most detailed animation we can produce" },
+                      { icon: "shield-checkmark-outline" as const,text: "Watermark-free — your video belongs entirely to you, with no ONJJEM branding" },
+                      { icon: "cloud-upload-outline" as const,    text: "Save to your Photos, iCloud, or share directly to WhatsApp, Instagram & email" },
+                      { icon: "people-outline" as const,          text: "Whole family covered — parents, grandparents, children, group shots, pets" },
+                      { icon: "ribbon-outline" as const,          text: "ONJJEM Master Lab quality guarantee — if you are ever unhappy, we re-do it free" },
+                      { icon: "headset-outline" as const,         text: "Dedicated priority support — speak directly with our restoration experts" },
+                    ].map((item) => (
+                      <View key={item.text} style={styles.annualDetailRow}>
+                        <View style={styles.annualDetailIconWrap}>
+                          <Ionicons name={item.icon} size={13} color="#34D399" />
+                        </View>
+                        <Text style={styles.annualDetailText}>{item.text}</Text>
+                      </View>
+                    ))}
+                    <View style={styles.annualSavingBadge}>
+                      <Text style={styles.annualSavingText}>
+                        Animate every week for a year — that is just 58p per Living Memory
+                      </Text>
+                    </View>
+                  </LinearGradient>
+                </View>
+              )}
 
               <TouchableOpacity
                 style={styles.ctaBtn}
@@ -891,6 +956,149 @@ const styles = StyleSheet.create({
     color: "#C5D8E8",
     fontFamily: "Inter_400Regular",
     flex: 1,
+  },
+
+  /* What you'll see card */
+  whatYoullSeeCard: {
+    borderRadius: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.25)",
+  },
+  whatYoullSeeGradient: {
+    padding: 16,
+    gap: 12,
+  },
+  whatYoullSeeHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    marginBottom: 2,
+  },
+  whatYoullSeeTitle: {
+    fontSize: 12,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 0.6,
+  },
+  whatYoullSeeRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+  },
+  whatYoullSeeIconWrap: {
+    width: 28,
+    height: 28,
+    borderRadius: 7,
+    backgroundColor: "rgba(201,150,12,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 1,
+    flexShrink: 0,
+  },
+  whatYoullSeeText: { flex: 1, gap: 2 },
+  whatYoullSeeLabel: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#F5EDD8",
+  },
+  whatYoullSeeDetail: {
+    fontSize: 12,
+    color: "#6B8EA8",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 18,
+  },
+
+  /* Testimonial quote */
+  quoteCard: {
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.15)",
+    borderRadius: 14,
+    padding: 16,
+    alignItems: "center",
+    gap: 4,
+  },
+  quoteText: {
+    fontSize: 13,
+    color: "#C5D8E8",
+    fontFamily: "Inter_400Regular",
+    lineHeight: 21,
+    textAlign: "center",
+    fontStyle: "italic",
+  },
+  quoteAuthor: {
+    fontSize: 11,
+    color: GOLD,
+    fontFamily: "Inter_700Bold",
+    fontWeight: "700" as const,
+    marginTop: 4,
+  },
+
+  /* Annual plan expanded detail */
+  annualDetailCard: {
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(52,211,153,0.25)",
+  },
+  annualDetailGradient: {
+    padding: 14,
+    gap: 10,
+  },
+  annualDetailHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    marginBottom: 2,
+  },
+  annualDetailHeading: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#34D399",
+    flex: 1,
+    lineHeight: 16,
+  },
+  annualDetailRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 9,
+  },
+  annualDetailIconWrap: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    backgroundColor: "rgba(52,211,153,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    marginTop: 1,
+  },
+  annualDetailText: {
+    fontSize: 12,
+    color: "#8BA4BA",
+    fontFamily: "Inter_400Regular",
+    flex: 1,
+    lineHeight: 18,
+  },
+  annualSavingBadge: {
+    backgroundColor: "rgba(52,211,153,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(52,211,153,0.3)",
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 2,
+  },
+  annualSavingText: {
+    fontSize: 12,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#34D399",
+    textAlign: "center",
+    lineHeight: 18,
   },
 
   /* Pricing card */
