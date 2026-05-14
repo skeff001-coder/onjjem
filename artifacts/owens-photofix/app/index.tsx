@@ -727,10 +727,26 @@ export default function HomeScreen() {
                   <>
                     <View style={s.pricingFreeChip}>
                       <Ionicons name="sparkles" size={11} color="#27AE60" />
-                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>Try for free</Text>
+                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>1 free sample</Text>
                     </View>
                     <Text style={s.pricingDivider}>·</Text>
-                    <Text style={s.pricingUnlimited}>Professional AI photo restoration</Text>
+                    <TouchableOpacity
+                      style={[s.pricingFreeChip, { backgroundColor: "rgba(232,160,32,0.18)", borderColor: "rgba(232,160,32,0.45)" }]}
+                      onPress={() => setSubscribeVisible(true)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="camera" size={11} color="#E8A020" />
+                      <Text style={[s.pricingFreeText, { color: "#E8A020" }]}>99p/photo</Text>
+                    </TouchableOpacity>
+                    <Text style={s.pricingDivider}>·</Text>
+                    <TouchableOpacity
+                      style={[s.pricingFreeChip, { backgroundColor: "rgba(74,144,217,0.18)", borderColor: "rgba(74,144,217,0.45)" }]}
+                      onPress={() => setSubscribeVisible(true)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="infinite" size={11} color="#4A90D9" />
+                      <Text style={[s.pricingFreeText, { color: "#4A90D9" }]}>£11.99/mo</Text>
+                    </TouchableOpacity>
                   </>
                 )}
               </LinearGradient>
