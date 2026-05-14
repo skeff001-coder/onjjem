@@ -962,7 +962,7 @@ function makeStyles(
     headerTagline: {
       fontSize: 16,
       fontFamily: "Cinzel_400Regular",
-      color: "#D4A010",
+      color: "#F5D78E",
       letterSpacing: 1,
       marginTop: 5,
       fontStyle: "italic" as const,
