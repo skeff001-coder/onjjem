@@ -384,25 +384,25 @@ export default function HomeScreen() {
         style={[StyleSheet.absoluteFillObject, { pointerEvents: "none" }]}
       />
 
-      {/* Promo announcement banner */}
-      <LinearGradient
-        colors={["#1C1A14", "#2E2818"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={s.promoBanner}
-      >
-        <Ionicons name="sparkles" size={13} color="#F5D78E" />
-        <Text style={s.promoBannerText}>
-          NEW CUSTOMERS: Get <Text style={s.promoBannerBold}>£10 OFF</Text> your first order over £20 · code:{" "}
-          <Text style={s.promoBannerCode}>EXPERT10</Text>
-        </Text>
-      </LinearGradient>
-
       <ScrollView
         ref={scrollRef}
         contentContainerStyle={s.scroll}
         showsVerticalScrollIndicator={false}
       >
+        {/* Promo announcement banner */}
+        <LinearGradient
+          colors={["#1C1A14", "#2E2818"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={s.promoBanner}
+        >
+          <Ionicons name="sparkles" size={13} color="#F5D78E" />
+          <Text style={s.promoBannerText}>
+            NEW CUSTOMERS: Get <Text style={s.promoBannerBold}>£10 OFF</Text> your first order over £20 · code:{" "}
+            <Text style={s.promoBannerCode}>EXPERT10</Text>
+          </Text>
+        </LinearGradient>
+
         <View style={s.header}>
           <View style={s.headerCenter}>
             <GraffitiTitle fontSize={36} letterSpacing={6} />
@@ -2305,8 +2305,7 @@ function makeStyles(
       alignItems: "center" as const,
       justifyContent: "center" as const,
       gap: 7,
-      paddingTop: topPad + 10,
-      paddingBottom: 10,
+      paddingVertical: 10,
       paddingHorizontal: 14,
     },
     promoBannerText: {
