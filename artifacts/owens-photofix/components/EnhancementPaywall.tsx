@@ -146,22 +146,6 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
         ))}
       </View>
 
-      {/* ── Single photo option ── */}
-      <View style={[s.singleRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.singleRowLeft}>
-          <View style={s.singleRowIconWrap}>
-            <Ionicons name="image-outline" size={20} color="#4A90D9" />
-          </View>
-          <View style={s.singleRowText}>
-            <Text style={[s.singleRowTitle, { color: colors.foreground }]}>Single HD Enhancement</Text>
-            <Text style={[s.singleRowSub, { color: colors.mutedForeground }]}>Full quality · No subscription</Text>
-          </View>
-        </View>
-        <TouchableOpacity style={s.singleRowBtn} onPress={onUpgradeSingle} activeOpacity={0.85}>
-          <Text style={s.singleRowBtnText}>£1.99</Text>
-        </TouchableOpacity>
-      </View>
-
       {/* ── Unlimited plans header ── */}
       <View style={s.unlimitedHeader}>
         <Text style={s.unlimitedHeaderTitle}>Unlimited Plans</Text>

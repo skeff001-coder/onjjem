@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
@@ -28,6 +29,7 @@ import Svg, {
 } from "react-native-svg";
 import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
+import { SubscribeModal } from "@/components/SubscribeModal";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { ProPaywall } from "@/components/ProPaywall";
 import { EnhancementPaywall } from "@/components/EnhancementPaywall";
@@ -80,6 +82,8 @@ export default function HomeScreen() {
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
   const [referralVisible, setReferralVisible] = useState(false);
+  const [subscribeVisible, setSubscribeVisible] = useState(false);
+  const [hasUsedFreeTrial, setHasUsedFreeTrial] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
   const [originalUri, setOriginalUri] = useState<string | null>(null);
   const originalBase64Ref = useRef<string | null>(null);
@@ -100,6 +104,13 @@ export default function HomeScreen() {
     "Almost there — perfecting the final touches…",
     "Your masterpiece is nearly ready…",
   ];
+
+  // Load persisted free trial state on mount
+  useEffect(() => {
+    AsyncStorage.getItem("freeTrialUsed").then((val) => {
+      if (val === "1") setHasUsedFreeTrial(true);
+    });
+  }, []);
 
   useEffect(() => {
     if (appState !== "processing") return;
@@ -261,6 +272,9 @@ export default function HomeScreen() {
 
       if (!cancelledRef.current) {
         setAppState("done");
+        // Mark free trial as used — persisted so it survives app restarts
+        await AsyncStorage.setItem("freeTrialUsed", "1");
+        setHasUsedFreeTrial(true);
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
     } catch (error) {
@@ -638,7 +652,7 @@ export default function HomeScreen() {
                   <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>Try for free — basic</Text>
                 </View>
                 <Text style={s.pricingDivider}>·</Text>
-                <Text style={s.pricingUnlimited}>Ultra-HD Studio Quality — £24.99/yr</Text>
+                <Text style={s.pricingUnlimited}>Just a taste of what the real machine can do</Text>
               </LinearGradient>
             </View>
 
@@ -710,17 +724,23 @@ export default function HomeScreen() {
             {/* Main CTA */}
             <TouchableOpacity
               style={[s.processBtn, selectedModes.size === 0 && { opacity: 0.45 }]}
-              onPress={selectedModes.size > 0 ? processPhoto : undefined}
+              onPress={selectedModes.size > 0
+                ? (hasUsedFreeTrial ? () => setSubscribeVisible(true) : processPhoto)
+                : undefined}
               activeOpacity={0.85}
             >
               <LinearGradient
-                colors={["#A67C00", "#C9960C", "#E8B422", "#C9960C"]}
+                colors={hasUsedFreeTrial
+                  ? ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]
+                  : ["#A67C00", "#C9960C", "#E8B422", "#C9960C"]}
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                 style={s.processBtnGradient}
               >
-                <Ionicons name="color-wand" size={24} color="#fff" />
+                <Ionicons name={hasUsedFreeTrial ? "infinite" : "color-wand"} size={24} color="#fff" />
                 <Text style={s.processBtnText}>
-                  Enhance My Photo{selectedModes.size > 1 ? ` (${selectedModes.size})` : ""}
+                  {hasUsedFreeTrial
+                    ? "Subscribe to Enhance — Unlimited"
+                    : `Enhance My Photo${selectedModes.size > 1 ? ` (${selectedModes.size})` : ""}`}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -1006,6 +1026,7 @@ export default function HomeScreen() {
       <ProPaywall visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
       <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />
       <ReferralModal visible={referralVisible} onClose={() => setReferralVisible(false)} />
+      <SubscribeModal visible={subscribeVisible} onClose={() => setSubscribeVisible(false)} />
     </View>
   );
 }
