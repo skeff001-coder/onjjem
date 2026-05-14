@@ -26,12 +26,20 @@ const SINGLE_FEATURES = [
 
 const UNLIMITED_FEATURES = [
   "Everything in Single HD",
-  "Unlimited photos per month",
+  "Unlimited photos",
   "Priority processing queue",
   "Batch restore old albums",
   "Early access to new tools",
   "Cancel anytime",
 ];
+
+const PLANS = [
+  { id: "monthly",  label: "Monthly",   price: "£11.99", period: "/month",    saving: null,          accent: "#4A90D9" },
+  { id: "biannual", label: "6 Months",  price: "£19.99", period: "/6 months", saving: "Save 17%",    accent: "#C9960C" },
+  { id: "annual",   label: "Annual",    price: "£24.99", period: "/year",     saving: "Save 83%",    accent: "#27AE60" },
+] as const;
+
+type PlanId = typeof PLANS[number]["id"];
 
 const COMPARISON = [
   { label: "Output quality",        free: "Basic (preview)",  pro: "Full HD" },
@@ -43,7 +51,7 @@ const COMPARISON = [
 
 export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgradeUnlimited }: Props) {
   const colors = useColors();
-  const [activePlan, setActivePlan] = useState<"single" | "unlimited">("unlimited");
+  const [activePlan, setActivePlan] = useState<PlanId>("monthly");
 
   return (
     <View style={s.root}>
@@ -100,103 +108,118 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
         ))}
       </View>
 
-      {/* ── Plan toggle ── */}
-      <View style={s.planToggle}>
-        <TouchableOpacity
-          style={[s.planToggleBtn, activePlan === "single" && s.planToggleBtnActive]}
-          onPress={() => setActivePlan("single")}
-          activeOpacity={0.8}
-        >
-          <Text style={[s.planToggleBtnText, activePlan === "single" && s.planToggleBtnTextActive]}>
-            Single Photo
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[s.planToggleBtn, activePlan === "unlimited" && s.planToggleBtnActive]}
-          onPress={() => setActivePlan("unlimited")}
-          activeOpacity={0.8}
-        >
-          <View style={s.bestValueBadge}>
-            <Text style={s.bestValueText}>BEST VALUE</Text>
+      {/* ── Single photo option ── */}
+      <View style={[s.singleRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={s.singleRowLeft}>
+          <View style={s.singleRowIconWrap}>
+            <Ionicons name="image-outline" size={20} color="#4A90D9" />
           </View>
-          <Text style={[s.planToggleBtnText, activePlan === "unlimited" && s.planToggleBtnTextActive]}>
-            Unlimited
-          </Text>
+          <View style={s.singleRowText}>
+            <Text style={[s.singleRowTitle, { color: colors.foreground }]}>Single HD Enhancement</Text>
+            <Text style={[s.singleRowSub, { color: colors.mutedForeground }]}>Full quality · No subscription</Text>
+          </View>
+        </View>
+        <TouchableOpacity style={s.singleRowBtn} onPress={onUpgradeSingle} activeOpacity={0.85}>
+          <Text style={s.singleRowBtnText}>£1.99</Text>
         </TouchableOpacity>
       </View>
 
-      {/* ── Active plan card ── */}
-      {activePlan === "single" ? (
-        <LinearGradient
-          colors={["#0D1B2A", "#0A1520"]}
-          style={s.planCard}
-        >
-          <LinearGradient
-            colors={["#4A90D9", "#2C6FAE"]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={s.planCardBar}
-          />
-          <View style={s.planCardInner}>
-            <View style={s.planCardPriceRow}>
-              <Text style={s.planCardCurrency}>£</Text>
-              <Text style={s.planCardAmount}>1.99</Text>
-              <Text style={s.planCardPeriod}>per photo</Text>
-            </View>
-            <Text style={s.planCardTagline}>Pay once, keep forever — no commitment</Text>
-            <View style={s.planCardFeatures}>
-              {SINGLE_FEATURES.map((f) => (
-                <View key={f} style={s.featurePill}>
-                  <Ionicons name="checkmark-circle" size={16} color="#4A90D9" />
-                  <Text style={s.featurePillText}>{f}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-          <TouchableOpacity style={s.singleBtn} onPress={onUpgradeSingle} activeOpacity={0.85}>
-            <Text style={s.singleBtnText}>Enhance This Photo — £1.99</Text>
-          </TouchableOpacity>
-        </LinearGradient>
-      ) : (
-        <LinearGradient
-          colors={["#12100A", "#1C1A14"]}
-          style={s.planCard}
-        >
-          <LinearGradient
-            colors={["#C9960C", "#F5D78E", "#C9960C"]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={s.planCardBar}
-          />
-          <View style={s.planCardInner}>
-            <View style={s.planCardPriceRow}>
-              <Text style={[s.planCardCurrency, { color: "#C9960C" }]}>£</Text>
-              <Text style={[s.planCardAmount, { color: "#F5D78E" }]}>11.99</Text>
-              <Text style={[s.planCardPeriod, { color: "#C9960C" }]}>/month</Text>
-            </View>
-            <Text style={[s.planCardTagline, { color: "rgba(250,247,242,0.6)" }]}>
-              Unlimited photos · Cancel anytime
-            </Text>
-            <View style={s.planCardFeatures}>
-              {UNLIMITED_FEATURES.map((f) => (
-                <View key={f} style={s.featurePill}>
-                  <Ionicons name="checkmark-circle" size={16} color="#C9960C" />
-                  <Text style={[s.featurePillText, { color: "#FAF7F2" }]}>{f}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-          <TouchableOpacity onPress={onUpgradeUnlimited} activeOpacity={0.85}>
-            <LinearGradient
-              colors={["#A67C00", "#C9960C", "#E8B422", "#C9960C"]}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-              style={s.unlimitedBtn}
+      {/* ── Unlimited plans header ── */}
+      <View style={s.unlimitedHeader}>
+        <Text style={s.unlimitedHeaderTitle}>Unlimited Plans</Text>
+        <Text style={[s.unlimitedHeaderSub, { color: colors.mutedForeground }]}>Choose your commitment — save more, pay less</Text>
+      </View>
+
+      {/* ── 3 plan selectors ── */}
+      <View style={s.planSelectorRow}>
+        {PLANS.map((plan) => {
+          const isActive = activePlan === plan.id;
+          return (
+            <TouchableOpacity
+              key={plan.id}
+              style={[s.planSelector, isActive && { borderColor: plan.accent }]}
+              onPress={() => setActivePlan(plan.id)}
+              activeOpacity={0.8}
             >
-              <Ionicons name="infinite" size={20} color="#fff" />
-              <Text style={s.unlimitedBtnText}>Start Unlimited — £11.99/mo</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          <Text style={s.unlimitedLegal}>Cancel anytime in iPhone Settings → App Store → Subscriptions</Text>
-        </LinearGradient>
-      )}
+              {plan.id === "annual" && (
+                <View style={[s.planSelectorBadge, { backgroundColor: "#27AE60" }]}>
+                  <Text style={s.planSelectorBadgeText}>BEST</Text>
+                </View>
+              )}
+              {plan.id === "biannual" && (
+                <View style={[s.planSelectorBadge, { backgroundColor: "#C9960C" }]}>
+                  <Text style={s.planSelectorBadgeText}>VALUE</Text>
+                </View>
+              )}
+              <Text style={[s.planSelectorLabel, isActive && { color: plan.accent }]}>{plan.label}</Text>
+              <Text style={[s.planSelectorPrice, isActive && { color: plan.accent }]}>{plan.price}</Text>
+              <Text style={[s.planSelectorPeriod, { color: colors.mutedForeground }]}>{plan.period}</Text>
+              {plan.saving && (
+                <Text style={[s.planSelectorSaving, { color: plan.accent }]}>{plan.saving}</Text>
+              )}
+              {isActive && (
+                <View style={[s.planSelectorCheck, { backgroundColor: plan.accent }]}>
+                  <Ionicons name="checkmark" size={10} color="#fff" />
+                </View>
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      {/* ── Active plan detail card ── */}
+      {(() => {
+        const plan = PLANS.find(p => p.id === activePlan)!;
+        return (
+          <LinearGradient
+            colors={["#12100A", "#1C1A14"]}
+            style={s.planCard}
+          >
+            <LinearGradient
+              colors={[plan.accent, plan.accent + "88"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+              style={s.planCardBar}
+            />
+            <View style={s.planCardInner}>
+              <View style={s.planCardPriceRow}>
+                <Text style={[s.planCardCurrency, { color: plan.accent }]}>£</Text>
+                <Text style={[s.planCardAmount, { color: "#F5D78E" }]}>{plan.price.slice(1)}</Text>
+                <Text style={[s.planCardPeriod, { color: plan.accent }]}>{plan.period}</Text>
+              </View>
+              {plan.saving && (
+                <View style={[s.savingChip, { backgroundColor: plan.accent + "22", borderColor: plan.accent + "55" }]}>
+                  <Ionicons name="pricetag-outline" size={12} color={plan.accent} />
+                  <Text style={[s.savingChipText, { color: plan.accent }]}>{plan.saving} vs monthly</Text>
+                </View>
+              )}
+              <Text style={[s.planCardTagline, { color: "rgba(250,247,242,0.6)" }]}>
+                Unlimited photos · Cancel anytime
+              </Text>
+              <View style={s.planCardFeatures}>
+                {UNLIMITED_FEATURES.map((f) => (
+                  <View key={f} style={s.featurePill}>
+                    <Ionicons name="checkmark-circle" size={16} color={plan.accent} />
+                    <Text style={[s.featurePillText, { color: "#FAF7F2" }]}>{f}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+            <TouchableOpacity onPress={onUpgradeUnlimited} activeOpacity={0.85}>
+              <LinearGradient
+                colors={[plan.accent, plan.accent + "CC"]}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={s.unlimitedBtn}
+              >
+                <Ionicons name="infinite" size={20} color="#fff" />
+                <Text style={s.unlimitedBtnText}>
+                  Start {plan.label} — {plan.price}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <Text style={s.unlimitedLegal}>Cancel anytime in iPhone Settings → App Store → Subscriptions</Text>
+          </LinearGradient>
+        );
+      })()}
 
       {/* ── Social proof ── */}
       <View style={[s.quoteCard, { backgroundColor: colors.card, borderColor: "rgba(201,150,12,0.2)" }]}>
@@ -323,47 +346,145 @@ const s = StyleSheet.create({
     textAlign: "center",
   },
 
-  // Plan toggle
-  planToggle: {
+  // Single photo row
+  singleRow: {
     flexDirection: "row",
-    backgroundColor: "rgba(255,255,255,0.06)",
-    borderRadius: 12,
-    padding: 4,
-    gap: 4,
-  },
-  planToggleBtn: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 9,
     alignItems: "center",
-    position: "relative",
+    justifyContent: "space-between",
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 14,
+    gap: 12,
   },
-  planToggleBtnActive: {
-    backgroundColor: GOLD,
+  singleRowLeft: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
+  singleRowIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(74,144,217,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  planToggleBtnText: {
-    fontSize: 14,
-    fontWeight: "600" as const,
-    fontFamily: "Inter_600SemiBold",
-    color: "rgba(255,255,255,0.5)",
+  singleRowText: { flex: 1 },
+  singleRowTitle: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
   },
-  planToggleBtnTextActive: {
+  singleRowSub: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    marginTop: 2,
+  },
+  singleRowBtn: {
+    backgroundColor: "#4A90D9",
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  singleRowBtnText: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
     color: "#fff",
   },
-  bestValueBadge: {
+
+  // Unlimited plans header
+  unlimitedHeader: { gap: 3 },
+  unlimitedHeaderTitle: {
+    fontSize: 18,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: CREAM,
+  },
+  unlimitedHeaderSub: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+  },
+
+  // 3-plan selectors
+  planSelectorRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  planSelector: {
+    flex: 1,
+    backgroundColor: "#1A1812",
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.08)",
+    padding: 12,
+    alignItems: "center",
+    gap: 3,
+    position: "relative",
+    paddingTop: 16,
+  },
+  planSelectorBadge: {
     position: "absolute",
-    top: -10,
-    backgroundColor: "#E74C3C",
-    borderRadius: 6,
+    top: -9,
+    borderRadius: 5,
     paddingHorizontal: 7,
     paddingVertical: 2,
   },
-  bestValueText: {
+  planSelectorBadgeText: {
     fontSize: 8,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     color: "#fff",
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
+  },
+  planSelectorLabel: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "rgba(255,255,255,0.45)",
+    letterSpacing: 0.5,
+  },
+  planSelectorPrice: {
+    fontSize: 20,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: CREAM,
+    letterSpacing: -0.5,
+  },
+  planSelectorPeriod: {
+    fontSize: 9,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+  },
+  planSelectorSaving: {
+    fontSize: 10,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    marginTop: 2,
+  },
+  planSelectorCheck: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  // Saving chip inside plan card
+  savingChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    borderRadius: 20,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: "flex-start",
+    marginTop: -4,
+  },
+  savingChipText: {
+    fontSize: 12,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
   },
 
   // Plan cards

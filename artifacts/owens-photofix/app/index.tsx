@@ -627,9 +627,9 @@ export default function HomeScreen() {
                   <Text style={s.pricingFreeText}>1st FREE</Text>
                 </View>
                 <Text style={s.pricingDivider}>·</Text>
-                <Text style={s.pricingPaidText}>then £1.99/photo</Text>
+                <Text style={s.pricingPaidText}>£1.99/photo</Text>
                 <Text style={s.pricingDivider}>·</Text>
-                <Text style={s.pricingUnlimited}>£11.99/month unlimited</Text>
+                <Text style={s.pricingUnlimited}>from £11.99/mo unlimited</Text>
               </LinearGradient>
             </View>
 
