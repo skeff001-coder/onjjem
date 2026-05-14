@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams } from "expo-router";
 import {
+  Alert,
   Animated,
   Image,
   Modal,
@@ -2256,19 +2257,46 @@ function ProductCard({ product, onPress, compact }: { product: Product; compact?
 
   const fullSummary = [
     optionSummary,
-    teamPhotoUri ? "Team Photo: ✓ Uploaded" : null,
+    teamPhotoUri ? "Your Photo: ✓ Uploaded" : null,
   ].filter(Boolean).join(" · ") || undefined;
+
+  function isHighResImageUri(uri: string): boolean {
+    const lower = uri.toLowerCase().split("?")[0];
+    return (
+      lower.endsWith(".jpg") ||
+      lower.endsWith(".jpeg") ||
+      lower.endsWith(".png") ||
+      lower.endsWith(".tiff") ||
+      lower.endsWith(".tif")
+    );
+  }
+
+  function checkImageType(uri: string, mimeType?: string | null): boolean {
+    const allowed = ["image/jpeg", "image/png", "image/tiff"];
+    if (mimeType && allowed.includes(mimeType.toLowerCase())) return true;
+    if (!mimeType) return isHighResImageUri(uri);
+    return false;
+  }
 
   async function handleTeamPhotoUpload() {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) return;
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
-      quality: 0.9,
+      quality: 1.0,
       allowsEditing: false,
     });
     if (!result.canceled && result.assets[0]) {
-      setTeamPhotoUri(result.assets[0].uri);
+      const asset = result.assets[0];
+      if (!checkImageType(asset.uri, asset.mimeType)) {
+        Alert.alert(
+          "File Type Not Accepted",
+          "Please choose a high-resolution JPG, PNG, or TIFF file to maintain print quality.",
+          [{ text: "Choose Again", onPress: handleTeamPhotoUpload }, { text: "Cancel" }]
+        );
+        return;
+      }
+      setTeamPhotoUri(asset.uri);
     }
   }
 
@@ -2277,11 +2305,20 @@ function ProductCard({ product, onPress, compact }: { product: Product; compact?
     if (!perm.granted) return;
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
-      quality: 0.9,
+      quality: 1.0,
       allowsEditing: false,
     });
     if (!result.canceled && result.assets[0]) {
-      setQuotePhotoUri(result.assets[0].uri);
+      const asset = result.assets[0];
+      if (!checkImageType(asset.uri, asset.mimeType)) {
+        Alert.alert(
+          "File Type Not Accepted",
+          "Please choose a high-resolution JPG, PNG, or TIFF file to maintain print quality.",
+          [{ text: "Choose Again", onPress: handleQuotePhotoUpload }, { text: "Cancel" }]
+        );
+        return;
+      }
+      setQuotePhotoUri(asset.uri);
     }
   }
 
@@ -2298,7 +2335,7 @@ function ProductCard({ product, onPress, compact }: { product: Product; compact?
         style={{ marginRight: 6 }}
       />
       <Text style={[s.uploadTeamBtnText, teamPhotoUri ? s.uploadTeamBtnTextDone : null]}>
-        {teamPhotoUri ? "Team Photo Uploaded ✓" : "Upload Team Photo"}
+        {teamPhotoUri ? "Your Photo Uploaded ✓" : "Upload Your Photo"}
       </Text>
     </TouchableOpacity>
   ) : null;
