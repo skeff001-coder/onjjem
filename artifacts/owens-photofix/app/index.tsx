@@ -323,7 +323,7 @@ export default function HomeScreen() {
         ))}
       </View>
       <LinearGradient
-        colors={["rgba(250,247,242,0.78)", "rgba(250,247,242,0.88)"]}
+        colors={["rgba(250,247,242,0.48)", "rgba(250,247,242,0.62)"]}
         style={[StyleSheet.absoluteFillObject, { pointerEvents: "none" }]}
       />
 
@@ -1717,9 +1717,11 @@ function makeStyles(
     referralBtn: {
       borderRadius: 14,
       overflow: "hidden" as const,
-      shadowColor: "#1C1A14",
+      borderWidth: 1.5,
+      borderColor: "rgba(201,150,12,0.65)",
+      shadowColor: "#C9960C",
       shadowOffset: { width: 0, height: 5 },
-      shadowOpacity: 0.28,
+      shadowOpacity: 0.35,
       shadowRadius: 12,
       elevation: 6,
     },
@@ -1744,19 +1746,19 @@ function makeStyles(
       fontFamily: "Inter_400Regular",
     },
     referralBtnBadge: {
-      backgroundColor: "rgba(201,150,12,0.25)",
-      borderWidth: 1,
-      borderColor: "rgba(201,150,12,0.5)",
-      paddingHorizontal: 9,
-      paddingVertical: 4,
+      backgroundColor: "rgba(201,150,12,0.55)",
+      borderWidth: 1.5,
+      borderColor: "#C9960C",
+      paddingHorizontal: 12,
+      paddingVertical: 6,
       borderRadius: 8,
     },
     referralBtnBadgeText: {
-      fontSize: 10,
+      fontSize: 11,
       fontWeight: "700" as const,
       fontFamily: "Inter_700Bold",
-      color: "#F5D78E",
-      letterSpacing: 1.2,
+      color: "#FAF7F2",
+      letterSpacing: 1.5,
     },
     promoBanner: {
       flexDirection: "row" as const,
