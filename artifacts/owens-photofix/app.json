@@ -17,7 +17,7 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.photorestoration",
       "buildNumber": "1",
-      "privacyPolicyUrl": "https://onjjem.co.uk/privacy",
+      "privacyPolicyUrl": "https://66b36b09-174f-4a92-9753-24f8cec1d5c6-00-3jfnvsk4ipryp.worf.replit.dev/api/privacy",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "ONJJEM needs access to your photos so you can choose a photo to restore.",

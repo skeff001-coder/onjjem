@@ -143,3 +143,33 @@ id = "BuP_Dn9Kva8IjN-NqHqcH"
 uri = "file://expo-go-qr.png"
 type = "image"
 title = "Expo Go QR Code — ONJJEM"
+
+[[outputs]]
+id = "tvVvnPlaRi8htwDdF2Z3C"
+uri = "file://artifacts/owens-photofix/app-store-listing.md"
+type = "text"
+title = "App Store Listing — ready to paste into App Store Connect"
+
+[[outputs]]
+id = "xtTRt1WYbchmrDl-pAWkB"
+uri = "file://screenshots/home-screen.jpg"
+type = "image"
+title = "Home Screen"
+
+[[outputs]]
+id = "RqEUHlTUbXz5ne8shAsLW"
+uri = "file://screenshots/gift-shop.jpg"
+type = "image"
+title = "Gift Shop"
+
+[[outputs]]
+id = "dnR10STGMTBHetyeHQFA6"
+uri = "file://screenshots/canvas-prints.jpg"
+type = "image"
+title = "Canvas Prints"
+
+[[outputs]]
+id = "Ke_jYKSxcDB1LylJIKf-4"
+uri = "file://screenshots/gallery.jpg"
+type = "image"
+title = "Masterpiece Gallery"

@@ -69,7 +69,7 @@ https://onjjem.co.uk/contact
 https://onjjem.co.uk
 
 ## Privacy Policy URL
-https://onjjem.co.uk/privacy
+https://66b36b09-174f-4a92-9753-24f8cec1d5c6-00-3jfnvsk4ipryp.worf.replit.dev/api/privacy
 
 ---
 
