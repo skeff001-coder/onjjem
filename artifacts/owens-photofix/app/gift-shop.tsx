@@ -1415,56 +1415,6 @@ export default function GiftShopScreen() {
 
   return (
     <View style={[s.root, { paddingTop: topPad }]}>
-      {/* Promo announcement banner */}
-      <LinearGradient
-        colors={["#1C1A14", "#2E2818"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={s.promoBanner}
-      >
-        <Ionicons name="sparkles" size={13} color="#F5D78E" />
-        <Text style={s.promoBannerText}>
-          ⚡ FLASH SALE: <Text style={s.promoBannerBold}>10% OFF</Text> all restored gifts · code:{" "}
-          <Text style={s.promoBannerCode}>EXPERT10</Text>
-        </Text>
-      </LinearGradient>
-
-      {/* Rainbow bar */}
-      <LinearGradient
-        colors={["#FF6B6B", "#FF9F0A", "#FFD60A", "#34C759", "#4F8EF7", "#BF5AF2"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={s.rainbowBar}
-      />
-
-      {/* Header */}
-      <View style={s.header}>
-        <TouchableOpacity style={s.backBtn} onPress={() => router.back()} activeOpacity={0.7}>
-          <Ionicons name="chevron-back" size={24} color="#1C1C1E" />
-        </TouchableOpacity>
-        <View style={s.headerCenter}>
-          <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
-            <Text style={s.headerEyebrow}>ONJJEM</Text>
-          </TouchableOpacity>
-          <Text style={s.headerTitle}>Gift Shop</Text>
-          <Text style={s.headerSub}>Print · Gift · Remember</Text>
-        </View>
-        <TouchableOpacity
-          style={s.headerRight}
-          activeOpacity={0.7}
-          onPress={() => scrollRef.current?.scrollToEnd({ animated: true })}
-        >
-          <Ionicons name="gift" size={26} color="#FF6B6B" />
-          {basketItems.length > 0 && (
-            <View style={s.basketCountBadge}>
-              <Text style={s.basketCountText}>
-                {basketItems.length > 9 ? "9+" : basketItems.length}
-              </Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      </View>
-
       {/* Category tab bar — horizontally scrollable for 4 tabs */}
       <ScrollView
         horizontal
@@ -1496,6 +1446,56 @@ export default function GiftShopScreen() {
         style={s.scrollView}
         key={activeTab}
       >
+        {/* Promo announcement banner */}
+        <LinearGradient
+          colors={["#1C1A14", "#2E2818"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={s.promoBanner}
+        >
+          <Ionicons name="sparkles" size={13} color="#F5D78E" />
+          <Text style={s.promoBannerText}>
+            ⚡ FLASH SALE: <Text style={s.promoBannerBold}>10% OFF</Text> all restored gifts · code:{" "}
+            <Text style={s.promoBannerCode}>EXPERT10</Text>
+          </Text>
+        </LinearGradient>
+
+        {/* Rainbow bar */}
+        <LinearGradient
+          colors={["#FF6B6B", "#FF9F0A", "#FFD60A", "#34C759", "#4F8EF7", "#BF5AF2"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={s.rainbowBar}
+        />
+
+        {/* Header */}
+        <View style={s.header}>
+          <TouchableOpacity style={s.backBtn} onPress={() => router.back()} activeOpacity={0.7}>
+            <Ionicons name="chevron-back" size={24} color="#1C1C1E" />
+          </TouchableOpacity>
+          <View style={s.headerCenter}>
+            <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
+              <Text style={s.headerEyebrow}>ONJJEM</Text>
+            </TouchableOpacity>
+            <Text style={s.headerTitle}>Gift Shop</Text>
+            <Text style={s.headerSub}>Print · Gift · Remember</Text>
+          </View>
+          <TouchableOpacity
+            style={s.headerRight}
+            activeOpacity={0.7}
+            onPress={() => scrollRef.current?.scrollToEnd({ animated: true })}
+          >
+            <Ionicons name="gift" size={26} color="#FF6B6B" />
+            {basketItems.length > 0 && (
+              <View style={s.basketCountBadge}>
+                <Text style={s.basketCountText}>
+                  {basketItems.length > 9 ? "9+" : basketItems.length}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+
         {/* Section card */}
         <View style={s.section}>
           <LinearGradient
