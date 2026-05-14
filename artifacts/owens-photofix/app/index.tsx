@@ -276,8 +276,6 @@ export default function HomeScreen() {
         await AsyncStorage.setItem("freeTrialUsed", "1");
         setHasUsedFreeTrial(true);
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        // Give the user a moment to see their result, then show subscribe modal
-        setTimeout(() => setSubscribeVisible(true), 2000);
       }
     } catch (error) {
       if (cancelledRef.current) return;
@@ -639,7 +637,11 @@ export default function HomeScreen() {
         )}
 
         {appState === "done" && originalUri && resultBase64 && (
-          <View style={s.imageBlock}>
+          <TouchableOpacity
+            style={s.imageBlock}
+            onPress={() => setSubscribeVisible(true)}
+            activeOpacity={0.92}
+          >
             <View style={s.sampleBadgeRow}>
               <View style={s.sampleBadge}>
                 <Ionicons name="eye-outline" size={12} color="#fff" />
@@ -653,7 +655,12 @@ export default function HomeScreen() {
               beforeUri={originalUri}
               afterBase64={resultBase64}
             />
-          </View>
+            <View style={s.imageTapHint}>
+              <Ionicons name="sparkles" size={12} color="#C9960C" />
+              <Text style={s.imageTapHintText}>Tap photo to unlock full quality</Text>
+              <Ionicons name="sparkles" size={12} color="#C9960C" />
+            </View>
+          </TouchableOpacity>
         )}
 
         {appState === "selected" && (
@@ -1481,6 +1488,23 @@ function makeStyles(
     },
     imageBlock: {
       gap: 8,
+    },
+    imageTapHint: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 6,
+      paddingVertical: 8,
+      backgroundColor: "rgba(201,150,12,0.10)",
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.25)",
+    },
+    imageTapHintText: {
+      fontSize: 12,
+      fontFamily: "Inter_600SemiBold",
+      color: "#C9960C",
+      letterSpacing: 0.3,
     },
     imageLabel: {
       fontSize: 12,
