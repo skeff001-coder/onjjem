@@ -276,6 +276,8 @@ export default function HomeScreen() {
         await AsyncStorage.setItem("freeTrialUsed", "1");
         setHasUsedFreeTrial(true);
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        // Give the user a moment to see their result, then show subscribe modal
+        setTimeout(() => setSubscribeVisible(true), 2000);
       }
     } catch (error) {
       if (cancelledRef.current) return;
