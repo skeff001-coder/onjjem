@@ -71,6 +71,7 @@ export default function HomeScreen() {
   const [mode, setMode] = useState<Mode>("sharpen");
   const [statusMessage, setStatusMessage] = useState("Preparing...");
   const msgIndexRef = useRef(0);
+  const cancelledRef = useRef(false);
 
   const COMFORT_MESSAGES = [
     "Restoring your photo to our highest standards…",
@@ -154,23 +155,52 @@ export default function HomeScreen() {
     }
   };
 
+  const cancelProcessing = () => {
+    cancelledRef.current = true;
+    setAppState("selected");
+  };
+
   const processPhoto = async () => {
     if (!originalUri) return;
 
+    cancelledRef.current = false;
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     setAppState("processing");
 
     try {
-      const base64 = await FileSystem.readAsStringAsync(originalUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      // Read image as base64 — web returns blob: URIs that FileSystem cannot handle
+      let base64: string;
+      const isWebUri =
+        originalUri.startsWith("blob:") ||
+        (originalUri.startsWith("http") && !originalUri.startsWith("https://localhost"));
+
+      if (isWebUri) {
+        const resp = await fetch(originalUri);
+        if (cancelledRef.current) return;
+        const blob = await resp.blob();
+        base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const dataUrl = reader.result as string;
+            resolve(dataUrl.split(",")[1] ?? "");
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      } else {
+        base64 = await FileSystem.readAsStringAsync(originalUri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+      }
+
+      if (cancelledRef.current) return;
 
       const domain = process.env.EXPO_PUBLIC_DOMAIN;
       if (!domain) throw new Error("API domain not configured — please contact support.");
       const apiUrl = `https://${domain}/api/process`;
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60_000);
+      const fetchTimeoutId = setTimeout(() => controller.abort(), 90_000);
 
       let response: Response;
       try {
@@ -181,11 +211,12 @@ export default function HomeScreen() {
           signal: controller.signal,
         });
       } finally {
-        clearTimeout(timeoutId);
+        clearTimeout(fetchTimeoutId);
       }
 
-      const data = await response.json();
+      if (cancelledRef.current) return;
 
+      const data = await response.json();
       if (!response.ok || data.error) {
         throw new Error(data.error ?? "Processing failed");
       }
@@ -193,21 +224,26 @@ export default function HomeScreen() {
       const b64: string = data.resultBase64;
       setResultBase64(b64);
 
-      const localPath =
-        (FileSystem.documentDirectory ?? "") + "photofix_result.jpg";
-      await FileSystem.writeAsStringAsync(localPath, b64, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      setResultLocalUri(localPath);
+      // Save to local filesystem on native only
+      if (!isWebUri) {
+        const localPath =
+          (FileSystem.documentDirectory ?? "") + "photofix_result.jpg";
+        await FileSystem.writeAsStringAsync(localPath, b64, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+        setResultLocalUri(localPath);
+      }
 
-      setAppState("done");
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      if (!cancelledRef.current) {
+        setAppState("done");
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
     } catch (error) {
+      if (cancelledRef.current) return;
       const message =
         error instanceof Error ? error.message : "Something went wrong";
-      Alert.alert("Error", message, [
-        { text: "Try Again", onPress: () => setAppState("selected") },
-      ]);
+      setAppState("selected");
+      Alert.alert("Restoration Failed", message, [{ text: "Try Again" }]);
     }
   };
 
@@ -550,6 +586,15 @@ export default function HomeScreen() {
             <Text style={s.processingNote}>
               Our Cinema-Grade AI is working on your photograph with the care it deserves.
             </Text>
+            <TouchableOpacity
+              onPress={cancelProcessing}
+              activeOpacity={0.7}
+              style={{ marginTop: 20 }}
+            >
+              <Text style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, textAlign: "center" }}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
           </LinearGradient>
         )}
 
