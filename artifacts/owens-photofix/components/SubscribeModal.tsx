@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   Alert,
   Modal,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -19,204 +18,140 @@ interface Props {
 
 type Plan = "perpic" | "monthly" | "annual";
 
-const MONTHLY_PERKS = [
-  "Unlimited HD restorations — no cap, ever",
-  "100% enhancement strength — not the preview version",
-  "All 6 modes combined: Sharpen · Brighten · Denoise · Restore · Vivid · Colourize",
-  "Ultra-sharp, crystal-clear studio output",
-  "Professional-grade colour & contrast correction",
-  "Priority AI processing queue — jump the line",
-  "Save full-res results to your Photos library",
-  "Early access to every new tool we release",
-];
-
-const ANNUAL_PERKS = [
-  ...MONTHLY_PERKS,
-  "Print as many photos as you want all year — unlimited downloads",
-  "Exclusive annual member badge & bonus features",
-  "First in line for seasonal gift shop discounts",
-  "Free concierge consultation on your best restoration",
-];
-
-const BONUSES = [
-  { icon: "gift-outline" as const,       text: "Bonus: Members-only discount codes every month" },
-  { icon: "star-outline" as const,       text: "Bonus: Early access to new AI restoration tools" },
-  { icon: "ribbon-outline" as const,     text: "Bonus: Priority support — real people, fast replies" },
-  { icon: "images-outline" as const,     text: "Bonus: Batch-restore entire albums in one go" },
+const PLANS = [
+  {
+    id: "perpic" as Plan,
+    label: "One Photo",
+    price: "99p",
+    period: "per photo",
+    desc: "Pay once, enhance one photo at full quality. No subscription.",
+    color: "#E8A020",
+    icon: "camera" as const,
+  },
+  {
+    id: "monthly" as Plan,
+    label: "Monthly",
+    price: "£11.99",
+    period: "per month",
+    desc: "Unlimited full-quality restorations. Cancel anytime.",
+    color: "#4A90D9",
+    icon: "infinite" as const,
+  },
+  {
+    id: "annual" as Plan,
+    label: "Annual",
+    price: "£24.99",
+    period: "per year",
+    desc: "Everything in monthly, all year. Save over 80%.",
+    color: "#27AE60",
+    icon: "star" as const,
+    badge: "BEST VALUE",
+  },
 ];
 
 export function SubscribeModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const [plan, setPlan] = useState<Plan>("annual");
 
-  const isAnnual = plan === "annual";
-  const isPerPic = plan === "perpic";
-  const accent = isAnnual ? "#27AE60" : isPerPic ? "#E8A020" : "#4A90D9";
-  const perks = isAnnual ? ANNUAL_PERKS : MONTHLY_PERKS;
-
-  const planLabel = isAnnual
-    ? "Annual Plan — £24.99/year"
-    : isPerPic
-    ? "Pay Per Photo — 99p"
-    : "Monthly Plan — £11.99/month";
+  const selected = PLANS.find((p) => p.id === plan)!;
 
   const handleSubscribe = () => {
     Alert.alert(
-      planLabel,
-      "Payments are processed securely through Apple's payment system.\n\nWhen ONJJEM launches on the App Store, tapping this button will open Apple's native payment sheet — your Apple ID payment method is used automatically, no card entry needed.\n\nThank you for your interest!",
+      selected.label + " — " + selected.price,
+      "Payments are processed securely through Apple's payment system.\n\nWhen ONJJEM launches on the App Store, tapping this button will open Apple's native payment sheet — your Apple ID is used automatically, no card entry needed.",
       [{ text: "Got It", style: "default", onPress: onClose }],
     );
   };
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <View style={[s.root, { paddingBottom: insets.bottom + 12 }]}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
+      <View style={[s.root, { paddingBottom: insets.bottom + 16 }]}>
 
-          {/* Close button */}
+        {/* Gold bar */}
+        <LinearGradient
+          colors={["#C9960C", "#F5D78E", "#C9960C"]}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+          style={s.goldBar}
+        />
+
+        {/* Header */}
+        <View style={s.header}>
           <TouchableOpacity style={s.closeBtn} onPress={onClose} activeOpacity={0.7}>
             <Ionicons name="close" size={20} color="rgba(250,247,242,0.5)" />
           </TouchableOpacity>
+          <Text style={s.title}>Unlock Full Quality</Text>
+          <Text style={s.subtitle}>
+            Your free sample ran at reduced quality.{"\n"}Choose how you'd like to continue.
+          </Text>
+        </View>
 
-          {/* Header */}
-          <LinearGradient colors={["#1A1610", "#0E0C08"]} style={s.header}>
-            <LinearGradient
-              colors={["#C9960C", "#F5D78E", "#C9960C"]}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-              style={s.goldBar}
-            />
-            <View style={s.headerInner}>
-              <View style={s.tasteRow}>
-                <Text style={s.tasteEmoji}>👁️</Text>
-                <View style={s.tasteBadge}>
-                  <Text style={s.tasteBadgeText}>FREE TASTE USED</Text>
+        {/* Price cards */}
+        <View style={s.cards}>
+          {PLANS.map((p) => {
+            const active = plan === p.id;
+            return (
+              <TouchableOpacity
+                key={p.id}
+                style={[s.card, active && { borderColor: p.color, backgroundColor: p.color + "14" }]}
+                onPress={() => setPlan(p.id)}
+                activeOpacity={0.8}
+              >
+                {p.badge && (
+                  <View style={[s.badge, { backgroundColor: p.color }]}>
+                    <Text style={s.badgeText}>{p.badge}</Text>
+                  </View>
+                )}
+                <View style={s.cardTop}>
+                  <View style={[s.iconWrap, { backgroundColor: p.color + "20" }]}>
+                    <Ionicons name={p.icon} size={20} color={p.color} />
+                  </View>
+                  <View style={s.cardMeta}>
+                    <Text style={[s.cardLabel, active && { color: p.color }]}>{p.label}</Text>
+                    <Text style={s.cardDesc}>{p.desc}</Text>
+                  </View>
+                  <View style={s.cardPriceWrap}>
+                    <Text style={[s.cardPrice, active && { color: p.color }]}>{p.price}</Text>
+                    <Text style={s.cardPeriod}>{p.period}</Text>
+                  </View>
                 </View>
-              </View>
-              <Text style={s.headerTitle}>That Was Just a Glimpse.</Text>
-              <Text style={s.headerSub}>
-                What you just saw was ONJJEM running at a fraction of its power — reduced strength, half resolution, compressed output.
-                {"\n\n"}
-                The real machine? Completely different. Ultra-HD. Studio-grade. The kind of result you'd frame on a wall.
-                {"\n\n"}
-                Subscribe now and see what your photos truly look like at full power.
-              </Text>
-            </View>
-          </LinearGradient>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
 
-          {/* Plan toggle */}
-          <View style={s.toggleRow}>
-            <TouchableOpacity
-              style={[s.toggleBtn, plan === "monthly" && { borderColor: "#4A90D9", backgroundColor: "#4A90D918" }]}
-              onPress={() => setPlan("monthly")}
-              activeOpacity={0.8}
-            >
-              <Text style={[s.toggleLabel, plan === "monthly" && { color: "#4A90D9" }]}>Monthly</Text>
-              <Text style={[s.togglePrice, plan === "monthly" && { color: "#FAF7F2" }]}>£11.99</Text>
-              <Text style={s.togglePeriod}>/month</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[s.toggleBtn, plan === "annual" && { borderColor: "#27AE60", backgroundColor: "#27AE6018" }]}
-              onPress={() => setPlan("annual")}
-              activeOpacity={0.8}
-            >
-              <View style={s.bestDealBadge}>
-                <Text style={s.bestDealText}>BEST DEAL</Text>
-              </View>
-              <Text style={[s.toggleLabel, plan === "annual" && { color: "#27AE60" }]}>Annual</Text>
-              <Text style={[s.togglePrice, plan === "annual" && { color: "#FAF7F2" }]}>£24.99</Text>
-              <Text style={s.togglePeriod}>/year</Text>
-              <Text style={[s.toggleSaving, { color: "#27AE60" }]}>Save 83%</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Per-photo option */}
-          <View style={s.perPicRow}>
-            <View style={s.perPicDividerWrap}>
-              <View style={s.perPicDividerLine} />
-              <Text style={s.perPicDividerText}>or pay as you go</Text>
-              <View style={s.perPicDividerLine} />
-            </View>
-            <TouchableOpacity
-              style={[s.perPicBtn, plan === "perpic" && { borderColor: "#E8A020", backgroundColor: "#E8A02018" }]}
-              onPress={() => setPlan("perpic")}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="camera" size={16} color={plan === "perpic" ? "#E8A020" : "rgba(250,247,242,0.45)"} />
-              <Text style={[s.perPicLabel, plan === "perpic" && { color: "#E8A020" }]}>Pay Per Photo</Text>
-              <Text style={[s.perPicPrice, plan === "perpic" && { color: "#FAF7F2" }]}>99p</Text>
-              <Text style={s.perPicSub}>per photo · no subscription</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Perks */}
-          <View style={s.perksCard}>
-            <LinearGradient
-              colors={[accent + "22", accent + "08"]}
-              style={s.perksCardGradient}
-            >
-              <Text style={[s.perksTitle, { color: accent }]}>
-                {isAnnual ? "Everything, Unlimited, All Year" : isPerPic ? "Full Enhancement — This Photo Only" : "Everything, Unlimited, Every Month"}
-              </Text>
-              {perks.map((p) => (
-                <View key={p} style={s.perkRow}>
-                  <Ionicons name="checkmark-circle" size={17} color={accent} />
-                  <Text style={s.perkText}>{p}</Text>
-                </View>
-              ))}
-            </LinearGradient>
-          </View>
-
-          {/* Bonus incentives */}
-          <View style={s.bonusSection}>
-            <Text style={s.bonusTitle}>Member Bonuses Included</Text>
-            {BONUSES.map((b) => (
-              <View key={b.text} style={s.bonusRow}>
-                <View style={s.bonusIconWrap}>
-                  <Ionicons name={b.icon} size={18} color="#C9960C" />
-                </View>
-                <Text style={s.bonusText}>{b.text}</Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Emphasis bar */}
-          <View style={s.emphasisBar}>
-            <Text style={s.emphasisText}>
-              🎯 Remember — your free sample ran at <Text style={s.emphasisBold}>50% resolution with reduced strength</Text>. The real thing is in a completely different league.
-            </Text>
-          </View>
-
-          {/* CTA */}
-          <TouchableOpacity onPress={handleSubscribe} activeOpacity={0.87} style={s.ctaWrap}>
+        {/* CTA */}
+        <View style={s.ctaWrap}>
+          <TouchableOpacity onPress={handleSubscribe} activeOpacity={0.87} style={s.ctaBtn}>
             <LinearGradient
               colors={
-                isAnnual
+                plan === "annual"
                   ? ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]
-                  : isPerPic
+                  : plan === "perpic"
                   ? ["#8B6200", "#E8A020", "#F5C050", "#E8A020"]
                   : ["#2C6FAE", "#4A90D9", "#5BA3E8", "#4A90D9"]
               }
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
               style={s.cta}
             >
-              <Ionicons name={isPerPic ? "camera" : "infinite"} size={22} color="#fff" />
+              <Ionicons name={selected.icon} size={22} color="#fff" />
               <Text style={s.ctaText}>
-                {isAnnual
-                  ? "Start Annual Plan — £24.99/year"
-                  : isPerPic
+                {plan === "perpic"
                   ? "Enhance This Photo — 99p"
-                  : "Start Monthly Plan — £11.99/month"}
+                  : plan === "monthly"
+                  ? "Start Monthly — £11.99/month"
+                  : "Start Annual — £24.99/year"}
               </Text>
             </LinearGradient>
           </TouchableOpacity>
 
           <Text style={s.legal}>
-            Payment will be charged to your Apple ID account at confirmation of purchase.{isPerPic ? "" : " Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime: iPhone Settings → Apple ID → Subscriptions."}{"\n\n"}
-            Same studio quality on all plans.
+            {plan !== "perpic"
+              ? "Subscription renews automatically. Cancel anytime in iPhone Settings → Apple ID → Subscriptions.\n"
+              : "One-time payment. No subscription.\n"}
+            Payment charged to your Apple ID at confirmation.
           </Text>
+        </View>
 
-        </ScrollView>
       </View>
     </Modal>
   );
@@ -227,216 +162,125 @@ const DARK  = "#0E0C08";
 
 const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: DARK },
-  scroll: { padding: 20, gap: 16 },
+  goldBar: { height: 3 },
 
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 20,
+    gap: 6,
+  },
   closeBtn: {
     alignSelf: "flex-end",
-    width: 36, height: 36,
-    borderRadius: 18,
+    width: 34, height: 34,
+    borderRadius: 17,
     backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 4,
+    marginBottom: 8,
   },
-
-  header: { borderRadius: 18, overflow: "hidden", borderWidth: 1, borderColor: "rgba(201,150,12,0.2)" },
-  goldBar: { height: 4 },
-  headerInner: { padding: 20, gap: 12 },
-
-  tasteRow: { flexDirection: "row", alignItems: "center", gap: 10 },
-  tasteEmoji: { fontSize: 22 },
-  tasteBadge: {
-    backgroundColor: "rgba(201,150,12,0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(201,150,12,0.4)",
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-  },
-  tasteBadgeText: {
-    fontSize: 10,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-    color: "#C9960C",
-    letterSpacing: 1.2,
-  },
-  headerTitle: {
-    fontSize: 28,
+  title: {
+    fontSize: 26,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     color: CREAM,
-    letterSpacing: -0.5,
   },
-  headerSub: {
+  subtitle: {
     fontSize: 14,
     fontFamily: "Inter_400Regular",
-    color: "rgba(250,247,242,0.65)",
-    lineHeight: 22,
+    color: "rgba(250,247,242,0.55)",
+    lineHeight: 20,
   },
 
-  perPicRow: { gap: 10, marginTop: 4 },
-  perPicDividerWrap: { flexDirection: "row", alignItems: "center", gap: 10 },
-  perPicDividerLine: { flex: 1, height: 1, backgroundColor: "rgba(255,255,255,0.08)" },
-  perPicDividerText: { fontSize: 11, color: "rgba(250,247,242,0.35)", fontFamily: "Inter_400Regular" },
-  perPicBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    backgroundColor: "#1A1610",
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-  },
-  perPicLabel: { fontSize: 13, fontFamily: "Inter_600SemiBold", color: "rgba(250,247,242,0.55)", flex: 1 },
-  perPicPrice: { fontSize: 20, fontFamily: "Inter_700Bold", color: "rgba(250,247,242,0.45)" },
-  perPicSub: { fontSize: 10, color: "rgba(250,247,242,0.3)", fontFamily: "Inter_400Regular" },
-
-  toggleRow: { flexDirection: "row", gap: 10 },
-  toggleBtn: {
+  cards: {
     flex: 1,
+    paddingHorizontal: 16,
+    gap: 12,
+    justifyContent: "center",
+  },
+  card: {
     backgroundColor: "#1A1610",
     borderRadius: 16,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
     padding: 16,
-    alignItems: "center",
-    gap: 3,
     position: "relative",
-    paddingTop: 20,
   },
-  bestDealBadge: {
+  badge: {
     position: "absolute",
     top: -10,
-    backgroundColor: "#27AE60",
+    right: 14,
     borderRadius: 6,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 3,
   },
-  bestDealText: {
-    fontSize: 8,
+  badgeText: {
+    fontSize: 9,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     color: "#fff",
     letterSpacing: 1,
   },
-  toggleLabel: {
-    fontSize: 11,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-    color: "rgba(255,255,255,0.4)",
-    letterSpacing: 1,
-  },
-  togglePrice: {
-    fontSize: 30,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-    color: CREAM,
-    letterSpacing: -1,
-  },
-  togglePeriod: {
-    fontSize: 11,
-    fontFamily: "Inter_400Regular",
-    color: "rgba(250,247,242,0.4)",
-  },
-  toggleSaving: {
-    fontSize: 11,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-    marginTop: 2,
-  },
-
-  perksCard: { borderRadius: 16, overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" },
-  perksCardGradient: { padding: 18, gap: 10 },
-  perksTitle: {
-    fontSize: 14,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-    marginBottom: 4,
-    letterSpacing: 0.3,
-  },
-  perkRow: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
-  perkText: {
-    fontSize: 13,
-    fontFamily: "Inter_400Regular",
-    color: CREAM,
-    flex: 1,
-    lineHeight: 19,
-  },
-
-  bonusSection: { gap: 10 },
-  bonusTitle: {
-    fontSize: 14,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-    color: "#C9960C",
-    letterSpacing: 0.5,
-  },
-  bonusRow: {
+  cardTop: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "rgba(201,150,12,0.07)",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(201,150,12,0.15)",
-    padding: 12,
   },
-  bonusIconWrap: {
-    width: 36, height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(201,150,12,0.12)",
+  iconWrap: {
+    width: 42, height: 42,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
   },
-  bonusText: {
-    fontSize: 13,
-    fontFamily: "Inter_400Regular",
-    color: "rgba(250,247,242,0.8)",
-    flex: 1,
-    lineHeight: 18,
-  },
-
-  emphasisBar: {
-    backgroundColor: "rgba(201,150,12,0.08)",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(201,150,12,0.2)",
-    padding: 14,
-  },
-  emphasisText: {
-    fontSize: 13,
-    fontFamily: "Inter_400Regular",
-    color: "rgba(250,247,242,0.7)",
-    lineHeight: 20,
-  },
-  emphasisBold: {
+  cardMeta: { flex: 1, gap: 3 },
+  cardLabel: {
+    fontSize: 16,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
-    color: "#C9960C",
+    color: "rgba(250,247,242,0.6)",
+  },
+  cardDesc: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.4)",
+    lineHeight: 17,
+  },
+  cardPriceWrap: { alignItems: "flex-end" },
+  cardPrice: {
+    fontSize: 26,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "rgba(250,247,242,0.5)",
+  },
+  cardPeriod: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.3)",
   },
 
-  ctaWrap: { borderRadius: 16, overflow: "hidden" },
+  ctaWrap: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    gap: 12,
+  },
+  ctaBtn: { borderRadius: 16, overflow: "hidden" },
   cta: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    paddingVertical: 22,
-    borderRadius: 16,
+    paddingVertical: 20,
   },
   ctaText: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     color: "#fff",
   },
-
   legal: {
     fontSize: 11,
     fontFamily: "Inter_400Regular",
-    color: "rgba(250,247,242,0.3)",
+    color: "rgba(250,247,242,0.28)",
     textAlign: "center",
     lineHeight: 16,
     paddingHorizontal: 8,
