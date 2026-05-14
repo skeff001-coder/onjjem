@@ -917,7 +917,30 @@ export default function HomeScreen() {
               </Text>
             </View>
 
-            {/* Option 1: Annual unlimited printing */}
+            {/* Option 1a: Monthly unlimited */}
+            <View style={s.printRow}>
+              <LinearGradient
+                colors={["#4A90D922", "#4A90D911"]}
+                style={s.printRowIcon}
+              >
+                <Ionicons name="infinite" size={22} color="#4A90D9" />
+              </LinearGradient>
+              <View style={s.printRowBody}>
+                <View style={s.printRowTitleRow}>
+                  <Text style={s.printRowTitle}>Monthly Plan — £11.99/month</Text>
+                  <View style={[s.printRowBadge, { backgroundColor: "#4A90D922", borderColor: "#4A90D955" }]}>
+                    <Text style={[s.printRowBadgeText, { color: "#4A90D9" }]}>UNLIMITED</Text>
+                  </View>
+                </View>
+                <Text style={s.printRowDesc}>
+                  Full studio-quality restoration every month — same high-end results as the annual plan. No limits, no per-photo charges. Cancel anytime.
+                </Text>
+              </View>
+            </View>
+
+            <View style={s.printDivider} />
+
+            {/* Option 1b: Annual unlimited printing */}
             <View style={s.printRow}>
               <LinearGradient
                 colors={["#27AE6022", "#27AE6011"]}
@@ -933,7 +956,7 @@ export default function HomeScreen() {
                   </View>
                 </View>
                 <Text style={s.printRowDesc}>
-                  Print as many photos as you want throughout the year — no limits, no per-photo charges. Download studio-quality HD files anytime and print as many copies as you like, whenever you like.
+                  Everything in the monthly plan, all year — save 83% versus paying monthly. Download studio-quality HD files anytime, as many photos as you like.
                 </Text>
               </View>
             </View>
