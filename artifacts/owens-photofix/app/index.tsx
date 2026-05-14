@@ -462,14 +462,61 @@ export default function HomeScreen() {
                   <Text style={s.uploadSub}>Tap to restore your memories</Text>
                 </View>
               </View>
-              <View style={{ alignItems: "center", paddingVertical: 22, paddingBottom: 10 }}>
+              <View style={{ alignItems: "center", paddingVertical: 10, paddingBottom: 6 }}>
                 <Image
                   source={require("@/assets/images/icon.png")}
-                  style={{ width: 130, height: 130, borderRadius: 28 }}
+                  style={{ width: 80, height: 80, borderRadius: 18 }}
                   resizeMode="contain"
                 />
               </View>
             </Pressable>
+
+            {/* ── GIFT STORE (directly under uploader) ── */}
+            <TouchableOpacity
+              style={s.giftBtnGlow}
+              onPress={() => router.push("/gift-shop")}
+              activeOpacity={0.88}
+            >
+              <LinearGradient
+                colors={["#0A0A0A", "#111111", "#0A0A0A"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.giftBtn}
+              >
+                <LinearGradient
+                  colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={s.giftBtnGoldBar}
+                />
+                <View style={s.giftBtnInner}>
+                  <View style={s.giftBtnTop}>
+                    <View style={s.giftBtnIconWrap}>
+                      <Image
+                        source={require("@/assets/images/icon_refined.png")}
+                        style={{ width: 52, height: 52, borderRadius: 12 }}
+                        resizeMode="contain"
+                      />
+                    </View>
+                    <View style={s.giftBtnTitleWrap}>
+                      <Text style={s.giftBtnLabel}>OUR GIFT STORE</Text>
+                      <Text style={s.giftBtnText}>Candles · Cushions · Jigsaws · Throws</Text>
+                    </View>
+                    <View style={s.giftBtnCountBadge}>
+                      <Text style={s.giftBtnCountText}>50+</Text>
+                      <Text style={s.giftBtnCountSub}>gifts</Text>
+                    </View>
+                  </View>
+                  <View style={s.giftBtnChipRow}>
+                    {["Candles", "Cushions", "Jigsaws", "Throws", "& More"].map((tag) => (
+                      <View key={tag} style={s.giftBtnChip}>
+                        <Text style={s.giftBtnChipText}>{tag}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
 
             {/* ── CANVAS PRINTS — STANDALONE HERO ── */}
             <TouchableOpacity
@@ -508,48 +555,6 @@ export default function HomeScreen() {
                     </View>
                   </View>
                   <View style={s.canvasHeroRight} />
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={s.giftBtnGlow}
-              onPress={() => router.push("/gift-shop")}
-              activeOpacity={0.88}
-            >
-              <LinearGradient
-                colors={["#0A0A0A", "#111111", "#0A0A0A"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={s.giftBtn}
-              >
-                <LinearGradient
-                  colors={["#C9960C", "#F5D78E", "#C9960C"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={s.giftBtnGoldBar}
-                />
-                <View style={s.giftBtnInner}>
-                  <View style={s.giftBtnTop}>
-                    <View style={s.giftBtnIconWrap}>
-                      <RubyHeartIcon size={46} />
-                    </View>
-                    <View style={s.giftBtnTitleWrap}>
-                      <Text style={s.giftBtnLabel}>OUR GIFT STORE</Text>
-                      <Text style={s.giftBtnText}>Candles · Cushions · Jigsaws · Throws</Text>
-                    </View>
-                    <View style={s.giftBtnCountBadge}>
-                      <Text style={s.giftBtnCountText}>50+</Text>
-                      <Text style={s.giftBtnCountSub}>gifts</Text>
-                    </View>
-                  </View>
-                  <View style={s.giftBtnChipRow}>
-                    {["Candles", "Cushions", "Jigsaws", "Throws", "& More"].map((tag) => (
-                      <View key={tag} style={s.giftBtnChip}>
-                        <Text style={s.giftBtnChipText}>{tag}</Text>
-                      </View>
-                    ))}
-                  </View>
                 </View>
               </LinearGradient>
             </TouchableOpacity>
@@ -1715,11 +1720,11 @@ function makeStyles(
       gap: 2,
     },
     giftBtnLabel: {
-      fontSize: 10,
+      fontSize: 20,
       fontWeight: "700" as const,
       fontFamily: "Inter_700Bold",
-      color: "#F5D78E",
-      letterSpacing: 2.5,
+      color: "#FFFFFF",
+      letterSpacing: 1.5,
     },
     giftBtnText: {
       fontSize: 14,
