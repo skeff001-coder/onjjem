@@ -25,11 +25,11 @@ const SINGLE_FEATURES = [
 ];
 
 const UNLIMITED_FEATURES = [
-  "Everything in Single HD",
-  "Unlimited photos",
-  "Priority processing queue",
-  "Batch restore old albums",
-  "Early access to new tools",
+  "True HD output — full studio resolution",
+  "Proper pixels: sharp, crisp, beautiful detail",
+  "Extra quality — not just free, but the best",
+  "All 6 enhancement modes, unlimited photos",
+  "Priority AI processing queue",
   "Cancel anytime",
 ];
 

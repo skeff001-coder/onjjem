@@ -818,6 +818,104 @@ export default function HomeScreen() {
           </LinearGradient>
         </TouchableOpacity>
 
+        {/* ── PRINT YOUR MEMORIES ── */}
+        <View style={s.printSection}>
+          <LinearGradient
+            colors={["#0E0C08", "#1A1610", "#0E0C08"]}
+            style={s.printSectionCard}
+          >
+            <LinearGradient
+              colors={["#C9960C", "#F5D78E", "#C9960C"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+              style={s.printSectionBar}
+            />
+            <View style={s.printSectionHead}>
+              <View style={s.printSectionEyebrowRow}>
+                <Ionicons name="print-outline" size={12} color="#C9960C" />
+                <Text style={s.printSectionEyebrow}>BRING YOUR PHOTOS TO LIFE</Text>
+              </View>
+              <Text style={s.printSectionTitle}>Print Your Memories</Text>
+              <Text style={s.printSectionSub}>
+                Three ways to turn your restored photos into something you can hold, display, and treasure.
+              </Text>
+            </View>
+
+            {/* Option 1: Annual unlimited printing */}
+            <View style={s.printRow}>
+              <LinearGradient
+                colors={["#27AE6022", "#27AE6011"]}
+                style={s.printRowIcon}
+              >
+                <Ionicons name="infinite" size={22} color="#27AE60" />
+              </LinearGradient>
+              <View style={s.printRowBody}>
+                <View style={s.printRowTitleRow}>
+                  <Text style={s.printRowTitle}>Annual Plan — £24.99/year</Text>
+                  <View style={[s.printRowBadge, { backgroundColor: "#27AE6022", borderColor: "#27AE6055" }]}>
+                    <Text style={[s.printRowBadgeText, { color: "#27AE60" }]}>BEST VALUE</Text>
+                  </View>
+                </View>
+                <Text style={s.printRowDesc}>
+                  Print as many photos as you want throughout the year — no limits, no per-photo charges. Download studio-quality HD files anytime and print as many copies as you like, whenever you like.
+                </Text>
+              </View>
+            </View>
+
+            <View style={s.printDivider} />
+
+            {/* Option 2: Concierge service */}
+            <View style={s.printRow}>
+              <LinearGradient
+                colors={["#C9960C22", "#C9960C11"]}
+                style={s.printRowIcon}
+              >
+                <Ionicons name="sparkles" size={22} color="#C9960C" />
+              </LinearGradient>
+              <View style={s.printRowBody}>
+                <View style={s.printRowTitleRow}>
+                  <Text style={s.printRowTitle}>We Do It For You</Text>
+                  <View style={[s.printRowBadge, { backgroundColor: "#C9960C22", borderColor: "#C9960C55" }]}>
+                    <Text style={[s.printRowBadgeText, { color: "#C9960C" }]}>CONCIERGE</Text>
+                  </View>
+                </View>
+                <Text style={s.printRowDesc}>
+                  Want it made really special? Just send us your pictures and we will do it all for you — beautifully printed on whatever you need. Canvas, cushions, mugs, jigsaws, throws, silk keepsakes, and more. You choose, we create and deliver.
+                </Text>
+                <TouchableOpacity
+                  style={s.printRowCta}
+                  onPress={() => router.push("/gift-shop")}
+                  activeOpacity={0.85}
+                >
+                  <Text style={s.printRowCtaText}>Browse our Gift Shop →</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={s.printDivider} />
+
+            {/* Option 3: DIY */}
+            <View style={s.printRow}>
+              <LinearGradient
+                colors={["#4A90D922", "#4A90D911"]}
+                style={s.printRowIcon}
+              >
+                <Ionicons name="home-outline" size={22} color="#4A90D9" />
+              </LinearGradient>
+              <View style={s.printRowBody}>
+                <View style={s.printRowTitleRow}>
+                  <Text style={s.printRowTitle}>Do It Yourself</Text>
+                  <View style={[s.printRowBadge, { backgroundColor: "#4A90D922", borderColor: "#4A90D955" }]}>
+                    <Text style={[s.printRowBadgeText, { color: "#4A90D9" }]}>YOUR PRINTER</Text>
+                  </View>
+                </View>
+                <Text style={s.printRowDesc}>
+                  Already have a printer at home? Download your fully restored, studio-quality HD photo and print it all yourself — exactly how you want it, exactly when you want it. Total creative control, right in your hands.
+                </Text>
+              </View>
+            </View>
+          </LinearGradient>
+        </View>
+
         {/* Collections Directory */}
         <View style={s.collectionsDir}>
           <View style={s.collectionsDirHeader}>
@@ -1673,6 +1771,110 @@ function makeStyles(
       fontFamily: "Inter_700Bold",
       letterSpacing: 1,
     },
+    // ── Print Your Memories section ──
+    printSection: {
+      borderRadius: 20,
+      overflow: "hidden" as const,
+    },
+    printSectionCard: {
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.2)",
+      overflow: "hidden" as const,
+    },
+    printSectionBar: { height: 4 },
+    printSectionHead: {
+      padding: 20,
+      paddingBottom: 12,
+      gap: 6,
+    },
+    printSectionEyebrowRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 6,
+    },
+    printSectionEyebrow: {
+      fontSize: 10,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
+      letterSpacing: 2,
+    },
+    printSectionTitle: {
+      fontSize: 24,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#FAF7F2",
+      letterSpacing: -0.3,
+    },
+    printSectionSub: {
+      fontSize: 13,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(250,247,242,0.5)",
+      lineHeight: 18,
+    },
+    printRow: {
+      flexDirection: "row" as const,
+      gap: 14,
+      paddingHorizontal: 18,
+      paddingVertical: 16,
+    },
+    printRowIcon: {
+      width: 46,
+      height: 46,
+      borderRadius: 23,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      flexShrink: 0,
+      marginTop: 2,
+    },
+    printRowBody: { flex: 1, gap: 6 },
+    printRowTitleRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      flexWrap: "wrap" as const,
+      gap: 8,
+    },
+    printRowTitle: {
+      fontSize: 15,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#FAF7F2",
+    },
+    printRowBadge: {
+      borderRadius: 5,
+      borderWidth: 1,
+      paddingHorizontal: 7,
+      paddingVertical: 2,
+    },
+    printRowBadgeText: {
+      fontSize: 8,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      letterSpacing: 0.8,
+    },
+    printRowDesc: {
+      fontSize: 13,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(250,247,242,0.55)",
+      lineHeight: 19,
+    },
+    printRowCta: {
+      marginTop: 4,
+      alignSelf: "flex-start" as const,
+    },
+    printRowCtaText: {
+      fontSize: 13,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
+    },
+    printDivider: {
+      height: 1,
+      backgroundColor: "rgba(201,150,12,0.1)",
+      marginHorizontal: 18,
+    },
+
     printShop: {
       marginTop: 28,
       gap: 16,
