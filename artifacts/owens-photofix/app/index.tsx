@@ -841,13 +841,6 @@ export default function HomeScreen() {
               </LinearGradient>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={s.secondaryBtn}
-              onPress={pickImage}
-              activeOpacity={0.7}
-            >
-              <Text style={s.secondaryBtnText}>Change Photo</Text>
-            </TouchableOpacity>
           </>
         )}
 
