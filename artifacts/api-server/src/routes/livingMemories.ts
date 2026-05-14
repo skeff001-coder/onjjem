@@ -8,52 +8,70 @@ const REPLICATE_API = "https://api.replicate.com/v1";
 interface ReplicatePrediction {
   id: string;
   status: "starting" | "processing" | "succeeded" | "failed" | "canceled";
-  output?: string | string[];
+  output?: string | string[] | null;
   error?: string;
   urls?: { get: string };
 }
 
+// Portrait-animation prompt — works well across all ages / eras of photo
+const ANIMATION_PROMPT =
+  "A portrait photograph gently coming to life. " +
+  "Subtle, natural eye blinks. Soft hair movement in a light breeze. " +
+  "A gentle rise and fall of the chest as the person breathes. " +
+  "Warm, realistic lighting. Cinematic quality. No exaggerated motion.";
+
 async function createPrediction(imageBase64: string): Promise<string> {
+  // minimax/video-01-live: reliable image-to-video model on Replicate
   const res = await fetch(
-    `${REPLICATE_API}/models/stability-ai/stable-video-diffusion/predictions`,
+    `${REPLICATE_API}/models/minimax/video-01-live/predictions`,
     {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.REPLICATE_API_TOKEN}`,
         "Content-Type": "application/json",
+        Prefer: "wait=30",
       },
       body: JSON.stringify({
         input: {
-          input_image: `data:image/jpeg;base64,${imageBase64}`,
-          video_length: "25_frames_with_svd_xt",
-          sizing_strategy: "maintain_aspect_ratio",
-          frames_per_second: 3,
-          motion_bucket_id: 40,
-          cond_aug: 0.02,
-          decoding_t: 14,
+          prompt: ANIMATION_PROMPT,
+          first_frame_image: `data:image/jpeg;base64,${imageBase64}`,
+          prompt_optimizer: true,
         },
       }),
     },
   );
 
   const data = (await res.json()) as ReplicatePrediction;
+
   if (!res.ok) {
-    throw new Error(
+    const detail =
       (data as unknown as { detail?: string }).detail ??
-        "Failed to create animation",
-    );
+      (data as unknown as { error?: string }).error ??
+      "Failed to create animation";
+    throw new Error(detail);
   }
+
+  // If Replicate already finished synchronously (Prefer: wait=30)
+  if (data.status === "succeeded") {
+    const out = data.output;
+    return Array.isArray(out) ? (out[0] ?? "") : (out ?? "");
+  }
+
+  if (data.status === "failed" || data.status === "canceled") {
+    throw new Error(data.error ?? "Animation generation failed");
+  }
+
   return data.id;
 }
 
 async function pollPrediction(
   id: string,
-  maxWaitMs = 300_000,
+  maxWaitMs = 360_000,
 ): Promise<string> {
   const deadline = Date.now() + maxWaitMs;
 
   while (Date.now() < deadline) {
-    await new Promise((r) => setTimeout(r, 6_000));
+    await new Promise((r) => setTimeout(r, 8_000));
 
     const res = await fetch(`${REPLICATE_API}/predictions/${id}`, {
       headers: {
@@ -64,7 +82,7 @@ async function pollPrediction(
 
     if (data.status === "succeeded") {
       const out = data.output;
-      return Array.isArray(out) ? out[0] : (out ?? "");
+      return Array.isArray(out) ? (out[0] ?? "") : (out ?? "");
     }
 
     if (data.status === "failed" || data.status === "canceled") {
@@ -89,11 +107,18 @@ router.post("/living-memories", async (req: Request, res: Response) => {
   }
 
   try {
-    const predictionId = await createPrediction(imageBase64);
-    req.log.info({ predictionId }, "Living memory prediction created");
+    const predictionIdOrUrl = await createPrediction(imageBase64);
+    req.log.info({ predictionIdOrUrl }, "Living memory prediction created");
 
-    const videoUrl = await pollPrediction(predictionId);
-    req.log.info({ predictionId }, "Living memory prediction succeeded");
+    // If createPrediction already resolved to a URL (sync response), return it
+    if (predictionIdOrUrl.startsWith("http")) {
+      req.log.info("Living memory resolved synchronously");
+      res.json({ videoUrl: predictionIdOrUrl });
+      return;
+    }
+
+    const videoUrl = await pollPrediction(predictionIdOrUrl);
+    req.log.info({ predictionIdOrUrl }, "Living memory prediction succeeded");
 
     res.json({ videoUrl });
   } catch (error) {
