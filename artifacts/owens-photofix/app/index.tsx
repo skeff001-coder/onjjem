@@ -35,6 +35,7 @@ import { ReferralModal } from "@/components/ReferralModal";
 import { LivingMemoriesModal } from "@/components/LivingMemoriesModal";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { TrustFooter } from "@/components/TrustFooter";
+import { RubyHeartIcon } from "@/components/RubyHeartIcon";
 
 type Mode = "sharpen" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done";
@@ -532,7 +533,7 @@ export default function HomeScreen() {
                 <View style={s.giftBtnInner}>
                   <View style={s.giftBtnTop}>
                     <View style={s.giftBtnIconWrap}>
-                      <Text style={s.giftBtnIconEmoji}>🎁</Text>
+                      <RubyHeartIcon size={46} />
                     </View>
                     <View style={s.giftBtnTitleWrap}>
                       <Text style={s.giftBtnLabel}>OUR GIFT STORE</Text>
@@ -1457,8 +1458,6 @@ function makeStyles(
     giftBtnIconWrap: {
       width: 46,
       height: 46,
-      borderRadius: 23,
-      backgroundColor: "rgba(255,255,255,0.18)",
       alignItems: "center" as const,
       justifyContent: "center" as const,
     },
