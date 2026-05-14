@@ -9,6 +9,7 @@ import {
   Alert,
   Dimensions,
   Image,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -137,11 +138,26 @@ export default function HomeScreen() {
   const pickImage = async () => {
     const permission =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      Alert.alert(
-        "Permission needed",
-        "Please allow access to your photos to use this app.",
-      );
+
+    const canProceed =
+      permission.granted || (permission.status as string) === "limited";
+
+    if (!canProceed) {
+      if (!permission.canAskAgain) {
+        Alert.alert(
+          "Photos Access Blocked",
+          "ONJJEM needs access to your photo library. Please go to iPhone Settings → Privacy → Photos → ONJJEM and choose 'All Photos'.",
+          [
+            { text: "Open Settings", onPress: () => Linking.openSettings() },
+            { text: "Cancel", style: "cancel" },
+          ],
+        );
+      } else {
+        Alert.alert(
+          "Permission Needed",
+          "Please allow ONJJEM to access your photos so you can choose a photo to restore.",
+        );
+      }
       return;
     }
 
