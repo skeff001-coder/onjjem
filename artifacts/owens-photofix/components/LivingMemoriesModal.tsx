@@ -101,6 +101,26 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
     }
   }, [visible]);
 
+  /* Cross-platform base64 helper — FileSystem doesn't work on web */
+  async function uriToBase64(uri: string): Promise<string> {
+    if (Platform.OS === "web") {
+      const res = await fetch(uri);
+      const blob = await res.blob();
+      return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const dataUrl = reader.result as string;
+          resolve(dataUrl.split(",")[1] ?? "");
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+    return FileSystem.readAsStringAsync(uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+  }
+
   async function pickPhoto() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
@@ -127,9 +147,7 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
     setStep("processing");
 
     try {
-      const base64 = await FileSystem.readAsStringAsync(photoUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      const base64 = await uriToBase64(photoUri);
 
       const domain = process.env.EXPO_PUBLIC_DOMAIN;
       if (!domain) throw new Error("API domain not configured.");
@@ -177,6 +195,15 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
     if (!videoUrl) return;
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+      /* Web — open video URL directly in a new tab */
+      if (Platform.OS === "web") {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).open(videoUrl, "_blank");
+        return;
+      }
+
+      /* Native — download then share via native sheet */
       const localPath = (FileSystem.documentDirectory ?? "") + "living_memory.mp4";
       await FileSystem.downloadAsync(videoUrl, localPath);
       if (await Sharing.isAvailableAsync()) {
