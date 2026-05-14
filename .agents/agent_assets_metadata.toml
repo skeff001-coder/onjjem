@@ -4,7 +4,7 @@ uploads = []
 id = "EaWpjHgoh8CEXN55Wqw6q"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
 type = "image"
-title = "onjjem snap lab app icon"
+title = "generated_image"
 
 [[generated]]
 id = "Vwmz7XQ2zstKFTGtAH4E1"
@@ -124,7 +124,7 @@ title = "family portrait hallway mural"
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
 type = "image"
-title = "ONJJEM SNAP LAB — App Icon"
+title = "ONJJEM App Icon — 1024×1024px"
 
 [[outputs]]
 id = "qpQ7hHs7X8LJs4kMX3-sl"
