@@ -17,7 +17,7 @@ interface Props {
   onClose: () => void;
 }
 
-type Plan = "monthly" | "annual";
+type Plan = "perpic" | "monthly" | "annual";
 
 const MONTHLY_PERKS = [
   "Unlimited HD restorations — no cap, ever",
@@ -50,13 +50,20 @@ export function SubscribeModal({ visible, onClose }: Props) {
   const [plan, setPlan] = useState<Plan>("annual");
 
   const isAnnual = plan === "annual";
-  const accent = isAnnual ? "#27AE60" : "#4A90D9";
+  const isPerPic = plan === "perpic";
+  const accent = isAnnual ? "#27AE60" : isPerPic ? "#E8A020" : "#4A90D9";
   const perks = isAnnual ? ANNUAL_PERKS : MONTHLY_PERKS;
+
+  const planLabel = isAnnual
+    ? "Annual Plan — £24.99/year"
+    : isPerPic
+    ? "Pay Per Photo — 99p"
+    : "Monthly Plan — £11.99/month";
 
   const handleSubscribe = () => {
     Alert.alert(
-      isAnnual ? "Annual Plan — £24.99/year" : "Monthly Plan — £11.99/month",
-      "Subscriptions are processed securely through Apple's payment system.\n\nWhen ONJJEM launches on the App Store, tapping this button will open Apple's native payment sheet — your Apple ID payment method is used automatically, no card entry needed.\n\nThank you for your interest!",
+      planLabel,
+      "Payments are processed securely through Apple's payment system.\n\nWhen ONJJEM launches on the App Store, tapping this button will open Apple's native payment sheet — your Apple ID payment method is used automatically, no card entry needed.\n\nThank you for your interest!",
       [{ text: "Got It", style: "default", onPress: onClose }],
     );
   };
@@ -123,6 +130,25 @@ export function SubscribeModal({ visible, onClose }: Props) {
             </TouchableOpacity>
           </View>
 
+          {/* Per-photo option */}
+          <View style={s.perPicRow}>
+            <View style={s.perPicDividerWrap}>
+              <View style={s.perPicDividerLine} />
+              <Text style={s.perPicDividerText}>or pay as you go</Text>
+              <View style={s.perPicDividerLine} />
+            </View>
+            <TouchableOpacity
+              style={[s.perPicBtn, plan === "perpic" && { borderColor: "#E8A020", backgroundColor: "#E8A02018" }]}
+              onPress={() => setPlan("perpic")}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="camera" size={16} color={plan === "perpic" ? "#E8A020" : "rgba(250,247,242,0.45)"} />
+              <Text style={[s.perPicLabel, plan === "perpic" && { color: "#E8A020" }]}>Pay Per Photo</Text>
+              <Text style={[s.perPicPrice, plan === "perpic" && { color: "#FAF7F2" }]}>99p</Text>
+              <Text style={s.perPicSub}>per photo · no subscription</Text>
+            </TouchableOpacity>
+          </View>
+
           {/* Perks */}
           <View style={s.perksCard}>
             <LinearGradient
@@ -130,7 +156,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
               style={s.perksCardGradient}
             >
               <Text style={[s.perksTitle, { color: accent }]}>
-                {isAnnual ? "Everything, Unlimited, All Year" : "Everything, Unlimited, Every Month"}
+                {isAnnual ? "Everything, Unlimited, All Year" : isPerPic ? "Full Enhancement — This Photo Only" : "Everything, Unlimited, Every Month"}
               </Text>
               {perks.map((p) => (
                 <View key={p} style={s.perkRow}>
@@ -164,20 +190,30 @@ export function SubscribeModal({ visible, onClose }: Props) {
           {/* CTA */}
           <TouchableOpacity onPress={handleSubscribe} activeOpacity={0.87} style={s.ctaWrap}>
             <LinearGradient
-              colors={isAnnual ? ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"] : ["#2C6FAE", "#4A90D9", "#5BA3E8", "#4A90D9"]}
+              colors={
+                isAnnual
+                  ? ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]
+                  : isPerPic
+                  ? ["#8B6200", "#E8A020", "#F5C050", "#E8A020"]
+                  : ["#2C6FAE", "#4A90D9", "#5BA3E8", "#4A90D9"]
+              }
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
               style={s.cta}
             >
-              <Ionicons name="infinite" size={22} color="#fff" />
+              <Ionicons name={isPerPic ? "camera" : "infinite"} size={22} color="#fff" />
               <Text style={s.ctaText}>
-                {isAnnual ? "Start Annual Plan — £24.99/year" : "Start Monthly Plan — £11.99/month"}
+                {isAnnual
+                  ? "Start Annual Plan — £24.99/year"
+                  : isPerPic
+                  ? "Enhance This Photo — 99p"
+                  : "Start Monthly Plan — £11.99/month"}
               </Text>
             </LinearGradient>
           </TouchableOpacity>
 
           <Text style={s.legal}>
-            Payment will be charged to your Apple ID account at confirmation of purchase. Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime: iPhone Settings → Apple ID → Subscriptions.{"\n\n"}
-            Same studio quality on both plans — annual just saves you 83%.
+            Payment will be charged to your Apple ID account at confirmation of purchase.{isPerPic ? "" : " Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime: iPhone Settings → Apple ID → Subscriptions."}{"\n\n"}
+            Same studio quality on all plans.
           </Text>
 
         </ScrollView>
@@ -237,6 +273,25 @@ const s = StyleSheet.create({
     color: "rgba(250,247,242,0.65)",
     lineHeight: 22,
   },
+
+  perPicRow: { gap: 10, marginTop: 4 },
+  perPicDividerWrap: { flexDirection: "row", alignItems: "center", gap: 10 },
+  perPicDividerLine: { flex: 1, height: 1, backgroundColor: "rgba(255,255,255,0.08)" },
+  perPicDividerText: { fontSize: 11, color: "rgba(250,247,242,0.35)", fontFamily: "Inter_400Regular" },
+  perPicBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: "#1A1610",
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  perPicLabel: { fontSize: 13, fontFamily: "Inter_600SemiBold", color: "rgba(250,247,242,0.55)", flex: 1 },
+  perPicPrice: { fontSize: 20, fontFamily: "Inter_700Bold", color: "rgba(250,247,242,0.45)" },
+  perPicSub: { fontSize: 10, color: "rgba(250,247,242,0.3)", fontFamily: "Inter_400Regular" },
 
   toggleRow: { flexDirection: "row", gap: 10 },
   toggleBtn: {

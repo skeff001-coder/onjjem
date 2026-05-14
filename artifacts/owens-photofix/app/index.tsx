@@ -674,12 +674,21 @@ export default function HomeScreen() {
                 {hasUsedFreeTrial ? (
                   <>
                     <TouchableOpacity
+                      style={[s.pricingFreeChip, { backgroundColor: "rgba(232,160,32,0.18)", borderColor: "rgba(232,160,32,0.45)" }]}
+                      onPress={() => setSubscribeVisible(true)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="camera" size={11} color="#E8A020" />
+                      <Text style={[s.pricingFreeText, { color: "#E8A020" }]}>99p/photo</Text>
+                    </TouchableOpacity>
+                    <Text style={s.pricingDivider}>·</Text>
+                    <TouchableOpacity
                       style={[s.pricingFreeChip, { backgroundColor: "rgba(74,144,217,0.18)", borderColor: "rgba(74,144,217,0.45)" }]}
                       onPress={() => setSubscribeVisible(true)}
                       activeOpacity={0.8}
                     >
                       <Ionicons name="infinite" size={11} color="#4A90D9" />
-                      <Text style={[s.pricingFreeText, { color: "#4A90D9" }]}>£11.99/mo — Unlimited</Text>
+                      <Text style={[s.pricingFreeText, { color: "#4A90D9" }]}>£11.99/mo</Text>
                     </TouchableOpacity>
                     <Text style={s.pricingDivider}>·</Text>
                     <TouchableOpacity
@@ -688,10 +697,8 @@ export default function HomeScreen() {
                       activeOpacity={0.8}
                     >
                       <Ionicons name="star" size={11} color="#27AE60" />
-                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>£24.99/yr — Best Value</Text>
+                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>£24.99/yr</Text>
                     </TouchableOpacity>
-                    <Text style={s.pricingDivider}>·</Text>
-                    <Text style={[s.pricingUnlimited, { color: "rgba(250,247,242,0.5)" }]}>Same benefits, both plans</Text>
                   </>
                 ) : (
                   <>
