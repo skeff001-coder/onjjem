@@ -6,6 +6,7 @@ const router = Router();
 
 async function sharpenImage(inputBuffer: Buffer): Promise<Buffer> {
   return sharp(inputBuffer)
+    .rotate()
     .sharpen({
       sigma: 1.8,
       m1: 2.5,
@@ -20,14 +21,16 @@ async function sharpenImage(inputBuffer: Buffer): Promise<Buffer> {
 }
 
 async function colorizeImage(inputBuffer: Buffer): Promise<Buffer> {
-  const meta = await sharp(inputBuffer).metadata();
+  const oriented = sharp(inputBuffer).rotate();
+  const rotatedBuffer = await oriented.toBuffer();
+  const meta = await sharp(rotatedBuffer).metadata();
   const isGreyscale =
     meta.channels === 1 ||
     meta.space === "b-w" ||
     meta.space === "grey16";
 
   if (isGreyscale) {
-    return sharp(inputBuffer)
+    return sharp(rotatedBuffer)
       .toColourspace("srgb")
       .normalise()
       .modulate({ saturation: 1.0, brightness: 1.05 })
@@ -39,7 +42,7 @@ async function colorizeImage(inputBuffer: Buffer): Promise<Buffer> {
       .toBuffer();
   }
 
-  return sharp(inputBuffer)
+  return sharp(rotatedBuffer)
     .normalise()
     .modulate({ saturation: 1.9, brightness: 1.05 })
     .gamma(1.08)
