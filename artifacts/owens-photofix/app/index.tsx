@@ -82,6 +82,7 @@ export default function HomeScreen() {
   const [referralVisible, setReferralVisible] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
   const [originalUri, setOriginalUri] = useState<string | null>(null);
+  const originalBase64Ref = useRef<string | null>(null);
   const [resultBase64, setResultBase64] = useState<string | null>(null);
   const [resultLocalUri, setResultLocalUri] = useState<string | null>(null);
   const [selectedModes, setSelectedModes] = useState<Set<EnhancementMode>>(new Set(["sharpen"]));
@@ -136,7 +137,8 @@ export default function HomeScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: false,
-      quality: 0.85,
+      quality: 0.92,
+      base64: true,
     });
 
     if (!result.canceled && result.assets.length > 0) {
@@ -144,6 +146,7 @@ export default function HomeScreen() {
 
       const commitPhoto = async () => {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        originalBase64Ref.current = asset.base64 ?? null;
         setOriginalUri(asset.uri);
         setResultBase64(null);
         setResultLocalUri(null);
@@ -184,13 +187,19 @@ export default function HomeScreen() {
     setAppState("processing");
 
     try {
-      // Read image as base64 — web returns blob: URIs that FileSystem cannot handle
-      let base64: string;
+      // Read image as base64.
+      // Priority order:
+      //   1. base64 already captured at pick time (works for ph:// library URIs on iOS)
+      //   2. blob:/http URIs (web preview) — fetch then FileReader
+      //   3. file:// URIs — FileSystem.readAsStringAsync
       const isWebUri =
         originalUri.startsWith("blob:") ||
         (originalUri.startsWith("http") && !originalUri.startsWith("https://localhost"));
+      let base64: string;
 
-      if (isWebUri) {
+      if (originalBase64Ref.current) {
+        base64 = originalBase64Ref.current;
+      } else if (isWebUri) {
         const resp = await fetch(originalUri);
         if (cancelledRef.current) return;
         const blob = await resp.blob();
@@ -324,6 +333,7 @@ export default function HomeScreen() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setAppState("idle");
     setOriginalUri(null);
+    originalBase64Ref.current = null;
     setResultBase64(null);
     setResultLocalUri(null);
     setSelectedModes(new Set(["sharpen"]));
