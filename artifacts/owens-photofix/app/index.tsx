@@ -363,6 +363,17 @@ export default function HomeScreen() {
       >
         {appState === "idle" && (
           <>
+            {/* Masterpiece Gallery button */}
+            <TouchableOpacity
+              style={s.galleryBtn}
+              onPress={() => router.push("/gallery")}
+              activeOpacity={0.88}
+            >
+              <Ionicons name="images-outline" size={20} color="#C9960C" />
+              <Text style={s.galleryBtnText}>Masterpiece Gallery</Text>
+              <Ionicons name="chevron-forward" size={16} color="#C9960C" />
+            </TouchableOpacity>
+
             <Pressable
               style={({ pressed }) => [s.uploadArea, pressed && s.pressed]}
               onPress={pickImage}
@@ -377,42 +388,14 @@ export default function HomeScreen() {
                 </View>
                 <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.55)" />
               </View>
-              {/* Before / After preview strip */}
-              <View style={s.uploadBARow}>
-                <View style={s.uploadBAPair}>
-                  <Image source={require("@/assets/gallery/grandma_before.png")} style={s.uploadBAImg} resizeMode="cover" />
-                  <Text style={s.uploadBALabel}>Before</Text>
-                </View>
-                <Ionicons name="arrow-forward" size={14} color="#C9960C" style={s.uploadBAArrow} />
-                <View style={s.uploadBAPair}>
-                  <Image source={require("@/assets/gallery/grandma_after.png")} style={s.uploadBAImg} resizeMode="cover" />
-                  <Text style={s.uploadBALabel}>After</Text>
-                </View>
-
-                <View style={s.uploadBADivider} />
-
-                <View style={s.uploadBAPair}>
-                  <Image source={require("@/assets/gallery/portrait_before.png")} style={s.uploadBAImg} resizeMode="cover" />
-                  <Text style={s.uploadBALabel}>Before</Text>
-                </View>
-                <Ionicons name="arrow-forward" size={14} color="#C9960C" style={s.uploadBAArrow} />
-                <View style={s.uploadBAPair}>
-                  <Image source={require("@/assets/gallery/portrait_after.png")} style={s.uploadBAImg} resizeMode="cover" />
-                  <Text style={s.uploadBALabel}>After</Text>
-                </View>
+              <View style={{ alignItems: "center", paddingVertical: 22, paddingBottom: 10 }}>
+                <Image
+                  source={require("@/assets/images/icon.png")}
+                  style={{ width: 130, height: 130, borderRadius: 28 }}
+                  resizeMode="contain"
+                />
               </View>
             </Pressable>
-
-            {/* Masterpiece Gallery button */}
-            <TouchableOpacity
-              style={s.galleryBtn}
-              onPress={() => router.push("/gallery")}
-              activeOpacity={0.88}
-            >
-              <Ionicons name="images-outline" size={20} color="#C9960C" />
-              <Text style={s.galleryBtnText}>Masterpiece Gallery</Text>
-              <Ionicons name="chevron-forward" size={16} color="#C9960C" />
-            </TouchableOpacity>
 
             {/* Living Memories */}
             <TouchableOpacity
