@@ -389,7 +389,7 @@ export default function HomeScreen() {
       >
         <View style={s.header}>
           <View style={s.headerCenter}>
-            <GraffitiTitle fontSize={52} letterSpacing={9} />
+            <GraffitiTitle fontSize={36} letterSpacing={6} />
             <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
           </View>
           {appState !== "idle" && (
@@ -401,6 +401,23 @@ export default function HomeScreen() {
 
         {appState === "idle" && (
           <>
+            {/* ONJJEM MasterLab feature strip */}
+            <View style={s.masterLabStrip}>
+              {(
+                [
+                  { icon: "sparkles" as const,          text: "Cinema-Grade AI" },
+                  { icon: "ribbon" as const,             text: "UK Master Print Lab" },
+                  { icon: "shield-checkmark" as const,   text: "10-Yr Guarantee" },
+                  { icon: "people" as const,             text: "Expert Artisans" },
+                ] as const
+              ).map((f) => (
+                <View key={f.text} style={s.masterLabChip}>
+                  <Ionicons name={f.icon} size={11} color="#C9960C" />
+                  <Text style={s.masterLabChipText}>{f.text}</Text>
+                </View>
+              ))}
+            </View>
+
             {/* Masterpiece Gallery button — dark emerald mystical */}
             <TouchableOpacity
               style={s.galleryBtn}
@@ -1102,6 +1119,30 @@ function makeStyles(
       color: colors.foreground,
       letterSpacing: 6,
       lineHeight: 54,
+    },
+    masterLabStrip: {
+      flexDirection: "row" as const,
+      flexWrap: "wrap" as const,
+      gap: 6,
+      justifyContent: "center" as const,
+      paddingHorizontal: 4,
+      paddingBottom: 4,
+    },
+    masterLabChip: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 5,
+      backgroundColor: "rgba(201,150,12,0.10)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.28)",
+      borderRadius: 20,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+    },
+    masterLabChipText: {
+      fontSize: 11,
+      fontFamily: "Inter_600SemiBold",
+      color: "#C9960C",
     },
     headerTagline: {
       fontSize: 16,
@@ -1850,9 +1891,9 @@ function makeStyles(
     },
     printSectionBar: { height: 4 },
     printSectionHead: {
-      padding: 20,
-      paddingBottom: 12,
-      gap: 6,
+      padding: 14,
+      paddingBottom: 8,
+      gap: 4,
     },
     printSectionEyebrowRow: {
       flexDirection: "row" as const,

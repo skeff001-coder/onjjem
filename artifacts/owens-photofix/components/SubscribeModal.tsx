@@ -176,7 +176,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
           </TouchableOpacity>
 
           <Text style={s.legal}>
-            Cancel anytime in iPhone Settings → App Store → Subscriptions.{"\n"}
+            Payment will be charged to your Apple ID account at confirmation of purchase. Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime: iPhone Settings → Apple ID → Subscriptions.{"\n\n"}
             Same studio quality on both plans — annual just saves you 83%.
           </Text>
 

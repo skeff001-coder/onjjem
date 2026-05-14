@@ -164,7 +164,7 @@ export default function CanvasPrintsScreen() {
             Your treasured memories, expertly restored and printed on premium gallery-grade canvas — ready to hang.
           </Text>
           <View style={s.heroChips}>
-            {["A4 · A3 · A2 · A1", "Ready to Hang", "Lifetime Guarantee", "Free UK Delivery"].map((c) => (
+            {["30×20 cm to 60×40 cm", "Ready to Hang", "Lifetime Guarantee", "Free UK Delivery"].map((c) => (
               <View key={c} style={s.heroChip}>
                 <Text style={s.heroChipText}>{c}</Text>
               </View>
