@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
   Alert,
+  Linking,
   Modal,
   StyleSheet,
   Text,
@@ -150,6 +151,9 @@ export function SubscribeModal({ visible, onClose }: Props) {
               : "One-time payment. No subscription.\n"}
             Payment charged to your Apple ID at confirmation.
           </Text>
+          <TouchableOpacity onPress={() => Linking.openURL("https://onjjem.co.uk/privacy")} activeOpacity={0.7}>
+            <Text style={s.privacyLink}>Privacy Policy</Text>
+          </TouchableOpacity>
         </View>
 
       </View>
@@ -284,5 +288,12 @@ const s = StyleSheet.create({
     textAlign: "center",
     lineHeight: 16,
     paddingHorizontal: 8,
+  },
+  privacyLink: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(201,150,12,0.55)",
+    textAlign: "center",
+    textDecorationLine: "underline",
   },
 });
