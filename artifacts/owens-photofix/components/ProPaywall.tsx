@@ -64,17 +64,21 @@ export function ProPaywall({ visible, onClose }: Props) {
 
   const handleSubscribe = async () => {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
+    await new Promise((r) => setTimeout(r, 500));
     setLoading(false);
     Alert.alert(
-      "Payments Coming Very Soon",
-      "We're putting the finishing touches on ONJJEM Pro. You'll be the first to know when it launches!",
-      [{ text: "Can't Wait!", onPress: onClose }],
+      "Subscription via Apple",
+      "Subscriptions are processed securely through Apple's payment system.\n\nWhen ONJJEM launches on the App Store, tapping this button will open Apple's native payment sheet — your Apple ID payment method is used automatically, no card entry needed.",
+      [{ text: "Got It", style: "default", onPress: onClose }],
     );
   };
 
   const handleRestore = () => {
-    Alert.alert("Restore Purchases", "No previous purchases found on this account.");
+    Alert.alert(
+      "Restore Purchases",
+      "Purchases are restored automatically through your Apple ID when the app is live on the App Store.",
+      [{ text: "OK" }],
+    );
   };
 
   return (

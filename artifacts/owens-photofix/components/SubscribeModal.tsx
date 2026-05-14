@@ -56,8 +56,8 @@ export function SubscribeModal({ visible, onClose }: Props) {
   const handleSubscribe = () => {
     Alert.alert(
       isAnnual ? "Annual Plan — £24.99/year" : "Monthly Plan — £11.99/month",
-      "Payments are coming very soon — you'll be the first to know when we go live. We'll save your choice.",
-      [{ text: "Can't Wait!", onPress: onClose }],
+      "Subscriptions are processed securely through Apple's payment system.\n\nWhen ONJJEM launches on the App Store, tapping this button will open Apple's native payment sheet — your Apple ID payment method is used automatically, no card entry needed.\n\nThank you for your interest!",
+      [{ text: "Got It", style: "default", onPress: onClose }],
     );
   };
 
