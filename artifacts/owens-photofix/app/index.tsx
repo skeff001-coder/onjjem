@@ -702,7 +702,7 @@ export default function HomeScreen() {
                       activeOpacity={0.8}
                     >
                       <Ionicons name="camera" size={11} color="#E8A020" />
-                      <Text style={[s.pricingFreeText, { color: "#E8A020" }]}>99p/photo</Text>
+                      <Text style={[s.pricingFreeText, { color: "#E8A020" }]}>£1.49/photo</Text>
                     </TouchableOpacity>
                     <Text style={s.pricingDivider}>·</Text>
                     <TouchableOpacity

@@ -22,7 +22,7 @@ const PLANS = [
   {
     id: "perpic" as Plan,
     label: "One Photo",
-    price: "99p",
+    price: "£1.49",
     period: "per photo",
     desc: "Pay once, enhance one photo at full quality. No subscription.",
     color: "#E8A020",
@@ -136,7 +136,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
               <Ionicons name={selected.icon} size={22} color="#fff" />
               <Text style={s.ctaText}>
                 {plan === "perpic"
-                  ? "Enhance This Photo — 99p"
+                  ? "Enhance This Photo — £1.49"
                   : plan === "monthly"
                   ? "Start Monthly — £11.99/month"
                   : "Start Annual — £24.99/year"}
