@@ -478,7 +478,7 @@ export default function HomeScreen() {
               activeOpacity={0.88}
             >
               <LinearGradient
-                colors={["#C0390B", "#E8600A", "#BF5AF2"]}
+                colors={["#0A0A0A", "#111111", "#0A0A0A"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={s.giftBtn}
@@ -1397,7 +1397,7 @@ function makeStyles(
     },
     giftBtnGlow: {
       borderRadius: colors.radius,
-      shadowColor: "#BF5AF2",
+      shadowColor: "#C9960C",
       shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.5,
       shadowRadius: 18,
