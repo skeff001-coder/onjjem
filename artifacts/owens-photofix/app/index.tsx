@@ -660,7 +660,7 @@ export default function HomeScreen() {
                       activeOpacity={0.8}
                     >
                       <Ionicons name="infinite" size={11} color="#4A90D9" />
-                      <Text style={[s.pricingFreeText, { color: "#4A90D9" }]}>£11.99/mo</Text>
+                      <Text style={[s.pricingFreeText, { color: "#4A90D9" }]}>£11.99/mo — Unlimited</Text>
                     </TouchableOpacity>
                     <Text style={s.pricingDivider}>·</Text>
                     <TouchableOpacity
@@ -669,10 +669,10 @@ export default function HomeScreen() {
                       activeOpacity={0.8}
                     >
                       <Ionicons name="star" size={11} color="#27AE60" />
-                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>£24.99/yr — Best</Text>
+                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>£24.99/yr — Best Value</Text>
                     </TouchableOpacity>
                     <Text style={s.pricingDivider}>·</Text>
-                    <Text style={[s.pricingUnlimited, { color: "rgba(250,247,242,0.5)" }]}>Tap to subscribe</Text>
+                    <Text style={[s.pricingUnlimited, { color: "rgba(250,247,242,0.5)" }]}>Same benefits, both plans</Text>
                   </>
                 ) : (
                   <>
