@@ -63,7 +63,7 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
 
   const textStyle = {
     fontSize,
-    fontFamily: "Cinzel_400Regular",
+    fontFamily: "PlayfairDisplay_900Black",
     letterSpacing,
     lineHeight: lineH,
   } as const;
