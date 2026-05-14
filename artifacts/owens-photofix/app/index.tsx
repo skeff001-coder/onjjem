@@ -323,7 +323,7 @@ export default function HomeScreen() {
         ))}
       </View>
       <LinearGradient
-        colors={["rgba(250,247,242,0.48)", "rgba(250,247,242,0.62)"]}
+        colors={["rgba(18,10,0,0.38)", "rgba(245,235,210,0.72)"]}
         style={[StyleSheet.absoluteFillObject, { pointerEvents: "none" }]}
       />
 
@@ -528,7 +528,7 @@ export default function HomeScreen() {
               activeOpacity={0.88}
             >
               <LinearGradient
-                colors={["#1C1A14", "#2E2818"]}
+                colors={["#1A0C04", "#2C1608", "#1A0C04"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={s.referralBtnGradient}
@@ -1717,13 +1717,13 @@ function makeStyles(
     referralBtn: {
       borderRadius: 14,
       overflow: "hidden" as const,
-      borderWidth: 1.5,
-      borderColor: "rgba(201,150,12,0.65)",
+      borderWidth: 2,
+      borderColor: "#C9960C",
       shadowColor: "#C9960C",
-      shadowOffset: { width: 0, height: 5 },
-      shadowOpacity: 0.35,
-      shadowRadius: 12,
-      elevation: 6,
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.55,
+      shadowRadius: 14,
+      elevation: 8,
     },
     referralBtnGradient: {
       flexDirection: "row" as const,
