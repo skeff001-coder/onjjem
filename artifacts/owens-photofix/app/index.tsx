@@ -624,12 +624,11 @@ export default function HomeScreen() {
                 style={s.pricingStripGradient}
               >
                 <View style={s.pricingFreeChip}>
-                  <Text style={s.pricingFreeText}>1st FREE</Text>
+                  <Ionicons name="sparkles" size={11} color="#27AE60" />
+                  <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>Try now for free</Text>
                 </View>
                 <Text style={s.pricingDivider}>·</Text>
-                <Text style={s.pricingPaidText}>£1.99/photo</Text>
-                <Text style={s.pricingDivider}>·</Text>
-                <Text style={s.pricingUnlimited}>from £11.99/mo unlimited</Text>
+                <Text style={s.pricingUnlimited}>HD &amp; extra quality from £11.99/mo</Text>
               </LinearGradient>
             </View>
 
@@ -1462,10 +1461,15 @@ function makeStyles(
       borderColor: "rgba(201,150,12,0.25)",
     },
     pricingFreeChip: {
-      backgroundColor: "#C9960C",
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 4,
+      backgroundColor: "rgba(39,174,96,0.18)",
       borderRadius: 20,
+      borderWidth: 1,
+      borderColor: "rgba(39,174,96,0.4)",
       paddingHorizontal: 10,
-      paddingVertical: 3,
+      paddingVertical: 4,
     },
     pricingFreeText: {
       fontSize: 11,
