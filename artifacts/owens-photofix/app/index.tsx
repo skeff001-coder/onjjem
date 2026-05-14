@@ -932,14 +932,14 @@ function makeStyles(
     headerTagline: {
       fontSize: 16,
       fontFamily: "Cinzel_400Regular",
-      color: "#C9960C",
+      color: "#F5D78E",
       letterSpacing: 1,
       marginTop: 5,
       fontStyle: "italic" as const,
       textAlign: "center" as const,
-      textShadowColor: "rgba(201,150,12,0.55)",
+      textShadowColor: "rgba(245,215,142,0.9)",
       textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 8,
+      textShadowRadius: 14,
     },
     gemRow: {
       flexDirection: "row" as const,
