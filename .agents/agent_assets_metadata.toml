@@ -124,13 +124,13 @@ title = "Men's Luxury Leather Wallet — ANTORINI, off-white"
 id = "r9Q9ouAvlObky58xHBEQ1"
 uri = "file://attached_assets/icon_option_a.png"
 type = "image"
-title = "Option A — Gold O on Deep Navy with Sparkle"
+title = "Icon Option A (original first draft)"
 
 [[outputs]]
 id = "ERx-89G4QGl2G0DBH2M3C"
 uri = "file://attached_assets/icon_option_b.png"
 type = "image"
-title = "Option B — Before & After Split Restoration"
+title = "Icon Option B (second variant)"
 
 [[outputs]]
 id = "3JuNP48gqEVZ-anlPslVL"
@@ -173,3 +173,9 @@ id = "Ke_jYKSxcDB1LylJIKf-4"
 uri = "file://screenshots/gallery.jpg"
 type = "image"
 title = "Masterpiece Gallery"
+
+[[outputs]]
+id = "fcjalT7BpA5GAj7OxVoSN"
+uri = "file://artifacts/owens-photofix/assets/images/icon_refined.png"
+type = "image"
+title = "Icon Refined (final version — currently in the app)"
