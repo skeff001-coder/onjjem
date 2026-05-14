@@ -343,26 +343,23 @@ export default function HomeScreen() {
         </Text>
       </LinearGradient>
 
-      <View style={s.header}>
-        <View style={s.headerCenter}>
-          <TouchableOpacity onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })} activeOpacity={0.8}>
-            <GraffitiTitle fontSize={52} letterSpacing={9} />
-          </TouchableOpacity>
-
-          <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
-        </View>
-        {appState !== "idle" && (
-          <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
-            <Ionicons name="refresh" size={22} color={colors.mutedForeground} />
-          </TouchableOpacity>
-        )}
-      </View>
-
       <ScrollView
         ref={scrollRef}
         contentContainerStyle={s.scroll}
         showsVerticalScrollIndicator={false}
       >
+        <View style={s.header}>
+          <View style={s.headerCenter}>
+            <GraffitiTitle fontSize={52} letterSpacing={9} />
+            <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
+          </View>
+          {appState !== "idle" && (
+            <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
+              <Ionicons name="refresh" size={22} color={colors.mutedForeground} />
+            </TouchableOpacity>
+          )}
+        </View>
+
         {appState === "idle" && (
           <>
             {/* Masterpiece Gallery button — dark emerald mystical */}
@@ -951,8 +948,6 @@ function makeStyles(
       paddingHorizontal: 24,
       paddingBottom: 14,
       alignItems: "center",
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: colors.border,
     },
     headerCenter: {
       alignItems: "center" as const,
@@ -965,16 +960,18 @@ function makeStyles(
       lineHeight: 54,
     },
     headerTagline: {
-      fontSize: 16,
+      fontSize: 15,
       fontFamily: "Cinzel_400Regular",
-      color: "#F5D78E",
-      letterSpacing: 1,
-      marginTop: 5,
+      color: "#FAF7F2",
+      letterSpacing: 1.2,
+      marginTop: 6,
       fontStyle: "italic" as const,
       textAlign: "center" as const,
-      textShadowColor: "rgba(245,215,142,0.9)",
-      textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 14,
+      backgroundColor: "rgba(28,20,8,0.58)",
+      paddingHorizontal: 14,
+      paddingVertical: 4,
+      borderRadius: 20,
+      overflow: "hidden" as const,
     },
     gemRow: {
       flexDirection: "row" as const,
