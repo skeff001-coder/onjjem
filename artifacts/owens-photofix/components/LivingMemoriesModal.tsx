@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useRef, useState } from "react";
 import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
@@ -24,8 +25,17 @@ import { LinearGradient } from "expo-linear-gradient";
 const GOLD = "#C9960C";
 const DARK = "#0D1B2A";
 const NAVY = "#162236";
+const FREE_USED_KEY = "onjjem_free_video_used";
 
 type Step = "intro" | "confirming" | "processing" | "done" | "error";
+type Plan = "free" | "single" | "monthly" | "annual";
+
+const PLAN_LABELS: Record<Plan, string> = {
+  free:    "FREE",
+  single:  "£5.99",
+  monthly: "£17.99/month",
+  annual:  "£29.99/year",
+};
 
 const PROCESSING_MESSAGES = [
   "Analysing every precious detail of your photograph…",
@@ -51,7 +61,20 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
   const [statusMsg, setStatusMsg] = useState(PROCESSING_MESSAGES[0]);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [hasUsedFree, setHasUsedFree] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<Plan>("free");
   const msgIndexRef = useRef(0);
+
+  /* Load free-video status from storage */
+  useEffect(() => {
+    if (visible) {
+      AsyncStorage.getItem(FREE_USED_KEY).then((val) => {
+        const used = val === "true";
+        setHasUsedFree(used);
+        setSelectedPlan(used ? "single" : "free");
+      });
+    }
+  }, [visible]);
 
   /* Cycle comfort messages during processing */
   useEffect(() => {
@@ -93,9 +116,11 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
 
   async function startAnimation() {
     if (!photoUri) return;
-    if (!email.trim() || !email.includes("@")) {
-      Alert.alert("Email required", "Please enter your email so we can send your payment link and delivery confirmation.");
-      return;
+    if (selectedPlan !== "free") {
+      if (!email.trim() || !email.includes("@")) {
+        Alert.alert("Email required", "Please enter your email so we can send your payment link and delivery confirmation.");
+        return;
+      }
     }
 
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -118,7 +143,7 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
         response = await fetch(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageBase64: base64, email: email.trim() }),
+          body: JSON.stringify({ imageBase64: base64, email: email.trim(), plan: selectedPlan }),
           signal: controller.signal,
         });
       } finally {
@@ -132,6 +157,13 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
       }
 
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+      /* Mark free video as used */
+      if (selectedPlan === "free") {
+        await AsyncStorage.setItem(FREE_USED_KEY, "true");
+        setHasUsedFree(true);
+      }
+
       setVideoUrl(data.videoUrl ?? null);
       setStep("done");
     } catch (err) {
@@ -179,7 +211,6 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           style={styles.heroGoldBar}
         />
-        {/* Animated rings */}
         <View style={styles.ringOuter}>
           <View style={styles.ringMiddle}>
             <View style={styles.ringInner}>
@@ -203,9 +234,9 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
 
         {/* Feature list */}
         {[
-          { icon: "eye-outline" as const,      label: "Subtle eye & face movement" },
+          { icon: "eye-outline" as const,          label: "Subtle eye & face movement" },
           { icon: "partly-sunny-outline" as const, label: "Hair, light & atmosphere motion" },
-          { icon: "film-outline" as const,     label: "~8 seconds · delivered as MP4" },
+          { icon: "film-outline" as const,         label: "~8 seconds · delivered as MP4" },
           { icon: "share-social-outline" as const, label: "Share instantly to WhatsApp & Photos" },
         ].map((f) => (
           <View key={f.label} style={styles.featureRow}>
@@ -216,49 +247,162 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
           </View>
         ))}
 
-        {/* Pricing card */}
-        <View style={styles.pricingCard}>
-          <LinearGradient colors={[DARK, NAVY]} style={styles.pricingGradient}>
-            <LinearGradient
-              colors={[GOLD, "#F5D78E", GOLD]}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-              style={styles.pricingGoldBar}
-            />
-            <View style={styles.pricingRow}>
-              <View>
-                <Text style={styles.pricingLabel}>One-time · per animation</Text>
-                <Text style={styles.pricingAmount}>£14.99</Text>
-                <Text style={styles.pricingNote}>Delivered as MP4 · ready to share</Text>
-              </View>
-              <View style={styles.pricingBadge}>
-                <Ionicons name="sparkles" size={12} color={GOLD} />
-                <Text style={styles.pricingBadgeText}>AI Enhanced</Text>
-              </View>
-            </View>
-
-            <TouchableOpacity
-              style={styles.ctaBtn}
-              activeOpacity={0.87}
-              onPress={pickPhoto}
-            >
+        {/* ── PRICING ── */}
+        {!hasUsedFree ? (
+          /* First visit — free offer */
+          <View style={styles.pricingCard}>
+            <LinearGradient colors={[DARK, NAVY]} style={styles.pricingGradient}>
               <LinearGradient
-                colors={[GOLD, "#A67C00"]}
+                colors={[GOLD, "#F5D78E", GOLD]}
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-                style={styles.ctaBtnGradient}
+                style={styles.pricingGoldBar}
+              />
+
+              {/* FREE banner */}
+              <View style={styles.freeBanner}>
+                <Ionicons name="gift-outline" size={18} color={GOLD} />
+                <View style={styles.freeBannerText}>
+                  <Text style={styles.freeBannerTitle}>Your first video is FREE</Text>
+                  <Text style={styles.freeBannerSub}>No payment, no card — just your photo</Text>
+                </View>
+              </View>
+
+              <TouchableOpacity
+                style={styles.ctaBtn}
+                activeOpacity={0.87}
+                onPress={pickPhoto}
               >
-                <Ionicons name="images-outline" size={18} color="#fff" />
-                <Text style={styles.ctaBtnText}>Choose a Photo</Text>
-                <Text style={styles.ctaBtnPrice}>£14.99</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <Text style={styles.ctaNote}>
-              Secure order · payment link sent to your email · results in 3–5 minutes
-            </Text>
-          </LinearGradient>
-        </View>
+                <LinearGradient
+                  colors={[GOLD, "#A67C00"]}
+                  start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                  style={styles.ctaBtnGradient}
+                >
+                  <Ionicons name="images-outline" size={18} color="#fff" />
+                  <Text style={styles.ctaBtnText}>Get My FREE Living Memory</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+
+              {/* Future pricing preview */}
+              <Text style={styles.futurePricingLabel}>After your free video:</Text>
+              <View style={styles.planPreviewRow}>
+                {[
+                  { label: "Per video", price: "£5.99" },
+                  { label: "Monthly", price: "£17.99" },
+                  { label: "Annual", price: "£29.99" },
+                ].map((p) => (
+                  <View key={p.label} style={styles.planPreviewChip}>
+                    <Text style={styles.planPreviewPrice}>{p.price}</Text>
+                    <Text style={styles.planPreviewLabel}>{p.label}</Text>
+                  </View>
+                ))}
+              </View>
+            </LinearGradient>
+          </View>
+        ) : (
+          /* Returning visitor — plan selector */
+          <View style={styles.pricingCard}>
+            <LinearGradient colors={[DARK, NAVY]} style={styles.pricingGradient}>
+              <LinearGradient
+                colors={[GOLD, "#F5D78E", GOLD]}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={styles.pricingGoldBar}
+              />
+              <Text style={styles.planSectionTitle}>Choose your plan</Text>
+
+              {/* Single */}
+              <TouchableOpacity
+                style={[styles.planRow, selectedPlan === "single" && styles.planRowSelected]}
+                activeOpacity={0.8}
+                onPress={() => setSelectedPlan("single")}
+              >
+                <View style={[styles.planRadio, selectedPlan === "single" && styles.planRadioSelected]}>
+                  {selectedPlan === "single" && <View style={styles.planRadioDot} />}
+                </View>
+                <View style={styles.planInfo}>
+                  <Text style={styles.planName}>Single video</Text>
+                  <Text style={styles.planDesc}>One-off · MP4 delivered instantly</Text>
+                </View>
+                <Text style={styles.planPrice}>£5.99</Text>
+              </TouchableOpacity>
+
+              {/* Monthly */}
+              <TouchableOpacity
+                style={[styles.planRow, selectedPlan === "monthly" && styles.planRowSelected]}
+                activeOpacity={0.8}
+                onPress={() => setSelectedPlan("monthly")}
+              >
+                <View style={[styles.planRadio, selectedPlan === "monthly" && styles.planRadioSelected]}>
+                  {selectedPlan === "monthly" && <View style={styles.planRadioDot} />}
+                </View>
+                <View style={styles.planInfo}>
+                  <Text style={styles.planName}>Monthly</Text>
+                  <Text style={styles.planDesc}>Unlimited videos · cancel anytime</Text>
+                </View>
+                <View style={styles.planPriceWrap}>
+                  <Text style={styles.planPrice}>£17.99</Text>
+                  <Text style={styles.planPricePer}>/month</Text>
+                </View>
+                <View style={styles.popularBadge}>
+                  <Text style={styles.popularBadgeText}>POPULAR</Text>
+                </View>
+              </TouchableOpacity>
+
+              {/* Annual */}
+              <TouchableOpacity
+                style={[styles.planRow, selectedPlan === "annual" && styles.planRowSelected]}
+                activeOpacity={0.8}
+                onPress={() => setSelectedPlan("annual")}
+              >
+                <View style={[styles.planRadio, selectedPlan === "annual" && styles.planRadioSelected]}>
+                  {selectedPlan === "annual" && <View style={styles.planRadioDot} />}
+                </View>
+                <View style={styles.planInfo}>
+                  <Text style={styles.planName}>Annual</Text>
+                  <Text style={styles.planDesc}>Unlimited videos · save 58%</Text>
+                </View>
+                <View style={styles.planPriceWrap}>
+                  <Text style={styles.planPrice}>£29.99</Text>
+                  <Text style={styles.planPricePer}>/year</Text>
+                </View>
+                <View style={[styles.popularBadge, styles.bestValueBadge]}>
+                  <Text style={styles.popularBadgeText}>BEST VALUE</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.ctaBtn}
+                activeOpacity={0.87}
+                onPress={pickPhoto}
+              >
+                <LinearGradient
+                  colors={[GOLD, "#A67C00"]}
+                  start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                  style={styles.ctaBtnGradient}
+                >
+                  <Ionicons name="images-outline" size={18} color="#fff" />
+                  <Text style={styles.ctaBtnText}>
+                    Choose a Photo · {PLAN_LABELS[selectedPlan]}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              <Text style={styles.ctaNote}>
+                Secure order · payment link sent to your email · results in 3–5 minutes
+              </Text>
+            </LinearGradient>
+          </View>
+        )}
       </View>
     </ScrollView>
   );
+
+  /* ── Price shown on confirming screen ── */
+  const confirmPrice = selectedPlan === "free"
+    ? "FREE"
+    : selectedPlan === "single"
+    ? "£5.99"
+    : selectedPlan === "monthly"
+    ? "£17.99/month"
+    : "£29.99/year";
 
   const confirmingScreen = (
     <ScrollView
@@ -266,16 +410,18 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
     >
-      {/* Photo preview */}
       {photoUri && (
         <Image source={{ uri: photoUri }} style={styles.photoPreview} resizeMode="cover" />
       )}
 
       <View style={styles.body}>
-        <Text style={styles.bodyTitle}>Confirm your order</Text>
+        <Text style={styles.bodyTitle}>
+          {selectedPlan === "free" ? "Confirm your free video" : "Confirm your order"}
+        </Text>
         <Text style={styles.bodyDesc}>
-          Your photograph will be gently animated into an ~8 second Living Memory video.
-          A payment link for £14.99 will be sent to your email once your order is confirmed.
+          {selectedPlan === "free"
+            ? "Your photograph will be gently animated into an ~8 second Living Memory video — completely free."
+            : `Your photograph will be animated into an ~8 second Living Memory MP4. A payment link for ${confirmPrice} will be sent to your email.`}
         </Text>
 
         {/* Order summary */}
@@ -283,7 +429,9 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
           <View style={styles.orderRow}>
             <Ionicons name="film-outline" size={15} color={GOLD} />
             <Text style={styles.orderLabel}>Living Memory Animation</Text>
-            <Text style={styles.orderPrice}>£14.99</Text>
+            <Text style={selectedPlan === "free" ? styles.orderFree : styles.orderPrice}>
+              {confirmPrice}
+            </Text>
           </View>
           <View style={styles.orderDivider} />
           <View style={styles.orderRow}>
@@ -295,13 +443,17 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
           <View style={styles.orderRow}>
             <Ionicons name="sparkles" size={15} color={GOLD} />
             <Text style={[styles.orderLabel, { fontWeight: "700" }]}>Total</Text>
-            <Text style={styles.orderTotal}>£14.99</Text>
+            <Text style={selectedPlan === "free" ? styles.orderFree : styles.orderTotal}>
+              {confirmPrice}
+            </Text>
           </View>
         </View>
 
-        {/* Email input */}
+        {/* Email input — always shown; required for paid plans */}
         <View style={styles.emailSection}>
-          <Text style={styles.emailLabel}>Your email address</Text>
+          <Text style={styles.emailLabel}>
+            {selectedPlan === "free" ? "Your email (optional — for delivery confirmation)" : "Your email address"}
+          </Text>
           <TextInput
             style={styles.emailInput}
             value={email}
@@ -313,34 +465,55 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
             autoCorrect={false}
           />
           <Text style={styles.emailHint}>
-            We'll send your payment link and delivery confirmation here.
+            {selectedPlan === "free"
+              ? "We'll send your video link here."
+              : "We'll send your payment link and delivery confirmation here."}
           </Text>
         </View>
 
         {/* Confirm button */}
-        <TouchableOpacity
-          style={[styles.ctaBtn, (!email.trim() || !email.includes("@")) && styles.ctaBtnDisabled]}
-          activeOpacity={0.87}
-          onPress={startAnimation}
-          disabled={!email.trim() || !email.includes("@")}
-        >
-          <LinearGradient
-            colors={email.trim() && email.includes("@") ? [GOLD, "#A67C00"] : ["#2A3F55", "#2A3F55"]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={styles.ctaBtnGradient}
+        {selectedPlan === "free" ? (
+          <TouchableOpacity
+            style={styles.ctaBtn}
+            activeOpacity={0.87}
+            onPress={startAnimation}
           >
-            <Ionicons name="sparkles" size={18} color="#fff" />
-            <Text style={styles.ctaBtnText}>Confirm & Animate — £14.99</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+            <LinearGradient
+              colors={[GOLD, "#A67C00"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+              style={styles.ctaBtnGradient}
+            >
+              <Ionicons name="sparkles" size={18} color="#fff" />
+              <Text style={styles.ctaBtnText}>Animate for FREE</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={[styles.ctaBtn, (!email.trim() || !email.includes("@")) && styles.ctaBtnDisabled]}
+            activeOpacity={0.87}
+            onPress={startAnimation}
+            disabled={!email.trim() || !email.includes("@")}
+          >
+            <LinearGradient
+              colors={email.trim() && email.includes("@") ? [GOLD, "#A67C00"] : ["#2A3F55", "#2A3F55"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+              style={styles.ctaBtnGradient}
+            >
+              <Ionicons name="sparkles" size={18} color="#fff" />
+              <Text style={styles.ctaBtnText}>Confirm & Animate · {confirmPrice}</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity onPress={pickPhoto} style={styles.changePhotoBtn}>
           <Text style={styles.changePhotoText}>Choose a different photo</Text>
         </TouchableOpacity>
 
-        <Text style={styles.secureNote}>
-          🔒  Secure order · No card details stored · Stripe payment link sent by email
-        </Text>
+        {selectedPlan !== "free" && (
+          <Text style={styles.secureNote}>
+            🔒  Secure order · No card details stored · Stripe payment link sent by email
+          </Text>
+        )}
       </View>
     </ScrollView>
   );
@@ -357,7 +530,6 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
           style={styles.heroGoldBar}
         />
 
-        {/* Pulsing rings */}
         <View style={styles.processingRingOuter}>
           <View style={styles.processingRingMiddle}>
             <View style={styles.processingRingInner}>
@@ -372,7 +544,6 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
           This usually takes 3–5 minutes · Please keep the app open
         </Text>
 
-        {/* Progress steps */}
         <View style={styles.stepsWrap}>
           {[
             "Photo uploaded securely",
@@ -411,9 +582,7 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
           <Ionicons name="checkmark-circle" size={52} color="#34D399" />
         </View>
         <Text style={styles.doneTitle}>Your Living Memory is Ready</Text>
-        <Text style={styles.doneSub}>
-          Your photograph has been beautifully animated
-        </Text>
+        <Text style={styles.doneSub}>Your photograph has been beautifully animated</Text>
       </LinearGradient>
 
       <View style={styles.body}>
@@ -451,20 +620,43 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
           The share sheet lets you save to Photos, send via WhatsApp, email, or any app on your iPhone.
         </Text>
 
-        <TouchableOpacity
-          style={[styles.ctaBtn, { marginTop: 4 }]}
-          activeOpacity={0.87}
-          onPress={() => { setStep("intro"); setPhotoUri(null); setVideoUrl(null); }}
-        >
-          <LinearGradient
-            colors={[GOLD, "#A67C00"]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={styles.ctaBtnGradient}
-          >
-            <Ionicons name="add-circle-outline" size={18} color="#fff" />
-            <Text style={styles.ctaBtnText}>Animate Another Photo</Text>
+        {/* Animate another — show upsell if they just used free */}
+        <View style={styles.animateAnotherCard}>
+          <LinearGradient colors={[DARK, NAVY]} style={styles.animateAnotherGradient}>
+            <LinearGradient
+              colors={[GOLD, "#F5D78E", GOLD]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+              style={styles.pricingGoldBar}
+            />
+            <Text style={styles.animateAnotherTitle}>Animate another photo</Text>
+            <View style={styles.miniPlanRow}>
+              {[
+                { label: "Per video", price: "£5.99" },
+                { label: "/month", price: "£17.99" },
+                { label: "/year", price: "£29.99" },
+              ].map((p) => (
+                <View key={p.label} style={styles.miniPlanChip}>
+                  <Text style={styles.miniPlanPrice}>{p.price}</Text>
+                  <Text style={styles.miniPlanLabel}>{p.label}</Text>
+                </View>
+              ))}
+            </View>
+            <TouchableOpacity
+              style={[styles.ctaBtn, { marginTop: 4 }]}
+              activeOpacity={0.87}
+              onPress={() => { setStep("intro"); setPhotoUri(null); setVideoUrl(null); setSelectedPlan("single"); }}
+            >
+              <LinearGradient
+                colors={[GOLD, "#A67C00"]}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={styles.ctaBtnGradient}
+              >
+                <Ionicons name="add-circle-outline" size={18} color="#fff" />
+                <Text style={styles.ctaBtnText}>Animate Another Photo</Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </LinearGradient>
-        </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -490,11 +682,11 @@ export function LivingMemoriesModal({ visible, onClose }: Props) {
   );
 
   const headerTitle: Record<Step, string> = {
-    intro: "Living Memories",
+    intro:      "Living Memories",
     confirming: "Confirm Order",
     processing: "Creating Your Animation",
-    done: "Animation Complete",
-    error: "Error",
+    done:       "Animation Complete",
+    error:      "Error",
   };
 
   return (
@@ -596,11 +788,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  /* Scroll wrapper */
   scrollArea: { flex: 1 },
   scrollContent: { paddingBottom: 32 },
 
-  /* Hero panel */
   heroPanel: {
     height: 200,
     overflow: "hidden",
@@ -664,7 +854,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
   },
 
-  /* Body */
   body: {
     paddingHorizontal: 18,
     paddingTop: 18,
@@ -684,62 +873,58 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
 
-  /* Feature rows */
   featureRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 10,
   },
   featureIconWrap: {
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor: "rgba(201,150,12,0.1)",
-    borderWidth: 1,
-    borderColor: "rgba(201,150,12,0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
   featureLabel: {
-    fontSize: 14,
-    color: "#A8C1D8",
+    fontSize: 13,
+    color: "#C5D8E8",
     fontFamily: "Inter_400Regular",
     flex: 1,
   },
 
-  /* Pricing */
+  /* Pricing card */
   pricingCard: {
-    borderRadius: 18,
+    borderRadius: 16,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(201,150,12,0.3)",
+    borderColor: "rgba(201,150,12,0.25)",
   },
-  pricingGradient: { overflow: "hidden" },
-  pricingGoldBar: { height: 3, width: "100%" },
+  pricingGradient: {
+    padding: 18,
+    gap: 14,
+  },
+  pricingGoldBar: { height: 2, position: "absolute", top: 0, left: 0, right: 0 },
   pricingRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 16,
-    paddingBottom: 14,
   },
   pricingLabel: {
     fontSize: 11,
     color: "#8BA4BA",
     fontFamily: "Inter_400Regular",
-    letterSpacing: 0.4,
     marginBottom: 2,
   },
   pricingAmount: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     color: "#F5EDD8",
-    lineHeight: 36,
   },
   pricingNote: {
     fontSize: 11,
-    color: "#5A7A94",
+    color: "#4A6A84",
     fontFamily: "Inter_400Regular",
     marginTop: 2,
   },
@@ -749,62 +934,193 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: "rgba(201,150,12,0.12)",
     borderWidth: 1,
-    borderColor: "rgba(201,150,12,0.35)",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
+    borderColor: "rgba(201,150,12,0.3)",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
   pricingBadgeText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
     color: GOLD,
   },
 
-  /* CTA */
+  /* Free banner */
+  freeBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: "rgba(201,150,12,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.35)",
+    borderRadius: 12,
+    padding: 14,
+  },
+  freeBannerText: { flex: 1, gap: 2 },
+  freeBannerTitle: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+  },
+  freeBannerSub: {
+    fontSize: 12,
+    color: "#8BA4BA",
+    fontFamily: "Inter_400Regular",
+  },
+
+  /* Future pricing preview */
+  futurePricingLabel: {
+    fontSize: 11,
+    color: "#4A6A84",
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+  },
+  planPreviewRow: {
+    flexDirection: "row",
+    gap: 8,
+    justifyContent: "center",
+  },
+  planPreviewChip: {
+    flex: 1,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    gap: 2,
+  },
+  planPreviewPrice: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#C5D8E8",
+  },
+  planPreviewLabel: {
+    fontSize: 10,
+    color: "#4A6A84",
+    fontFamily: "Inter_400Regular",
+  },
+
+  /* Plan selector */
+  planSectionTitle: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#8BA4BA",
+    letterSpacing: 0.6,
+    marginBottom: 2,
+  },
+  planRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    borderRadius: 12,
+    padding: 14,
+  },
+  planRowSelected: {
+    backgroundColor: "rgba(201,150,12,0.1)",
+    borderColor: "rgba(201,150,12,0.5)",
+  },
+  planRadio: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#2A3F55",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  planRadioSelected: {
+    borderColor: GOLD,
+  },
+  planRadioDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: GOLD,
+  },
+  planInfo: { flex: 1, gap: 2 },
+  planName: {
+    fontSize: 14,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#F5EDD8",
+  },
+  planDesc: {
+    fontSize: 11,
+    color: "#8BA4BA",
+    fontFamily: "Inter_400Regular",
+  },
+  planPriceWrap: { alignItems: "flex-end" },
+  planPrice: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+  },
+  planPricePer: {
+    fontSize: 10,
+    color: "#4A6A84",
+    fontFamily: "Inter_400Regular",
+  },
+  popularBadge: {
+    position: "absolute",
+    top: -8,
+    right: 10,
+    backgroundColor: GOLD,
+    borderRadius: 6,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+  },
+  bestValueBadge: {
+    backgroundColor: "#34D399",
+  },
+  popularBadgeText: {
+    fontSize: 8,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: 0.6,
+  },
+
+  /* CTA button */
   ctaBtn: {
     borderRadius: 14,
     overflow: "hidden",
-    shadowColor: GOLD,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 8,
   },
-  ctaBtnDisabled: {
-    opacity: 0.45,
-    shadowOpacity: 0,
-  },
+  ctaBtnDisabled: { opacity: 0.5 },
   ctaBtnGradient: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 17,
-    paddingHorizontal: 20,
     gap: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
   },
   ctaBtnText: {
-    fontSize: 17,
-    fontWeight: "700" as const,
-    fontFamily: "Inter_700Bold",
-    color: "#fff",
-    flex: 1,
-    textAlign: "center",
-  },
-  ctaBtnPrice: {
     fontSize: 15,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
-    color: "rgba(255,255,255,0.85)",
-    marginRight: 4,
+    color: "#fff",
+  },
+  ctaBtnPrice: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "rgba(255,255,255,0.8)",
   },
   ctaNote: {
     fontSize: 11,
-    color: "#5A7A94",
+    color: "#4A6A84",
     fontFamily: "Inter_400Regular",
     textAlign: "center",
-    paddingHorizontal: 16,
-    paddingBottom: 14,
+    lineHeight: 16,
   },
 
   /* Photo preview */
@@ -817,28 +1133,27 @@ const styles = StyleSheet.create({
   orderSummary: {
     backgroundColor: "rgba(255,255,255,0.04)",
     borderWidth: 1,
-    borderColor: "rgba(201,150,12,0.2)",
+    borderColor: "rgba(255,255,255,0.08)",
     borderRadius: 14,
-    overflow: "hidden",
+    padding: 14,
+    gap: 10,
   },
   orderRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
   },
   orderLabel: {
     flex: 1,
-    fontSize: 14,
-    color: "#A8C1D8",
+    fontSize: 13,
+    color: "#C5D8E8",
     fontFamily: "Inter_400Regular",
   },
   orderPrice: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
-    color: "#F5EDD8",
+    color: GOLD,
   },
   orderFree: {
     fontSize: 14,
@@ -847,62 +1162,53 @@ const styles = StyleSheet.create({
     color: "#34D399",
   },
   orderTotal: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "700" as const,
     fontFamily: "Inter_700Bold",
-    color: GOLD,
+    color: "#F5EDD8",
   },
   orderDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(201,150,12,0.15)",
-    marginHorizontal: 14,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
 
   /* Email */
-  emailSection: { gap: 6 },
+  emailSection: { gap: 8 },
   emailLabel: {
     fontSize: 13,
-    fontWeight: "700" as const,
+    fontWeight: "600" as const,
     fontFamily: "Inter_700Bold",
-    color: "#8BA4BA",
-    letterSpacing: 0.3,
+    color: "#C5D8E8",
   },
   emailInput: {
     backgroundColor: "rgba(255,255,255,0.06)",
     borderWidth: 1,
-    borderColor: "rgba(201,150,12,0.35)",
-    borderRadius: 10,
+    borderColor: "rgba(255,255,255,0.12)",
+    borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 13,
-    fontSize: 16,
-    fontFamily: "Inter_400Regular",
+    fontSize: 15,
     color: "#F5EDD8",
+    fontFamily: "Inter_400Regular",
   },
   emailHint: {
     fontSize: 11,
     color: "#4A6A84",
     fontFamily: "Inter_400Regular",
-    lineHeight: 16,
   },
 
-  /* Misc confirm */
-  changePhotoBtn: {
-    alignItems: "center",
-    paddingVertical: 10,
-  },
+  changePhotoBtn: { alignSelf: "center", paddingVertical: 4 },
   changePhotoText: {
-    fontSize: 14,
-    color: GOLD,
+    fontSize: 13,
+    color: "#4A6A84",
     fontFamily: "Inter_400Regular",
     textDecorationLine: "underline",
   },
   secureNote: {
     fontSize: 11,
-    color: "#4A6A84",
+    color: "#34D399",
     fontFamily: "Inter_400Regular",
     textAlign: "center",
-    lineHeight: 18,
-    paddingBottom: 8,
   },
 
   /* Processing */
@@ -911,33 +1217,33 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: 20,
-    paddingHorizontal: 24,
+    gap: 16,
+    paddingHorizontal: 28,
   },
   processingRingOuter: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     borderWidth: 1,
     borderColor: "rgba(201,150,12,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
   processingRingMiddle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     borderWidth: 1,
     borderColor: "rgba(201,150,12,0.35)",
     alignItems: "center",
     justifyContent: "center",
   },
   processingRingInner: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     borderWidth: 1.5,
-    borderColor: GOLD,
+    borderColor: "rgba(201,150,12,0.65)",
     backgroundColor: "rgba(201,150,12,0.08)",
     alignItems: "center",
     justifyContent: "center",
@@ -955,7 +1261,6 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     textAlign: "center",
     lineHeight: 22,
-    minHeight: 44,
   },
   processingEst: {
     fontSize: 12,
@@ -963,16 +1268,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     textAlign: "center",
   },
-  stepsWrap: {
-    width: "100%",
-    gap: 10,
-    marginTop: 8,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: 14,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "rgba(201,150,12,0.15)",
-  },
+  stepsWrap: { gap: 8, alignSelf: "stretch", marginTop: 8 },
   stepRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -980,18 +1276,16 @@ const styles = StyleSheet.create({
   },
   stepText: {
     fontSize: 13,
-    color: "#4A6A84",
+    color: "rgba(201,150,12,0.45)",
     fontFamily: "Inter_400Regular",
   },
   stepDone: { color: "#34D399" },
 
   /* Done */
   doneHero: {
+    paddingVertical: 40,
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 36,
     gap: 10,
-    overflow: "hidden",
   },
   doneIconWrap: {
     width: 90,
@@ -1077,6 +1371,50 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     lineHeight: 18,
     textAlign: "center",
+  },
+
+  /* Animate another card */
+  animateAnotherCard: {
+    borderRadius: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.25)",
+  },
+  animateAnotherGradient: {
+    padding: 18,
+    gap: 12,
+  },
+  animateAnotherTitle: {
+    fontSize: 14,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#F5EDD8",
+    textAlign: "center",
+  },
+  miniPlanRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  miniPlanChip: {
+    flex: 1,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    gap: 2,
+  },
+  miniPlanPrice: {
+    fontSize: 13,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+  },
+  miniPlanLabel: {
+    fontSize: 10,
+    color: "#4A6A84",
+    fontFamily: "Inter_400Regular",
   },
 
   /* Error */

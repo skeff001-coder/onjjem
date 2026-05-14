@@ -422,7 +422,7 @@ export default function HomeScreen() {
                   <View style={s.livingMemoriesTextWrap}>
                     <View style={s.livingMemoriesTopRow}>
                       <Text style={s.livingMemoriesTitle}>
-                        For the moments that were never meant to stand still.
+                        Your first Living Memory is FREE
                       </Text>
                       <View style={s.livingMemoriesAiBadge}>
                         <Ionicons name="sparkles" size={9} color={colors.primary} />

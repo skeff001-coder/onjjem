@@ -133,18 +133,6 @@ type = "image"
 title = "Men's Luxury Leather Wallet — ANTORINI, off-white"
 
 [[outputs]]
-id = "bOLE_WwGM2Sf129PY4zkc"
-uri = "file://artifacts/owens-photofix/assets/leather/tote.jpg"
-type = "image"
-title = "Leather Tote Bag — JLR London, tan boutique tote"
-
-[[outputs]]
-id = "l_lA6FQ7P_n7EN_RlFG3H"
-uri = "file://artifacts/owens-photofix/assets/leather/purse_ai.png"
-type = "image"
-title = "Option B — AI generated luxury studio shot"
-
-[[outputs]]
 id = "r9Q9ouAvlObky58xHBEQ1"
 uri = "file://attached_assets/icon_option_a.png"
 type = "image"
