@@ -253,7 +253,7 @@ const CATEGORIES: Category[] = [
     emoji: "🎁",
     subtitle: "Keyrings, mugs & keepsakes for everyone",
     fulfillment: "Master Print Lab",
-    headerGradient: ["#E07000", "#BF4500"],
+    headerGradient: ["#1A2A3A", "#0D1B2A"] as const,
     products: [
       {
         id: "magnet",
@@ -616,7 +616,7 @@ const CATEGORIES: Category[] = [
     emoji: "🎁",
     subtitle: "Small gifts, big memories · Handmade in London · Free expert personalisation",
     fulfillment: "ONJJEM Master Artisans · London Studio",
-    headerGradient: ["#7A4500", "#4A2800"] as const,
+    headerGradient: ["#1A2A3A", "#0D1B2A"] as const,
     products: [
       {
         id: "memory_stickers_lt",
@@ -815,7 +815,7 @@ const CATEGORIES: Category[] = [
     emoji: "🎀",
     subtitle: "Little Treasures & Fast Gifts · All under £25 · Free expert personalisation",
     fulfillment: "ONJJEM Master Artisans · London Studio",
-    headerGradient: ["#7B3F00", "#4A2500"] as const,
+    headerGradient: ["#1A2A3A", "#0D1B2A"] as const,
     products: [
       {
         id: "memory_stickers_ft",
