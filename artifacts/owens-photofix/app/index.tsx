@@ -19,6 +19,13 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import Svg, {
+  Defs,
+  LinearGradient as SvgLinear,
+  Path,
+  RadialGradient as SvgRadial,
+  Stop,
+} from "react-native-svg";
 import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
@@ -357,15 +364,52 @@ export default function HomeScreen() {
       >
         {appState === "idle" && (
           <>
-            {/* Masterpiece Gallery button */}
+            {/* Masterpiece Gallery button — dark emerald mystical */}
             <TouchableOpacity
               style={s.galleryBtn}
               onPress={() => router.push("/gallery")}
               activeOpacity={0.88}
             >
-              <Ionicons name="images-outline" size={20} color="#C9960C" />
-              <Text style={s.galleryBtnText}>Masterpiece Gallery</Text>
-              <Ionicons name="chevron-forward" size={16} color="#C9960C" />
+              <LinearGradient
+                colors={["#060F08", "#0C1E10", "#060F08"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={s.galleryBtnGradient}
+              >
+                <LinearGradient
+                  colors={["#155220", "#4CAF58", "#155220"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={s.galleryBtnGreenBar}
+                />
+                <View style={s.galleryBtnInner}>
+                  <Svg width={26} height={30} viewBox="0 0 20 24">
+                    <Defs>
+                      <SvgLinear id="idx_em_body" x1="0.25" y1="0" x2="0.8" y2="1">
+                        <Stop offset="0%"   stopColor="#6EE080" />
+                        <Stop offset="35%"  stopColor="#228A38" />
+                        <Stop offset="72%"  stopColor="#0E5520" />
+                        <Stop offset="100%" stopColor="#062E0C" />
+                      </SvgLinear>
+                      <SvgLinear id="idx_em_crown" x1="0.5" y1="0" x2="0.5" y2="1">
+                        <Stop offset="0%"   stopColor="#B0F0BC" />
+                        <Stop offset="100%" stopColor="#44B858" />
+                      </SvgLinear>
+                      <SvgRadial id="idx_em_glint" cx="36%" cy="26%" r="32%">
+                        <Stop offset="0%"   stopColor="rgba(220,255,228,0.96)" />
+                        <Stop offset="100%" stopColor="rgba(120,220,140,0)" />
+                      </SvgRadial>
+                    </Defs>
+                    <Path d="M 10 0 L 18 4 L 18 18 L 10 24 L 2 18 L 2 4 Z" fill="url(#idx_em_body)" />
+                    <Path d="M 10 0 L 18 4 L 2 4 Z" fill="url(#idx_em_crown)" />
+                    <Path d="M 18 4 L 18 18 L 10 24 L 10 8 Z" fill="rgba(0,0,0,0.20)" />
+                    <Path d="M 10 0 L 18 4 L 18 18 L 10 24 L 2 18 L 2 4 Z" fill="url(#idx_em_glint)" />
+                    <Path d="M 10 0 L 18 4 L 18 18 L 10 24 L 2 18 L 2 4 Z" fill="none" stroke="rgba(0,28,8,0.65)" strokeWidth={0.5} />
+                    <Path d="M 2 4 L 18 4" fill="none" stroke="rgba(100,220,120,0.5)" strokeWidth={0.4} />
+                  </Svg>
+                  <Text style={s.galleryBtnText}>Masterpiece Gallery</Text>
+                </View>
+              </LinearGradient>
             </TouchableOpacity>
 
             <Pressable
@@ -380,7 +424,6 @@ export default function HomeScreen() {
                   <Text style={s.uploadTitle}>Upload a Photo</Text>
                   <Text style={s.uploadSub}>Tap to restore your memories</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.55)" />
               </View>
               <View style={{ alignItems: "center", paddingVertical: 22, paddingBottom: 10 }}>
                 <Image
@@ -424,7 +467,6 @@ export default function HomeScreen() {
                       </View>
                     </View>
                   </View>
-                  <Ionicons name="chevron-forward" size={14} color={colors.primary} />
                 </View>
               </LinearGradient>
             </TouchableOpacity>
@@ -465,9 +507,7 @@ export default function HomeScreen() {
                       ))}
                     </View>
                   </View>
-                  <View style={s.canvasHeroRight}>
-                    <Ionicons name="chevron-forward" size={18} color="rgba(201,150,12,0.7)" />
-                  </View>
+                  <View style={s.canvasHeroRight} />
                 </View>
               </LinearGradient>
             </TouchableOpacity>
@@ -502,7 +542,6 @@ export default function HomeScreen() {
                       <Text style={s.giftBtnCountText}>50+</Text>
                       <Text style={s.giftBtnCountSub}>gifts</Text>
                     </View>
-                    <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.9)" />
                   </View>
                   <View style={s.giftBtnChipRow}>
                     {["Candles", "Cushions", "Jigsaws", "Throws", "& More"].map((tag) => (
@@ -760,7 +799,6 @@ export default function HomeScreen() {
                   <Text style={s.jubileeEyebrow}>ANNIVERSARY &amp; JUBILEE COLLECTION</Text>
                   <Text style={s.jubileeTitle}>Celebrate a Lifetime of Love</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={14} color="#C9960C" />
               </View>
             </View>
           </LinearGradient>
@@ -792,7 +830,6 @@ export default function HomeScreen() {
                 <Text style={s.featureWallsTitle}>Bespoke Feature Walls</Text>
                 <Text style={s.featureWallsSub}>Custom murals up to 4m × 3m · Heritage & Wedding</Text>
               </View>
-              <Ionicons name="chevron-forward" size={14} color={colors.primary} />
             </View>
           </LinearGradient>
         </TouchableOpacity>
@@ -829,7 +866,6 @@ export default function HomeScreen() {
                   <Text style={s.collectionRowLabel}>{col.label}</Text>
                   <Text style={s.collectionRowSub}>{col.sub}</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={14} color="rgba(201,150,12,0.6)" />
               </TouchableOpacity>
             ))}
           </View>
@@ -847,7 +883,6 @@ export default function HomeScreen() {
             >
               <Ionicons name="gift-outline" size={18} color="#fff" />
               <Text style={s.collectionsCtaText}>Browse the Full Gift Shop</Text>
-              <Ionicons name="chevron-forward" size={16} color="rgba(255,255,255,0.8)" />
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -862,7 +897,6 @@ export default function HomeScreen() {
         >
           <Ionicons name="headset-outline" size={18} color={colors.mutedForeground} />
           <Text style={s.contactSupportText}>Contact Support</Text>
-          <Ionicons name="chevron-forward" size={15} color={colors.mutedForeground} />
         </TouchableOpacity>
       </ScrollView>
 
@@ -997,10 +1031,10 @@ function makeStyles(
     },
     uploadArea: {
       borderRadius: 14,
-      borderWidth: 1.5,
-      borderColor: "#E8D48B",
-      borderStyle: "dashed",
-      backgroundColor: "#FDF6DC",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.35)",
+      borderStyle: "solid" as const,
+      backgroundColor: "#0D1B2A",
       marginTop: 0,
     },
     pressed: {
@@ -1052,9 +1086,9 @@ function makeStyles(
       width: 36,
       height: 36,
       borderRadius: 18,
-      backgroundColor: "rgba(201,150,12,0.12)",
+      backgroundColor: "rgba(201,150,12,0.18)",
       borderWidth: 1,
-      borderColor: "rgba(201,150,12,0.3)",
+      borderColor: "rgba(201,150,12,0.45)",
       alignItems: "center" as const,
       justifyContent: "center" as const,
       flexShrink: 0,
@@ -1098,12 +1132,12 @@ function makeStyles(
     uploadTitle: {
       fontSize: 15,
       fontWeight: "700" as const,
-      color: "#C9960C",
+      color: "#FAF7F2",
       fontFamily: "Cinzel_400Regular",
     },
     uploadSub: {
       fontSize: 12,
-      color: "#7A6E57",
+      color: "rgba(250,247,242,0.55)",
       fontFamily: "Inter_400Regular",
     },
     /* Canvas hero */
@@ -1881,24 +1915,40 @@ function makeStyles(
       letterSpacing: 1.2,
     },
     galleryBtn: {
+      borderRadius: 14,
+      overflow: "hidden" as const,
+      borderWidth: 1,
+      borderColor: "#1E5C2A",
+      shadowColor: "#2ECC52",
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.35,
+      shadowRadius: 14,
+      elevation: 8,
+    },
+    galleryBtnGradient: {
+      borderRadius: 14,
+      overflow: "hidden" as const,
+    },
+    galleryBtnGreenBar: {
+      height: 3,
+    },
+    galleryBtnInner: {
       flexDirection: "row" as const,
       alignItems: "center" as const,
       justifyContent: "center" as const,
-      gap: 10,
+      gap: 12,
       paddingVertical: 14,
       paddingHorizontal: 20,
-      borderRadius: 14,
-      backgroundColor: "#FDF6DC",
-      borderWidth: 1.5,
-      borderColor: "#E8D48B",
     },
     galleryBtnText: {
-      flex: 1,
       fontSize: 15,
       fontWeight: "400" as const,
       fontFamily: "Cinzel_400Regular",
-      color: "#C9960C",
+      color: "#C8F0CE",
       textAlign: "center" as const,
+      textShadowColor: "rgba(80,220,100,0.7)",
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 10,
     },
     contactSupportBtn: {
       flexDirection: "row" as const,
