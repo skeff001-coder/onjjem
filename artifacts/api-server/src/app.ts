@@ -104,27 +104,6 @@ const SUPPORT_HTML = `<!DOCTYPE html>
 
 const app: Express = express();
 
-// ── Stripe webhook MUST be registered before express.json() ─────────────────
-import { WebhookHandlers } from "./webhookHandlers";
-app.post(
-  "/api/stripe/webhook",
-  express.raw({ type: "application/json" }),
-  async (req: Request, res: Response) => {
-    const signature = req.headers["stripe-signature"];
-    if (!signature) { res.status(400).json({ error: "Missing stripe-signature" }); return; }
-    try {
-      const sig = Array.isArray(signature) ? signature[0] : signature;
-      await WebhookHandlers.processWebhook(req.body as Buffer, sig);
-      res.status(200).json({ received: true });
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Webhook error";
-      console.error("Webhook error:", msg);
-      res.status(400).json({ error: "Webhook processing error" });
-    }
-  },
-);
-// ────────────────────────────────────────────────────────────────────────────
-
 app.use(
   pinoHttp({
     logger,

@@ -1,10 +1,5 @@
 import app from "./app";
 import { logger } from "./lib/logger";
-import { runMigrations } from "stripe-replit-sync";
-import { getStripeSync } from "./stripeClient";
-import { pool } from "@workspace/db";
-import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
 
 const rawPort = process.env["PORT"];
 
