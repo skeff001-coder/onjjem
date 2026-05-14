@@ -111,24 +111,24 @@ export default function GalleryScreen() {
         style={s.goldBar}
       />
 
-      <View style={s.header}>
-        <TouchableOpacity style={s.backBtn} onPress={() => router.back()} activeOpacity={0.7}>
-          <Ionicons name="chevron-back" size={24} color={DARK} />
-        </TouchableOpacity>
-        <View style={s.headerCenter}>
-          <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
-            <Text style={s.headerEyebrow}>ONJJEM</Text>
-          </TouchableOpacity>
-          <Text style={s.headerTitle}>Masterpiece Gallery</Text>
-        </View>
-        <View style={s.headerRight} />
-      </View>
-
       <ScrollView
         style={s.scroll}
         contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 32 }]}
         showsVerticalScrollIndicator={false}
       >
+        <View style={s.header}>
+          <TouchableOpacity style={s.backBtn} onPress={() => router.back()} activeOpacity={0.7}>
+            <Ionicons name="chevron-back" size={24} color={DARK} />
+          </TouchableOpacity>
+          <View style={s.headerCenter}>
+            <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
+              <Text style={s.headerEyebrow}>ONJJEM</Text>
+            </TouchableOpacity>
+            <Text style={s.headerTitle}>Masterpiece Gallery</Text>
+          </View>
+          <View style={s.headerRight} />
+        </View>
+
         {/* ── Hero ── */}
         <View style={s.heroBlock}>
           <View style={s.crownWrap}>

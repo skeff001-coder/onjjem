@@ -169,29 +169,29 @@ export default function FeatureWallsScreen() {
         style={s.goldBar}
       />
 
-      {/* Header */}
-      <View style={s.header}>
-        <TouchableOpacity
-          style={s.backBtn}
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="chevron-back" size={24} color={DARK} />
-        </TouchableOpacity>
-        <View style={s.headerCenter}>
-          <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
-            <Text style={s.headerEyebrow}>ONJJEM</Text>
-          </TouchableOpacity>
-          <Text style={s.headerTitle}>Feature Walls</Text>
-        </View>
-        <View style={s.headerRight} />
-      </View>
-
       <ScrollView
         style={s.scroll}
         contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 32 }]}
         showsVerticalScrollIndicator={false}
       >
+        {/* Header */}
+        <View style={s.header}>
+          <TouchableOpacity
+            style={s.backBtn}
+            onPress={() => router.back()}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="chevron-back" size={24} color={DARK} />
+          </TouchableOpacity>
+          <View style={s.headerCenter}>
+            <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
+              <Text style={s.headerEyebrow}>ONJJEM</Text>
+            </TouchableOpacity>
+            <Text style={s.headerTitle}>Feature Walls</Text>
+          </View>
+          <View style={s.headerRight} />
+        </View>
+
         {/* Hero block */}
         <LinearGradient
           colors={[DARK_NAVY, "#162236"]}

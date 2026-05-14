@@ -130,20 +130,20 @@ export default function CanvasPrintsScreen() {
         style={s.goldBar}
       />
 
-      {/* Header */}
-      <View style={s.header}>
-        <TouchableOpacity onPress={() => router.back()} style={s.backBtn} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-          <Ionicons name="chevron-back" size={22} color={GOLD} />
-        </TouchableOpacity>
-        <View style={s.headerCenter}>
-          <Text style={s.headerBrand}>ONJJEM</Text>
-          <Text style={s.headerTitle}>Canvas Prints</Text>
-          <Text style={s.headerSub}>Hand-stretched gallery canvases · UK Master Printers</Text>
-        </View>
-        <View style={{ width: 36 }} />
-      </View>
-
       <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+
+        {/* Header */}
+        <View style={s.header}>
+          <TouchableOpacity onPress={() => router.back()} style={s.backBtn} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+            <Ionicons name="chevron-back" size={22} color={GOLD} />
+          </TouchableOpacity>
+          <View style={s.headerCenter}>
+            <Text style={s.headerBrand}>ONJJEM</Text>
+            <Text style={s.headerTitle}>Canvas Prints</Text>
+            <Text style={s.headerSub}>Hand-stretched gallery canvases · UK Master Printers</Text>
+          </View>
+          <View style={{ width: 36 }} />
+        </View>
 
         {/* Hero banner */}
         <LinearGradient
