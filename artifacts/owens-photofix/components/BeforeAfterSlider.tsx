@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useRef, useState } from "react";
 import {
+  Animated,
   Image,
   PanResponder,
   StyleSheet,
@@ -22,6 +23,10 @@ export function BeforeAfterSlider({ beforeUri, afterBase64 }: Props) {
   const positionRef = useRef(0.5);
   const [sliderPos, setSliderPos] = useState(0.5);
 
+  // Drag-hint opacity — fades to 0 on first user interaction.
+  const hintOpacity = useRef(new Animated.Value(1)).current;
+  const hintHiddenRef = useRef(false);
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -30,6 +35,15 @@ export function BeforeAfterSlider({ beforeUri, afterBase64 }: Props) {
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: () => {
         startPositionRef.current = positionRef.current;
+        // Fade out drag label on first touch.
+        if (!hintHiddenRef.current) {
+          hintHiddenRef.current = true;
+          Animated.timing(hintOpacity, {
+            toValue: 0,
+            duration: 180,
+            useNativeDriver: true,
+          }).start();
+        }
       },
       onPanResponderMove: (_, gestureState) => {
         const newPos = Math.max(
@@ -86,6 +100,12 @@ export function BeforeAfterSlider({ beforeUri, afterBase64 }: Props) {
           <Ionicons name="chevron-back" size={13} color="#111" />
           <Ionicons name="chevron-forward" size={13} color="#111" />
         </View>
+        <Animated.View
+          style={[s.hintBubble, { opacity: hintOpacity }]}
+          pointerEvents="none"
+        >
+          <Text style={s.hintText}>DRAG</Text>
+        </Animated.View>
         <View style={s.dividerLine} />
       </View>
     </View>
@@ -156,5 +176,19 @@ const s = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 6,
     gap: 0,
+  },
+  hintBubble: {
+    backgroundColor: "rgba(0,0,0,0.62)",
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 5,
+    marginTop: 5,
+    marginBottom: -5,
+  },
+  hintText: {
+    color: "#fff",
+    fontSize: 8,
+    fontWeight: "800" as const,
+    letterSpacing: 1.4,
   },
 });

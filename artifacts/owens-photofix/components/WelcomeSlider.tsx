@@ -28,6 +28,10 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
   const sliderPosAnim = useRef(new Animated.Value(0.5)).current;
   const hasAnimatedRef = useRef(false);
 
+  // Drag-hint opacity — fades to 0 on first user interaction.
+  const hintOpacity = useRef(new Animated.Value(1)).current;
+  const hintHiddenRef = useRef(false);
+
   // Keep sliderPos state in sync with the Animated.Value so existing
   // clip-width rendering works without converting to Animated.View.
   useEffect(() => {
@@ -91,6 +95,15 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
         hintSequenceRef.current = null;
         sliderPosAnim.stopAnimation();
         startPositionRef.current = positionRef.current;
+        // Fade out drag label on first touch.
+        if (!hintHiddenRef.current) {
+          hintHiddenRef.current = true;
+          Animated.timing(hintOpacity, {
+            toValue: 0,
+            duration: 180,
+            useNativeDriver: true,
+          }).start();
+        }
       },
       onPanResponderMove: (_, gestureState) => {
         const newPos = Math.max(
@@ -142,6 +155,12 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
           <Ionicons name="chevron-back" size={12} color="#111" />
           <Ionicons name="chevron-forward" size={12} color="#111" />
         </View>
+        <Animated.View
+          style={[s.hintBubble, { opacity: hintOpacity }]}
+          pointerEvents="none"
+        >
+          <Text style={s.hintText}>DRAG</Text>
+        </Animated.View>
         <View style={[s.dividerLine, { backgroundColor: accent }]} />
       </View>
     </View>
@@ -211,5 +230,19 @@ const s = StyleSheet.create({
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
     elevation: 6,
+  },
+  hintBubble: {
+    backgroundColor: "rgba(0,0,0,0.62)",
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 5,
+    marginTop: 5,
+    marginBottom: -5,
+  },
+  hintText: {
+    color: "#fff",
+    fontSize: 8,
+    fontWeight: "800",
+    letterSpacing: 1.4,
   },
 });
