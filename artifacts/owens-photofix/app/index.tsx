@@ -39,6 +39,7 @@ import { ReferralModal } from "@/components/ReferralModal";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { TrustFooter } from "@/components/TrustFooter";
 import { RubyHeartIcon } from "@/components/RubyHeartIcon";
+import { saveToHistory } from "@/lib/photoHistory";
 
 type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
 type AppState = "idle" | "selected" | "processing" | "done";
@@ -278,12 +279,39 @@ export default function HomeScreen() {
 
       // Save to local filesystem on native only
       if (!isWebUri) {
-        const localPath =
-          (FileSystem.documentDirectory ?? "") + "photofix_result.jpg";
-        await FileSystem.writeAsStringAsync(localPath, b64, {
+        const ts = Date.now();
+        const resultPath = (FileSystem.documentDirectory ?? "") + `photofix_result_${ts}.jpg`;
+        await FileSystem.writeAsStringAsync(resultPath, b64, {
           encoding: FileSystem.EncodingType.Base64,
         });
-        setResultLocalUri(localPath);
+        setResultLocalUri(resultPath);
+
+        // Also persist the original so the gallery can show a before/after comparison
+        const origPath = (FileSystem.documentDirectory ?? "") + `photofix_original_${ts}.jpg`;
+        if (originalBase64Ref.current) {
+          await FileSystem.writeAsStringAsync(origPath, originalBase64Ref.current, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+        } else {
+          // Fall back: copy the picked file URI if it's a local file
+          try {
+            await FileSystem.copyAsync({ from: originalUri!, to: origPath });
+          } catch {
+            // If copy fails (e.g. ph:// URI), write an empty placeholder so history entry is still valid
+            await FileSystem.writeAsStringAsync(origPath, b64, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+          }
+        }
+
+        // Save to personal history
+        await saveToHistory({
+          id: String(ts),
+          timestamp: ts,
+          modes: Array.from(selectedModes),
+          originalLocalUri: origPath,
+          resultLocalUri: resultPath,
+        });
       }
 
       if (!cancelledRef.current) {
@@ -433,6 +461,32 @@ export default function HomeScreen() {
                 </View>
               ))}
             </View>
+
+            {/* My Restorations button */}
+            <TouchableOpacity
+              style={s.myPhotosBtn}
+              onPress={() => router.push("/my-photos")}
+              activeOpacity={0.88}
+            >
+              <LinearGradient
+                colors={["#06090F", "#0E1B2E", "#06090F"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={s.myPhotosBtnGradient}
+              >
+                <LinearGradient
+                  colors={["#0D4A8C", "#4A90D9", "#0D4A8C"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={s.myPhotosBtnBar}
+                />
+                <View style={s.myPhotosBtnInner}>
+                  <Ionicons name="images" size={20} color="#4A90D9" />
+                  <Text style={s.myPhotosBtnText}>My Restorations</Text>
+                  <Ionicons name="chevron-forward" size={16} color="rgba(74,144,217,0.6)" />
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
 
             {/* Masterpiece Gallery button — dark emerald mystical */}
             <TouchableOpacity
@@ -863,6 +917,15 @@ export default function HomeScreen() {
                 )
               }
             />
+            <TouchableOpacity
+              style={s.myPhotosLinkBtn}
+              onPress={() => router.push("/my-photos")}
+              activeOpacity={0.82}
+            >
+              <Ionicons name="images-outline" size={16} color="#4A90D9" />
+              <Text style={s.myPhotosLinkBtnText}>View in My Restorations</Text>
+              <Ionicons name="chevron-forward" size={14} color="rgba(74,144,217,0.5)" />
+            </TouchableOpacity>
             <TouchableOpacity
               style={s.ghostBtn}
               onPress={resetApp}
@@ -1820,6 +1883,26 @@ function makeStyles(
       color: colors.foreground,
       fontFamily: "Inter_600SemiBold",
     },
+    myPhotosLinkBtn: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 7,
+      paddingVertical: 12,
+      paddingHorizontal: 18,
+      borderRadius: 12,
+      backgroundColor: "rgba(74,144,217,0.10)",
+      borderWidth: 1,
+      borderColor: "rgba(74,144,217,0.28)",
+    },
+    myPhotosLinkBtnText: {
+      fontSize: 14,
+      fontWeight: "600" as const,
+      fontFamily: "Inter_600SemiBold",
+      color: "#4A90D9",
+      flex: 1,
+      textAlign: "center" as const,
+    },
     ghostBtn: {
       alignItems: "center",
       paddingVertical: 12,
@@ -2326,6 +2409,38 @@ function makeStyles(
       fontWeight: "700" as const,
       color: "#FFE88A",
       letterSpacing: 1.2,
+    },
+    myPhotosBtn: {
+      borderRadius: 14,
+      overflow: "hidden" as const,
+      borderWidth: 1,
+      borderColor: "#0D3A6E",
+      shadowColor: "#4A90D9",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 10,
+      elevation: 6,
+    },
+    myPhotosBtnGradient: {
+      borderRadius: 14,
+      overflow: "hidden" as const,
+    },
+    myPhotosBtnBar: {
+      height: 3,
+    },
+    myPhotosBtnInner: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 10,
+      paddingVertical: 14,
+      paddingHorizontal: 20,
+    },
+    myPhotosBtnText: {
+      flex: 1,
+      fontSize: 15,
+      fontWeight: "600" as const,
+      fontFamily: "Inter_600SemiBold",
+      color: "#93C5F5",
     },
     galleryBtn: {
       borderRadius: 14,
