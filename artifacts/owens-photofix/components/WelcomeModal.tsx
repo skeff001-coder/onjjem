@@ -93,7 +93,7 @@ function AnimatedSlide({ item, isActive }: SlideProps) {
   return (
     <View style={styles.slide}>
       <View style={styles.sliderWrapper}>
-        <WelcomeSlider before={item.before} after={item.after} accent={item.accent} />
+        <WelcomeSlider before={item.before} after={item.after} accent={item.accent} animate={isActive} />
       </View>
       <Animated.View style={[styles.slideTextRow, animStyle]}>
         <Ionicons name={item.icon} size={20} color={item.accent} />

@@ -1,6 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
+  Easing,
   Image,
   ImageSourcePropType,
   PanResponder,
@@ -13,14 +15,61 @@ interface Props {
   before: ImageSourcePropType;
   after: ImageSourcePropType;
   accent: string;
+  animate?: boolean;
 }
 
-export function WelcomeSlider({ before, after, accent }: Props) {
+export function WelcomeSlider({ before, after, accent, animate }: Props) {
   const containerWidthRef = useRef(300);
   const [containerWidth, setContainerWidth] = useState(300);
   const startPositionRef = useRef(0.5);
   const positionRef = useRef(0.5);
   const [sliderPos, setSliderPos] = useState(0.5);
+
+  const sliderPosAnim = useRef(new Animated.Value(0.5)).current;
+  const hasAnimatedRef = useRef(false);
+
+  // Keep sliderPos state in sync with the Animated.Value so existing
+  // clip-width rendering works without converting to Animated.View.
+  useEffect(() => {
+    const listenerId = sliderPosAnim.addListener(({ value }) => {
+      positionRef.current = value;
+      setSliderPos(value);
+    });
+    return () => sliderPosAnim.removeListener(listenerId);
+  }, [sliderPosAnim]);
+
+  // Hint animation: runs once per WelcomeSlider instance (once per session
+  // per slide) the first time the slide becomes active.
+  useEffect(() => {
+    if (!animate || hasAnimatedRef.current) return;
+    hasAnimatedRef.current = true;
+
+    // Wait for the slide's fade-in animation (300 ms) to finish first.
+    const delay = setTimeout(() => {
+      Animated.sequence([
+        Animated.timing(sliderPosAnim, {
+          toValue: 0.18,
+          duration: 500,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: false,
+        }),
+        Animated.timing(sliderPosAnim, {
+          toValue: 0.82,
+          duration: 600,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: false,
+        }),
+        Animated.timing(sliderPosAnim, {
+          toValue: 0.5,
+          duration: 400,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }, 320);
+
+    return () => clearTimeout(delay);
+  }, [animate, sliderPosAnim]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -40,7 +89,7 @@ export function WelcomeSlider({ before, after, accent }: Props) {
           ),
         );
         positionRef.current = newPos;
-        setSliderPos(newPos);
+        sliderPosAnim.setValue(newPos);
       },
     })
   ).current;
