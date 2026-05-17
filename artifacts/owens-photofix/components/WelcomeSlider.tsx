@@ -90,7 +90,7 @@ export function WelcomeSlider({ before, after, accent }: Props) {
 const s = StyleSheet.create({
   wrapper: {
     width: "100%",
-    aspectRatio: 4 / 3,
+    aspectRatio: 16 / 9,
     borderRadius: 14,
     overflow: "hidden",
     backgroundColor: "#111",
