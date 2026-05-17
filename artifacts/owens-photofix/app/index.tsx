@@ -791,7 +791,17 @@ export default function HomeScreen() {
           <>
             {/* ── Enhancement picker ── */}
             <View style={s.enhanceHeader}>
-              <Text style={s.enhanceTitle}>Choose Your Enhancements</Text>
+              <View style={s.enhanceTitleRow}>
+                <Text style={s.enhanceTitle}>Choose Your Enhancements</Text>
+                <TouchableOpacity
+                  onPress={() => setTipSheetVisible(true)}
+                  style={s.enhanceInfoBtn}
+                  activeOpacity={0.7}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <Ionicons name="information-circle-outline" size={20} color="rgba(201,150,12,0.75)" />
+                </TouchableOpacity>
+              </View>
               <Text style={s.enhanceSub}>Select up to 3 — they stack together</Text>
             </View>
 
@@ -1741,6 +1751,14 @@ function makeStyles(
       alignItems: "center" as const,
       paddingTop: 4,
       paddingBottom: 2,
+    },
+    enhanceTitleRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 6,
+    },
+    enhanceInfoBtn: {
+      marginTop: 1,
     },
     enhanceTitle: {
       fontSize: 22,
