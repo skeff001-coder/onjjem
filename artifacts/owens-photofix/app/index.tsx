@@ -1044,13 +1044,13 @@ export default function HomeScreen() {
                 <Text style={s.sampleBadgeText}>FREE SAMPLE</Text>
               </View>
               <Text style={s.imageLabel}>
-                {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).join(" + ")} — drag to compare
+                {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")} — drag to compare
               </Text>
             </View>
             <BeforeAfterSlider
               beforeUri={originalUri}
               afterBase64={resultBase64}
-              modeName={Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).join(" + ")}
+              modeName={Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")}
             />
             <View style={s.imageTapHint}>
               <Ionicons name="sparkles" size={12} color="#C9960C" />
