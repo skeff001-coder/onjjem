@@ -95,8 +95,10 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
         hintSequenceRef.current = null;
         sliderPosAnim.stopAnimation();
         startPositionRef.current = positionRef.current;
-        // Fade out drag label on first touch.
-        if (!hintHiddenRef.current) {
+      },
+      onPanResponderMove: (_, gestureState) => {
+        // Fade out the drag hint on first confirmed horizontal drag (>4 px).
+        if (!hintHiddenRef.current && Math.abs(gestureState.dx) > 4) {
           hintHiddenRef.current = true;
           Animated.timing(hintOpacity, {
             toValue: 0,
@@ -104,8 +106,6 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
             useNativeDriver: true,
           }).start();
         }
-      },
-      onPanResponderMove: (_, gestureState) => {
         const newPos = Math.max(
           0.03,
           Math.min(
