@@ -40,13 +40,15 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
 
   // Hint animation: runs once per WelcomeSlider instance (once per session
   // per slide) the first time the slide becomes active.
+  const hintSequenceRef = useRef<Animated.CompositeAnimation | null>(null);
+
   useEffect(() => {
     if (!animate || hasAnimatedRef.current) return;
     hasAnimatedRef.current = true;
 
     // Wait for the slide's fade-in animation (300 ms) to finish first.
     const delay = setTimeout(() => {
-      Animated.sequence([
+      const seq = Animated.sequence([
         Animated.timing(sliderPosAnim, {
           toValue: 0.18,
           duration: 500,
@@ -65,10 +67,16 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
           easing: Easing.out(Easing.quad),
           useNativeDriver: false,
         }),
-      ]).start();
+      ]);
+      hintSequenceRef.current = seq;
+      seq.start(() => { hintSequenceRef.current = null; });
     }, 320);
 
-    return () => clearTimeout(delay);
+    return () => {
+      clearTimeout(delay);
+      hintSequenceRef.current?.stop();
+      hintSequenceRef.current = null;
+    };
   }, [animate, sliderPosAnim]);
 
   const panResponder = useRef(
@@ -78,6 +86,10 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
       onStartShouldSetPanResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: () => {
+        // Stop any in-flight hint animation so user drag takes full control.
+        hintSequenceRef.current?.stop();
+        hintSequenceRef.current = null;
+        sliderPosAnim.stopAnimation();
         startPositionRef.current = positionRef.current;
       },
       onPanResponderMove: (_, gestureState) => {
