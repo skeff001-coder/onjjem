@@ -12,6 +12,12 @@ import {
   View,
   ViewToken,
 } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WelcomeSlider } from "./WelcomeSlider";
 
@@ -55,6 +61,48 @@ const SLIDES: {
     after: require("../assets/gallery/welcome/victorian_after.png"),
   },
 ];
+
+const ANIM_DURATION = 300;
+const ANIM_EASING = Easing.out(Easing.quad);
+const TRANSLATE_START = 14;
+
+interface SlideProps {
+  item: (typeof SLIDES)[number];
+  isActive: boolean;
+}
+
+function AnimatedSlide({ item, isActive }: SlideProps) {
+  const opacity = useSharedValue(0);
+  const translateY = useSharedValue(TRANSLATE_START);
+
+  useEffect(() => {
+    if (isActive) {
+      opacity.value = withTiming(1, { duration: ANIM_DURATION, easing: ANIM_EASING });
+      translateY.value = withTiming(0, { duration: ANIM_DURATION, easing: ANIM_EASING });
+    } else {
+      opacity.value = 0;
+      translateY.value = TRANSLATE_START;
+    }
+  }, [isActive]);
+
+  const animStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  return (
+    <View style={styles.slide}>
+      <View style={styles.sliderWrapper}>
+        <WelcomeSlider before={item.before} after={item.after} accent={item.accent} />
+      </View>
+      <Animated.View style={[styles.slideTextRow, animStyle]}>
+        <Ionicons name={item.icon} size={20} color={item.accent} />
+        <Text style={[styles.slideTitle, { color: item.accent }]}>{item.title}</Text>
+      </Animated.View>
+      <Animated.Text style={[styles.slideBody, animStyle]}>{item.body}</Animated.Text>
+    </View>
+  );
+}
 
 export function WelcomeModal({ visible, onDismiss }: Props) {
   const insets = useSafeAreaInsets();
@@ -131,7 +179,7 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
         {/* App headline — always visible above the carousel */}
         <Text style={styles.headline}>Welcome to{"\n"}ONJJEM</Text>
 
-        {/* Slides */}
+        {/* Slides — extraData ensures renderItem re-runs when activeIndex changes */}
         <FlatList
           ref={flatListRef}
           data={SLIDES}
@@ -140,23 +188,11 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           bounces={false}
+          extraData={activeIndex}
           onViewableItemsChanged={onViewableItemsChanged}
           viewabilityConfig={viewabilityConfig}
-          renderItem={({ item }) => (
-            <View style={styles.slide}>
-              <View style={styles.sliderWrapper}>
-                <WelcomeSlider
-                  before={item.before}
-                  after={item.after}
-                  accent={item.accent}
-                />
-              </View>
-              <View style={styles.slideTextRow}>
-                <Ionicons name={item.icon} size={20} color={item.accent} />
-                <Text style={[styles.slideTitle, { color: item.accent }]}>{item.title}</Text>
-              </View>
-              <Text style={styles.slideBody}>{item.body}</Text>
-            </View>
+          renderItem={({ item, index }) => (
+            <AnimatedSlide item={item} isActive={index === activeIndex} />
           )}
           style={styles.flatList}
         />
