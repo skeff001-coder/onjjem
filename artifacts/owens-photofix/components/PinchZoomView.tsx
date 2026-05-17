@@ -27,28 +27,46 @@ export function PinchZoomView({
   const translateY = useSharedValue(0);
   const savedTranslateX = useSharedValue(0);
   const savedTranslateY = useSharedValue(0);
-  // Container dimensions stored as shared values so the pan clamp worklet
-  // can read them without crossing the JS/UI thread boundary.
+  // Stored as shared values so the pan/pinch worklets can read them.
   const containerWidth = useSharedValue(0);
   const containerHeight = useSharedValue(0);
 
-  // Pan is only enabled after a successful pinch-in (scale > 1).
-  // Keeping it disabled at 1× prevents the RNGH Pan gesture from swallowing
-  // touches that belong to the inner BeforeAfterSlider PanResponder.
+  // Pan is only enabled while scale > 1 so it never swallows touches that
+  // belong to the inner BeforeAfterSlider PanResponder at 1×.
   const [panEnabled, setPanEnabled] = useState(false);
 
   const pinch = Gesture.Pinch()
     .onUpdate((e) => {
       "worklet";
-      scale.value = Math.max(
+      const newScale = Math.max(
         minScale,
         Math.min(maxScale, savedScale.value * e.scale),
       );
+      scale.value = newScale;
+      // Re-clamp any existing translation whenever scale changes so the image
+      // can never drift outside its bounds during a live pinch-out.
+      const maxX = (containerWidth.value * (newScale - 1)) / 2;
+      const maxY = (containerHeight.value * (newScale - 1)) / 2;
+      translateX.value = Math.max(-maxX, Math.min(maxX, translateX.value));
+      translateY.value = Math.max(-maxY, Math.min(maxY, translateY.value));
     })
     .onEnd(() => {
       "worklet";
       savedScale.value = scale.value;
-      runOnJS(setPanEnabled)(scale.value > 1);
+      if (scale.value <= 1) {
+        // Pinched back to fit — animate translations to zero and disable pan
+        // so the inner slider's PanResponder regains control.
+        translateX.value = withTiming(0, { duration: 200 });
+        translateY.value = withTiming(0, { duration: 200 });
+        savedTranslateX.value = 0;
+        savedTranslateY.value = 0;
+        runOnJS(setPanEnabled)(false);
+      } else {
+        // Zoomed in — persist the re-clamped position and enable panning.
+        savedTranslateX.value = translateX.value;
+        savedTranslateY.value = translateY.value;
+        runOnJS(setPanEnabled)(true);
+      }
     });
 
   const pan = Gesture.Pan()
@@ -89,7 +107,7 @@ export function PinchZoomView({
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
-      // Scale first (from the element centre), then translate in viewport space.
+      // Scale first (from element centre), then translate in viewport space.
       { scale: scale.value },
       { translateX: translateX.value },
       { translateY: translateY.value },
