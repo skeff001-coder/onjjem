@@ -117,7 +117,30 @@ eas submit --platform ios --profile production --non-interactive
 
 Watch the output — when both commands complete, the build has been submitted to App Store Connect.
 
+If you have set up push notifications (see below), you will also receive an alert on your iPhone when the build finishes.
+
 The `release:ios` script is defined in `artifacts/owens-photofix/package.json`.
+
+---
+
+## Get a push notification when your build finishes (optional)
+
+Builds take 20–40 minutes. Instead of watching the console, you can get a push alert straight to your iPhone when the build succeeds or fails.
+
+**One-time setup (2 minutes):**
+
+1. Install the free **ntfy** app on your iPhone — search "ntfy" in the App Store or go to [ntfy.sh](https://ntfy.sh).
+2. Open the app and tap **Subscribe to topic**.
+3. Choose any unique topic name, e.g. `onjjem-builds-skeff001` (make it hard to guess so only you receive it).
+4. In Replit, open **Secrets** and add a new secret:
+   - **Key:** `NOTIFY_TOPIC`
+   - **Value:** the topic name you chose (e.g. `onjjem-builds-skeff001`)
+
+That's it. The next time you run `release:ios`, you will receive:
+- A **green** notification when the build is submitted to App Store Connect.
+- A **red** notification if the build or submit step fails, so you can fix it quickly.
+
+If you skip this setup the release script still works normally — notifications are silently skipped.
 
 ---
 
