@@ -32,6 +32,7 @@ import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { SubscribeModal } from "@/components/SubscribeModal";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import { PinchZoomView } from "@/components/PinchZoomView";
 import { ProPaywall } from "@/components/ProPaywall";
 import { EnhancementPaywall } from "@/components/EnhancementPaywall";
 import { ContactExpertsModal } from "@/components/ContactExpertsModal";
@@ -1047,11 +1048,13 @@ export default function HomeScreen() {
                 {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")} — drag to compare
               </Text>
             </View>
-            <BeforeAfterSlider
-              beforeUri={originalUri}
-              afterBase64={resultBase64}
-              modeName={Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")}
-            />
+            <PinchZoomView style={{ width: "100%", aspectRatio: 1 }}>
+              <BeforeAfterSlider
+                beforeUri={originalUri}
+                afterBase64={resultBase64}
+                modeName={Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")}
+              />
+            </PinchZoomView>
             <View style={s.imageTapHint}>
               <Ionicons name="sparkles" size={12} color="#C9960C" />
               <Text style={s.imageTapHintText}>Tap photo to unlock full quality</Text>
