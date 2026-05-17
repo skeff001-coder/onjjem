@@ -40,6 +40,7 @@ import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { TrustFooter } from "@/components/TrustFooter";
 import { RubyHeartIcon } from "@/components/RubyHeartIcon";
 import { WelcomeModal } from "@/components/WelcomeModal";
+import { EnhancementTipSheet } from "@/components/EnhancementTipSheet";
 import { saveToHistory } from "@/lib/photoHistory";
 
 type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
@@ -83,6 +84,7 @@ export default function HomeScreen() {
   const scrollRef = useRef<ScrollView>(null);
 
   const [welcomeVisible, setWelcomeVisible] = useState(false);
+  const [tipSheetVisible, setTipSheetVisible] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
   const [referralVisible, setReferralVisible] = useState(false);
@@ -128,6 +130,15 @@ export default function HomeScreen() {
       // Persistence failure is non-critical; modal is dismissed regardless
     }
     setWelcomeVisible(false);
+  };
+
+  const handleTipSheetDismiss = async () => {
+    try {
+      await AsyncStorage.setItem("hasSeenPickerTip", "1");
+    } catch {
+      // Non-critical
+    }
+    setTipSheetVisible(false);
   };
 
   // Load persisted free trial state on mount
@@ -202,6 +213,16 @@ export default function HomeScreen() {
         setResultBase64(null);
         setResultLocalUri(null);
         setAppState("selected");
+
+        // Show the enhancement tip sheet the very first time a photo is picked
+        try {
+          const seen = await AsyncStorage.getItem("hasSeenPickerTip");
+          if (seen !== "1") {
+            setTipSheetVisible(true);
+          }
+        } catch {
+          // Non-critical — skip tip if storage is unavailable
+        }
       };
 
       // Hard-stop quality gate: 200 DPI minimum for a 4-inch minimum print dimension
@@ -425,6 +446,7 @@ export default function HomeScreen() {
   return (
     <View style={s.root}>
       <WelcomeModal visible={welcomeVisible} onDismiss={handleWelcomeDismiss} />
+      <EnhancementTipSheet visible={tipSheetVisible} onDismiss={handleTipSheetDismiss} />
 
       {/* Background photo mosaic */}
       <View style={s.bgMosaic}>
