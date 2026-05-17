@@ -509,32 +509,6 @@ export default function HomeScreen() {
               ))}
             </View>
 
-            {/* My Restorations button */}
-            <TouchableOpacity
-              style={s.myPhotosBtn}
-              onPress={() => router.push("/my-photos")}
-              activeOpacity={0.88}
-            >
-              <LinearGradient
-                colors={["#06090F", "#0E1B2E", "#06090F"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={s.myPhotosBtnGradient}
-              >
-                <LinearGradient
-                  colors={["#0D4A8C", "#4A90D9", "#0D4A8C"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={s.myPhotosBtnBar}
-                />
-                <View style={s.myPhotosBtnInner}>
-                  <Ionicons name="images" size={20} color="#4A90D9" />
-                  <Text style={s.myPhotosBtnText}>My Restorations</Text>
-                  <Ionicons name="chevron-forward" size={16} color="rgba(74,144,217,0.6)" />
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-
             {/* Masterpiece Gallery button — dark emerald mystical */}
             <TouchableOpacity
               style={s.galleryBtn}
@@ -604,6 +578,32 @@ export default function HomeScreen() {
                 />
               </View>
             </Pressable>
+
+            {/* My Restorations button — gold */}
+            <TouchableOpacity
+              style={s.myPhotosBtn}
+              onPress={() => router.push("/my-photos")}
+              activeOpacity={0.88}
+            >
+              <LinearGradient
+                colors={["#0F0B03", "#1C1505", "#0F0B03"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={s.myPhotosBtnGradient}
+              >
+                <LinearGradient
+                  colors={["#7A5800", "#C9960C", "#7A5800"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={s.myPhotosBtnBar}
+                />
+                <View style={s.myPhotosBtnInner}>
+                  <Ionicons name="images" size={20} color="#C9960C" />
+                  <Text style={s.myPhotosBtnText}>My Restorations</Text>
+                  <Ionicons name="chevron-forward" size={16} color="rgba(201,150,12,0.6)" />
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
 
             {/* ── GIFT STORE (directly under uploader) ── */}
             <TouchableOpacity
@@ -2461,8 +2461,8 @@ function makeStyles(
       borderRadius: 14,
       overflow: "hidden" as const,
       borderWidth: 1,
-      borderColor: "#0D3A6E",
-      shadowColor: "#4A90D9",
+      borderColor: "#5C3D00",
+      shadowColor: "#C9960C",
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.3,
       shadowRadius: 10,
@@ -2487,7 +2487,7 @@ function makeStyles(
       fontSize: 15,
       fontWeight: "600" as const,
       fontFamily: "Inter_600SemiBold",
-      color: "#93C5F5",
+      color: "#F5D78E",
     },
     galleryBtn: {
       borderRadius: 14,
