@@ -382,6 +382,15 @@ const dm = StyleSheet.create({
 function GalleryHint({ opacity, onDismiss }: { opacity: Animated.Value; onDismiss: () => void }) {
   return (
     <Animated.View style={[gh.wrap, { opacity }]} pointerEvents="box-none">
+      {/* Scrim — dims the bottom of the photo grid so the pill always pops.
+          pointerEvents="none" keeps all thumbnail taps working beneath it. */}
+      <View style={gh.scrim} pointerEvents="none">
+        <LinearGradient
+          colors={["transparent", "rgba(0,0,0,0.48)"]}
+          style={gh.scrimGradient}
+        />
+      </View>
+
       <TouchableOpacity onPress={onDismiss} activeOpacity={0.8}>
         <View style={gh.pill}>
           <Ionicons name="hand-left-outline" size={15} color={GOLD} />
@@ -403,6 +412,16 @@ const gh = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 28,
     zIndex: 10,
+  },
+  scrim: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 160,
+  },
+  scrimGradient: {
+    flex: 1,
   },
   pill: {
     flexDirection: "row",
