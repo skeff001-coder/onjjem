@@ -447,6 +447,9 @@ export default function HomeScreen() {
     for (let i = 0; i < updatedItems.length; i++) {
       if (cancelledRef.current) break;
 
+      // Skip items already completed from a previous (cancelled) batch run
+      if (updatedItems[i].status === "done" || updatedItems[i].status === "error") continue;
+
       setBatchCurrentIndex(i);
       updatedItems[i] = { ...updatedItems[i], status: "processing" };
       setBatchItems([...updatedItems]);
@@ -561,6 +564,9 @@ export default function HomeScreen() {
 
     if (!cancelledRef.current) {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      // Mark free trial as used — same logic as processPhoto
+      await AsyncStorage.setItem("freeTrialUsed", "1");
+      setHasUsedFreeTrial(true);
       setAppState("batch-done");
     }
   };
