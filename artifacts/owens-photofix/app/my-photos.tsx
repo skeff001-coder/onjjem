@@ -378,13 +378,15 @@ const dm = StyleSheet.create({
 });
 
 // ── Gallery Hint Toast ──
-function GalleryHint({ opacity }: { opacity: Animated.Value }) {
+function GalleryHint({ opacity, onDismiss }: { opacity: Animated.Value; onDismiss: () => void }) {
   return (
-    <Animated.View style={[gh.wrap, { opacity }]} pointerEvents="none">
-      <View style={gh.pill}>
-        <Ionicons name="hand-left-outline" size={15} color={GOLD} />
-        <Text style={gh.text}>Tap any photo to compare before &amp; after</Text>
-      </View>
+    <Animated.View style={[gh.wrap, { opacity }]} pointerEvents="box-none">
+      <TouchableOpacity onPress={onDismiss} activeOpacity={0.8}>
+        <View style={gh.pill}>
+          <Ionicons name="hand-left-outline" size={15} color={GOLD} />
+          <Text style={gh.text}>Tap any photo to compare before &amp; after</Text>
+        </View>
+      </TouchableOpacity>
     </Animated.View>
   );
 }
@@ -434,6 +436,7 @@ export default function MyPhotosScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const hintOpacity = useRef(new Animated.Value(0)).current;
+  const hintAnimRef = useRef<Animated.CompositeAnimation | null>(null);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -469,16 +472,31 @@ export default function MyPhotosScreen() {
         if (seen) return;
         await AsyncStorage.setItem("hasSeenGalleryHint", "1");
         setShowHint(true);
-        Animated.sequence([
+        const anim = Animated.sequence([
           Animated.timing(hintOpacity, { toValue: 1, duration: 350, useNativeDriver: true }),
           Animated.delay(2000),
           Animated.timing(hintOpacity, { toValue: 0, duration: 500, useNativeDriver: true }),
-        ]).start(() => setShowHint(false));
+        ]);
+        hintAnimRef.current = anim;
+        anim.start(({ finished }) => {
+          hintAnimRef.current = null;
+          if (finished) setShowHint(false);
+        });
       } catch {
         // AsyncStorage unavailable — skip hint silently
       }
     })();
   }, [loading, history.length, hintOpacity]);
+
+  const dismissHint = useCallback(() => {
+    if (hintAnimRef.current) {
+      hintAnimRef.current.stop();
+      hintAnimRef.current = null;
+    }
+    Animated.timing(hintOpacity, { toValue: 0, duration: 300, useNativeDriver: true }).start(() =>
+      setShowHint(false),
+    );
+  }, [hintOpacity]);
 
   const openEntry = async (entry: HistoryEntry) => {
     await Haptics.selectionAsync();
@@ -506,7 +524,7 @@ export default function MyPhotosScreen() {
 
   return (
     <View style={[s.root, { paddingTop: topPad }]}>
-      {showHint && <GalleryHint opacity={hintOpacity} />}
+      {showHint && <GalleryHint opacity={hintOpacity} onDismiss={dismissHint} />}
       <LinearGradient colors={[GOLD, "#F5D78E", GOLD, "#A67C00"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={s.goldBar} />
 
       <View style={s.header}>
