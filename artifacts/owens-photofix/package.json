@@ -60,6 +60,6 @@
     "@expo-google-fonts/bebas-neue": "^0.4.1",
     "@expo-google-fonts/cinzel": "^0.4.2",
     "@expo-google-fonts/playfair-display": "^0.4.2",
-    "expo-media-library": "^55.0.16"
+    "expo-media-library": "^18.2.1"
   }
 }
