@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
+  ImageSourcePropType,
   Modal,
   StyleSheet,
   Text,
@@ -12,6 +13,7 @@ import {
   ViewToken,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { WelcomeSlider } from "./WelcomeSlider";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 
@@ -20,24 +22,37 @@ interface Props {
   onDismiss: () => void;
 }
 
-const SLIDES = [
+const SLIDES: {
+  icon: React.ComponentProps<typeof Ionicons>["name"];
+  accent: string;
+  title: string;
+  body: string;
+  before: ImageSourcePropType;
+  after: ImageSourcePropType;
+}[] = [
   {
-    icon: "aperture-outline" as const,
+    icon: "aperture-outline",
     accent: "#4A90D9",
     title: "Sharpen",
     body: "Bring blurry, soft or low-resolution photos back to life with Cinema-Grade AI upscaling.",
+    before: require("../assets/gallery/portrait_before.png"),
+    after: require("../assets/gallery/portrait_after.png"),
   },
   {
-    icon: "color-palette-outline" as const,
+    icon: "color-palette-outline",
     accent: "#C9960C",
     title: "Colourize",
     body: "Add vivid, natural colour to old black-and-white family photos — in seconds.",
+    before: require("../assets/gallery/grandma_before.png"),
+    after: require("../assets/gallery/grandma_after.png"),
   },
   {
-    icon: "sunny-outline" as const,
+    icon: "sunny-outline",
     accent: "#F5A623",
     title: "Restore",
     body: "Lift dark shots, remove grain, and give faded prints a full professional restoration.",
+    before: require("../assets/gallery/victorian_before.png"),
+    after: require("../assets/gallery/victorian_after.png"),
   },
 ];
 
@@ -74,6 +89,8 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
   ).current;
 
   const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+
+  const activeAccent = SLIDES[activeIndex]?.accent ?? "#C9960C";
 
   return (
     <Modal
@@ -115,10 +132,17 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
           viewabilityConfig={viewabilityConfig}
           renderItem={({ item }) => (
             <View style={styles.slide}>
-              <View style={[styles.iconCircle, { borderColor: item.accent + "66" }]}>
-                <Ionicons name={item.icon} size={48} color={item.accent} />
+              <View style={styles.sliderWrapper}>
+                <WelcomeSlider
+                  before={item.before}
+                  after={item.after}
+                  accent={item.accent}
+                />
               </View>
-              <Text style={[styles.slideTitle, { color: item.accent }]}>{item.title}</Text>
+              <View style={styles.slideTextRow}>
+                <Ionicons name={item.icon} size={20} color={item.accent} />
+                <Text style={[styles.slideTitle, { color: item.accent }]}>{item.title}</Text>
+              </View>
               <Text style={styles.slideBody}>{item.body}</Text>
             </View>
           )}
@@ -132,7 +156,7 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
               key={i}
               style={[
                 styles.dot,
-                i === activeIndex && styles.dotActive,
+                i === activeIndex && [styles.dotActive, { backgroundColor: activeAccent }],
               ]}
             />
           ))}
@@ -173,7 +197,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   badgeRow: {
-    marginBottom: 20,
+    marginBottom: 14,
   },
   badge: {
     flexDirection: "row",
@@ -190,13 +214,13 @@ const styles = StyleSheet.create({
     letterSpacing: 1.4,
   },
   headline: {
-    fontSize: 38,
+    fontSize: 34,
     fontWeight: "900",
     color: "#F5EDD8",
     textAlign: "center",
     letterSpacing: 1,
-    lineHeight: 46,
-    marginBottom: 32,
+    lineHeight: 42,
+    marginBottom: 20,
   },
   flatList: {
     flexGrow: 0,
@@ -204,38 +228,35 @@ const styles = StyleSheet.create({
   },
   slide: {
     width: SCREEN_W,
-    paddingHorizontal: 36,
+    paddingHorizontal: 28,
     alignItems: "center",
-    justifyContent: "center",
-    gap: 20,
-    minHeight: 260,
+    gap: 14,
   },
-  iconCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 2,
+  sliderWrapper: {
+    width: "100%",
+  },
+  slideTextRow: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.04)",
+    gap: 8,
+    marginTop: 2,
   },
   slideTitle: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: "800",
-    letterSpacing: 0.5,
-    textAlign: "center",
+    letterSpacing: 0.4,
   },
   slideBody: {
-    fontSize: 15,
-    color: "rgba(245,237,216,0.65)",
+    fontSize: 14,
+    color: "rgba(245,237,216,0.62)",
     textAlign: "center",
-    lineHeight: 23,
+    lineHeight: 21,
   },
   dots: {
     flexDirection: "row",
     gap: 8,
-    marginTop: 28,
-    marginBottom: 32,
+    marginTop: 20,
+    marginBottom: 20,
   },
   dot: {
     width: 7,
@@ -245,13 +266,12 @@ const styles = StyleSheet.create({
   },
   dotActive: {
     width: 22,
-    backgroundColor: "#C9960C",
   },
   ctaWrap: {
     width: SCREEN_W - 56,
     borderRadius: 16,
     overflow: "hidden",
-    marginBottom: 16,
+    marginBottom: 14,
   },
   cta: {
     flexDirection: "row",
