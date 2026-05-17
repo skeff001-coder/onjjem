@@ -1,21 +1,26 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Dimensions,
+  FlatList,
   Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  ViewToken,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const { width: SCREEN_W } = Dimensions.get("window");
 
 interface Props {
   visible: boolean;
   onDismiss: () => void;
 }
 
-const FEATURES = [
+const SLIDES = [
   {
     icon: "aperture-outline" as const,
     accent: "#4A90D9",
@@ -31,13 +36,44 @@ const FEATURES = [
   {
     icon: "sunny-outline" as const,
     accent: "#F5A623",
-    title: "Brighten & Restore",
+    title: "Restore",
     body: "Lift dark shots, remove grain, and give faded prints a full professional restoration.",
   },
 ];
 
 export function WelcomeModal({ visible, onDismiss }: Props) {
   const insets = useSafeAreaInsets();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const flatListRef = useRef<FlatList>(null);
+
+  useEffect(() => {
+    if (visible) {
+      setActiveIndex(0);
+      flatListRef.current?.scrollToIndex({ index: 0, animated: false });
+    }
+  }, [visible]);
+
+  const isLast = activeIndex === SLIDES.length - 1;
+
+  const handleNext = () => {
+    if (isLast) {
+      onDismiss();
+    } else {
+      const nextIndex = activeIndex + 1;
+      flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+      setActiveIndex(nextIndex);
+    }
+  };
+
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      if (viewableItems.length > 0 && viewableItems[0].index != null) {
+        setActiveIndex(viewableItems[0].index);
+      }
+    }
+  ).current;
+
+  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
   return (
     <Modal
@@ -48,7 +84,7 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
     >
       <LinearGradient
         colors={["#0A0804", "#13100A", "#1C1810"]}
-        style={[styles.container, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 24 }]}
+        style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
       >
         {/* Top badge */}
         <View style={styles.badgeRow}>
@@ -63,33 +99,48 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
           </LinearGradient>
         </View>
 
-        {/* Headline */}
+        {/* App headline — always visible above the carousel */}
         <Text style={styles.headline}>Welcome to{"\n"}ONJJEM</Text>
-        <Text style={styles.subheadline}>
-          Restore and enhance your precious photos{"\n"}with professional AI — in one tap.
-        </Text>
 
-        {/* Feature cards */}
-        <View style={styles.cards}>
-          {FEATURES.map((f) => (
-            <View key={f.title} style={styles.card}>
-              <View style={[styles.iconCircle, { borderColor: f.accent + "55" }]}>
-                <Ionicons name={f.icon} size={22} color={f.accent} />
+        {/* Slides */}
+        <FlatList
+          ref={flatListRef}
+          data={SLIDES}
+          keyExtractor={(item) => item.title}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
+          renderItem={({ item }) => (
+            <View style={styles.slide}>
+              <View style={[styles.iconCircle, { borderColor: item.accent + "66" }]}>
+                <Ionicons name={item.icon} size={48} color={item.accent} />
               </View>
-              <View style={styles.cardText}>
-                <Text style={[styles.cardTitle, { color: f.accent }]}>{f.title}</Text>
-                <Text style={styles.cardBody}>{f.body}</Text>
-              </View>
+              <Text style={[styles.slideTitle, { color: item.accent }]}>{item.title}</Text>
+              <Text style={styles.slideBody}>{item.body}</Text>
             </View>
+          )}
+          style={styles.flatList}
+        />
+
+        {/* Dot indicators */}
+        <View style={styles.dots}>
+          {SLIDES.map((_, i) => (
+            <View
+              key={i}
+              style={[
+                styles.dot,
+                i === activeIndex && styles.dotActive,
+              ]}
+            />
           ))}
         </View>
 
-        {/* Divider */}
-        <View style={styles.divider} />
-
-        {/* CTA */}
+        {/* CTA button */}
         <TouchableOpacity
-          onPress={onDismiss}
+          onPress={handleNext}
           activeOpacity={0.88}
           style={styles.ctaWrap}
         >
@@ -99,14 +150,16 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
             end={{ x: 1, y: 0 }}
             style={styles.cta}
           >
-            <Text style={styles.ctaText}>Get Started</Text>
-            <Ionicons name="arrow-forward" size={18} color="#0A0804" />
+            <Text style={styles.ctaText}>{isLast ? "Get Started" : "Next"}</Text>
+            <Ionicons
+              name={isLast ? "arrow-forward" : "chevron-forward"}
+              size={18}
+              color="#0A0804"
+            />
           </LinearGradient>
         </TouchableOpacity>
 
-        <Text style={styles.footnote}>
-          Free to try · No account required
-        </Text>
+        <Text style={styles.footnote}>Free to try · No account required</Text>
       </LinearGradient>
     </Modal>
   );
@@ -115,12 +168,12 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 28,
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 0,
   },
   badgeRow: {
-    marginBottom: 28,
+    marginBottom: 20,
   },
   badge: {
     flexDirection: "row",
@@ -137,68 +190,65 @@ const styles = StyleSheet.create({
     letterSpacing: 1.4,
   },
   headline: {
-    fontSize: 42,
+    fontSize: 38,
     fontWeight: "900",
     color: "#F5EDD8",
     textAlign: "center",
     letterSpacing: 1,
-    lineHeight: 50,
-    marginBottom: 14,
-  },
-  subheadline: {
-    fontSize: 15,
-    color: "rgba(245,237,216,0.60)",
-    textAlign: "center",
-    lineHeight: 22,
-    marginBottom: 36,
-  },
-  cards: {
-    width: "100%",
-    gap: 14,
+    lineHeight: 46,
     marginBottom: 32,
   },
-  card: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 14,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.07)",
-    padding: 16,
+  flatList: {
+    flexGrow: 0,
+    width: SCREEN_W,
+  },
+  slide: {
+    width: SCREEN_W,
+    paddingHorizontal: 36,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 20,
+    minHeight: 260,
   },
   iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 1.5,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 2,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.04)",
-    flexShrink: 0,
   },
-  cardText: {
-    flex: 1,
-    gap: 3,
+  slideTitle: {
+    fontSize: 28,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+    textAlign: "center",
   },
-  cardTitle: {
+  slideBody: {
     fontSize: 15,
-    fontWeight: "700",
-    letterSpacing: 0.3,
+    color: "rgba(245,237,216,0.65)",
+    textAlign: "center",
+    lineHeight: 23,
   },
-  cardBody: {
-    fontSize: 13,
-    color: "rgba(245,237,216,0.58)",
-    lineHeight: 19,
+  dots: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 28,
+    marginBottom: 32,
   },
-  divider: {
-    width: "100%",
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.08)",
-    marginBottom: 28,
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: "rgba(245,237,216,0.25)",
+  },
+  dotActive: {
+    width: 22,
+    backgroundColor: "#C9960C",
   },
   ctaWrap: {
-    width: "100%",
+    width: SCREEN_W - 56,
     borderRadius: 16,
     overflow: "hidden",
     marginBottom: 16,
