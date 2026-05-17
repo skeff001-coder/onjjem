@@ -13,9 +13,10 @@ import { useColors } from "@/hooks/useColors";
 interface Props {
   beforeUri: string;
   afterBase64: string;
+  modeName?: string;
 }
 
-export function BeforeAfterSlider({ beforeUri, afterBase64 }: Props) {
+export function BeforeAfterSlider({ beforeUri, afterBase64, modeName }: Props) {
   const colors = useColors();
   const containerWidthRef = useRef(300);
   const [containerWidth, setContainerWidth] = useState(300);
@@ -90,6 +91,12 @@ export function BeforeAfterSlider({ beforeUri, afterBase64 }: Props) {
       <View style={[s.label, s.labelRight]}>
         <Text style={s.labelText}>After</Text>
       </View>
+
+      {modeName && (
+        <View style={s.modePill} pointerEvents="none">
+          <Text style={s.modePillText}>{modeName} applied</Text>
+        </View>
+      )}
 
       <View
         style={[s.dividerWrapper, { left: clipWidth - 1 }]}
@@ -190,5 +197,21 @@ const s = StyleSheet.create({
     fontSize: 8,
     fontWeight: "800" as const,
     letterSpacing: 1.4,
+  },
+  modePill: {
+    position: "absolute",
+    bottom: 12,
+    alignSelf: "center",
+    backgroundColor: "rgba(0,0,0,0.58)",
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: 6,
+  },
+  modePillText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+    letterSpacing: 0.3,
   },
 });

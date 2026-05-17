@@ -1050,6 +1050,7 @@ export default function HomeScreen() {
             <BeforeAfterSlider
               beforeUri={originalUri}
               afterBase64={resultBase64}
+              modeName={Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).join(" + ")}
             />
             <View style={s.imageTapHint}>
               <Ionicons name="sparkles" size={12} color="#C9960C" />
