@@ -69,6 +69,7 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
   }, [visible]);
 
   const isLast = activeIndex === SLIDES.length - 1;
+  const isNotLast = !isLast;
 
   const handleNext = () => {
     if (isLast) {
@@ -115,6 +116,17 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
             <Text style={styles.badgeText}>CINEMA-GRADE AI</Text>
           </LinearGradient>
         </View>
+
+        {/* Skip link — visible on all slides except the last */}
+        {isNotLast && (
+          <TouchableOpacity
+            onPress={onDismiss}
+            style={[styles.skipBtn, { top: insets.top + 10 }]}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.skipText}>Skip</Text>
+          </TouchableOpacity>
+        )}
 
         {/* App headline — always visible above the carousel */}
         <Text style={styles.headline}>Welcome to{"\n"}ONJJEM</Text>
@@ -292,5 +304,17 @@ const styles = StyleSheet.create({
     color: "rgba(245,237,216,0.35)",
     textAlign: "center",
     letterSpacing: 0.3,
+  },
+  skipBtn: {
+    position: "absolute",
+    right: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+  },
+  skipText: {
+    fontSize: 14,
+    color: "rgba(245,237,216,0.45)",
+    fontWeight: "500",
+    letterSpacing: 0.2,
   },
 });

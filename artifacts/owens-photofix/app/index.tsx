@@ -488,6 +488,13 @@ export default function HomeScreen() {
               <Ionicons name="refresh" size={22} color={colors.mutedForeground} />
             </TouchableOpacity>
           )}
+          <TouchableOpacity
+            onPress={() => setWelcomeVisible(true)}
+            style={s.infoBtn}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="information-circle-outline" size={24} color="rgba(201,150,12,0.75)" />
+          </TouchableOpacity>
         </View>
 
         {appState === "idle" && (
@@ -1283,6 +1290,7 @@ function makeStyles(
       paddingHorizontal: 24,
       paddingBottom: 16,
       alignItems: "center",
+      position: "relative" as const,
     },
     headerCenter: {
       alignItems: "center" as const,
@@ -1377,6 +1385,15 @@ function makeStyles(
       backgroundColor: colors.card,
       alignItems: "center",
       justifyContent: "center",
+    },
+    infoBtn: {
+      position: "absolute" as const,
+      top: 20,
+      right: 24,
+      width: 36,
+      height: 36,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
     },
     scroll: {
       paddingTop: 22,
