@@ -17,8 +17,23 @@ Run from the Replit shell (after Apple credentials have been stored via the one-
 pnpm --filter @workspace/owens-photofix run release:ios
 ```
 
-This chains `eas build --platform ios --profile production --non-interactive` followed by
+This automatically bumps the **patch** version in `app.json` (e.g. 1.0.0 → 1.0.1), commits the
+change, then chains `eas build --platform ios --profile production --non-interactive` followed by
 `eas submit --platform ios --profile production --non-interactive`.
+
+For new-feature or breaking-change releases, pass a flag to `scripts/bump-version.js` directly
+before running the release command:
+
+```bash
+# minor bump (e.g. 1.0.1 → 1.1.0) — new features
+node artifacts/owens-photofix/scripts/bump-version.js --minor
+
+# major bump (e.g. 1.1.0 → 2.0.0) — breaking changes
+node artifacts/owens-photofix/scripts/bump-version.js --major
+```
+
+Then run `release:ios` as normal (it will bump patch again, so edit `app.json` manually after
+a manual minor/major bump, or just let the script handle everything in one step).
 
 Requirements: `EXPO_TOKEN` must be set in Replit Secrets (already stored), `eas-cli` is installed.
 The first-time interactive build (Apple 2FA) must be done from a Mac — see `artifacts/owens-photofix/APP_STORE_SUBMISSION.md`.
