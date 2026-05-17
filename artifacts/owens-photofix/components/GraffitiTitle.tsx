@@ -26,14 +26,12 @@ const FACET_RIGHT  = "M 15.5 7.2 L 11.5 6.6 L 12.2 10.5 Z";
 const FACET_CENTRE = "M 10 4.3 L 5.8 6.8 L 10 13.9 L 14.2 6.8 Z";
 
 // ── Text layer definitions ───────────────────────────────────────────────────
-// 1. Thick dark border: render at 8 surrounding positions
 const BORDER_OFFSETS: Array<[number, number]> = [
   [-2, 0], [2, 0], [0, -2], [0, 2],
   [-1.5, -1.5], [1.5, -1.5], [-1.5, 1.5], [1.5, 1.5],
 ];
-const BORDER_COLOR = "#2E1A00"; // very dark amber — the bezel/stroke
+const BORDER_COLOR = "#2E1A00";
 
-// 2. 3D extrusion depth layers (dark → medium gold, stepping toward top-right)
 const DEPTH_LAYERS = [
   { dt: 5, dl: 3, color: "#3A2200" },
   { dt: 4, dl: 2, color: "#5A3600" },
@@ -43,7 +41,16 @@ const DEPTH_LAYERS = [
   { dt: 1, dl: 0, color: "#C99010" },
 ] as const;
 
-// 3. Top gold face
+// Heart-specific depth layers — dark crimson for ruby rim extrusion
+const HEART_DEPTH_LAYERS = [
+  { dt: 5, dl: 3, color: "#2A0008" },
+  { dt: 4, dl: 2, color: "#450010" },
+  { dt: 3, dl: 2, color: "#620018" },
+  { dt: 2, dl: 1, color: "#820025" },
+  { dt: 1, dl: 1, color: "#9E0030" },
+  { dt: 1, dl: 0, color: "#B80038" },
+] as const;
+
 const TOP_COLOR = "#F0CA2A";
 
 interface Props {
@@ -53,9 +60,8 @@ interface Props {
 
 export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
   const lineH    = fontSize + 10;
-  const containerHeight = fontSize + 20; // a bit taller to accommodate border offsets
+  const containerHeight = fontSize + 20;
 
-  // Cinzel 700Bold glyph advance estimates
   const oAdvance = Math.round(fontSize * 0.70);
   const oCell    = oAdvance + letterSpacing;
   const capH     = Math.round(fontSize * 0.70);
@@ -68,14 +74,15 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     lineHeight: lineH,
   } as const;
 
-  // Heart slightly smaller than letter height so proportions match reference
-  const heartScale = 1.18;
+  // Heart scaled to fit inside the O bowl (≈ 55 % of the letter cell)
+  const heartScale = 0.55;
   const heartW     = Math.round(oAdvance * heartScale);
   const heartH     = Math.round(capH     * heartScale);
-  const heartTop   = capTop - Math.round((heartH - capH) / 2);
-  const heartLeft  = -Math.round((heartW - oAdvance) / 2);
+  // Centre the heart within the O cell
+  const heartTop   = capTop + Math.round((capH - heartH) / 2);
+  const heartLeft  = Math.round((oAdvance - heartW) / 2);
 
-  // ── Rich 3D heart (top face only) ─────────────────────────────────────────
+  // ── Rich 3D heart (top face — ruby red outer, ruby gem inner) ─────────────
   const renderRichHeart = () => (
     <View
       style={[styles.abs, { top: heartTop, left: heartLeft, width: heartW, height: heartH }]}
@@ -83,33 +90,24 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     >
       <Svg width={heartW} height={heartH} viewBox="0 0 20 18">
         <Defs>
-          <SvgLinear id="gf_base" x1="0.1" y1="0" x2="0.95" y2="1">
-            <Stop offset="0%"   stopColor="#FFF6B8" />
-            <Stop offset="12%"  stopColor="#F7CC50" />
-            <Stop offset="35%"  stopColor="#D9A814" />
-            <Stop offset="58%"  stopColor="#B8880C" />
-            <Stop offset="78%"  stopColor="#8A6208" />
-            <Stop offset="100%" stopColor="#513B03" />
-          </SvgLinear>
-          <SvgRadial id="gf_bevelHi" cx="28%" cy="18%" r="52%" fx="22%" fy="12%">
-            <Stop offset="0%"   stopColor="rgba(255,255,230,0.98)" />
-            <Stop offset="30%"  stopColor="rgba(255,248,190,0.65)" />
-            <Stop offset="65%"  stopColor="rgba(255,235,140,0.20)" />
-            <Stop offset="100%" stopColor="rgba(255,220,80,0)" />
+          {/* Ruby red outer heart gradients */}
+          <SvgRadial id="gf_outerBase" cx="40%" cy="35%" r="75%" fx="35%" fy="28%">
+            <Stop offset="0%"   stopColor="#F03050" />
+            <Stop offset="25%"  stopColor="#CC0E28" />
+            <Stop offset="55%"  stopColor="#8A0418" />
+            <Stop offset="100%" stopColor="#350208" />
           </SvgRadial>
-          <SvgRadial id="gf_bevelLo" cx="74%" cy="80%" r="38%" fx="74%" fy="80%">
-            <Stop offset="0%"   stopColor="rgba(255,245,185,0.55)" />
-            <Stop offset="100%" stopColor="rgba(255,210,80,0)" />
+          <SvgRadial id="gf_outerBevelHi" cx="28%" cy="20%" r="48%" fx="22%" fy="14%">
+            <Stop offset="0%"   stopColor="rgba(255,200,215,0.88)" />
+            <Stop offset="35%"  stopColor="rgba(255,140,165,0.45)" />
+            <Stop offset="70%"  stopColor="rgba(255,90,120,0.15)" />
+            <Stop offset="100%" stopColor="rgba(255,60,90,0)" />
           </SvgRadial>
-          <SvgLinear id="gf_facetStreak" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0%"   stopColor="rgba(255,252,200,0.72)" />
-            <Stop offset="42%"  stopColor="rgba(200,155,10,0)" />
-            <Stop offset="100%" stopColor="rgba(55,34,0,0.48)" />
-          </SvgLinear>
-          <SvgRadial id="gf_shadow" cx="50%" cy="95%" r="55%" fx="50%" fy="95%">
-            <Stop offset="0%"   stopColor="rgba(30,15,0,0.55)" />
-            <Stop offset="100%" stopColor="rgba(30,15,0,0)" />
+          <SvgRadial id="gf_outerShadow" cx="50%" cy="92%" r="52%" fx="50%" fy="92%">
+            <Stop offset="0%"   stopColor="rgba(40,0,8,0.65)" />
+            <Stop offset="100%" stopColor="rgba(40,0,8,0)" />
           </SvgRadial>
+          {/* Inner ruby gem gradients */}
           <SvgRadial id="gf_rubyBase" cx="50%" cy="38%" r="60%" fx="46%" fy="32%">
             <Stop offset="0%"   stopColor="#F0203A" />
             <Stop offset="28%"  stopColor="#C8102A" />
@@ -145,13 +143,13 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
             <Path d={INNER_RUBY} />
           </ClipPath>
         </Defs>
-        <Path d={OUTER_HEART} fill="url(#gf_base)" />
-        <Path d={OUTER_HEART} fill="url(#gf_bevelHi)" />
-        <Path d={OUTER_HEART} fill="url(#gf_bevelLo)" />
-        <Path d={OUTER_HEART} fill="url(#gf_facetStreak)" opacity={0.55} />
-        <Path d={OUTER_HEART} fill="url(#gf_shadow)" />
-        <Path d={OUTER_HEART} fill="none" stroke="rgba(255,248,180,0.75)" strokeWidth={0.65} />
-        <Path d={OUTER_HEART} fill="none" stroke="rgba(45,25,0,0.6)" strokeWidth={0.4} />
+        {/* Outer heart — ruby red */}
+        <Path d={OUTER_HEART} fill="url(#gf_outerBase)" />
+        <Path d={OUTER_HEART} fill="url(#gf_outerBevelHi)" />
+        <Path d={OUTER_HEART} fill="url(#gf_outerShadow)" />
+        <Path d={OUTER_HEART} fill="none" stroke="rgba(80,0,15,0.75)" strokeWidth={0.65} />
+        <Path d={OUTER_HEART} fill="none" stroke="rgba(255,120,145,0.30)" strokeWidth={0.4} />
+        {/* Inner ruby gem */}
         <Path d={INNER_RUBY} fill="rgba(18,2,5,0.92)" />
         <Path d={INNER_RUBY} fill="url(#gf_rubyBase)" />
         <Path d={INNER_RUBY} fill="url(#gf_rubyCrown)" clipPath="url(#gf_rubyClip)" />
@@ -169,7 +167,7 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     </View>
   );
 
-  // ── Shadow heart (used for depth layers behind the rich heart) ─────────────
+  // ── Shadow heart (crimson depth layers behind the rich heart) ──────────────
   const renderShadowHeart = (dt: number, dl: number, color: string) => (
     <View
       key={`sh-${dt}-${dl}`}
@@ -182,7 +180,7 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     </View>
   );
 
-  // ── Text rendering ────────────────────────────────────────────────────────
+  // ── Text rendering — renders full "ONJJEM" so the O is visible in gold ─────
   const renderText = (
     dt: number,
     dl: number,
@@ -198,7 +196,7 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
         textStyle,
         {
           top: dt,
-          left: dl + oCell,
+          left: dl,
           color,
           ...(glow
             ? {
@@ -210,11 +208,10 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
         },
       ]}
     >
-      NJJEM
+      ONJJEM
     </Text>
   );
 
-  // Cinzel 700Bold glyph advance estimates for title width
   const nAdv = Math.round(fontSize * 0.75);
   const jAdv = Math.round(fontSize * 0.50);
   const eAdv = Math.round(fontSize * 0.65);
@@ -228,10 +225,10 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
         renderText(dt, dl, BORDER_COLOR, `border-${i}`),
       )}
 
-      {/* ── 2. 3D extrusion depth layers ── */}
-      {DEPTH_LAYERS.map(({ dt, dl, color }) => (
+      {/* ── 2. 3D extrusion depth layers (text + heart shadow) ── */}
+      {DEPTH_LAYERS.map(({ dt, dl, color }, i) => (
         <React.Fragment key={`depth-${dt}-${dl}`}>
-          {renderShadowHeart(dt, dl, color)}
+          {renderShadowHeart(dt, dl, HEART_DEPTH_LAYERS[i].color)}
           {renderText(dt, dl, color, `depth-t-${dt}-${dl}`)}
         </React.Fragment>
       ))}
