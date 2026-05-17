@@ -24,6 +24,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { deleteFromHistory, loadHistory, type HistoryEntry } from "@/lib/photoHistory";
+import { resetOnboardingHints } from "@/lib/onboardingHints";
 
 const GOLD = "#C9960C";
 const GOLD_BG = "#FDF6DC";
@@ -539,10 +540,22 @@ export default function MyPhotosScreen() {
         <TouchableOpacity style={s.backBtn} onPress={() => router.back()} activeOpacity={0.7}>
           <Ionicons name="chevron-back" size={24} color={DARK} />
         </TouchableOpacity>
-        <View style={s.headerCenter}>
+        <TouchableOpacity
+          style={s.headerCenter}
+          activeOpacity={1}
+          onLongPress={async () => {
+            try {
+              await resetOnboardingHints();
+              Alert.alert("Hints Reset", "All first-run hints have been cleared. They will reappear the next time each flow is triggered.");
+            } catch {
+              Alert.alert("Reset Failed", "Could not clear hints. Please try again.");
+            }
+          }}
+          delayLongPress={1500}
+        >
           <Text style={s.headerEyebrow}>ONJJEM</Text>
           <Text style={s.headerTitle}>My Restorations</Text>
-        </View>
+        </TouchableOpacity>
         <View style={s.headerRight} />
       </View>
 
