@@ -45,7 +45,17 @@ import { ResultTipSheet } from "@/components/ResultTipSheet";
 import { saveToHistory } from "@/lib/photoHistory";
 
 type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
-type AppState = "idle" | "selected" | "processing" | "done";
+type AppState = "idle" | "selected" | "processing" | "done" | "batch-selected" | "batch-processing" | "batch-done";
+
+type BatchItem = {
+  id: string;
+  uri: string;
+  base64: string | null;
+  resultBase64: string | null;
+  resultLocalUri: string | null;
+  status: "pending" | "processing" | "done" | "error";
+  errorMessage?: string;
+};
 
 const ENHANCEMENTS: {
   id: EnhancementMode;
@@ -101,6 +111,8 @@ export default function HomeScreen() {
   const [statusMessage, setStatusMessage] = useState("Preparing...");
   const msgIndexRef = useRef(0);
   const cancelledRef = useRef(false);
+  const [batchItems, setBatchItems] = useState<BatchItem[]>([]);
+  const [batchCurrentIndex, setBatchCurrentIndex] = useState(0);
 
   const COMFORT_MESSAGES = [
     "Restoring your photo to our highest standards…",
@@ -160,7 +172,7 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    if (appState !== "processing") return;
+    if (appState !== "processing" && appState !== "batch-processing") return;
     msgIndexRef.current = 0;
     setStatusMessage(COMFORT_MESSAGES[0]);
     const interval = setInterval(() => {
@@ -210,9 +222,32 @@ export default function HomeScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: false,
+      allowsMultipleSelection: true,
       quality: 0.92,
       base64: true,
     });
+
+    // ── Multi-select: start batch flow ───────────────────────────────────────
+    if (!result.canceled && result.assets.length > 1) {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      const items: BatchItem[] = result.assets.map((asset) => ({
+        id: `${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        uri: asset.uri,
+        base64: asset.base64 ?? null,
+        resultBase64: null,
+        resultLocalUri: null,
+        status: "pending" as const,
+      }));
+      setBatchItems(items);
+      setBatchCurrentIndex(0);
+      setOriginalUri(null);
+      originalBase64Ref.current = null;
+      setResultBase64(null);
+      setResultLocalUri(null);
+      setSelectedModes(new Set(["sharpen"]));
+      setAppState("batch-selected");
+      return;
+    }
 
     if (!result.canceled && result.assets.length > 0) {
       const asset = result.assets[0];
@@ -259,7 +294,11 @@ export default function HomeScreen() {
 
   const cancelProcessing = () => {
     cancelledRef.current = true;
-    setAppState("selected");
+    if (appState === "batch-processing") {
+      setAppState("batch-selected");
+    } else {
+      setAppState("selected");
+    }
   };
 
   const processPhoto = async () => {
@@ -389,6 +428,188 @@ export default function HomeScreen() {
     }
   };
 
+  const processBatch = async () => {
+    if (batchItems.length === 0) return;
+    cancelledRef.current = false;
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    setAppState("batch-processing");
+
+    const domain = process.env.EXPO_PUBLIC_DOMAIN;
+    if (!domain) {
+      Alert.alert("Error", "API domain not configured — please contact support.");
+      setAppState("batch-selected");
+      return;
+    }
+    const apiUrl = `https://${domain}/api/process`;
+
+    const updatedItems = batchItems.map((it) => ({ ...it }));
+
+    for (let i = 0; i < updatedItems.length; i++) {
+      if (cancelledRef.current) break;
+
+      setBatchCurrentIndex(i);
+      updatedItems[i] = { ...updatedItems[i], status: "processing" };
+      setBatchItems([...updatedItems]);
+
+      const item = updatedItems[i];
+
+      try {
+        let base64 = item.base64;
+        if (!base64) {
+          const isWebUri =
+            item.uri.startsWith("blob:") ||
+            (item.uri.startsWith("http") && !item.uri.startsWith("https://localhost"));
+          if (isWebUri) {
+            const resp = await fetch(item.uri);
+            const blob = await resp.blob();
+            base64 = await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () =>
+                resolve((reader.result as string).split(",")[1] ?? "");
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+            });
+          } else {
+            base64 = await FileSystem.readAsStringAsync(item.uri, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+          }
+        }
+
+        if (cancelledRef.current) break;
+
+        const controller = new AbortController();
+        const fetchTimeoutId = setTimeout(() => controller.abort(), 90_000);
+        let response: Response;
+        try {
+          response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              imageBase64: base64,
+              modes: Array.from(selectedModes),
+            }),
+            signal: controller.signal,
+          });
+        } finally {
+          clearTimeout(fetchTimeoutId);
+        }
+
+        if (cancelledRef.current) break;
+
+        const data = await response.json();
+        if (!response.ok || data.error) {
+          throw new Error(data.error ?? "Processing failed");
+        }
+
+        const resultB64: string = data.resultBase64;
+        let resultLocalUri: string | null = null;
+
+        const isWebUri =
+          item.uri.startsWith("blob:") ||
+          (item.uri.startsWith("http") && !item.uri.startsWith("https://localhost"));
+        if (!isWebUri) {
+          const ts = Date.now() + i;
+          const resultPath =
+            (FileSystem.documentDirectory ?? "") + `photofix_result_${ts}.jpg`;
+          await FileSystem.writeAsStringAsync(resultPath, resultB64, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+          resultLocalUri = resultPath;
+
+          const origPath =
+            (FileSystem.documentDirectory ?? "") + `photofix_original_${ts}.jpg`;
+          if (item.base64) {
+            await FileSystem.writeAsStringAsync(origPath, item.base64, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+          } else {
+            try {
+              await FileSystem.copyAsync({ from: item.uri, to: origPath });
+            } catch {
+              await FileSystem.writeAsStringAsync(origPath, resultB64, {
+                encoding: FileSystem.EncodingType.Base64,
+              });
+            }
+          }
+
+          await saveToHistory({
+            id: String(ts),
+            timestamp: ts,
+            modes: Array.from(selectedModes),
+            originalLocalUri: origPath,
+            resultLocalUri: resultPath,
+          });
+        }
+
+        updatedItems[i] = {
+          ...updatedItems[i],
+          status: "done",
+          resultBase64: resultB64,
+          resultLocalUri,
+        };
+      } catch (err) {
+        updatedItems[i] = {
+          ...updatedItems[i],
+          status: "error",
+          errorMessage: err instanceof Error ? err.message : "Failed",
+        };
+      }
+
+      setBatchItems([...updatedItems]);
+    }
+
+    if (!cancelledRef.current) {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setAppState("batch-done");
+    }
+  };
+
+  const saveLocalUri = async (localUri: string) => {
+    if (Platform.OS === "web") {
+      Alert.alert("Not supported", "Saving to Photos is only available on iPhone.");
+      return;
+    }
+    try {
+      const MediaLibrary = await import("expo-media-library");
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission needed",
+          "Please allow access to your Photos library to save images.",
+        );
+        return;
+      }
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert("Saved!", "Your enhanced photo has been saved to your Photos library.");
+    } catch {
+      Alert.alert("Error", "Could not save to Photos. Please try again.");
+    }
+  };
+
+  const shareLocalUri = async (localUri: string) => {
+    try {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      if (Platform.OS === "web") {
+        Alert.alert("Share", "Open WhatsApp and share the saved image.");
+        return;
+      }
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (!isAvailable) {
+        Alert.alert("Sharing unavailable", "Sharing is not supported on this device.");
+        return;
+      }
+      await Sharing.shareAsync(localUri, {
+        mimeType: "image/jpeg",
+        UTI: "public.jpeg",
+        dialogTitle: "Share your fixed photo",
+      });
+    } catch {
+      Alert.alert("Error", "Could not share. Please try again.");
+    }
+  };
+
   const saveToLibrary = async () => {
     if (!resultLocalUri) return;
 
@@ -454,6 +675,8 @@ export default function HomeScreen() {
     setResultBase64(null);
     setResultLocalUri(null);
     setSelectedModes(new Set(["sharpen"]));
+    setBatchItems([]);
+    setBatchCurrentIndex(0);
   };
 
   const s = makeStyles(colors, insets);
@@ -749,7 +972,29 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {appState === "processing" && (
+        {appState === "batch-selected" && batchItems.length > 0 && (
+          <View style={s.batchSelBlock}>
+            <Text style={s.batchSelTitle}>
+              {batchItems.length} Photos Selected
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={s.batchThumbRow}
+            >
+              {batchItems.map((item, idx) => (
+                <View key={item.id} style={s.batchThumbWrap}>
+                  <Image source={{ uri: item.uri }} style={s.batchThumb} resizeMode="cover" />
+                  <View style={s.batchThumbBadge}>
+                    <Text style={s.batchThumbNum}>{idx + 1}</Text>
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {(appState === "processing" || appState === "batch-processing") && (
           <LinearGradient
             colors={["#1C1A14", "#2E2A1E"]}
             style={s.processingBox}
@@ -764,6 +1009,11 @@ export default function HomeScreen() {
             <Text style={s.processingNote}>
               Our Cinema-Grade AI is working on your photograph with the care it deserves.
             </Text>
+            {appState === "batch-processing" && (
+              <Text style={s.batchProgressLabel}>
+                Photo {batchCurrentIndex + 1} of {batchItems.length}
+              </Text>
+            )}
             <TouchableOpacity
               onPress={cancelProcessing}
               activeOpacity={0.7}
@@ -803,7 +1053,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         )}
 
-        {appState === "selected" && (
+        {(appState === "selected" || appState === "batch-selected") && (
           <>
             {/* ── Enhancement picker ── */}
             <View style={s.enhanceHeader}>
@@ -955,7 +1205,9 @@ export default function HomeScreen() {
             <TouchableOpacity
               style={[s.processBtn, selectedModes.size === 0 && { opacity: 0.45 }]}
               onPress={selectedModes.size > 0
-                ? (hasUsedFreeTrial ? () => setSubscribeVisible(true) : processPhoto)
+                ? (hasUsedFreeTrial
+                    ? () => setSubscribeVisible(true)
+                    : appState === "batch-selected" ? processBatch : processPhoto)
                 : undefined}
               activeOpacity={0.85}
             >
@@ -970,7 +1222,9 @@ export default function HomeScreen() {
                 <Text style={s.processBtnText}>
                   {hasUsedFreeTrial
                     ? "Subscribe to Enhance — Unlimited"
-                    : `Enhance My Photo${selectedModes.size > 1 ? ` (${selectedModes.size})` : ""}`}
+                    : appState === "batch-selected"
+                      ? `Restore ${batchItems.length} Photos${selectedModes.size > 1 ? ` (${selectedModes.size} effects)` : ""}`
+                      : `Enhance My Photo${selectedModes.size > 1 ? ` (${selectedModes.size})` : ""}`}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -1012,6 +1266,98 @@ export default function HomeScreen() {
               activeOpacity={0.7}
             >
               <Text style={s.ghostBtnText}>Fix Another Photo</Text>
+            </TouchableOpacity>
+          </>
+        )}
+
+        {appState === "batch-done" && batchItems.length > 0 && (
+          <>
+            <View style={s.batchDoneHeader}>
+              <Text style={s.batchDoneTitle}>
+                {batchItems.filter((it) => it.status === "done").length} of {batchItems.length} Photos Restored
+              </Text>
+              <Text style={s.batchDoneSub}>
+                Each photo has been saved to your Restorations gallery.
+              </Text>
+            </View>
+            {batchItems.map((item, idx) => (
+              <View key={item.id} style={s.batchCard}>
+                <View style={s.batchCardHeader}>
+                  <View style={s.batchCardNumBadge}>
+                    <Text style={s.batchCardNumText}>{idx + 1}</Text>
+                  </View>
+                  <Text style={s.batchCardStatus}>
+                    {item.status === "done"
+                      ? "Restored"
+                      : item.status === "error"
+                        ? "Failed"
+                        : "Skipped"}
+                  </Text>
+                  {item.status === "done" && (
+                    <Ionicons name="checkmark-circle" size={16} color="#27AE60" />
+                  )}
+                  {item.status === "error" && (
+                    <Ionicons name="warning-outline" size={16} color="#E74C3C" />
+                  )}
+                </View>
+                {item.resultBase64 ? (
+                  <Image
+                    source={{ uri: `data:image/jpeg;base64,${item.resultBase64}` }}
+                    style={s.batchCardImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View style={s.batchCardPlaceholder}>
+                    <Ionicons
+                      name={item.status === "error" ? "warning-outline" : "hourglass-outline"}
+                      size={32}
+                      color={item.status === "error" ? "#E74C3C" : "#555"}
+                    />
+                    <Text style={s.batchCardPlaceholderText}>
+                      {item.status === "error"
+                        ? (item.errorMessage ?? "Processing failed")
+                        : "Not processed"}
+                    </Text>
+                  </View>
+                )}
+                {item.status === "done" && item.resultLocalUri && (
+                  <View style={s.batchCardActions}>
+                    <TouchableOpacity
+                      style={s.batchActionBtn}
+                      onPress={() => saveLocalUri(item.resultLocalUri!)}
+                      activeOpacity={0.8}
+                    >
+                      <LinearGradient
+                        colors={["#1E3A5F", "#2C5282"]}
+                        style={s.batchActionGradient}
+                      >
+                        <Ionicons name="download-outline" size={16} color="#fff" />
+                        <Text style={s.batchActionText}>Save to Photos</Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={s.batchActionBtn}
+                      onPress={() => shareLocalUri(item.resultLocalUri!)}
+                      activeOpacity={0.8}
+                    >
+                      <LinearGradient
+                        colors={["#1A4A2E", "#27AE60"]}
+                        style={s.batchActionGradient}
+                      >
+                        <Ionicons name="share-outline" size={16} color="#fff" />
+                        <Text style={s.batchActionText}>Share</Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            ))}
+            <TouchableOpacity
+              style={s.ghostBtn}
+              onPress={resetApp}
+              activeOpacity={0.7}
+            >
+              <Text style={s.ghostBtnText}>Fix More Photos</Text>
             </TouchableOpacity>
           </>
         )}
@@ -2791,6 +3137,159 @@ function makeStyles(
       letterSpacing: 0.5,
       textAlign: "center",
       opacity: 0.65,
+    },
+    batchSelBlock: {
+      marginHorizontal: 16,
+      marginTop: 8,
+      marginBottom: 4,
+    },
+    batchSelTitle: {
+      fontSize: 11,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
+      letterSpacing: 1.8,
+      textTransform: "uppercase" as const,
+      marginBottom: 10,
+    },
+    batchThumbRow: {
+      flexDirection: "row" as const,
+      gap: 8,
+      paddingRight: 4,
+    },
+    batchThumbWrap: {
+      position: "relative" as const,
+    },
+    batchThumb: {
+      width: 72,
+      height: 72,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.4)",
+    },
+    batchThumbBadge: {
+      position: "absolute" as const,
+      top: 4,
+      right: 4,
+      backgroundColor: "rgba(201,150,12,0.9)",
+      borderRadius: 9,
+      width: 18,
+      height: 18,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    batchThumbNum: {
+      fontSize: 10,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#1C1A14",
+    },
+    batchProgressLabel: {
+      fontSize: 13,
+      fontFamily: "Inter_600SemiBold",
+      color: "rgba(245,215,142,0.8)",
+      marginTop: 10,
+      letterSpacing: 0.5,
+    },
+    batchDoneHeader: {
+      marginHorizontal: 16,
+      marginTop: 8,
+      marginBottom: 12,
+      alignItems: "center" as const,
+    },
+    batchDoneTitle: {
+      fontSize: 17,
+      fontFamily: "Cinzel_400Regular",
+      fontWeight: "400" as const,
+      color: "#C9960C",
+      textAlign: "center" as const,
+      marginBottom: 4,
+    },
+    batchDoneSub: {
+      fontSize: 12,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(245,237,216,0.55)",
+      textAlign: "center" as const,
+    },
+    batchCard: {
+      marginHorizontal: 16,
+      marginBottom: 12,
+      borderRadius: 12,
+      backgroundColor: "#0F0D09",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.2)",
+      overflow: "hidden" as const,
+    },
+    batchCardHeader: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: "rgba(201,150,12,0.15)",
+    },
+    batchCardNumBadge: {
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      backgroundColor: "rgba(201,150,12,0.18)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.5)",
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    batchCardNumText: {
+      fontSize: 11,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
+      color: "#C9960C",
+    },
+    batchCardStatus: {
+      flex: 1,
+      fontSize: 12,
+      fontFamily: "Inter_600SemiBold",
+      color: "rgba(245,237,216,0.65)",
+    },
+    batchCardImage: {
+      width: "100%",
+      height: 220,
+    },
+    batchCardPlaceholder: {
+      height: 110,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 8,
+    },
+    batchCardPlaceholderText: {
+      fontSize: 12,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(245,237,216,0.35)",
+      textAlign: "center" as const,
+      paddingHorizontal: 20,
+    },
+    batchCardActions: {
+      flexDirection: "row" as const,
+      gap: 8,
+      padding: 10,
+    },
+    batchActionBtn: {
+      flex: 1,
+      borderRadius: 8,
+      overflow: "hidden" as const,
+    },
+    batchActionGradient: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 6,
+      paddingVertical: 10,
+    },
+    batchActionText: {
+      fontSize: 13,
+      fontWeight: "600" as const,
+      fontFamily: "Inter_600SemiBold",
+      color: "#fff",
     },
   });
 }
