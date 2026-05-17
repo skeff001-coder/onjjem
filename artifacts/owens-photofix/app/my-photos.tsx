@@ -385,6 +385,8 @@ function GalleryHint({ opacity, onDismiss }: { opacity: Animated.Value; onDismis
         <View style={gh.pill}>
           <Ionicons name="hand-left-outline" size={15} color={GOLD} />
           <Text style={gh.text}>Tap any photo to compare before &amp; after</Text>
+          <View style={gh.divider} />
+          <Ionicons name="close" size={15} color="rgba(255,255,255,0.55)" />
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -421,6 +423,12 @@ const gh = StyleSheet.create({
     fontFamily: "Inter_600SemiBold",
     fontWeight: "600" as const,
     letterSpacing: 0.2,
+  },
+  divider: {
+    width: 1,
+    height: 14,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    marginHorizontal: 4,
   },
 });
 
