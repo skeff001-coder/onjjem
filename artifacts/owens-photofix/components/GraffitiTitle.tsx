@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import Svg, {
   Path,
   Defs,
@@ -59,13 +59,23 @@ interface Props {
 }
 
 export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
-  const lineH    = fontSize + 10;
+  const { width: screenWidth } = useWindowDimensions();
+  const lineH           = fontSize + 10;
   const containerHeight = fontSize + 20;
 
-  const oAdvance = Math.round(fontSize * 0.70);
-  const oCell    = oAdvance + letterSpacing;
-  const capH     = Math.round(fontSize * 0.70);
-  const capTop   = Math.round(lineH * 0.16);
+  // ── Width: fill the available header space so no character is truncated ──────
+  // Header has paddingHorizontal: 24 on each side → 48 px total horizontal padding
+  const titleWidth = screenWidth - 48;
+
+  // ── Cinzel Bold cap metrics (empirically calibrated) ─────────────────────────
+  // cap height ≈ 82 % of fontSize; cap top ≈ 11 % of lineH
+  const capH   = Math.round(fontSize * 0.82);
+  const capTop = Math.round(lineH   * 0.11);
+
+  // ── O advance width — seeded with an 88 % estimate, refined via onLayout ─────
+  // onLayout measures the ACTUAL rendered width of "O" in Cinzel Bold so the
+  // heart is centred accurately regardless of device or font-rendering engine.
+  const [oAdvance, setOAdvance] = useState(Math.round(fontSize * 0.88));
 
   const textStyle = {
     fontSize,
@@ -74,14 +84,14 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     lineHeight: lineH,
   } as const;
 
-  // Heart scaled to fill the O bowl — 68 % of cell width gives a prominent gem
-  const heartScale = 0.68;
+  // ── Heart geometry (recalculated whenever oAdvance updates) ──────────────────
+  const heartScale = 0.65;
   const heartW     = Math.round(oAdvance * heartScale);
   const heartH     = Math.round(capH     * heartScale);
-  // Centre the heart within the O bowl.
-  // +2 px rightward nudge accounts for Cinzel Bold's left sidebearing on "O"
+  // Centre horizontally within the measured O advance; +1 px for left sidebearing
+  const heartLeft  = Math.round((oAdvance - heartW) / 2) + 1;
+  // Centre vertically within the cap band
   const heartTop   = capTop + Math.round((capH - heartH) / 2);
-  const heartLeft  = Math.round((oAdvance - heartW) / 2) + 2;
 
   // ── Rich 3D heart (top face — ruby red outer, ruby gem inner) ─────────────
   const renderRichHeart = () => (
@@ -183,7 +193,7 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     </View>
   );
 
-  // ── Text rendering — renders full "ONJJEM" so the O is visible in gold ─────
+  // ── Text rendering ────────────────────────────────────────────────────────
   const renderText = (
     dt: number,
     dl: number,
@@ -193,7 +203,6 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
   ) => (
     <Text
       key={key}
-      numberOfLines={1}
       style={[
         styles.abs,
         textStyle,
@@ -215,14 +224,19 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     </Text>
   );
 
-  const nAdv = Math.round(fontSize * 0.75);
-  const jAdv = Math.round(fontSize * 0.50);
-  const eAdv = Math.round(fontSize * 0.65);
-  const mAdv = Math.round(fontSize * 0.90);
-  const titleWidth = oCell + nAdv + jAdv + jAdv + eAdv + mAdv + letterSpacing * 5 + 32;
-
   return (
     <View style={{ height: containerHeight, width: titleWidth, overflow: "visible" }}>
+      {/* ── Transparent "O" — measures actual Cinzel Bold advance width ── */}
+      <Text
+        style={[styles.abs, textStyle, { opacity: 0, top: 0, left: 0 }]}
+        onLayout={(e) => {
+          const w = Math.round(e.nativeEvent.layout.width);
+          if (w > 0 && w !== oAdvance) setOAdvance(w);
+        }}
+      >
+        O
+      </Text>
+
       {/* ── 1. Thick dark border outline (8 directions) ── */}
       {BORDER_OFFSETS.map(([dl, dt], i) =>
         renderText(dt, dl, BORDER_COLOR, `border-${i}`),
