@@ -74,13 +74,14 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
     lineHeight: lineH,
   } as const;
 
-  // Heart scaled to fit inside the O bowl (≈ 55 % of the letter cell)
-  const heartScale = 0.55;
+  // Heart scaled to fill the O bowl — 68 % of cell width gives a prominent gem
+  const heartScale = 0.68;
   const heartW     = Math.round(oAdvance * heartScale);
   const heartH     = Math.round(capH     * heartScale);
-  // Centre the heart within the O cell
+  // Centre the heart within the O bowl.
+  // +2 px rightward nudge accounts for Cinzel Bold's left sidebearing on "O"
   const heartTop   = capTop + Math.round((capH - heartH) / 2);
-  const heartLeft  = Math.round((oAdvance - heartW) / 2);
+  const heartLeft  = Math.round((oAdvance - heartW) / 2) + 2;
 
   // ── Rich 3D heart (top face — ruby red outer, ruby gem inner) ─────────────
   const renderRichHeart = () => (
@@ -221,7 +222,7 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
   const titleWidth = oCell + nAdv + jAdv + jAdv + eAdv + mAdv + letterSpacing * 5 + 32;
 
   return (
-    <View style={{ height: containerHeight, width: titleWidth }}>
+    <View style={{ height: containerHeight, width: titleWidth, overflow: "visible" }}>
       {/* ── 1. Thick dark border outline (8 directions) ── */}
       {BORDER_OFFSETS.map(([dl, dt], i) =>
         renderText(dt, dl, BORDER_COLOR, `border-${i}`),
