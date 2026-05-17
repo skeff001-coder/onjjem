@@ -433,7 +433,7 @@ export default function HomeScreen() {
 
         <View style={s.header}>
           <View style={s.headerCenter}>
-            <GraffitiTitle fontSize={36} letterSpacing={6} />
+            <GraffitiTitle fontSize={52} letterSpacing={8} />
             <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
           </View>
           {appState !== "idle" && (
@@ -1232,9 +1232,9 @@ function makeStyles(
       height: SCREEN_H / 3,
     },
     header: {
-      paddingTop: 16,
+      paddingTop: 20,
       paddingHorizontal: 24,
-      paddingBottom: 14,
+      paddingBottom: 16,
       alignItems: "center",
     },
     headerCenter: {
