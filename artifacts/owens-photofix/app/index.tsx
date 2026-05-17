@@ -3,10 +3,11 @@ import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   Dimensions,
   Image,
   Linking,
@@ -115,6 +116,11 @@ export default function HomeScreen() {
   const [batchItems, setBatchItems] = useState<BatchItem[]>([]);
   const [batchCurrentIndex, setBatchCurrentIndex] = useState(0);
 
+  // Pinch-to-zoom discovery hint
+  const [showPinchHint, setShowPinchHint] = useState(false);
+  const pinchHintOpacity = useRef(new Animated.Value(0)).current;
+  const pinchHintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const COMFORT_MESSAGES = [
     "Restoring your photo to our highest standards…",
     "Analysing every precious detail of your photograph…",
@@ -137,6 +143,46 @@ export default function HomeScreen() {
         setWelcomeVisible(true);
       });
   }, []);
+
+  // Fade out and remove the pinch-to-zoom hint (on first pinch or auto-timeout).
+  const dismissPinchHint = useCallback(() => {
+    if (pinchHintTimerRef.current !== null) {
+      clearTimeout(pinchHintTimerRef.current);
+      pinchHintTimerRef.current = null;
+    }
+    Animated.timing(pinchHintOpacity, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start(() => setShowPinchHint(false));
+  }, []); // deps are stable refs/Animated.Value
+
+  // Show the pinch hint the first time a result screen appears.
+  useEffect(() => {
+    if (appState !== "done") return;
+    let cancelled = false;
+    void AsyncStorage.getItem("hasSeenPinchHint").then((seen) => {
+      if (seen || cancelled) return;
+      void AsyncStorage.setItem("hasSeenPinchHint", "1");
+      setShowPinchHint(true);
+      pinchHintOpacity.setValue(0);
+      Animated.timing(pinchHintOpacity, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (!finished || cancelled) return;
+        pinchHintTimerRef.current = setTimeout(dismissPinchHint, 2000);
+      });
+    });
+    return () => {
+      cancelled = true;
+      if (pinchHintTimerRef.current !== null) {
+        clearTimeout(pinchHintTimerRef.current);
+        pinchHintTimerRef.current = null;
+      }
+    };
+  }, [appState, dismissPinchHint]);
 
   const handleWelcomeDismiss = async () => {
     try {
@@ -1048,13 +1094,27 @@ export default function HomeScreen() {
                 {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")} — drag to compare
               </Text>
             </View>
-            <PinchZoomView style={{ width: "100%", aspectRatio: 1 }}>
-              <BeforeAfterSlider
-                beforeUri={originalUri}
-                afterBase64={resultBase64}
-                modeName={Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")}
-              />
-            </PinchZoomView>
+            <View style={s.zoomWrapper}>
+              <PinchZoomView
+                style={{ width: "100%", height: "100%" }}
+                onPinchStart={dismissPinchHint}
+              >
+                <BeforeAfterSlider
+                  beforeUri={originalUri}
+                  afterBase64={resultBase64}
+                  modeName={Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")}
+                />
+              </PinchZoomView>
+              {showPinchHint && (
+                <Animated.View
+                  style={[s.pinchHintBadge, { opacity: pinchHintOpacity }]}
+                  pointerEvents="none"
+                >
+                  <Ionicons name="expand-outline" size={14} color="#fff" />
+                  <Text style={s.pinchHintText}>Pinch to zoom</Text>
+                </Animated.View>
+              )}
+            </View>
             <View style={s.imageTapHint}>
               <Ionicons name="sparkles" size={12} color="#C9960C" />
               <Text style={s.imageTapHintText}>Tap photo to unlock full quality</Text>
@@ -2022,6 +2082,29 @@ function makeStyles(
     },
     imageBlock: {
       gap: 8,
+    },
+    zoomWrapper: {
+      width: "100%",
+      aspectRatio: 1,
+    },
+    pinchHintBadge: {
+      position: "absolute",
+      bottom: 52,
+      alignSelf: "center",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      backgroundColor: "rgba(0,0,0,0.65)",
+      paddingHorizontal: 12,
+      paddingVertical: 7,
+      borderRadius: 20,
+    },
+    pinchHintText: {
+      color: "#fff",
+      fontSize: 13,
+      fontWeight: "600" as const,
+      fontFamily: "Inter_600SemiBold",
+      letterSpacing: 0.2,
     },
     imageTapHint: {
       flexDirection: "row" as const,

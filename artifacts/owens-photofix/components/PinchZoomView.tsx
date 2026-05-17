@@ -13,6 +13,7 @@ interface Props {
   style?: StyleProp<ViewStyle>;
   minScale?: number;
   maxScale?: number;
+  onPinchStart?: () => void;
 }
 
 export function PinchZoomView({
@@ -20,6 +21,7 @@ export function PinchZoomView({
   style,
   minScale = 1,
   maxScale = 4,
+  onPinchStart,
 }: Props) {
   const scale = useSharedValue(1);
   const savedScale = useSharedValue(1);
@@ -36,6 +38,10 @@ export function PinchZoomView({
   const [panEnabled, setPanEnabled] = useState(false);
 
   const pinch = Gesture.Pinch()
+    .onBegin(() => {
+      "worklet";
+      if (onPinchStart) runOnJS(onPinchStart)();
+    })
     .onUpdate((e) => {
       "worklet";
       const newScale = Math.max(
