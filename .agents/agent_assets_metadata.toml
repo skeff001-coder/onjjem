@@ -179,3 +179,9 @@ id = "fcjalT7BpA5GAj7OxVoSN"
 uri = "file://artifacts/owens-photofix/assets/images/icon_refined.png"
 type = "image"
 title = "Icon Refined (final version — currently in the app)"
+
+[[outputs]]
+id = "qQ5dMyLnQxEr_H9K3DsYZ"
+uri = "file://attached_assets/expo-qr.png"
+type = "image"
+title = "Scan with Expo Go on your iPhone"
