@@ -41,6 +41,11 @@ const ENHANCEMENT_LABELS: Record<string, string> = {
   colourize: "Colourize",
 };
 
+function buildModeLabel(modes: string[]): string {
+  const names = modes.map((m) => ENHANCEMENT_LABELS[m] ?? m);
+  return names.join(" + ") + " applied";
+}
+
 function formatDate(timestamp: number) {
   const d = new Date(timestamp);
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
@@ -221,9 +226,7 @@ function DetailModal({
 
   if (!entry) return null;
 
-  const modeLabel = entry.modes
-    .map((m) => ENHANCEMENT_LABELS[m] ?? m)
-    .join(" + ");
+  const modeLabel = buildModeLabel(entry.modes);
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -425,7 +428,7 @@ export default function MyPhotosScreen() {
       <LinearGradient colors={["transparent", "rgba(0,0,0,0.62)"]} style={s.thumbGradient} />
       <View style={s.thumbMeta}>
         <Text style={s.thumbMode} numberOfLines={1}>
-          {item.modes.map((m) => ENHANCEMENT_LABELS[m] ?? m).join("+")}
+          {buildModeLabel(item.modes)}
         </Text>
         <Text style={s.thumbDate}>{formatDate(item.timestamp)}</Text>
       </View>
