@@ -41,6 +41,7 @@ import { TrustFooter } from "@/components/TrustFooter";
 import { RubyHeartIcon } from "@/components/RubyHeartIcon";
 import { WelcomeModal } from "@/components/WelcomeModal";
 import { EnhancementTipSheet } from "@/components/EnhancementTipSheet";
+import { ResultTipSheet } from "@/components/ResultTipSheet";
 import { saveToHistory } from "@/lib/photoHistory";
 
 type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
@@ -85,6 +86,7 @@ export default function HomeScreen() {
 
   const [welcomeVisible, setWelcomeVisible] = useState(false);
   const [tipSheetVisible, setTipSheetVisible] = useState(false);
+  const [resultTipVisible, setResultTipVisible] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
   const [referralVisible, setReferralVisible] = useState(false);
@@ -130,6 +132,15 @@ export default function HomeScreen() {
       // Persistence failure is non-critical; modal is dismissed regardless
     }
     setWelcomeVisible(false);
+  };
+
+  const handleResultTipDismiss = async () => {
+    try {
+      await AsyncStorage.setItem("hasSeenResultTip", "1");
+    } catch {
+      // non-critical
+    }
+    setResultTipVisible(false);
   };
 
   const handleTipSheetDismiss = async () => {
@@ -360,6 +371,10 @@ export default function HomeScreen() {
 
       if (!cancelledRef.current) {
         setAppState("done");
+        // Show result tip sheet on first successful enhancement
+        AsyncStorage.getItem("hasSeenResultTip").then((seen) => {
+          if (!seen) setResultTipVisible(true);
+        }).catch(() => setResultTipVisible(true));
         // Mark free trial as used — persisted so it survives app restarts
         await AsyncStorage.setItem("freeTrialUsed", "1");
         setHasUsedFreeTrial(true);
@@ -447,6 +462,7 @@ export default function HomeScreen() {
     <View style={s.root}>
       <WelcomeModal visible={welcomeVisible} onDismiss={handleWelcomeDismiss} />
       <EnhancementTipSheet visible={tipSheetVisible} onDismiss={handleTipSheetDismiss} />
+      <ResultTipSheet visible={resultTipVisible} onDismiss={handleResultTipDismiss} />
 
       {/* Background photo mosaic */}
       <View style={s.bgMosaic}>
