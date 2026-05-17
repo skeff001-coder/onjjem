@@ -149,6 +149,8 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
         <Path d={OUTER_HEART} fill="url(#gf_outerShadow)" />
         <Path d={OUTER_HEART} fill="none" stroke="rgba(80,0,15,0.75)" strokeWidth={0.65} />
         <Path d={OUTER_HEART} fill="none" stroke="rgba(255,120,145,0.30)" strokeWidth={0.4} />
+        {/* Dark separator ring — makes the inner gem stand out clearly */}
+        <Path d={HEART_RING} fill="rgba(12,0,3,0.90)" fillRule="evenodd" />
         {/* Inner ruby gem */}
         <Path d={INNER_RUBY} fill="rgba(18,2,5,0.92)" />
         <Path d={INNER_RUBY} fill="url(#gf_rubyBase)" />
