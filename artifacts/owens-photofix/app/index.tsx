@@ -39,6 +39,7 @@ import { ReferralModal } from "@/components/ReferralModal";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { TrustFooter } from "@/components/TrustFooter";
 import { RubyHeartIcon } from "@/components/RubyHeartIcon";
+import { WelcomeModal } from "@/components/WelcomeModal";
 import { saveToHistory } from "@/lib/photoHistory";
 
 type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
@@ -81,6 +82,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const scrollRef = useRef<ScrollView>(null);
 
+  const [welcomeVisible, setWelcomeVisible] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
   const [referralVisible, setReferralVisible] = useState(false);
@@ -106,6 +108,27 @@ export default function HomeScreen() {
     "Almost there — perfecting the final touches…",
     "Your masterpiece is nearly ready…",
   ];
+
+  // Show welcome screen on first launch
+  useEffect(() => {
+    AsyncStorage.getItem("hasSeenWelcome")
+      .then((val) => {
+        if (val !== "1") setWelcomeVisible(true);
+      })
+      .catch(() => {
+        // If storage is unavailable, show the welcome screen anyway
+        setWelcomeVisible(true);
+      });
+  }, []);
+
+  const handleWelcomeDismiss = async () => {
+    try {
+      await AsyncStorage.setItem("hasSeenWelcome", "1");
+    } catch {
+      // Persistence failure is non-critical; modal is dismissed regardless
+    }
+    setWelcomeVisible(false);
+  };
 
   // Load persisted free trial state on mount
   useEffect(() => {
@@ -401,6 +424,8 @@ export default function HomeScreen() {
 
   return (
     <View style={s.root}>
+      <WelcomeModal visible={welcomeVisible} onDismiss={handleWelcomeDismiss} />
+
       {/* Background photo mosaic */}
       <View style={s.bgMosaic}>
         {bgImages.map((src, i) => (
