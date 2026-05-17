@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as Sharing from "expo-sharing";
@@ -7,6 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
+  Animated,
   Dimensions,
   FlatList,
   Image,
@@ -375,6 +377,51 @@ const dm = StyleSheet.create({
   shareAnyBtnText: { fontSize: 14, fontWeight: "600" as const, fontFamily: "Inter_600SemiBold", color: DARK },
 });
 
+// ── Gallery Hint Toast ──
+function GalleryHint({ opacity }: { opacity: Animated.Value }) {
+  return (
+    <Animated.View style={[gh.wrap, { opacity }]} pointerEvents="none">
+      <View style={gh.pill}>
+        <Ionicons name="hand-left-outline" size={15} color={GOLD} />
+        <Text style={gh.text}>Tap any photo to compare before &amp; after</Text>
+      </View>
+    </Animated.View>
+  );
+}
+
+const gh = StyleSheet.create({
+  wrap: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    paddingBottom: 28,
+    zIndex: 10,
+  },
+  pill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    backgroundColor: DARK,
+    paddingHorizontal: 18,
+    paddingVertical: 11,
+    borderRadius: 30,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
+  },
+  text: {
+    color: "#fff",
+    fontSize: 13,
+    fontFamily: "Inter_600SemiBold",
+    fontWeight: "600" as const,
+    letterSpacing: 0.2,
+  },
+});
+
 // ── Main Screen ──
 export default function MyPhotosScreen() {
   const insets = useSafeAreaInsets();
@@ -385,6 +432,8 @@ export default function MyPhotosScreen() {
   const [loading, setLoading] = useState(true);
   const [selectedEntry, setSelectedEntry] = useState<HistoryEntry | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const hintOpacity = useRef(new Animated.Value(0)).current;
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -410,6 +459,26 @@ export default function MyPhotosScreen() {
   useEffect(() => {
     void refresh();
   }, [refresh]);
+
+  // Show the one-time gallery hint after photos have loaded
+  useEffect(() => {
+    if (loading || history.length === 0) return;
+    void (async () => {
+      try {
+        const seen = await AsyncStorage.getItem("hasSeenGalleryHint");
+        if (seen) return;
+        await AsyncStorage.setItem("hasSeenGalleryHint", "1");
+        setShowHint(true);
+        Animated.sequence([
+          Animated.timing(hintOpacity, { toValue: 1, duration: 350, useNativeDriver: true }),
+          Animated.delay(2000),
+          Animated.timing(hintOpacity, { toValue: 0, duration: 500, useNativeDriver: true }),
+        ]).start(() => setShowHint(false));
+      } catch {
+        // AsyncStorage unavailable — skip hint silently
+      }
+    })();
+  }, [loading, history.length, hintOpacity]);
 
   const openEntry = async (entry: HistoryEntry) => {
     await Haptics.selectionAsync();
@@ -437,6 +506,7 @@ export default function MyPhotosScreen() {
 
   return (
     <View style={[s.root, { paddingTop: topPad }]}>
+      {showHint && <GalleryHint opacity={hintOpacity} />}
       <LinearGradient colors={[GOLD, "#F5D78E", GOLD, "#A67C00"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={s.goldBar} />
 
       <View style={s.header}>
