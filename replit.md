@@ -9,6 +9,20 @@ A mobile iPhone app that uses AI to sharpen blurry photos and add colour to old 
 - `pnpm run typecheck` — full typecheck across all packages
 - No external API keys required — image processing runs entirely on the server with `sharp`
 
+## Releasing to the App Store
+
+Run from the Replit shell (after Apple credentials have been stored via the one-time Mac setup):
+
+```bash
+pnpm --filter @workspace/owens-photofix run release:ios
+```
+
+This chains `eas build --platform ios --profile production --non-interactive` followed by
+`eas submit --platform ios --profile production --non-interactive`.
+
+Requirements: `EXPO_TOKEN` must be set in Replit Secrets (already stored), `eas-cli` is installed.
+The first-time interactive build (Apple 2FA) must be done from a Mac — see `artifacts/owens-photofix/APP_STORE_SUBMISSION.md`.
+
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9

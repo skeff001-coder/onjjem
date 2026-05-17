@@ -91,15 +91,33 @@ Within a few minutes the build should appear under **TestFlight** or in the **Ap
 
 ---
 
-## After this first run
+## After this first run — releasing from Replit
 
 Once credentials are stored on Expo's servers you no longer need a Mac.
-Future builds and re-submissions can be triggered from Replit with:
+All future releases are triggered from the Replit shell.
+
+**Requirements (one-time setup — already done):**
+- `EXPO_TOKEN` is stored in Replit Secrets (already configured)
+- `eas-cli` is installed as a project dependency
+
+**How to release a new version:**
+
+Open a shell in Replit and run:
+
+```bash
+pnpm --filter @workspace/owens-photofix run release:ios
+```
+
+This runs the following two commands in sequence, fully non-interactively:
 
 ```
-npx eas-cli@latest build --platform ios --profile production --non-interactive
-npx eas-cli@latest submit --platform ios --profile production --non-interactive
+eas build --platform ios --profile production --non-interactive
+eas submit --platform ios --profile production --non-interactive
 ```
+
+Watch the output — when both commands complete, the build has been submitted to App Store Connect.
+
+The `release:ios` script is defined in `artifacts/owens-photofix/package.json`.
 
 ---
 
