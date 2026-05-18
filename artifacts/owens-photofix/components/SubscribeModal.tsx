@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Linking,
   Modal,
@@ -12,6 +13,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PRICING } from "@/lib/pricing";
+import { useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   visible: boolean;
@@ -20,49 +22,85 @@ interface Props {
 
 type Plan = "perpic" | "monthly" | "annual";
 
-const PLANS = [
-  {
-    id: "perpic" as Plan,
-    label: "One Photo",
-    price: PRICING.perPhoto.amount,
-    period: "per photo",
-    desc: "Pay once, enhance one photo at full quality. No subscription.",
-    color: "#E8A020",
-    icon: "camera" as const,
-  },
-  {
-    id: "monthly" as Plan,
-    label: "Monthly",
-    price: PRICING.monthly.amount,
-    period: "per month",
-    desc: "Unlimited full-quality restorations. Cancel anytime.",
-    color: "#4A90D9",
-    icon: "infinite" as const,
-  },
-  {
-    id: "annual" as Plan,
-    label: "Annual",
-    price: PRICING.annual.amount,
-    period: "per year",
-    desc: "Everything in monthly, all year. Save over 80%.",
-    color: "#27AE60",
-    icon: "star" as const,
-    badge: "BEST VALUE",
-  },
-];
-
 export function SubscribeModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const [plan, setPlan] = useState<Plan>("annual");
+  const {
+    monthlyPackage,
+    annualPackage,
+    perPhotoPackage,
+    purchase,
+    restore,
+    isPurchasing,
+    isRestoring,
+    isSubscribed,
+  } = useSubscription();
+
+  const handleRestore = async () => {
+    try {
+      await restore();
+      Alert.alert(
+        "Restore Complete",
+        isSubscribed
+          ? "Your ONJJEM Pro subscription is active."
+          : "No previous purchases were found on this Apple ID.",
+      );
+    } catch (err: any) {
+      Alert.alert("Restore Failed", err?.message ?? "Unable to restore purchases.");
+    }
+  };
+
+  const PLANS = [
+    {
+      id: "perpic" as Plan,
+      label: "One Photo",
+      price: perPhotoPackage?.product.priceString ?? PRICING.perPhoto.amount,
+      period: "per photo",
+      desc: "Pay once, enhance one photo at full quality. No subscription.",
+      color: "#E8A020",
+      icon: "camera" as const,
+      pkg: perPhotoPackage,
+    },
+    {
+      id: "monthly" as Plan,
+      label: "Monthly",
+      price: monthlyPackage?.product.priceString ?? PRICING.monthly.amount,
+      period: "per month",
+      desc: "Unlimited full-quality restorations. Cancel anytime.",
+      color: "#4A90D9",
+      icon: "infinite" as const,
+      pkg: monthlyPackage,
+    },
+    {
+      id: "annual" as Plan,
+      label: "Annual",
+      price: annualPackage?.product.priceString ?? PRICING.annual.amount,
+      period: "per year",
+      desc: "Everything in monthly, all year. Save over 80%.",
+      color: "#27AE60",
+      icon: "star" as const,
+      badge: "BEST VALUE",
+      pkg: annualPackage,
+    },
+  ];
 
   const selected = PLANS.find((p) => p.id === plan)!;
 
-  const handleSubscribe = () => {
-    Alert.alert(
-      selected.label + " — " + selected.price,
-      "Payments are processed securely through Apple's payment system.\n\nWhen ONJJEM launches on the App Store, tapping this button will open Apple's native payment sheet — your Apple ID is used automatically, no card entry needed.",
-      [{ text: "Got It", style: "default", onPress: onClose }],
-    );
+  const handleSubscribe = async () => {
+    if (!selected.pkg) {
+      Alert.alert(
+        "Unavailable",
+        "We couldn't reach the App Store right now. Please check your connection and try again in a moment.",
+      );
+      return;
+    }
+    try {
+      await purchase(selected.pkg);
+      onClose();
+    } catch (err: any) {
+      if (err?.userCancelled) return;
+      Alert.alert("Purchase Failed", err?.message ?? "Unable to complete the purchase.");
+    }
   };
 
   return (
@@ -123,7 +161,12 @@ export function SubscribeModal({ visible, onClose }: Props) {
 
         {/* CTA */}
         <View style={s.ctaWrap}>
-          <TouchableOpacity onPress={handleSubscribe} activeOpacity={0.87} style={s.ctaBtn}>
+          <TouchableOpacity
+            onPress={handleSubscribe}
+            activeOpacity={0.87}
+            style={s.ctaBtn}
+            disabled={isPurchasing}
+          >
             <LinearGradient
               colors={
                 plan === "annual"
@@ -135,14 +178,20 @@ export function SubscribeModal({ visible, onClose }: Props) {
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
               style={s.cta}
             >
-              <Ionicons name={selected.icon} size={22} color="#fff" />
-              <Text style={s.ctaText}>
-                {plan === "perpic"
-                  ? `${PRICING.perPhoto.shortLabel} — ${PRICING.perPhoto.amount}`
-                  : plan === "monthly"
-                  ? `${PRICING.monthly.shortLabel} — ${PRICING.monthly.amount}${PRICING.monthly.period}`
-                  : `${PRICING.annual.shortLabel} — ${PRICING.annual.amount}${PRICING.annual.period}`}
-              </Text>
+              {isPurchasing ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <>
+                  <Ionicons name={selected.icon} size={22} color="#fff" />
+                  <Text style={s.ctaText}>
+                    {plan === "perpic"
+                      ? `${PRICING.perPhoto.shortLabel} — ${selected.price}`
+                      : plan === "monthly"
+                      ? `${PRICING.monthly.shortLabel} — ${selected.price}${PRICING.monthly.period}`
+                      : `${PRICING.annual.shortLabel} — ${selected.price}${PRICING.annual.period}`}
+                  </Text>
+                </>
+              )}
             </LinearGradient>
           </TouchableOpacity>
 
@@ -152,6 +201,16 @@ export function SubscribeModal({ visible, onClose }: Props) {
               : "One-time payment. No subscription.\n"}
             Payment charged to your Apple ID at confirmation.
           </Text>
+          <TouchableOpacity
+            onPress={handleRestore}
+            activeOpacity={0.7}
+            disabled={isRestoring}
+            style={{ paddingVertical: 8, alignItems: "center" }}
+          >
+            <Text style={s.privacyLink}>
+              {isRestoring ? "Restoring…" : "Restore Purchases"}
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => Linking.openURL("https://onjjem.co.uk/privacy")} activeOpacity={0.7}>
             <Text style={s.privacyLink}>Privacy Policy</Text>
           </TouchableOpacity>

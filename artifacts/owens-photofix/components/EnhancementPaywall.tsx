@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   StyleSheet,
   Text,
@@ -10,6 +11,7 @@ import {
 } from "react-native";
 import { useColors } from "@/hooks/useColors";
 import { PRICING } from "@/lib/pricing";
+import { useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   selectedModeCount: number;
@@ -81,6 +83,31 @@ const COMPARISON = [
 export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgradeUnlimited }: Props) {
   const colors = useColors();
   const [activePlan, setActivePlan] = useState<PlanId>("monthly");
+  const { monthlyPackage, annualPackage, purchase, isPurchasing } = useSubscription();
+
+  const handleUnlimitedPress = async () => {
+    const pkg = activePlan === "annual" ? annualPackage : monthlyPackage;
+    if (!pkg) {
+      // Fall back to opening the full subscribe modal if offerings haven't loaded
+      onUpgradeUnlimited();
+      return;
+    }
+    try {
+      await purchase(pkg);
+    } catch (err: any) {
+      if (err?.userCancelled) return;
+      Alert.alert("Purchase Failed", err?.message ?? "Unable to complete the purchase.");
+    }
+  };
+
+  // Override displayed prices with live store prices when available
+  const LIVE_PLANS = PLANS.map((p) =>
+    p.id === "monthly"
+      ? { ...p, price: monthlyPackage?.product.priceString ?? p.price }
+      : p.id === "annual"
+      ? { ...p, price: annualPackage?.product.priceString ?? p.price }
+      : p,
+  );
 
   return (
     <View style={s.root}>
@@ -145,7 +172,7 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
 
       {/* ── 3 plan selectors ── */}
       <View style={s.planSelectorRow}>
-        {PLANS.map((plan) => {
+        {LIVE_PLANS.map((plan) => {
           const isActive = activePlan === plan.id;
           return (
             <TouchableOpacity
@@ -177,7 +204,7 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
 
       {/* ── Active plan detail card ── */}
       {(() => {
-        const plan = PLANS.find(p => p.id === activePlan)!;
+        const plan = LIVE_PLANS.find(p => p.id === activePlan)!;
         return (
           <LinearGradient
             colors={["#12100A", "#1C1A14"]}
@@ -212,16 +239,26 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
                 ))}
               </View>
             </View>
-            <TouchableOpacity onPress={onUpgradeUnlimited} activeOpacity={0.85}>
+            <TouchableOpacity
+              onPress={handleUnlimitedPress}
+              activeOpacity={0.85}
+              disabled={isPurchasing}
+            >
               <LinearGradient
                 colors={[plan.accent, plan.accent + "CC"]}
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                 style={s.unlimitedBtn}
               >
-                <Ionicons name="infinite" size={20} color="#fff" />
-                <Text style={s.unlimitedBtnText}>
-                  Start {plan.label} — {plan.price}
-                </Text>
+                {isPurchasing ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <>
+                    <Ionicons name="infinite" size={20} color="#fff" />
+                    <Text style={s.unlimitedBtnText}>
+                      Start {plan.label} — {plan.price}
+                    </Text>
+                  </>
+                )}
               </LinearGradient>
             </TouchableOpacity>
             <Text style={s.unlimitedLegal}>Cancel anytime in iPhone Settings → App Store → Subscriptions</Text>

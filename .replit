@@ -13,6 +13,7 @@ env = { "CI" = "true" }
 [agent]
 stack = "PNPM_WORKSPACE"
 expertMode = true
+integrations = ["revenuecat:1.0.0"]
 
 [postMerge]
 path = "scripts/post-merge.sh"
@@ -45,3 +46,14 @@ externalPort = 80
 [nix]
 channel = "stable-25_05"
 packages = ["eas-cli"]
+
+[userenv]
+
+[userenv.shared]
+EXPO_PUBLIC_REVENUECAT_TEST_API_KEY = "test_pKpPjpQmrLhLdWSneNVAxafPmrT"
+EXPO_PUBLIC_REVENUECAT_IOS_API_KEY = "appl_GERIwqZAodXSClBKkxlSjxwPQZv"
+EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY = "goog_BOBWgHCMGscYdIIDPNdzJmWtpcP"
+REVENUECAT_PROJECT_ID = "projc829281b"
+REVENUECAT_TEST_STORE_APP_ID = "app193b1aae1c"
+REVENUECAT_APPLE_APP_STORE_APP_ID = "app8539fbb1a1"
+REVENUECAT_GOOGLE_PLAY_STORE_APP_ID = "appb2eff3f3df"

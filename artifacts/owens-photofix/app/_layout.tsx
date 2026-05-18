@@ -17,6 +17,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
 import React, { useEffect } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
+import { initializeRevenueCat, SubscriptionProvider } from "@/lib/revenuecat";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -26,6 +27,14 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
+
+try {
+  initializeRevenueCat();
+} catch (err: any) {
+  // Surfaced once on cold-start if RevenueCat keys are missing/invalid.
+  // Purchases will throw at call time too, so paywalls remain usable in dev.
+  console.warn("RevenueCat init failed:", err?.message ?? err);
+}
 
 function AppSplash() {
   return (
@@ -245,11 +254,13 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <KeyboardProvider>
-              <RootLayoutNav />
-            </KeyboardProvider>
-          </GestureHandlerRootView>
+          <SubscriptionProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <KeyboardProvider>
+                <RootLayoutNav />
+              </KeyboardProvider>
+            </GestureHandlerRootView>
+          </SubscriptionProvider>
         </QueryClientProvider>
       </ErrorBoundary>
     </SafeAreaProvider>

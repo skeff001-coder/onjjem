@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { PRICING } from "@/lib/pricing";
+import { useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   visible: boolean;
@@ -58,29 +59,49 @@ const PRO_FEATURES = [
 export function ProPaywall({ visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const [loading, setLoading] = useState(false);
+  const { monthlyPackage, purchase, restore, isPurchasing, isRestoring, isSubscribed } =
+    useSubscription();
 
   const topPad = Platform.OS === "web" ? Math.max(insets.top, 56) : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom + 16;
 
+  // Use live store price when available; otherwise fall back to display price.
+  const priceLabel =
+    monthlyPackage?.product.priceString ?? PRICING.monthly.amount;
+  const periodLabel = PRICING.monthly.period;
+
   const handleSubscribe = async () => {
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 500));
-    setLoading(false);
-    Alert.alert(
-      "Subscription via Apple",
-      "Subscriptions are processed securely through Apple's payment system.\n\nWhen ONJJEM launches on the App Store, tapping this button will open Apple's native payment sheet — your Apple ID payment method is used automatically, no card entry needed.",
-      [{ text: "Got It", style: "default", onPress: onClose }],
-    );
+    if (!monthlyPackage) {
+      Alert.alert(
+        "Subscriptions Unavailable",
+        "We couldn't reach the App Store right now. Please check your connection and try again in a moment.",
+      );
+      return;
+    }
+    try {
+      await purchase(monthlyPackage);
+      onClose();
+    } catch (err: any) {
+      if (err?.userCancelled) return;
+      Alert.alert("Purchase Failed", err?.message ?? "Unable to complete the purchase.");
+    }
   };
 
-  const handleRestore = () => {
-    Alert.alert(
-      "Restore Purchases",
-      "Purchases are restored automatically through your Apple ID when the app is live on the App Store.",
-      [{ text: "OK" }],
-    );
+  const handleRestore = async () => {
+    try {
+      await restore();
+      Alert.alert(
+        "Restore Complete",
+        isSubscribed
+          ? "Your ONJJEM Pro subscription is active."
+          : "No previous purchases were found on this Apple ID.",
+      );
+    } catch (err: any) {
+      Alert.alert("Restore Failed", err?.message ?? "Unable to restore purchases.");
+    }
   };
+
+  const loading = isPurchasing || isRestoring;
 
   return (
     <Modal
@@ -118,9 +139,8 @@ export function ProPaywall({ visible, onClose }: Props) {
 
           <View style={[s.priceCard, { borderColor: "#F5C842", backgroundColor: "rgba(245,200,66,0.07)" }]}>
             <View style={s.priceRow}>
-              <Text style={[s.priceCurrency, { color: colors.foreground }]}>{PRICING.monthly.amount.slice(0, 1)}</Text>
-              <Text style={[s.priceAmount, { color: colors.foreground }]}>{PRICING.monthly.amount.slice(1)}</Text>
-              <Text style={[s.pricePeriod, { color: colors.mutedForeground }]}>{PRICING.monthly.period}</Text>
+              <Text style={[s.priceAmount, { color: colors.foreground }]}>{priceLabel}</Text>
+              <Text style={[s.pricePeriod, { color: colors.mutedForeground }]}>{periodLabel}</Text>
             </View>
             <Text style={[s.priceTagline, { color: colors.mutedForeground }]}>
               Cancel anytime · No commitment · No hidden fees
@@ -169,7 +189,7 @@ export function ProPaywall({ visible, onClose }: Props) {
               <ActivityIndicator color="#000" size="small" />
             ) : (
               <>
-                <Text style={s.subscribeBtnText}>Start Pro — {PRICING.monthly.amount} {PRICING.monthly.period}</Text>
+                <Text style={s.subscribeBtnText}>Start Pro — {priceLabel} {periodLabel}</Text>
                 <Text style={s.subscribeBtnStar}>★</Text>
               </>
             )}
@@ -180,7 +200,7 @@ export function ProPaywall({ visible, onClose }: Props) {
           </Pressable>
 
           <Text style={[s.legal, { color: colors.mutedForeground }]}>
-            Subscription renews automatically at {PRICING.monthly.amount}{PRICING.monthly.period}. Cancel anytime in your iPhone Settings → App Store → Subscriptions.
+            Subscription renews automatically at {priceLabel}{periodLabel}. Cancel anytime in your iPhone Settings → App Store → Subscriptions.
           </Text>
         </View>
       </View>

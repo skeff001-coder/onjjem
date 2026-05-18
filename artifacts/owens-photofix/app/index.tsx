@@ -33,6 +33,7 @@ import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { PRICING } from "@/lib/pricing";
 import { SubscribeModal } from "@/components/SubscribeModal";
+import { useSubscription } from "@/lib/revenuecat";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { PinchZoomView } from "@/components/PinchZoomView";
 import { ProPaywall } from "@/components/ProPaywall";
@@ -104,6 +105,27 @@ export default function HomeScreen() {
   const [contactVisible, setContactVisible] = useState(false);
   const [referralVisible, setReferralVisible] = useState(false);
   const [subscribeVisible, setSubscribeVisible] = useState(false);
+  const { perPhotoPackage, purchase: purchaseSubscription } = useSubscription();
+
+  const buyOnePhoto = async () => {
+    if (!perPhotoPackage) {
+      Alert.alert(
+        "Unavailable",
+        "We couldn't reach the App Store right now. Please check your connection and try again in a moment.",
+      );
+      return;
+    }
+    try {
+      await purchaseSubscription(perPhotoPackage);
+      Alert.alert(
+        "Purchase Complete",
+        "You can now enhance one photo at full HD quality with no watermark.",
+      );
+    } catch (err: any) {
+      if (err?.userCancelled) return;
+      Alert.alert("Purchase Failed", err?.message ?? "Unable to complete the purchase.");
+    }
+  };
   const [hasUsedFreeTrial, setHasUsedFreeTrial] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
   const [originalUri, setOriginalUri] = useState<string | null>(null);
@@ -1313,20 +1335,8 @@ export default function HomeScreen() {
           <>
             <EnhancementPaywall
               selectedModeCount={selectedModes.size}
-              onUpgradeSingle={() =>
-                Alert.alert(
-                  `Single Photo HD Enhancement — ${PRICING.perPhoto.amount}`,
-                  "Full HD quality with all 6 enhancement modes at 100% strength, no watermark, and save to Photos. Payments are coming very soon — you'll be first to know!",
-                  [{ text: "Can't Wait!" }],
-                )
-              }
-              onUpgradeUnlimited={() =>
-                Alert.alert(
-                  `Unlimited — ${PRICING.monthly.amount}/month`,
-                  "Process as many photos as you like every month — unlimited HD restorations, priority processing, and early access to new tools. Payments coming very soon!",
-                  [{ text: "Can't Wait!" }],
-                )
-              }
+              onUpgradeSingle={buyOnePhoto}
+              onUpgradeUnlimited={() => setSubscribeVisible(true)}
             />
             <TouchableOpacity
               style={s.myPhotosLinkBtn}
