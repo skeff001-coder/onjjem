@@ -128,6 +128,24 @@ app.use(cors());
 app.use(express.json({ limit: "30mb" }));
 app.use(express.urlencoded({ extended: true, limit: "30mb" }));
 
+// Marketing website — served at root so onjjem.com points here
+app.get(["/", "/home"], (_req: Request, res: Response) => {
+  res.sendFile(
+    path.resolve(__dirname, "../../../documents/onjjem-website.html")
+  );
+});
+
+// Gallery images for the website
+app.get("/api/gallery/:filename", (req: Request, res: Response) => {
+  const safe = path.basename(req.params["filename"] ?? "");
+  res.sendFile(
+    path.resolve(__dirname, "../../../artifacts/owens-photofix/assets/gallery", safe),
+    (err) => {
+      if (err) res.status(404).send("Not found");
+    }
+  );
+});
+
 app.get(["/partnership-letter", "/api/partnership-letter"], (_req: Request, res: Response) => {
   res.sendFile(
     path.resolve(__dirname, "../../../documents/onjjem-bags-of-love-partnership-letter.html")
