@@ -1245,14 +1245,20 @@ export default function HomeScreen() {
                           <Ionicons name="checkmark" size={11} color="#fff" />
                         </View>
                       )}
-                      <View style={[s.enhanceIconCircle, isSelected && { backgroundColor: `${enh.accent}30` }]}>
+                      <View
+                        style={[
+                          s.enhanceIconCircle,
+                          { backgroundColor: `${enh.accent}26`, borderColor: `${enh.accent}66` },
+                          isSelected && { backgroundColor: `${enh.accent}44`, borderColor: enh.accent },
+                        ]}
+                      >
                         <Ionicons
                           name={enh.icon}
-                          size={26}
-                          color={isSelected ? enh.accent : "#888"}
+                          size={30}
+                          color={enh.accent}
                         />
                       </View>
-                      <Text style={[s.enhanceCardTitle, isSelected && { color: enh.accent }]}>
+                      <Text style={[s.enhanceCardTitle, { color: enh.accent }]}>
                         {enh.title}
                       </Text>
                       <Text style={s.enhanceCardSub}>{enh.subtitle}</Text>
@@ -2310,26 +2316,29 @@ function makeStyles(
       justifyContent: "center" as const,
     },
     enhanceIconCircle: {
-      width: 50,
-      height: 50,
-      borderRadius: 25,
+      width: 54,
+      height: 54,
+      borderRadius: 27,
       backgroundColor: "rgba(255,255,255,0.06)",
+      borderWidth: 1.5,
+      borderColor: "transparent",
       alignItems: "center" as const,
       justifyContent: "center" as const,
     },
     enhanceCardTitle: {
-      fontSize: 13,
-      fontWeight: "700" as const,
+      fontSize: 14,
+      fontWeight: "800" as const,
       fontFamily: "Inter_700Bold",
       color: colors.foreground,
       textAlign: "center" as const,
+      letterSpacing: 0.2,
     },
     enhanceCardSub: {
-      fontSize: 10.5,
-      color: colors.mutedForeground,
+      fontSize: 11.5,
+      color: "rgba(250,247,242,0.85)",
       fontFamily: "Inter_400Regular",
       textAlign: "center" as const,
-      lineHeight: 14,
+      lineHeight: 15,
     },
     comboLabel: {
       flexDirection: "row" as const,
