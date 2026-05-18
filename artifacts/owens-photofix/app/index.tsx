@@ -1152,55 +1152,55 @@ export default function HomeScreen() {
                 {hasUsedFreeTrial ? (
                   <>
                     <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "rgba(232,160,32,0.18)", borderColor: "rgba(232,160,32,0.45)" }]}
+                      style={[s.pricingFreeChip, { backgroundColor: "#E8A020", borderColor: "#FFD27A" }]}
                       onPress={() => setSubscribeVisible(true)}
                       activeOpacity={0.8}
                     >
-                      <Ionicons name="camera" size={11} color="#E8A020" />
-                      <Text style={[s.pricingFreeText, { color: "#E8A020" }]}>£1.49/photo</Text>
+                      <Ionicons name="camera" size={13} color="#1C1A14" />
+                      <Text style={[s.pricingFreeText, { color: "#1C1A14" }]}>{PRICING.perPhoto.amount}/photo</Text>
                     </TouchableOpacity>
                     <Text style={s.pricingDivider}>·</Text>
                     <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "rgba(74,144,217,0.18)", borderColor: "rgba(74,144,217,0.45)" }]}
+                      style={[s.pricingFreeChip, { backgroundColor: "#4A90D9", borderColor: "#A6CCEF" }]}
                       onPress={() => setSubscribeVisible(true)}
                       activeOpacity={0.8}
                     >
-                      <Ionicons name="infinite" size={11} color="#4A90D9" />
-                      <Text style={[s.pricingFreeText, { color: "#4A90D9" }]}>£11.99/mo</Text>
+                      <Ionicons name="infinite" size={13} color="#FFFFFF" />
+                      <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.monthly.amount}/mo</Text>
                     </TouchableOpacity>
                     <Text style={s.pricingDivider}>·</Text>
                     <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "rgba(39,174,96,0.18)", borderColor: "rgba(39,174,96,0.45)" }]}
+                      style={[s.pricingFreeChip, { backgroundColor: "#27AE60", borderColor: "#9FE3B8" }]}
                       onPress={() => setSubscribeVisible(true)}
                       activeOpacity={0.8}
                     >
-                      <Ionicons name="star" size={11} color="#27AE60" />
-                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>£24.99/yr</Text>
+                      <Ionicons name="star" size={13} color="#FFFFFF" />
+                      <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.annual.amount}/yr</Text>
                     </TouchableOpacity>
                   </>
                 ) : (
                   <>
-                    <View style={s.pricingFreeChip}>
-                      <Ionicons name="sparkles" size={11} color="#27AE60" />
-                      <Text style={[s.pricingFreeText, { color: "#27AE60" }]}>1 free sample</Text>
+                    <View style={[s.pricingFreeChip, { backgroundColor: "#27AE60", borderColor: "#9FE3B8" }]}>
+                      <Ionicons name="sparkles" size={13} color="#FFFFFF" />
+                      <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>1 free sample</Text>
                     </View>
                     <Text style={s.pricingDivider}>·</Text>
                     <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "rgba(232,160,32,0.18)", borderColor: "rgba(232,160,32,0.45)" }]}
+                      style={[s.pricingFreeChip, { backgroundColor: "#E8A020", borderColor: "#FFD27A" }]}
                       onPress={() => setSubscribeVisible(true)}
                       activeOpacity={0.8}
                     >
-                      <Ionicons name="camera" size={11} color="#E8A020" />
-                      <Text style={[s.pricingFreeText, { color: "#E8A020" }]}>£1.49/photo</Text>
+                      <Ionicons name="camera" size={13} color="#1C1A14" />
+                      <Text style={[s.pricingFreeText, { color: "#1C1A14" }]}>{PRICING.perPhoto.amount}/photo</Text>
                     </TouchableOpacity>
                     <Text style={s.pricingDivider}>·</Text>
                     <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "rgba(74,144,217,0.18)", borderColor: "rgba(74,144,217,0.45)" }]}
+                      style={[s.pricingFreeChip, { backgroundColor: "#4A90D9", borderColor: "#A6CCEF" }]}
                       onPress={() => setSubscribeVisible(true)}
                       activeOpacity={0.8}
                     >
-                      <Ionicons name="infinite" size={11} color="#4A90D9" />
-                      <Text style={[s.pricingFreeText, { color: "#4A90D9" }]}>£11.99/mo</Text>
+                      <Ionicons name="infinite" size={13} color="#FFFFFF" />
+                      <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.monthly.amount}/mo</Text>
                     </TouchableOpacity>
                   </>
                 )}
@@ -2248,24 +2248,24 @@ function makeStyles(
     pricingFreeChip: {
       flexDirection: "row" as const,
       alignItems: "center" as const,
-      gap: 4,
-      backgroundColor: "rgba(39,174,96,0.18)",
+      gap: 5,
+      backgroundColor: "#27AE60",
       borderRadius: 20,
       borderWidth: 1,
-      borderColor: "rgba(39,174,96,0.4)",
-      paddingHorizontal: 10,
-      paddingVertical: 4,
+      borderColor: "#9FE3B8",
+      paddingHorizontal: 11,
+      paddingVertical: 6,
     },
     pricingFreeText: {
-      fontSize: 11,
-      fontWeight: "700" as const,
+      fontSize: 13,
+      fontWeight: "800" as const,
       fontFamily: "Inter_700Bold",
       color: "#fff",
-      letterSpacing: 0.5,
+      letterSpacing: 0.3,
     },
     pricingDivider: {
       fontSize: 14,
-      color: "rgba(201,150,12,0.5)",
+      color: "rgba(255,255,255,0.55)",
       fontFamily: "Inter_400Regular",
     },
     pricingPaidText: {
