@@ -6,6 +6,7 @@ import {
   Alert,
   Linking,
   Modal,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -105,7 +106,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <View style={[s.root, { paddingBottom: insets.bottom + 16 }]}>
+      <View style={s.root}>
 
         {/* Gold bar */}
         <LinearGradient
@@ -114,107 +115,124 @@ export function SubscribeModal({ visible, onClose }: Props) {
           style={s.goldBar}
         />
 
-        {/* Header */}
-        <View style={s.header}>
-          <TouchableOpacity style={s.closeBtn} onPress={onClose} activeOpacity={0.7}>
-            <Ionicons name="close" size={20} color="rgba(250,247,242,0.5)" />
-          </TouchableOpacity>
-          <Text style={s.title}>Unlock Full Quality</Text>
-          <Text style={s.subtitle}>
-            Your free sample ran at reduced quality.{"\n"}Choose how you'd like to continue.
-          </Text>
-        </View>
-
-        {/* Price cards */}
-        <View style={s.cards}>
-          {PLANS.map((p) => {
-            const active = plan === p.id;
-            return (
-              <TouchableOpacity
-                key={p.id}
-                style={[s.card, active && { borderColor: p.color, backgroundColor: p.color + "14" }]}
-                onPress={() => setPlan(p.id)}
-                activeOpacity={0.8}
-              >
-                {p.badge && (
-                  <View style={[s.badge, { backgroundColor: p.color }]}>
-                    <Text style={s.badgeText}>{p.badge}</Text>
-                  </View>
-                )}
-                <View style={s.cardTop}>
-                  <View style={[s.iconWrap, { backgroundColor: p.color + "20" }]}>
-                    <Ionicons name={p.icon} size={20} color={p.color} />
-                  </View>
-                  <View style={s.cardMeta}>
-                    <Text style={[s.cardLabel, active && { color: p.color }]}>{p.label}</Text>
-                    <Text style={s.cardDesc}>{p.desc}</Text>
-                  </View>
-                  <View style={s.cardPriceWrap}>
-                    <Text style={[s.cardPrice, active && { color: p.color }]}>{p.price}</Text>
-                    <Text style={s.cardPeriod}>{p.period}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        {/* CTA */}
-        <View style={s.ctaWrap}>
-          <TouchableOpacity
-            onPress={handleSubscribe}
-            activeOpacity={0.87}
-            style={s.ctaBtn}
-            disabled={isPurchasing}
-          >
-            <LinearGradient
-              colors={
-                plan === "annual"
-                  ? ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]
-                  : plan === "perpic"
-                  ? ["#8B6200", "#E8A020", "#F5C050", "#E8A020"]
-                  : ["#2C6FAE", "#4A90D9", "#5BA3E8", "#4A90D9"]
-              }
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-              style={s.cta}
-            >
-              {isPurchasing ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <>
-                  <Ionicons name={selected.icon} size={22} color="#fff" />
-                  <Text style={s.ctaText}>
-                    {plan === "perpic"
-                      ? `${PRICING.perPhoto.shortLabel} — ${selected.price}`
-                      : plan === "monthly"
-                      ? `${PRICING.monthly.shortLabel} — ${selected.price}${PRICING.monthly.period}`
-                      : `${PRICING.annual.shortLabel} — ${selected.price}${PRICING.annual.period}`}
-                  </Text>
-                </>
-              )}
-            </LinearGradient>
-          </TouchableOpacity>
-
-          <Text style={s.legal}>
-            {plan !== "perpic"
-              ? "Subscription renews automatically. Cancel anytime in iPhone Settings → Apple ID → Subscriptions.\n"
-              : "One-time payment. No subscription.\n"}
-            Payment charged to your Apple ID at confirmation.
-          </Text>
-          <TouchableOpacity
-            onPress={handleRestore}
-            activeOpacity={0.7}
-            disabled={isRestoring}
-            style={{ paddingVertical: 8, alignItems: "center" }}
-          >
-            <Text style={s.privacyLink}>
-              {isRestoring ? "Restoring…" : "Restore Purchases"}
+        <ScrollView
+          style={s.scroll}
+          contentContainerStyle={[
+            s.scrollContent,
+            { paddingBottom: insets.bottom + 24 },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
+          <View style={s.header}>
+            <TouchableOpacity style={s.closeBtn} onPress={onClose} activeOpacity={0.7}>
+              <Ionicons name="close" size={20} color="rgba(250,247,242,0.5)" />
+            </TouchableOpacity>
+            <Text style={s.title}>Unlock Full Quality</Text>
+            <Text style={s.subtitle}>
+              Your free sample ran at reduced quality.{"\n"}Choose how you'd like to continue.
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL("https://onjjem.co.uk/privacy")} activeOpacity={0.7}>
-            <Text style={s.privacyLink}>Privacy Policy</Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+
+          {/* Price cards */}
+          <View style={s.cards}>
+            {PLANS.map((p) => {
+              const active = plan === p.id;
+              return (
+                <TouchableOpacity
+                  key={p.id}
+                  style={[s.card, active && { borderColor: p.color, backgroundColor: p.color + "14" }]}
+                  onPress={() => setPlan(p.id)}
+                  activeOpacity={0.8}
+                >
+                  {p.badge && (
+                    <View style={[s.badge, { backgroundColor: p.color }]}>
+                      <Text style={s.badgeText}>{p.badge}</Text>
+                    </View>
+                  )}
+                  <View style={s.cardTop}>
+                    <View style={[s.iconWrap, { backgroundColor: p.color + "20" }]}>
+                      <Ionicons name={p.icon} size={20} color={p.color} />
+                    </View>
+                    <View style={s.cardMeta}>
+                      <Text style={[s.cardLabel, active && { color: p.color }]}>{p.label}</Text>
+                      <Text style={s.cardDesc}>{p.desc}</Text>
+                    </View>
+                    <View style={s.cardPriceWrap}>
+                      <Text style={[s.cardPrice, active && { color: p.color }]}>{p.price}</Text>
+                      <Text style={s.cardPeriod}>{p.period}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* CTA */}
+          <View style={s.ctaWrap}>
+            <TouchableOpacity
+              onPress={handleSubscribe}
+              activeOpacity={0.87}
+              style={s.ctaBtn}
+              disabled={isPurchasing}
+            >
+              <LinearGradient
+                colors={
+                  plan === "annual"
+                    ? ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]
+                    : plan === "perpic"
+                    ? ["#8B6200", "#E8A020", "#F5C050", "#E8A020"]
+                    : ["#2C6FAE", "#4A90D9", "#5BA3E8", "#4A90D9"]
+                }
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={s.cta}
+              >
+                {isPurchasing ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <>
+                    <Ionicons name={selected.icon} size={22} color="#fff" />
+                    <Text style={s.ctaText}>
+                      {plan === "perpic"
+                        ? `${PRICING.perPhoto.shortLabel} — ${selected.price}`
+                        : plan === "monthly"
+                        ? `${PRICING.monthly.shortLabel} — ${selected.price}${PRICING.monthly.period}`
+                        : `${PRICING.annual.shortLabel} — ${selected.price}${PRICING.annual.period}`}
+                    </Text>
+                  </>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <Text style={s.legal}>
+              {plan !== "perpic"
+                ? "Subscription renews automatically. Cancel anytime in iPhone Settings → Apple ID → Subscriptions.\n"
+                : "One-time payment. No subscription.\n"}
+              Payment charged to your Apple ID at confirmation.
+            </Text>
+
+            <View style={s.footerLinks}>
+              <TouchableOpacity
+                onPress={handleRestore}
+                activeOpacity={0.7}
+                disabled={isRestoring}
+                style={s.footerLinkBtn}
+              >
+                <Text style={s.privacyLink}>
+                  {isRestoring ? "Restoring…" : "Restore Purchases"}
+                </Text>
+              </TouchableOpacity>
+              <Text style={s.footerLinkSep}>·</Text>
+              <TouchableOpacity
+                onPress={() => Linking.openURL("https://onjjem.co.uk/privacy")}
+                activeOpacity={0.7}
+                style={s.footerLinkBtn}
+              >
+                <Text style={s.privacyLink}>Privacy Policy</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
 
       </View>
     </Modal>
@@ -227,6 +245,8 @@ const DARK  = "#0E0C08";
 const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: DARK },
   goldBar: { height: 3 },
+  scroll: { flex: 1 },
+  scrollContent: { flexGrow: 1 },
 
   header: {
     paddingHorizontal: 20,
@@ -257,10 +277,9 @@ const s = StyleSheet.create({
   },
 
   cards: {
-    flex: 1,
     paddingHorizontal: 16,
-    gap: 12,
-    justifyContent: "center",
+    paddingTop: 4,
+    gap: 14,
   },
   card: {
     backgroundColor: "#1A1610",
@@ -324,8 +343,20 @@ const s = StyleSheet.create({
 
   ctaWrap: {
     paddingHorizontal: 16,
-    paddingTop: 16,
-    gap: 12,
+    paddingTop: 24,
+    gap: 14,
+  },
+  footerLinks: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    paddingTop: 4,
+  },
+  footerLinkBtn: { paddingVertical: 6, paddingHorizontal: 4 },
+  footerLinkSep: {
+    fontSize: 11,
+    color: "rgba(250,247,242,0.3)",
   },
   ctaBtn: { borderRadius: 16, overflow: "hidden" },
   cta: {

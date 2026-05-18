@@ -1103,11 +1103,7 @@ export default function HomeScreen() {
         )}
 
         {appState === "done" && originalUri && resultBase64 && (
-          <TouchableOpacity
-            style={s.imageBlock}
-            onPress={() => setSubscribeVisible(true)}
-            activeOpacity={0.92}
-          >
+          <View style={s.imageBlock}>
             <View style={s.sampleBadgeRow}>
               <View style={s.sampleBadge}>
                 <Ionicons name="eye-outline" size={12} color="#fff" />
@@ -1138,12 +1134,16 @@ export default function HomeScreen() {
                 </Animated.View>
               )}
             </View>
-            <View style={s.imageTapHint}>
+            <TouchableOpacity
+              onPress={() => setSubscribeVisible(true)}
+              activeOpacity={0.85}
+              style={s.imageTapHint}
+            >
               <Ionicons name="sparkles" size={12} color="#C9960C" />
-              <Text style={s.imageTapHintText}>Tap photo to unlock full quality</Text>
+              <Text style={s.imageTapHintText}>Tap here to unlock full quality</Text>
               <Ionicons name="sparkles" size={12} color="#C9960C" />
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         )}
 
         {(appState === "selected" || appState === "batch-selected") && (
