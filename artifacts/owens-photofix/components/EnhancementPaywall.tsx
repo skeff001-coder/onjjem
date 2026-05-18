@@ -57,16 +57,6 @@ const PLANS = [
     features: MONTHLY_FEATURES,
   },
   {
-    id: "biannual",
-    label: "6 Months",
-    price: "£19.99",
-    period: "/6 months",
-    saving: "Save 17%",
-    accent: "#C9960C",
-    tagline: "Unlimited photos · Ultra-HD studio quality · Cancel anytime",
-    features: MONTHLY_FEATURES,
-  },
-  {
     id: "annual",
     label: "Annual",
     price: PRICING.annual.amount,
@@ -167,11 +157,6 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
               {plan.id === "annual" && (
                 <View style={[s.planSelectorBadge, { backgroundColor: "#27AE60" }]}>
                   <Text style={s.planSelectorBadgeText}>BEST</Text>
-                </View>
-              )}
-              {plan.id === "biannual" && (
-                <View style={[s.planSelectorBadge, { backgroundColor: "#C9960C" }]}>
-                  <Text style={s.planSelectorBadgeText}>VALUE</Text>
                 </View>
               )}
               <Text style={[s.planSelectorLabel, isActive && { color: plan.accent }]}>{plan.label}</Text>

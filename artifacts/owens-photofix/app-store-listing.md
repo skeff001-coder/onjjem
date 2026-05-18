@@ -97,7 +97,7 @@ In-App Purchases to declare:
 
 ## App Review Notes (for Apple reviewer)
 
-This app uses Apple In-App Purchase for all payments. The payment buttons currently show the live pricing and route users into the Apple purchase flow once StoreKit is enabled; the prices shown in-app and in this listing are the source of truth for review.
+This app uses Apple In-App Purchase for all payments. The payment buttons currently display the live pricing (£1.49 per photo, £11.99/month, £24.99/year) and show a confirmation dialog explaining that subscriptions are processed through Apple. Real StoreKit integration is being wired in for the launch build before public release; the prices shown in-app and in this listing are the declared IAP values and are the source of truth for review.
 
 The app requires photo library access to allow users to select a photo for restoration. Camera access is listed as optional — the app does not require it.
 

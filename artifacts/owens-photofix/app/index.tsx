@@ -31,6 +31,7 @@ import Svg, {
 } from "react-native-svg";
 import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
+import { PRICING } from "@/lib/pricing";
 import { SubscribeModal } from "@/components/SubscribeModal";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { PinchZoomView } from "@/components/PinchZoomView";
@@ -1308,14 +1309,14 @@ export default function HomeScreen() {
               selectedModeCount={selectedModes.size}
               onUpgradeSingle={() =>
                 Alert.alert(
-                  "Single Photo HD Enhancement — £1.99",
+                  `Single Photo HD Enhancement — ${PRICING.perPhoto.amount}`,
                   "Full HD quality with all 6 enhancement modes at 100% strength, no watermark, and save to Photos. Payments are coming very soon — you'll be first to know!",
                   [{ text: "Can't Wait!" }],
                 )
               }
               onUpgradeUnlimited={() =>
                 Alert.alert(
-                  "Unlimited — £11.99/month",
+                  `Unlimited — ${PRICING.monthly.amount}/month`,
                   "Process as many photos as you like every month — unlimited HD restorations, priority processing, and early access to new tools. Payments coming very soon!",
                   [{ text: "Can't Wait!" }],
                 )
