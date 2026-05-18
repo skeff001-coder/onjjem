@@ -1,6 +1,7 @@
 import express, { type Express, type Request, type Response } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import path from "path";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -126,6 +127,12 @@ app.use(
 app.use(cors());
 app.use(express.json({ limit: "30mb" }));
 app.use(express.urlencoded({ extended: true, limit: "30mb" }));
+
+app.get(["/partnership-letter", "/api/partnership-letter"], (_req: Request, res: Response) => {
+  res.sendFile(
+    path.resolve(__dirname, "../../../documents/onjjem-bags-of-love-partnership-letter.html")
+  );
+});
 
 app.get(["/privacy", "/api/privacy"], (_req: Request, res: Response) => {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
