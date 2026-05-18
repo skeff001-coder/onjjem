@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { useColors } from "@/hooks/useColors";
+import { PRICING } from "@/lib/pricing";
 
 interface Props {
   selectedModeCount: number;
@@ -48,7 +49,7 @@ const PLANS = [
   {
     id: "monthly",
     label: "Monthly",
-    price: "£11.99",
+    price: PRICING.monthly.amount,
     period: "/month",
     saving: null,
     accent: "#4A90D9",
@@ -68,7 +69,7 @@ const PLANS = [
   {
     id: "annual",
     label: "Annual",
-    price: "£24.99",
+    price: PRICING.annual.amount,
     period: "/year",
     saving: "Save 83%",
     accent: "#27AE60",

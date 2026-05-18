@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
+import { PRICING } from "@/lib/pricing";
 
 interface Props {
   visible: boolean;
@@ -117,9 +118,9 @@ export function ProPaywall({ visible, onClose }: Props) {
 
           <View style={[s.priceCard, { borderColor: "#F5C842", backgroundColor: "rgba(245,200,66,0.07)" }]}>
             <View style={s.priceRow}>
-              <Text style={[s.priceCurrency, { color: colors.foreground }]}>£</Text>
-              <Text style={[s.priceAmount, { color: colors.foreground }]}>4.99</Text>
-              <Text style={[s.pricePeriod, { color: colors.mutedForeground }]}>/month</Text>
+              <Text style={[s.priceCurrency, { color: colors.foreground }]}>{PRICING.monthly.amount.slice(0, 1)}</Text>
+              <Text style={[s.priceAmount, { color: colors.foreground }]}>{PRICING.monthly.amount.slice(1)}</Text>
+              <Text style={[s.pricePeriod, { color: colors.mutedForeground }]}>{PRICING.monthly.period}</Text>
             </View>
             <Text style={[s.priceTagline, { color: colors.mutedForeground }]}>
               Cancel anytime · No commitment · No hidden fees
@@ -168,7 +169,7 @@ export function ProPaywall({ visible, onClose }: Props) {
               <ActivityIndicator color="#000" size="small" />
             ) : (
               <>
-                <Text style={s.subscribeBtnText}>Start Pro — £4.99 / month</Text>
+                <Text style={s.subscribeBtnText}>Start Pro — {PRICING.monthly.amount} {PRICING.monthly.period}</Text>
                 <Text style={s.subscribeBtnStar}>★</Text>
               </>
             )}
@@ -179,7 +180,7 @@ export function ProPaywall({ visible, onClose }: Props) {
           </Pressable>
 
           <Text style={[s.legal, { color: colors.mutedForeground }]}>
-            Subscription renews automatically at £4.99/month. Cancel anytime in your iPhone Settings → App Store → Subscriptions.
+            Subscription renews automatically at {PRICING.monthly.amount}{PRICING.monthly.period}. Cancel anytime in your iPhone Settings → App Store → Subscriptions.
           </Text>
         </View>
       </View>

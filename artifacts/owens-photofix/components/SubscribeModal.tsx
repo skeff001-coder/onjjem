@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PRICING } from "@/lib/pricing";
 
 interface Props {
   visible: boolean;
@@ -23,7 +24,7 @@ const PLANS = [
   {
     id: "perpic" as Plan,
     label: "One Photo",
-    price: "£1.49",
+    price: PRICING.perPhoto.amount,
     period: "per photo",
     desc: "Pay once, enhance one photo at full quality. No subscription.",
     color: "#E8A020",
@@ -32,7 +33,7 @@ const PLANS = [
   {
     id: "monthly" as Plan,
     label: "Monthly",
-    price: "£11.99",
+    price: PRICING.monthly.amount,
     period: "per month",
     desc: "Unlimited full-quality restorations. Cancel anytime.",
     color: "#4A90D9",
@@ -41,7 +42,7 @@ const PLANS = [
   {
     id: "annual" as Plan,
     label: "Annual",
-    price: "£24.99",
+    price: PRICING.annual.amount,
     period: "per year",
     desc: "Everything in monthly, all year. Save over 80%.",
     color: "#27AE60",
@@ -137,10 +138,10 @@ export function SubscribeModal({ visible, onClose }: Props) {
               <Ionicons name={selected.icon} size={22} color="#fff" />
               <Text style={s.ctaText}>
                 {plan === "perpic"
-                  ? "Enhance This Photo — £1.49"
+                  ? `${PRICING.perPhoto.shortLabel} — ${PRICING.perPhoto.amount}`
                   : plan === "monthly"
-                  ? "Start Monthly — £11.99/month"
-                  : "Start Annual — £24.99/year"}
+                  ? `${PRICING.monthly.shortLabel} — ${PRICING.monthly.amount}${PRICING.monthly.period}`
+                  : `${PRICING.annual.shortLabel} — ${PRICING.annual.amount}${PRICING.annual.period}`}
               </Text>
             </LinearGradient>
           </TouchableOpacity>

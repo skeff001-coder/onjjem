@@ -97,7 +97,7 @@ In-App Purchases to declare:
 
 ## App Review Notes (for Apple reviewer)
 
-This app uses Apple In-App Purchase for all payments. The payment buttons currently display an informational message explaining Apple's payment system, as the app is preparing for launch. Full StoreKit integration will be active at the time of public release.
+This app uses Apple In-App Purchase for all payments. The payment buttons currently show the live pricing and route users into the Apple purchase flow once StoreKit is enabled; the prices shown in-app and in this listing are the source of truth for review.
 
 The app requires photo library access to allow users to select a photo for restoration. Camera access is listed as optional — the app does not require it.
 
