@@ -144,6 +144,15 @@ If you skip this setup the release script still works normally — notifications
 
 ---
 
+## Build history
+
+| Build # | EAS Build ID                               | ASC State | Uploaded (UTC)       | Notes                          |
+|--------:|--------------------------------------------|-----------|----------------------|--------------------------------|
+| 9       | 7dd01828-c60f-420b-818b-7d28b12615b9       | VALID     | 2026-05-19 09:10:53  | RevenueCat iOS key included    |
+| 8       | bf0dbeb9-7d6f-42b3-bca2-051765de72c6       | VALID     | —                    | Attached to version 1.0        |
+
+---
+
 ## Bundle ID and Project details (for reference)
 
 | Field         | Value                                    |
@@ -151,4 +160,5 @@ If you skip this setup the release script still works normally — notifications
 | Bundle ID     | com.onjjem.photorestoration              |
 | EAS Project   | 8c029b42-97fc-4a11-97b4-5dd2ed450605    |
 | Owner         | skeff001                                 |
-| App version   | 1.0.0 (build number auto-increments)    |
+| App Store ID  | 6770767370                               |
+| App version   | 1.0.1 (buildNumber auto-increments)     |
