@@ -1164,76 +1164,45 @@ export default function HomeScreen() {
               <Text style={s.enhanceSub}>Select up to 3 — they stack together</Text>
             </View>
 
-            {/* Pricing strip */}
-            <View style={s.pricingStrip}>
-              <LinearGradient
-                colors={hasUsedFreeTrial ? ["#0E1A0E", "#152015"] : ["#1C1A14", "#2E2818"]}
-                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-                style={s.pricingStripGradient}
-              >
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={s.pricingStripScroll}
-                  bounces={false}
-                >
-                  {hasUsedFreeTrial ? (
-                    <>
-                      <TouchableOpacity
-                        style={[s.pricingFreeChip, { backgroundColor: "#E8A020", borderColor: "#FFD27A" }]}
-                        onPress={() => setSubscribeVisible(true)}
-                        activeOpacity={0.8}
-                      >
-                        <Ionicons name="camera" size={13} color="#1C1A14" />
-                        <Text style={[s.pricingFreeText, { color: "#1C1A14" }]}>{PRICING.perPhoto.amount}/photo</Text>
-                      </TouchableOpacity>
-                      <Text style={s.pricingDivider}>·</Text>
-                      <TouchableOpacity
-                        style={[s.pricingFreeChip, { backgroundColor: "#4A90D9", borderColor: "#A6CCEF" }]}
-                        onPress={() => setSubscribeVisible(true)}
-                        activeOpacity={0.8}
-                      >
-                        <Ionicons name="infinite" size={13} color="#FFFFFF" />
-                        <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.monthly.amount}/mo</Text>
-                      </TouchableOpacity>
-                      <Text style={s.pricingDivider}>·</Text>
-                      <TouchableOpacity
-                        style={[s.pricingFreeChip, { backgroundColor: "#27AE60", borderColor: "#9FE3B8" }]}
-                        onPress={() => setSubscribeVisible(true)}
-                        activeOpacity={0.8}
-                      >
-                        <Ionicons name="star" size={13} color="#FFFFFF" />
-                        <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.annual.amount}/yr</Text>
-                      </TouchableOpacity>
-                    </>
-                  ) : (
-                    <>
-                      <View style={[s.pricingFreeChip, { backgroundColor: "#27AE60", borderColor: "#9FE3B8" }]}>
-                        <Ionicons name="sparkles" size={13} color="#FFFFFF" />
-                        <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>1 free sample</Text>
-                      </View>
-                      <Text style={s.pricingDivider}>·</Text>
-                      <TouchableOpacity
-                        style={[s.pricingFreeChip, { backgroundColor: "#E8A020", borderColor: "#FFD27A" }]}
-                        onPress={() => setSubscribeVisible(true)}
-                        activeOpacity={0.8}
-                      >
-                        <Ionicons name="camera" size={13} color="#1C1A14" />
-                        <Text style={[s.pricingFreeText, { color: "#1C1A14" }]}>{PRICING.perPhoto.amount}/photo</Text>
-                      </TouchableOpacity>
-                      <Text style={s.pricingDivider}>·</Text>
-                      <TouchableOpacity
-                        style={[s.pricingFreeChip, { backgroundColor: "#4A90D9", borderColor: "#A6CCEF" }]}
-                        onPress={() => setSubscribeVisible(true)}
-                        activeOpacity={0.8}
-                      >
-                        <Ionicons name="infinite" size={13} color="#FFFFFF" />
-                        <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.monthly.amount}/mo</Text>
-                      </TouchableOpacity>
-                    </>
-                  )}
-                </ScrollView>
-              </LinearGradient>
+            {/* Pricing strip — 3 equal tiles */}
+            <View style={s.pricingTileRow}>
+              {hasUsedFreeTrial ? (
+                <>
+                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#1A1408", borderColor: "#E8A020" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                    <Ionicons name="camera" size={20} color="#E8A020" />
+                    <Text style={[s.pricingTilePrice, { color: "#E8A020" }]}>{PRICING.perPhoto.amount}</Text>
+                    <Text style={[s.pricingTileLabel, { color: "rgba(232,160,32,0.7)" }]}>per photo</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1828", borderColor: "#4A90D9" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                    <Ionicons name="infinite" size={20} color="#4A90D9" />
+                    <Text style={[s.pricingTilePrice, { color: "#4A90D9" }]}>{PRICING.monthly.amount}</Text>
+                    <Text style={[s.pricingTileLabel, { color: "rgba(74,144,217,0.7)" }]}>per month</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                    <Ionicons name="star" size={20} color="#27AE60" />
+                    <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>{PRICING.annual.amount}</Text>
+                    <Text style={[s.pricingTileLabel, { color: "rgba(39,174,96,0.7)" }]}>per year</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  <View style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]}>
+                    <Ionicons name="sparkles" size={20} color="#27AE60" />
+                    <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>Free</Text>
+                    <Text style={[s.pricingTileLabel, { color: "rgba(39,174,96,0.7)" }]}>1 sample</Text>
+                  </View>
+                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#1A1408", borderColor: "#E8A020" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                    <Ionicons name="camera" size={20} color="#E8A020" />
+                    <Text style={[s.pricingTilePrice, { color: "#E8A020" }]}>{PRICING.perPhoto.amount}</Text>
+                    <Text style={[s.pricingTileLabel, { color: "rgba(232,160,32,0.7)" }]}>per photo</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1828", borderColor: "#4A90D9" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                    <Ionicons name="infinite" size={20} color="#4A90D9" />
+                    <Text style={[s.pricingTilePrice, { color: "#4A90D9" }]}>{PRICING.monthly.amount}</Text>
+                    <Text style={[s.pricingTileLabel, { color: "rgba(74,144,217,0.7)" }]}>per month</Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
 
             {/* 3×2 grid */}
@@ -2253,21 +2222,30 @@ function makeStyles(
       marginTop: 4,
       textAlign: "center" as const,
     },
-    pricingStrip: {
-      borderRadius: 50,
-      overflow: "hidden" as const,
-    },
-    pricingStripGradient: {
-      borderRadius: 50,
-      borderWidth: 1,
-      borderColor: "rgba(201,150,12,0.25)",
-    },
-    pricingStripScroll: {
+    pricingTileRow: {
       flexDirection: "row" as const,
-      alignItems: "center" as const,
-      paddingVertical: 10,
-      paddingHorizontal: 16,
       gap: 8,
+    },
+    pricingTile: {
+      flex: 1,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      borderRadius: 14,
+      borderWidth: 1.5,
+      paddingVertical: 12,
+      paddingHorizontal: 4,
+      gap: 4,
+    },
+    pricingTilePrice: {
+      fontSize: 15,
+      fontWeight: "800" as const,
+      fontFamily: "Inter_700Bold",
+      letterSpacing: -0.3,
+    },
+    pricingTileLabel: {
+      fontSize: 10,
+      fontFamily: "Inter_400Regular",
+      textAlign: "center" as const,
     },
     pricingFreeChip: {
       flexDirection: "row" as const,
