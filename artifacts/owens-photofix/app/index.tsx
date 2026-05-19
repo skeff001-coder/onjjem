@@ -412,8 +412,7 @@ export default function HomeScreen() {
 
       if (cancelledRef.current) return;
 
-      const domain = process.env.EXPO_PUBLIC_DOMAIN;
-      if (!domain) throw new Error("API domain not configured — please contact support.");
+      const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
       const apiUrl = `https://${domain}/api/process`;
 
       const controller = new AbortController();
@@ -504,12 +503,7 @@ export default function HomeScreen() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     setAppState("batch-processing");
 
-    const domain = process.env.EXPO_PUBLIC_DOMAIN;
-    if (!domain) {
-      Alert.alert("Error", "API domain not configured — please contact support.");
-      setAppState("batch-selected");
-      return;
-    }
+    const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
     const apiUrl = `https://${domain}/api/process`;
 
     const updatedItems = batchItems.map((it) => ({ ...it }));
