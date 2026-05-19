@@ -1,0 +1,11 @@
+node_modules
+.git
+android
+.expo
+dist
+*.log
+attached_assets
+screenshots
+__tests__
+coverage
+.DS_Store
