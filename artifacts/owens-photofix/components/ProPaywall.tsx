@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -16,7 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { PRICING } from "@/lib/pricing";
-import { useSubscription } from "@/lib/revenuecat";
+import { trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   visible: boolean;
@@ -61,6 +61,12 @@ export function ProPaywall({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const { monthlyPackage, purchase, restore, isPurchasing, isRestoring, isSubscribed } =
     useSubscription();
+
+  useEffect(() => {
+    if (visible) {
+      void trackPaywallImpression("pro_paywall");
+    }
+  }, [visible]);
 
   const topPad = Platform.OS === "web" ? Math.max(insets.top, 56) : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom + 16;

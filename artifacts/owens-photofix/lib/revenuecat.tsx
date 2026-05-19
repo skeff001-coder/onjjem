@@ -10,6 +10,115 @@ import Purchases, {
   type PurchasesPackage,
 } from "react-native-purchases";
 
+const INSTALL_FIRST_SEEN_KEY = "onjjem_install_first_seen_at";
+const FIRST_PAYWALL_SEEN_KEY = "onjjem_paywall_first_seen_at";
+const PAYWALL_VIEW_COUNT_KEY = "onjjem_paywall_view_count";
+
+/**
+ * Call once as early as possible after RevenueCat is configured (e.g. in the
+ * root layout). Sets subscriber attributes that mark the install event:
+ *
+ *   - install_first_seen_at  — ISO timestamp of first app open (set once)
+ *   - platform               — "ios" | "android" | "web"
+ *
+ * These feed into RevenueCat Charts and any connected integration
+ * (Mixpanel, Amplitude, etc.) as the "install" step of the
+ * install → paywall view → purchase conversion funnel.
+ */
+/**
+ * HOW TO VIEW THE CONVERSION FUNNEL IN REVENUECAT CHARTS
+ * -------------------------------------------------------
+ * 1. Open https://app.revenuecat.com → your project (app ID 6770767370)
+ * 2. Charts → "Initial Conversion" shows new subscribers per product
+ *    (com.onjjem.photorestoration.monthly / .annual / .one_photo)
+ * 3. Charts → "Active Subscriptions" and "Revenue" are broken down by product
+ * 4. Individual customer profiles show the subscriber attributes set here:
+ *    install_first_seen_at, paywall_first_seen_at, paywall_view_count, etc.
+ * 5. To connect a downstream tool (Mixpanel, Amplitude, Segment, etc.):
+ *    RevenueCat Dashboard → Integrations → Add Integration
+ *    No code changes needed — all attributes set here flow through automatically.
+ */
+
+export async function trackAppInstall(): Promise<void> {
+  try {
+    const existing = await AsyncStorage.getItem(INSTALL_FIRST_SEEN_KEY);
+    if (existing) return; // already recorded on a previous session
+
+    const now = new Date().toISOString();
+
+    // Set attributes and sync BEFORE writing the AsyncStorage marker.
+    // If the network call fails (offline, transient error), the marker is never
+    // written, so the next cold-start will automatically retry — preventing
+    // permanent undercounting of installs.
+    await Purchases.setAttributes({
+      install_first_seen_at: now,
+      platform: Platform.OS,
+    });
+
+    // Push attributes to RevenueCat immediately so they appear in Charts
+    await Purchases.syncAttributesAndOfferingsIfNeeded();
+
+    // Only persist the marker after a successful sync
+    await AsyncStorage.setItem(INSTALL_FIRST_SEEN_KEY, now);
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
+/**
+ * Call this whenever a paywall surface becomes visible.
+ *
+ * Sets custom subscriber attributes on the RevenueCat customer profile:
+ *   - paywall_first_seen_at  — ISO timestamp of the very first paywall view (set once)
+ *   - paywall_last_seen_at   — ISO timestamp updated on every view
+ *   - paywall_name           — which paywall surface was most recently seen
+ *   - paywall_view_count     — cumulative count of all paywall views (event-like counter)
+ *
+ * These attributes flow into RevenueCat Charts and any connected integration
+ * (Mixpanel, Amplitude, etc.), enabling the install → paywall view → purchase
+ * conversion funnel to be measured per customer. Because `paywall_view_count` is
+ * an incrementing integer, it can be used to count paywall-view events even
+ * though RevenueCat attributes are profile traits rather than an event stream.
+ *
+ * RevenueCat Charts automatically surfaces installs (first configure() call) and
+ * purchases per product ID. Pairing that with these attributes completes the
+ * full funnel for each subscriber.
+ */
+export async function trackPaywallImpression(paywallName: string): Promise<void> {
+  try {
+    const now = new Date().toISOString();
+
+    const [firstSeen, rawCount] = await Promise.all([
+      AsyncStorage.getItem(FIRST_PAYWALL_SEEN_KEY),
+      AsyncStorage.getItem(PAYWALL_VIEW_COUNT_KEY),
+    ]);
+
+    const attrs: Record<string, string> = {
+      paywall_last_seen_at: now,
+      paywall_name: paywallName,
+    };
+
+    const isFirstView = !firstSeen;
+    if (isFirstView) attrs.paywall_first_seen_at = now;
+
+    const count = rawCount ? (parseInt(rawCount, 10) || 0) + 1 : 1;
+    attrs.paywall_view_count = String(count);
+
+    // Set attributes and sync BEFORE writing the AsyncStorage markers.
+    // If the network call fails, the markers are never written, so the next
+    // paywall open will retry — preventing permanent undercounting.
+    await Purchases.setAttributes(attrs);
+    // Push to RevenueCat immediately so Charts reflects the view without delay
+    await Purchases.syncAttributesAndOfferingsIfNeeded();
+
+    // Persist markers only after a successful sync
+    await AsyncStorage.setItem(PAYWALL_VIEW_COUNT_KEY, String(count));
+    if (isFirstView) await AsyncStorage.setItem(FIRST_PAYWALL_SEEN_KEY, now);
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
 const REVENUECAT_TEST_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_TEST_API_KEY;
 const REVENUECAT_IOS_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY;
 const REVENUECAT_ANDROID_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY;

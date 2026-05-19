@@ -17,7 +17,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
 import React, { useEffect } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { initializeRevenueCat, SubscriptionProvider } from "@/lib/revenuecat";
+import { initializeRevenueCat, trackAppInstall, SubscriptionProvider } from "@/lib/revenuecat";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -30,6 +30,8 @@ const queryClient = new QueryClient();
 
 try {
   initializeRevenueCat();
+  // Record the install event (no-op after the very first cold-start)
+  void trackAppInstall();
 } catch (err: any) {
   // Surfaced once on cold-start if RevenueCat keys are missing/invalid.
   // Purchases will throw at call time too, so paywalls remain usable in dev.

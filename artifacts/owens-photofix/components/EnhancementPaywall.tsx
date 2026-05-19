@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useColors } from "@/hooks/useColors";
 import { PRICING } from "@/lib/pricing";
-import { useSubscription } from "@/lib/revenuecat";
+import { trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   selectedModeCount: number;
@@ -84,6 +84,10 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
   const colors = useColors();
   const [activePlan, setActivePlan] = useState<PlanId>("monthly");
   const { monthlyPackage, annualPackage, purchase, isPurchasing } = useSubscription();
+
+  useEffect(() => {
+    void trackPaywallImpression("enhancement_paywall");
+  }, []);
 
   const handleUnlimitedPress = async () => {
     const pkg = activePlan === "annual" ? annualPackage : monthlyPackage;

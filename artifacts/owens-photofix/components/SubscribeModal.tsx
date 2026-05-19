@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PRICING } from "@/lib/pricing";
-import { useSubscription } from "@/lib/revenuecat";
+import { trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   visible: boolean;
@@ -36,6 +36,12 @@ export function SubscribeModal({ visible, onClose }: Props) {
     isRestoring,
     isSubscribed,
   } = useSubscription();
+
+  useEffect(() => {
+    if (visible) {
+      void trackPaywallImpression("subscribe_modal");
+    }
+  }, [visible]);
 
   const handleRestore = async () => {
     try {
