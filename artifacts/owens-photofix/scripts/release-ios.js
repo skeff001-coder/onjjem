@@ -194,12 +194,55 @@ function buildStandalonePackageJson(pkgPath, catalog) {
   };
 }
 
+// ── Version preview ───────────────────────────────────────────────────────────
+
+/**
+ * Read app.json and calculate the next version + buildNumber without writing
+ * anything. Returns { currentVersion, nextVersion, currentBuild, nextBuild }.
+ */
+function previewNextVersion() {
+  const appJson = JSON.parse(
+    fs.readFileSync(path.join(ARTIFACT_DIR, "app.json"), "utf8"),
+  );
+  const currentVersion = appJson.expo.version;
+  const currentBuild = parseInt(appJson.expo?.ios?.buildNumber ?? "0", 10);
+
+  const parts = currentVersion.split(".").map(Number);
+  if (BUMP_FLAG === "--major") {
+    parts[0] += 1; parts[1] = 0; parts[2] = 0;
+  } else if (BUMP_FLAG === "--minor") {
+    parts[1] += 1; parts[2] = 0;
+  } else {
+    parts[2] += 1;
+  }
+
+  return {
+    currentVersion,
+    nextVersion: parts.join("."),
+    currentBuild,
+    nextBuild: currentBuild + 1,
+  };
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
   let tmpDir = null;
 
   try {
+    // ── Version preview (before any file changes) ──────────────────────────────
+    const { currentVersion, nextVersion, currentBuild, nextBuild } =
+      previewNextVersion();
+    console.log("\n╔══════════════════════════════════════════════════╗");
+    console.log(  "║              ONJJEM Photo Restoration           ║");
+    console.log(  "╠══════════════════════════════════════════════════╣");
+    console.log(`║  Current : ${currentVersion} (build ${currentBuild})`.padEnd(51) + "║");
+    console.log(`║  Release : ${nextVersion} (build ${nextBuild})`.padEnd(51) + "║");
+    if (DRY_RUN) {
+    console.log(  "║  Mode    : DRY RUN — EAS build/submit skipped    ║");
+    }
+    console.log(  "╚══════════════════════════════════════════════════╝\n");
+
     // ── Step 1: bump version ───────────────────────────────────────────────────
     console.log("\n=== Step 1: bump version ===");
     const bumpCmd = BUMP_FLAG
