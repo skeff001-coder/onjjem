@@ -1514,7 +1514,7 @@ export default function HomeScreen() {
               </LinearGradient>
               <View style={s.printRowBody}>
                 <View style={s.printRowTitleRow}>
-                  <Text style={s.printRowTitle}>Monthly Plan — £11.99/month</Text>
+                  <Text style={s.printRowTitle}>Monthly Plan — £12.99/month</Text>
                   <View style={[s.printRowBadge, { backgroundColor: "#4A90D922", borderColor: "#4A90D955" }]}>
                     <Text style={[s.printRowBadgeText, { color: "#4A90D9" }]}>UNLIMITED</Text>
                   </View>

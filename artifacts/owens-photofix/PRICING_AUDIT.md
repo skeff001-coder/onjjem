@@ -15,13 +15,13 @@ MUST be kept in sync by hand. Period strings such as "/month", "/year",
 
 | Plan                    | Price        | Declared in listing | Apple-safe |
 | ----------------------- | ------------ | ------------------- | ---------- |
-| One Photo Enhancement   | £1.49        | ✓ consumable        | ✓          |
-| Monthly Unlimited       | £11.99 / mo  | ✓ auto-renew sub    | ✓          |
+| One Photo Enhancement   | £1.99        | ✓ consumable        | ✓          |
+| Monthly Unlimited       | £12.99 / mo  | ✓ auto-renew sub    | ✓          |
 | Annual Unlimited        | £24.99 / yr  | ✓ auto-renew sub    | ✓          |
 
 The previously-shown 6-month £19.99 tier was removed from `EnhancementPaywall`
 because it was NOT declared as an IAP — Apple would reject. ProPaywall's
-old £4.99 / month label was corrected to £11.99 / month for the same reason.
+old £4.99 / month label was corrected to £12.99 / month for the same reason.
 
 ## Bags of Love margin policy
 

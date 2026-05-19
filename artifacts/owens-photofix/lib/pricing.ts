@@ -6,7 +6,7 @@ export const PRICING = {
     shortLabel: "Enhance This Photo",
   },
   monthly: {
-    amount: "£11.99",
+    amount: "£12.99",
     period: "/month",
     planName: "Monthly Unlimited",
     shortLabel: "Start Monthly",

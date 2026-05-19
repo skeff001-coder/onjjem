@@ -42,7 +42,7 @@ Love your restored photo? Order it as a stunning wall canvas, a cosy cushion or 
 
 • Free sample — try before you buy, no account needed
 • £1.99 per photo — pay once, no subscription required
-• £11.99/month — unlimited photos, cancel anytime
+• £12.99/month — unlimited photos, cancel anytime
 • £24.99/year — best value, save over 80%
 
 All plans deliver the same full studio quality. Payments are processed securely by Apple.
@@ -89,15 +89,15 @@ Secondary: Lifestyle
 Free (with In-App Purchases)
 
 In-App Purchases to declare:
-- One Photo Enhancement — £1.49 (consumable)
-- Monthly Unlimited — £11.99/month (auto-renewable subscription)
+- One Photo Enhancement — £1.99 (consumable)
+- Monthly Unlimited — £12.99/month (auto-renewable subscription)
 - Annual Unlimited — £24.99/year (auto-renewable subscription)
 
 ---
 
 ## App Review Notes (for Apple reviewer)
 
-This app uses Apple In-App Purchase for all payments. The payment buttons currently display the live pricing (£1.49 per photo, £11.99/month, £24.99/year) and show a confirmation dialog explaining that subscriptions are processed through Apple. Real StoreKit integration is being wired in for the launch build before public release; the prices shown in-app and in this listing are the declared IAP values and are the source of truth for review.
+This app uses Apple In-App Purchase for all payments. The payment buttons currently display the live pricing (£1.99 per photo, £12.99/month, £24.99/year) and show a confirmation dialog explaining that subscriptions are processed through Apple. Real StoreKit integration is being wired in for the launch build before public release; the prices shown in-app and in this listing are the declared IAP values and are the source of truth for review.
 
 The app requires photo library access to allow users to select a photo for restoration. Camera access is listed as optional — the app does not require it.
 
