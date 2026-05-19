@@ -1186,11 +1186,11 @@ export default function HomeScreen() {
                 </>
               ) : (
                 <>
-                  <View style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]}>
+                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
                     <Ionicons name="sparkles" size={20} color="#27AE60" />
                     <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>Free</Text>
                     <Text style={[s.pricingTileLabel, { color: "rgba(39,174,96,0.7)" }]}>1 sample</Text>
-                  </View>
+                  </TouchableOpacity>
                   <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#1A1408", borderColor: "#E8A020" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
                     <Ionicons name="camera" size={20} color="#E8A020" />
                     <Text style={[s.pricingTilePrice, { color: "#E8A020" }]}>{PRICING.perPhoto.amount}</Text>
