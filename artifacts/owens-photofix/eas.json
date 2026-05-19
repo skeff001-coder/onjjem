@@ -20,6 +20,9 @@
       "credentialsSource": "local",
       "ios": {
         "buildConfiguration": "Release"
+      },
+      "env": {
+        "EXPO_PUBLIC_REVENUECAT_IOS_API_KEY": "appl_GERIwqZAodXSClBKkxlSjxwPQZv"
       }
     }
   },
