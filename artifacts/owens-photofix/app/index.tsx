@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
 import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as StoreReview from "expo-store-review";
@@ -45,6 +46,7 @@ import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { TrustFooter } from "@/components/TrustFooter";
 import { RubyHeartIcon } from "@/components/RubyHeartIcon";
 import { WelcomeModal } from "@/components/WelcomeModal";
+import { WhatsNewModal, hasWhatsNewForVersion } from "@/components/WhatsNewModal";
 import { EnhancementTipSheet } from "@/components/EnhancementTipSheet";
 import { ResultTipSheet } from "@/components/ResultTipSheet";
 import { saveToHistory } from "@/lib/photoHistory";
@@ -100,6 +102,8 @@ export default function HomeScreen() {
   const scrollRef = useRef<ScrollView>(null);
 
   const [welcomeVisible, setWelcomeVisible] = useState(false);
+  const [whatsNewVisible, setWhatsNewVisible] = useState(false);
+  const [whatsNewVersion, setWhatsNewVersion] = useState("");
   const [tipSheetVisible, setTipSheetVisible] = useState(false);
   const [resultTipVisible, setResultTipVisible] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
@@ -195,6 +199,53 @@ export default function HomeScreen() {
       });
   }, []);
 
+  // Show "What's New" once per version bump for returning users.
+  //
+  // Strategy:
+  //   1. On the very first launch ever, record "installVersion" and stop — no
+  //      update has occurred so there is nothing new to announce.
+  //   2. On subsequent launches, if currentVersion differs from both the stored
+  //      installVersion and the last seen version, show the modal.
+  //   3. If there is no CHANGELOG entry for this version (e.g. a patch with no
+  //      user-visible changes), mark it as seen immediately so we don't retry
+  //      every launch.
+  useEffect(() => {
+    const currentVersion = Constants.expoConfig?.version ?? "";
+    if (!currentVersion) return;
+
+    void (async () => {
+      try {
+        const [seenVersion, installVersion] = await Promise.all([
+          AsyncStorage.getItem("whatsNewSeenVersion"),
+          AsyncStorage.getItem("installVersion"),
+        ]);
+
+        // First ever launch — record the baseline version, don't show modal
+        if (!installVersion) {
+          await AsyncStorage.setItem("installVersion", currentVersion);
+          return;
+        }
+
+        // Already seen the notes for this version
+        if (seenVersion === currentVersion) return;
+
+        // The app was installed at this version (no update occurred)
+        if (installVersion === currentVersion) return;
+
+        // No CHANGELOG entry — mark as seen silently to avoid retrying every launch
+        if (!hasWhatsNewForVersion(currentVersion)) {
+          await AsyncStorage.setItem("whatsNewSeenVersion", currentVersion);
+          return;
+        }
+
+        setWhatsNewVersion(currentVersion);
+        setWhatsNewVisible(true);
+      } catch {
+        // Non-critical — skip silently
+      }
+    })();
+  }, []);
+
   // Fade out and remove the pinch-to-zoom hint (on first pinch or auto-timeout).
   const dismissPinchHint = useCallback(() => {
     if (pinchHintTimerRef.current !== null) {
@@ -242,6 +293,15 @@ export default function HomeScreen() {
       // Persistence failure is non-critical; modal is dismissed regardless
     }
     setWelcomeVisible(false);
+  };
+
+  const handleWhatsNewDismiss = async () => {
+    try {
+      await AsyncStorage.setItem("whatsNewSeenVersion", whatsNewVersion);
+    } catch {
+      // Non-critical
+    }
+    setWhatsNewVisible(false);
   };
 
   const handleResultTipDismiss = async () => {
@@ -785,6 +845,7 @@ export default function HomeScreen() {
   return (
     <View style={s.root}>
       <WelcomeModal visible={welcomeVisible} onDismiss={handleWelcomeDismiss} />
+      <WhatsNewModal visible={whatsNewVisible} version={whatsNewVersion} onDismiss={handleWhatsNewDismiss} />
       <EnhancementTipSheet visible={tipSheetVisible} onDismiss={handleTipSheetDismiss} />
       <ResultTipSheet visible={resultTipVisible} onDismiss={handleResultTipDismiss} />
 
