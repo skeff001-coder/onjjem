@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.photorestoration",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "privacyPolicyUrl": "https://photo-fix-ai.replit.app/api/privacy",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
