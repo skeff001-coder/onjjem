@@ -203,6 +203,7 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
   ) => (
     <Text
       key={key}
+      numberOfLines={1}
       style={[
         styles.abs,
         textStyle,
@@ -210,14 +211,15 @@ export function GraffitiTitle({ fontSize = 52, letterSpacing = 9 }: Props) {
           top: dt,
           left: dl,
           color,
-          ...(glow
-            ? {
-                textShadowColor: "rgba(240,200,42,0.7)",
-                textShadowOffset: { width: 0, height: 0 },
-                textShadowRadius: 12,
-              }
-            : {}),
+          width: screenWidth,
         },
+        glow
+          ? {
+              textShadowColor: "rgba(240,200,42,0.7)",
+              textShadowOffset: { width: 0, height: 0 },
+              textShadowRadius: 12,
+            }
+          : {},
       ]}
     >
       ONJJEM
