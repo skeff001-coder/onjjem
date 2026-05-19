@@ -1171,61 +1171,68 @@ export default function HomeScreen() {
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                 style={s.pricingStripGradient}
               >
-                {hasUsedFreeTrial ? (
-                  <>
-                    <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "#E8A020", borderColor: "#FFD27A" }]}
-                      onPress={() => setSubscribeVisible(true)}
-                      activeOpacity={0.8}
-                    >
-                      <Ionicons name="camera" size={13} color="#1C1A14" />
-                      <Text style={[s.pricingFreeText, { color: "#1C1A14" }]}>{PRICING.perPhoto.amount}/photo</Text>
-                    </TouchableOpacity>
-                    <Text style={s.pricingDivider}>·</Text>
-                    <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "#4A90D9", borderColor: "#A6CCEF" }]}
-                      onPress={() => setSubscribeVisible(true)}
-                      activeOpacity={0.8}
-                    >
-                      <Ionicons name="infinite" size={13} color="#FFFFFF" />
-                      <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.monthly.amount}/mo</Text>
-                    </TouchableOpacity>
-                    <Text style={s.pricingDivider}>·</Text>
-                    <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "#27AE60", borderColor: "#9FE3B8" }]}
-                      onPress={() => setSubscribeVisible(true)}
-                      activeOpacity={0.8}
-                    >
-                      <Ionicons name="star" size={13} color="#FFFFFF" />
-                      <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.annual.amount}/yr</Text>
-                    </TouchableOpacity>
-                  </>
-                ) : (
-                  <>
-                    <View style={[s.pricingFreeChip, { backgroundColor: "#27AE60", borderColor: "#9FE3B8" }]}>
-                      <Ionicons name="sparkles" size={13} color="#FFFFFF" />
-                      <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>1 free sample</Text>
-                    </View>
-                    <Text style={s.pricingDivider}>·</Text>
-                    <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "#E8A020", borderColor: "#FFD27A" }]}
-                      onPress={() => setSubscribeVisible(true)}
-                      activeOpacity={0.8}
-                    >
-                      <Ionicons name="camera" size={13} color="#1C1A14" />
-                      <Text style={[s.pricingFreeText, { color: "#1C1A14" }]}>{PRICING.perPhoto.amount}/photo</Text>
-                    </TouchableOpacity>
-                    <Text style={s.pricingDivider}>·</Text>
-                    <TouchableOpacity
-                      style={[s.pricingFreeChip, { backgroundColor: "#4A90D9", borderColor: "#A6CCEF" }]}
-                      onPress={() => setSubscribeVisible(true)}
-                      activeOpacity={0.8}
-                    >
-                      <Ionicons name="infinite" size={13} color="#FFFFFF" />
-                      <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.monthly.amount}/mo</Text>
-                    </TouchableOpacity>
-                  </>
-                )}
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={s.pricingStripScroll}
+                  bounces={false}
+                >
+                  {hasUsedFreeTrial ? (
+                    <>
+                      <TouchableOpacity
+                        style={[s.pricingFreeChip, { backgroundColor: "#E8A020", borderColor: "#FFD27A" }]}
+                        onPress={() => setSubscribeVisible(true)}
+                        activeOpacity={0.8}
+                      >
+                        <Ionicons name="camera" size={13} color="#1C1A14" />
+                        <Text style={[s.pricingFreeText, { color: "#1C1A14" }]}>{PRICING.perPhoto.amount}/photo</Text>
+                      </TouchableOpacity>
+                      <Text style={s.pricingDivider}>·</Text>
+                      <TouchableOpacity
+                        style={[s.pricingFreeChip, { backgroundColor: "#4A90D9", borderColor: "#A6CCEF" }]}
+                        onPress={() => setSubscribeVisible(true)}
+                        activeOpacity={0.8}
+                      >
+                        <Ionicons name="infinite" size={13} color="#FFFFFF" />
+                        <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.monthly.amount}/mo</Text>
+                      </TouchableOpacity>
+                      <Text style={s.pricingDivider}>·</Text>
+                      <TouchableOpacity
+                        style={[s.pricingFreeChip, { backgroundColor: "#27AE60", borderColor: "#9FE3B8" }]}
+                        onPress={() => setSubscribeVisible(true)}
+                        activeOpacity={0.8}
+                      >
+                        <Ionicons name="star" size={13} color="#FFFFFF" />
+                        <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.annual.amount}/yr</Text>
+                      </TouchableOpacity>
+                    </>
+                  ) : (
+                    <>
+                      <View style={[s.pricingFreeChip, { backgroundColor: "#27AE60", borderColor: "#9FE3B8" }]}>
+                        <Ionicons name="sparkles" size={13} color="#FFFFFF" />
+                        <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>1 free sample</Text>
+                      </View>
+                      <Text style={s.pricingDivider}>·</Text>
+                      <TouchableOpacity
+                        style={[s.pricingFreeChip, { backgroundColor: "#E8A020", borderColor: "#FFD27A" }]}
+                        onPress={() => setSubscribeVisible(true)}
+                        activeOpacity={0.8}
+                      >
+                        <Ionicons name="camera" size={13} color="#1C1A14" />
+                        <Text style={[s.pricingFreeText, { color: "#1C1A14" }]}>{PRICING.perPhoto.amount}/photo</Text>
+                      </TouchableOpacity>
+                      <Text style={s.pricingDivider}>·</Text>
+                      <TouchableOpacity
+                        style={[s.pricingFreeChip, { backgroundColor: "#4A90D9", borderColor: "#A6CCEF" }]}
+                        onPress={() => setSubscribeVisible(true)}
+                        activeOpacity={0.8}
+                      >
+                        <Ionicons name="infinite" size={13} color="#FFFFFF" />
+                        <Text style={[s.pricingFreeText, { color: "#FFFFFF" }]}>{PRICING.monthly.amount}/mo</Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </ScrollView>
               </LinearGradient>
             </View>
 
@@ -2251,15 +2258,16 @@ function makeStyles(
       overflow: "hidden" as const,
     },
     pricingStripGradient: {
-      flexDirection: "row" as const,
-      alignItems: "center" as const,
-      justifyContent: "center" as const,
-      paddingVertical: 10,
-      paddingHorizontal: 16,
-      gap: 8,
       borderRadius: 50,
       borderWidth: 1,
       borderColor: "rgba(201,150,12,0.25)",
+    },
+    pricingStripScroll: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      gap: 8,
     },
     pricingFreeChip: {
       flexDirection: "row" as const,
