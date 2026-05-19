@@ -16,6 +16,9 @@
  *               calling EAS. Useful for verifying the build setup without spending credits.
  *   --minor     Bump the minor version instead of the default patch bump.
  *   --major     Bump the major version instead of the default patch bump.
+ *   --yes       Skip the interactive "Continue? [y/N]" confirmation prompt. Use in
+ *               non-interactive / CI environments, or when you're confident the version
+ *               preview looks correct.
  *
  * Set NOTIFY_TOPIC in Replit Secrets (e.g. "onjjem-builds-skeff001").
  * Install the free ntfy app on your iPhone and subscribe to that topic.
@@ -46,6 +49,9 @@ const BUMP_FLAG = process.argv.includes("--major")
 
 // When --dry-run is passed, Steps 1-4 run but EAS is never called.
 const DRY_RUN = process.argv.includes("--dry-run");
+
+// When --yes is passed (or stdin is not a TTY), skip the confirmation prompt.
+const YES = process.argv.includes("--yes") || !process.stdin.isTTY;
 
 // ── Notification helper ──────────────────────────────────────────────────────
 
@@ -194,6 +200,28 @@ function buildStandalonePackageJson(pkgPath, catalog) {
   };
 }
 
+// ── Confirmation prompt ───────────────────────────────────────────────────────
+
+/**
+ * Ask "Continue? [y/N]" on stdout/stdin.
+ * Resolves true if the user answers y/Y, false otherwise.
+ * Skipped automatically when YES is true (--yes flag or non-interactive TTY).
+ */
+function askConfirm(question) {
+  return new Promise((resolve) => {
+    const readline = require("readline");
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: false,
+    });
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim().toLowerCase() === "y");
+    });
+  });
+}
+
 // ── Version preview ───────────────────────────────────────────────────────────
 
 /**
@@ -242,6 +270,17 @@ async function main() {
     console.log(  "║  Mode    : DRY RUN — EAS build/submit skipped    ║");
     }
     console.log(  "╚══════════════════════════════════════════════════╝\n");
+
+    // ── Confirmation ───────────────────────────────────────────────────────────
+    if (!DRY_RUN && !YES) {
+      const confirmed = await askConfirm(
+        `Bump ${currentVersion} (build ${currentBuild}) → ${nextVersion} (build ${nextBuild}) and start EAS build? [y/N] `,
+      );
+      if (!confirmed) {
+        console.log("Aborted — no files were changed.");
+        process.exit(0);
+      }
+    }
 
     // ── Step 1: bump version ───────────────────────────────────────────────────
     console.log("\n=== Step 1: bump version ===");

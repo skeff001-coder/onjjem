@@ -33,13 +33,33 @@ pnpm --filter @workspace/owens-photofix run release:ios -- --minor
 pnpm --filter @workspace/owens-photofix run release:ios -- --major
 ```
 
+The script shows a version preview and asks for confirmation before making any changes:
+
+```
+╔══════════════════════════════════════════════════╗
+║              ONJJEM Photo Restoration           ║
+╠══════════════════════════════════════════════════╣
+║  Current : 1.0.1 (build 9)                      ║
+║  Release : 1.0.2 (build 10)                     ║
+╚══════════════════════════════════════════════════╝
+
+Bump 1.0.1 (build 9) → 1.0.2 (build 10) and start EAS build? [y/N]
+```
+
+Press `y` to proceed or `N` (or Ctrl+C) to abort without touching any files.
+Pass `--yes` to skip the prompt (useful when you're certain):
+
+```bash
+pnpm --filter @workspace/owens-photofix run release:ios -- --yes
+```
+
 To verify the whole pipeline is healthy without spending EAS build credits, use `--dry-run`:
 
 ```bash
 pnpm --filter @workspace/owens-photofix run release:ios -- --dry-run
 ```
 
-This runs Steps 1-4 (version bump, rsync copy to /tmp, standalone package.json generation, git init) and prints the resolved `package.json` to stdout, then exits cleanly without calling EAS.
+This runs Steps 1-4 (version bump, rsync copy to /tmp, standalone package.json generation, git init) and prints the resolved `package.json` to stdout, then exits cleanly without calling EAS. The confirmation prompt is skipped in dry-run mode.
 
 Requirements: `EXPO_TOKEN` must be set in Replit Secrets (already stored), `eas-cli` is installed.
 The first-time interactive build (Apple 2FA) must be done from a Mac — see `artifacts/owens-photofix/APP_STORE_SUBMISSION.md`.
