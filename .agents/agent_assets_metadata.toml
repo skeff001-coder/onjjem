@@ -191,3 +191,9 @@ id = "mkSg-9t2q3IiooozXuFH_"
 uri = "file://artifacts/owens-photofix/assets/one_photo_enhancement_iap.png"
 type = "image"
 title = "One Photo Enhancement — IAP Image (1024×1024)"
+
+[[outputs]]
+id = "A47GfWJf8oqwGnESqkzmP"
+uri = "file://artifacts/owens-photofix/assets/SubscriptionKey_LKZCCH49F7.tar.gz"
+type = "unspecified"
+title = "App Store Connect P8 Key (extract to get .p8 file)"
