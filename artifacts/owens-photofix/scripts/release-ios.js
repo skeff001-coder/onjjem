@@ -30,6 +30,13 @@ const WORKSPACE_YAML = path.join(WORKSPACE_ROOT, "pnpm-workspace.yaml");
 const APP_NAME = "ONJJEM Photo Restoration";
 const EAS_URL_RE = /https:\/\/expo\.dev\/accounts\/[^\s]+/;
 
+// Accept an optional --minor or --major flag and forward it to bump-version.js
+const BUMP_FLAG = process.argv.includes("--major")
+  ? "--major"
+  : process.argv.includes("--minor")
+    ? "--minor"
+    : null;
+
 // ── Notification helper ──────────────────────────────────────────────────────
 
 function notify(title, message, { priority = "default", tags = [] } = {}) {
@@ -185,8 +192,11 @@ async function main() {
   try {
     // ── Step 1: bump version ───────────────────────────────────────────────────
     console.log("\n=== Step 1: bump version ===");
+    const bumpCmd = BUMP_FLAG
+      ? `node scripts/bump-version.js ${BUMP_FLAG}`
+      : "node scripts/bump-version.js";
     try {
-      execSync("node scripts/bump-version.js", { cwd: ARTIFACT_DIR, stdio: "inherit" });
+      execSync(bumpCmd, { cwd: ARTIFACT_DIR, stdio: "inherit" });
     } catch (err) {
       await notify(
         `${APP_NAME} — Release failed ❌`,
