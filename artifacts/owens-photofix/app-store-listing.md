@@ -41,7 +41,7 @@ Love your restored photo? Order it as a stunning wall canvas, a cosy cushion or 
 **PRICING**
 
 • Free sample — try before you buy, no account needed
-• £1.49 per photo — pay once, no subscription required
+• £1.99 per photo — pay once, no subscription required
 • £11.99/month — unlimited photos, cancel anytime
 • £24.99/year — best value, save over 80%
 

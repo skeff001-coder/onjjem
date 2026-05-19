@@ -1,6 +1,6 @@
 export const PRICING = {
   perPhoto: {
-    amount: "£1.49",
+    amount: "£1.99",
     period: "per photo",
     planName: "One Photo Enhancement",
     shortLabel: "Enhance This Photo",
