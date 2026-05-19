@@ -17,8 +17,10 @@ Run from the Replit shell (after Apple credentials have been stored via the one-
 pnpm --filter @workspace/owens-photofix run release:ios
 ```
 
-This automatically bumps the **patch** version in `app.json` (e.g. 1.0.0 → 1.0.1), commits the
-change, then chains `eas build --platform ios --profile production --non-interactive` followed by
+This automatically bumps the **patch** version and **buildNumber** in `app.json`
+(e.g. version 1.0.0 → 1.0.1, buildNumber 9 → 10), copies the artifact to a clean `/tmp`
+directory (avoiding Replit's large workspace and git restrictions), then chains
+`eas build --platform ios --profile production --non-interactive` followed by
 `eas submit --platform ios --profile production --non-interactive`.
 
 For new-feature or breaking-change releases, pass a flag to `scripts/bump-version.js` directly

@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 /**
  * Bumps the patch segment of expo.version in app.json (e.g. 1.0.0 → 1.0.1)
- * and commits the change so release history is tracked in the repo.
+ * and increments expo.ios.buildNumber by 1.
+ *
+ * Attempts a git commit of the change so release history is tracked; if git is
+ * unavailable (e.g. blocked in the current environment) it logs a warning and
+ * continues — the file is still updated.
  *
  * Usage: node scripts/bump-version.js [--minor | --major]
  *   (default: patch bump)
@@ -19,6 +23,7 @@ const bumpType = flag === '--major' ? 'major' : flag === '--minor' ? 'minor' : '
 const raw = fs.readFileSync(APP_JSON, 'utf8');
 const config = JSON.parse(raw);
 
+// ── semver version bump ──────────────────────────────────────────────────────
 const current = config.expo.version;
 const parts = current.split('.').map(Number);
 if (parts.length !== 3 || parts.some(isNaN)) {
@@ -39,17 +44,23 @@ if (bumpType === 'major') {
 
 const next = parts.join('.');
 config.expo.version = next;
-
-fs.writeFileSync(APP_JSON, JSON.stringify(config, null, 2) + '\n', 'utf8');
 console.log(`Version bumped: ${current} → ${next}`);
 
+// ── buildNumber bump ─────────────────────────────────────────────────────────
+const currentBuild = parseInt(config.expo?.ios?.buildNumber ?? '0', 10);
+const nextBuild = currentBuild + 1;
+if (!config.expo.ios) config.expo.ios = {};
+config.expo.ios.buildNumber = String(nextBuild);
+console.log(`Build number bumped: ${currentBuild} → ${nextBuild}`);
+
+fs.writeFileSync(APP_JSON, JSON.stringify(config, null, 2) + '\n', 'utf8');
+
+// ── optional git commit ──────────────────────────────────────────────────────
 try {
   execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+  execSync(`git add "${APP_JSON}"`, { stdio: 'inherit' });
+  execSync(`git commit -m "chore: bump app version to ${next} (build ${nextBuild})"`, { stdio: 'inherit' });
+  console.log(`Committed version bump to ${next} (build ${nextBuild})`);
 } catch {
-  console.error('bump-version: not inside a git repository — cannot commit version bump');
-  process.exit(1);
+  console.warn(`bump-version: git commit skipped (git unavailable or blocked — file updated on disk)`);
 }
-
-execSync(`git add "${APP_JSON}"`, { stdio: 'inherit' });
-execSync(`git commit -m "chore: bump app version to ${next}"`, { stdio: 'inherit' });
-console.log(`Committed version bump to ${next}`);
