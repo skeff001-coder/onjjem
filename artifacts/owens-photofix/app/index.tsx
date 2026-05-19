@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
+import * as StoreReview from "expo-store-review";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -154,6 +155,33 @@ export default function HomeScreen() {
     "Almost there — perfecting the final touches…",
     "Your masterpiece is nearly ready…",
   ];
+
+  // Request an App Store review after the 3rd successful enhancement.
+  // iOS enforces a hard cap on how often the dialog can actually appear
+  // (once per app version), so the dialog won't spam users even if this
+  // function is called multiple times.
+  //
+  // `photosCompleted` lets the batch path count each individually enhanced
+  // photo rather than treating an entire batch as a single enhancement.
+  //
+  // NOTE: `enhancementCount` is lifetime-scoped to the install. iOS will
+  // allow another prompt after an app version upgrade, but the counter won't
+  // reset automatically — a separate task tracks that improvement.
+  const maybeRequestReview = useCallback(async (photosCompleted = 1) => {
+    try {
+      const raw = await AsyncStorage.getItem("enhancementCount");
+      const prev = parseInt(raw ?? "0", 10) || 0;
+      const next = prev + photosCompleted;
+      await AsyncStorage.setItem("enhancementCount", String(next));
+      // Trigger when the count crosses the 3-enhancement threshold for the
+      // first time (handles single-photo and batch cases uniformly).
+      if (prev < 3 && next >= 3 && await StoreReview.hasAction()) {
+        await StoreReview.requestReview();
+      }
+    } catch {
+      // Non-critical — never block the happy path
+    }
+  }, []);
 
   // Show welcome screen on first launch
   useEffect(() => {
@@ -487,6 +515,7 @@ export default function HomeScreen() {
         await AsyncStorage.setItem("freeTrialUsed", "1");
         setHasUsedFreeTrial(true);
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        void maybeRequestReview();
       }
     } catch (error) {
       if (cancelledRef.current) return;
@@ -632,6 +661,8 @@ export default function HomeScreen() {
       await AsyncStorage.setItem("freeTrialUsed", "1");
       setHasUsedFreeTrial(true);
       setAppState("batch-done");
+      const successCount = updatedItems.filter((it) => it.status === "done").length;
+      void maybeRequestReview(successCount);
     }
   };
 
