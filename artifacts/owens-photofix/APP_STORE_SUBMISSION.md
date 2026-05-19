@@ -144,6 +144,57 @@ If you skip this setup the release script still works normally — notifications
 
 ---
 
+## Version 1.0 — App Review Submission Checklist
+
+Build 9 (buildNumber 9, version 1.0.1) has been compiled and uploaded to App Store Connect with state **VALID**.  
+Complete the three steps below in App Store Connect to submit for review.
+
+**App Store Connect URL:**  
+https://appstoreconnect.apple.com/apps/6770767370/appstore/ios/version/inflight
+
+### Step A — Attach in-app purchases to version 1.0
+
+Go to **Distribution → iOS App → version 1.0 → Monetisation → In-App Purchases and Subscriptions** and add all three IAPs:
+
+| Product ID                                    | Type                     | Status required before submitting |
+|-----------------------------------------------|--------------------------|------------------------------------|
+| com.onjjem.photorestoration.monthly           | Auto-Renewable Sub.      | Ready to Submit                    |
+| com.onjjem.photorestoration.annual            | Auto-Renewable Sub.      | Ready to Submit                    |
+| com.onjjem.photorestoration.one_photo         | Non-Consumable           | Ready to Submit                    |
+
+### Step B — Confirm build selection
+
+On the version 1.0 page, confirm the **Build** section shows:
+
+| Field       | Expected value                               |
+|-------------|----------------------------------------------|
+| Build #     | 9                                            |
+| EAS Build   | 7dd01828-c60f-420b-818b-7d28b12615b9         |
+| Version     | 1.0.1                                        |
+| ASC State   | VALID                                        |
+
+If Build 9 is not yet selected, click **+** next to Build and choose it from the list.
+
+### Step C — Submit for review
+
+Click **"Submit to App Review"** on the version 1.0 page.
+
+Apple will confirm receipt by email and the version status will change to **"Waiting for Review"**.
+
+### Submission status log
+
+| Date (UTC)  | Action                        | Outcome / Notes                              |
+|-------------|-------------------------------|----------------------------------------------|
+| 2026-05-19  | Build 9 uploaded to ASC       | State: VALID                                 |
+| —           | IAPs attached to version 1.0  | Pending — complete Step A above              |
+| —           | Build 9 selected              | Pending — confirm in Step B above            |
+| —           | Submitted for review          | Pending — complete Step C above              |
+| —           | Apple acknowledgement         | Expected within minutes of submission        |
+
+Update this table once each step is completed.
+
+---
+
 ## Build history
 
 | Build # | EAS Build ID                               | ASC State | Uploaded (UTC)       | Notes                          |
