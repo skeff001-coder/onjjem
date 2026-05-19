@@ -168,9 +168,9 @@ export default function HomeScreen() {
   // `photosCompleted` lets the batch path count each individually enhanced
   // photo rather than treating an entire batch as a single enhancement.
   //
-  // NOTE: `enhancementCount` is lifetime-scoped to the install. iOS will
-  // allow another prompt after an app version upgrade, but the counter won't
-  // reset automatically — a separate task tracks that improvement.
+  // `enhancementCount` is reset to 0 on each app version upgrade (see the
+  // "Reset review prompt on version upgrade" useEffect below), so iOS's
+  // per-version allowance and our 3-enhancement threshold stay in sync.
   const maybeRequestReview = useCallback(async (photosCompleted = 1) => {
     try {
       const raw = await AsyncStorage.getItem("enhancementCount");
@@ -242,6 +242,31 @@ export default function HomeScreen() {
         setWhatsNewVisible(true);
       } catch {
         // Non-critical — skip silently
+      }
+    })();
+  }, []);
+
+  // Reset review prompt on version upgrade.
+  //
+  // iOS allows one review dialog per app version. We track `enhancementCount`
+  // against `reviewPromptVersion` in AsyncStorage. When the app updates, we
+  // reset the counter to 0 so the 3-enhancement threshold fires again on the
+  // new version — giving loyal, returning users another chance to be prompted.
+  useEffect(() => {
+    const currentVersion = Constants.expoConfig?.version ?? "";
+    if (!currentVersion) return;
+
+    void (async () => {
+      try {
+        const stored = await AsyncStorage.getItem("reviewPromptVersion");
+        if (stored !== currentVersion) {
+          await Promise.all([
+            AsyncStorage.setItem("enhancementCount", "0"),
+            AsyncStorage.setItem("reviewPromptVersion", currentVersion),
+          ]);
+        }
+      } catch {
+        // Non-critical — counter will simply not reset this launch
       }
     })();
   }, []);
