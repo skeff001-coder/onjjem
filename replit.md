@@ -33,6 +33,14 @@ pnpm --filter @workspace/owens-photofix run release:ios -- --minor
 pnpm --filter @workspace/owens-photofix run release:ios -- --major
 ```
 
+Before touching any files, run `--preview` for a read-only sanity check:
+
+```bash
+pnpm --filter @workspace/owens-photofix run release:ios -- --preview
+```
+
+This shows the current version, the version that would be published, the full list of files that would be synced to `/tmp`, and whether `EXPO_TOKEN` / `NOTIFY_TOPIC` are set — without modifying anything. Exit code 1 if a required env var is missing.
+
 The script shows a version preview and asks for confirmation before making any changes:
 
 ```

@@ -11,6 +11,9 @@
  *   8. Clean up the /tmp directory
  *
  * Flags:
+ *   --preview   Read-only sanity check: shows the version that would be published,
+ *               the list of files that would be synced, and any missing env vars.
+ *               No files are created or modified. Use this before committing to a release.
  *   --dry-run   Run Steps 1-4 only (version bump, rsync copy, standalone package.json,
  *               git init), print the resolved package.json to stdout, then exit without
  *               calling EAS. Useful for verifying the build setup without spending credits.
@@ -49,6 +52,9 @@ const BUMP_FLAG = process.argv.includes("--major")
 
 // When --dry-run is passed, Steps 1-4 run but EAS is never called.
 const DRY_RUN = process.argv.includes("--dry-run");
+
+// When --preview is passed, nothing is written — only a release summary is printed.
+const PREVIEW = process.argv.includes("--preview");
 
 // When --yes is passed (or stdin is not a TTY), skip the confirmation prompt.
 const YES = process.argv.includes("--yes") || !process.stdin.isTTY;
@@ -222,6 +228,62 @@ function askConfirm(question) {
   });
 }
 
+// ── Preview helpers ───────────────────────────────────────────────────────────
+
+/**
+ * Use rsync --dry-run to list the files that would be copied to /tmp without
+ * actually creating any directories or writing any files.
+ * Returns { files: string[], error: string | null }
+ */
+function listFilesToSync() {
+  const result = spawnSync(
+    "rsync",
+    [
+      "-a",
+      "--dry-run",
+      "--itemize-changes",
+      "--exclude=node_modules",
+      "--exclude=.expo",
+      "--exclude=.git",
+      "--exclude=.replit-artifact",
+      "--exclude=server",
+      `${ARTIFACT_DIR}/`,
+      "/tmp/preview-placeholder/",
+    ],
+    { encoding: "utf8" },
+  );
+
+  if (result.error || (result.status !== 0 && !result.stdout)) {
+    return { files: [], error: "rsync unavailable — install rsync to see the file list" };
+  }
+
+  // rsync --itemize-changes lines look like ">f+++++++++ path/to/file"
+  // We only want transferred files (lines starting with ">f")
+  const files = (result.stdout ?? "")
+    .split("\n")
+    .filter((l) => l.startsWith(">f"))
+    .map((l) => l.replace(/^>f[+.]{9}\s+/, "").trim())
+    .filter(Boolean);
+
+  return { files, error: null };
+}
+
+/**
+ * Check for required and optional environment variables.
+ * Returns { missing: string[], warnings: string[] }
+ */
+function checkEnvVars() {
+  const required = ["EXPO_TOKEN"];
+  const optional = ["NOTIFY_TOPIC"];
+
+  const missing = required.filter((v) => !process.env[v]);
+  const warnings = optional.filter((v) => !process.env[v]).map(
+    (v) => `${v} not set — push notifications will be skipped`,
+  );
+
+  return { missing, warnings };
+}
+
 // ── Version preview ───────────────────────────────────────────────────────────
 
 /**
@@ -269,7 +331,48 @@ async function main() {
     if (DRY_RUN) {
     console.log(  "║  Mode    : DRY RUN — EAS build/submit skipped    ║");
     }
+    if (PREVIEW) {
+    console.log(  "║  Mode    : PREVIEW — read-only, no files changed  ║");
+    }
     console.log(  "╚══════════════════════════════════════════════════╝\n");
+
+    // ── Preview mode: read-only summary, then exit ─────────────────────────────
+    if (PREVIEW) {
+      const { missing, warnings } = checkEnvVars();
+
+      console.log("=== Environment variables ===");
+      if (missing.length === 0) {
+        console.log("  ✓ EXPO_TOKEN is set");
+      } else {
+        for (const v of missing) {
+          console.log(`  ✗ ${v} is MISSING — release will fail without this`);
+        }
+      }
+      for (const w of warnings) {
+        console.log(`  ! ${w}`);
+      }
+
+      console.log("\n=== Files that would be synced to /tmp ===");
+      const { files, error: syncError } = listFilesToSync();
+      if (syncError) {
+        console.log(`  ! ${syncError}`);
+      } else if (files.length === 0) {
+        console.log("  (no files found — source directory may be empty)");
+      } else {
+        for (const f of files) {
+          console.log(`  ${f}`);
+        }
+        console.log(`\n  Total: ${files.length} file(s)`);
+      }
+
+      if (missing.length > 0) {
+        console.log("\n⚠️  Preview complete — fix missing env vars before running a real release.");
+        process.exit(1);
+      } else {
+        console.log("\n✅  Preview complete — everything looks good. Run without --preview to build.");
+      }
+      return;
+    }
 
     // ── Confirmation ───────────────────────────────────────────────────────────
     if (!DRY_RUN && !YES) {
