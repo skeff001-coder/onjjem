@@ -329,6 +329,22 @@ export default function HomeScreen() {
     setWhatsNewVisible(false);
   };
 
+  // Open the native App Store review sheet if the OS supports it; otherwise
+  // fall back to the App Store product page so the user can leave a review there.
+  const handleRateApp = useCallback(async () => {
+    try {
+      if (await StoreReview.hasAction()) {
+        await StoreReview.requestReview();
+      } else {
+        await Linking.openURL(
+          "https://apps.apple.com/app/id6770767370?action=write-review",
+        );
+      }
+    } catch {
+      // Non-critical — silently ignore if neither path is available
+    }
+  }, []);
+
   const handleResultTipDismiss = async () => {
     try {
       await AsyncStorage.setItem("hasSeenResultTip", "1");
@@ -1783,6 +1799,16 @@ export default function HomeScreen() {
         >
           <Ionicons name="headset-outline" size={18} color={colors.mutedForeground} />
           <Text style={s.contactSupportText}>Contact Support</Text>
+        </TouchableOpacity>
+
+        {/* Rate the app */}
+        <TouchableOpacity
+          style={s.contactSupportBtn}
+          onPress={() => void handleRateApp()}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="star-outline" size={18} color={colors.mutedForeground} />
+          <Text style={s.contactSupportText}>Rate ONJJEM on the App Store</Text>
         </TouchableOpacity>
       </ScrollView>
 
