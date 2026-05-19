@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const SECTIONS = [
   {
     title: "Who We Are",
-    body: "ONJJEM Photo Restoration is operated by ONJJEM Ltd. We provide AI-powered photo restoration and enhancement services via this app.\n\nIf you have any questions about this policy, contact us at: privacy@onjjem.com",
+    body: "ONJJEM Photo Restoration is operated by ONJJEM. We provide AI-powered photo restoration and enhancement services via this app.\n\nIf you have any questions about this policy, contact us at: privacy@onjjem.com",
   },
   {
     title: "What Information We Collect",
@@ -44,7 +44,7 @@ const SECTIONS = [
   },
   {
     title: "Contact Us",
-    body: "For any privacy-related questions or requests:\n\nEmail: privacy@onjjem.com\nWebsite: www.onjjem.com\n\nONJJEM Ltd, United Kingdom",
+    body: "For any privacy-related questions or requests:\n\nEmail: privacy@onjjem.com\nWebsite: www.onjjem.com\n\nONJJEM, Preston, United Kingdom",
   },
 ];
 
