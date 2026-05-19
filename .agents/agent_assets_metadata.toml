@@ -185,3 +185,9 @@ id = "qQ5dMyLnQxEr_H9K3DsYZ"
 uri = "file://attached_assets/expo-qr.png"
 type = "image"
 title = "Scan with Expo Go on your iPhone"
+
+[[outputs]]
+id = "mkSg-9t2q3IiooozXuFH_"
+uri = "file://artifacts/owens-photofix/assets/one_photo_enhancement_iap.png"
+type = "image"
+title = "One Photo Enhancement — IAP Image (1024×1024)"
