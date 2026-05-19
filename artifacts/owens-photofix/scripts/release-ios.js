@@ -10,6 +10,13 @@
  *   7. Send a push notification via ntfy.sh on success OR failure
  *   8. Clean up the /tmp directory
  *
+ * Flags:
+ *   --dry-run   Run Steps 1-4 only (version bump, rsync copy, standalone package.json,
+ *               git init), print the resolved package.json to stdout, then exit without
+ *               calling EAS. Useful for verifying the build setup without spending credits.
+ *   --minor     Bump the minor version instead of the default patch bump.
+ *   --major     Bump the major version instead of the default patch bump.
+ *
  * Set NOTIFY_TOPIC in Replit Secrets (e.g. "onjjem-builds-skeff001").
  * Install the free ntfy app on your iPhone and subscribe to that topic.
  * If NOTIFY_TOPIC is not set the release still runs — notifications are skipped.
@@ -36,6 +43,9 @@ const BUMP_FLAG = process.argv.includes("--major")
   : process.argv.includes("--minor")
     ? "--minor"
     : null;
+
+// When --dry-run is passed, Steps 1-4 run but EAS is never called.
+const DRY_RUN = process.argv.includes("--dry-run");
 
 // ── Notification helper ──────────────────────────────────────────────────────
 
@@ -253,6 +263,15 @@ async function main() {
       },
     });
     console.log("Git repo initialised.");
+
+    // ── Dry-run exit ───────────────────────────────────────────────────────────
+    if (DRY_RUN) {
+      console.log("\n=== DRY RUN — Steps 1-4 complete. Resolved package.json: ===");
+      const resolvedPkg = fs.readFileSync(path.join(tmpDir, "package.json"), "utf8");
+      console.log(resolvedPkg);
+      console.log("=== DRY RUN complete — EAS build/submit skipped. ===\n");
+      return;
+    }
 
     // ── Step 5: EAS build ──────────────────────────────────────────────────────
     console.log("\n=== Step 5: EAS build ===");

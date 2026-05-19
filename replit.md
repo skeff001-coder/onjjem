@@ -33,6 +33,14 @@ pnpm --filter @workspace/owens-photofix run release:ios -- --minor
 pnpm --filter @workspace/owens-photofix run release:ios -- --major
 ```
 
+To verify the whole pipeline is healthy without spending EAS build credits, use `--dry-run`:
+
+```bash
+pnpm --filter @workspace/owens-photofix run release:ios -- --dry-run
+```
+
+This runs Steps 1-4 (version bump, rsync copy to /tmp, standalone package.json generation, git init) and prints the resolved `package.json` to stdout, then exits cleanly without calling EAS.
+
 Requirements: `EXPO_TOKEN` must be set in Replit Secrets (already stored), `eas-cli` is installed.
 The first-time interactive build (Apple 2FA) must be done from a Mac — see `artifacts/owens-photofix/APP_STORE_SUBMISSION.md`.
 
