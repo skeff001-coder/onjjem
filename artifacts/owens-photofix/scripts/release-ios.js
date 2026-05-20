@@ -473,11 +473,13 @@ async function main() {
     }
 
     // ── Step 6: EAS submit ─────────────────────────────────────────────────────
+    // Run submit from ARTIFACT_DIR (not tmpDir) so the EAS project context is
+    // correct and --latest picks up the build we just triggered.
     console.log("\n=== Step 6: EAS submit ===");
     const { status: submitStatus, combined: submitOutput } = runCapture(
       "eas",
-      ["submit", "--platform", "ios", "--profile", "production", "--non-interactive"],
-      tmpDir,
+      ["submit", "--platform", "ios", "--profile", "production", "--non-interactive", "--latest"],
+      ARTIFACT_DIR,
     );
 
     if (submitStatus !== 0) {
