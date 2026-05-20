@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
 import {
   paywallDismissCountKey,
+  paywallDismissPlanCountKey,
   paywallFirstSeenKey,
   paywallPurchasedAtKey,
   paywallPurchaseCountKey,
@@ -23,6 +24,12 @@ import {
 } from "@/lib/revenuecat";
 
 const KNOWN_SURFACES = ["pro_paywall", "subscribe_modal", "enhancement_paywall"] as const;
+
+const KNOWN_PLANS = [
+  { id: "annual",  label: "Annual" },
+  { id: "monthly", label: "Monthly" },
+  { id: "perpic",  label: "One Photo" },
+] as const;
 
 type SurfaceStat = {
   name: string;
@@ -32,6 +39,12 @@ type SurfaceStat = {
   conversionRate: number;
   firstSeenAt: string | null;
   purchasedAt: string | null;
+};
+
+type PlanStat = {
+  id: string;
+  label: string;
+  dismissals: number;
 };
 
 function formatTimeDiff(ms: number): string {
@@ -45,18 +58,20 @@ function formatTimeDiff(ms: number): string {
   return remHours === 0 ? `${days}d` : `${days}d ${remHours}h`;
 }
 
-async function loadStats(): Promise<SurfaceStat[]> {
-  const keys = KNOWN_SURFACES.flatMap((name) => [
+async function loadStats(): Promise<{ surfaces: SurfaceStat[]; plans: PlanStat[] }> {
+  const surfaceKeys = KNOWN_SURFACES.flatMap((name) => [
     paywallViewCountKey(name),
     paywallDismissCountKey(name),
     paywallPurchaseCountKey(name),
     paywallFirstSeenKey(name),
     paywallPurchasedAtKey(name),
   ]);
-  const pairs = await AsyncStorage.multiGet(keys);
+  const planKeys = KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id));
+
+  const pairs = await AsyncStorage.multiGet([...surfaceKeys, ...planKeys]);
   const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
 
-  return KNOWN_SURFACES.map((name) => {
+  const surfaces = KNOWN_SURFACES.map((name) => {
     const views = parseInt(map[paywallViewCountKey(name)] ?? "0", 10) || 0;
     const dismissals = parseInt(map[paywallDismissCountKey(name)] ?? "0", 10) || 0;
     const purchases = parseInt(map[paywallPurchaseCountKey(name)] ?? "0", 10) || 0;
@@ -65,6 +80,14 @@ async function loadStats(): Promise<SurfaceStat[]> {
     const purchasedAt = map[paywallPurchasedAtKey(name)] ?? null;
     return { name, views, dismissals, purchases, conversionRate, firstSeenAt, purchasedAt };
   });
+
+  const plans: PlanStat[] = KNOWN_PLANS.map((p) => ({
+    id: p.id,
+    label: p.label,
+    dismissals: parseInt(map[paywallDismissPlanCountKey(p.id)] ?? "0", 10) || 0,
+  }));
+
+  return { surfaces, plans };
 }
 
 function surfaceLabel(name: string): string {
@@ -157,13 +180,16 @@ export function PaywallStatsModal({
 }) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const [stats, setStats] = useState<SurfaceStat[]>([]);
+  const [surfaces, setSurfaces] = useState<SurfaceStat[]>([]);
+  const [plans, setPlans] = useState<PlanStat[]>([]);
   const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      setStats(await loadStats());
+      const result = await loadStats();
+      setSurfaces(result.surfaces);
+      setPlans(result.plans);
     } finally {
       setLoading(false);
     }
@@ -179,11 +205,14 @@ export function PaywallStatsModal({
           text: "Reset",
           style: "destructive",
           onPress: async () => {
-            const keys = KNOWN_SURFACES.flatMap((name) => [
-              paywallViewCountKey(name),
-              paywallDismissCountKey(name),
-              paywallPurchaseCountKey(name),
-            ]);
+            const keys = [
+              ...KNOWN_SURFACES.flatMap((name) => [
+                paywallViewCountKey(name),
+                paywallDismissCountKey(name),
+                paywallPurchaseCountKey(name),
+              ]),
+              ...KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id)),
+            ];
             await AsyncStorage.multiRemove(keys);
             await refresh();
           },
@@ -196,7 +225,7 @@ export function PaywallStatsModal({
     if (visible) void refresh();
   }, [visible, refresh]);
 
-  const maxViews = Math.max(1, ...stats.map((s) => s.views));
+  const maxViews = Math.max(1, ...surfaces.map((s) => s.views));
 
   const s = StyleSheet.create({
     overlay: {
@@ -372,9 +401,36 @@ export function PaywallStatsModal({
       textAlign: "center",
       paddingVertical: 32,
     },
+    planRow: {
+      gap: 6,
+    },
+    planLabelRow: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    planLabel: {
+      flex: 1,
+      fontSize: 13,
+      fontFamily: "Inter_600SemiBold",
+      color: "#F5EDD8",
+    },
+    planCount: {
+      fontSize: 12,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(245,215,142,0.5)",
+      marginRight: 8,
+    },
+    planPct: {
+      fontSize: 13,
+      fontFamily: "Inter_700Bold",
+      color: "#FF9F0A",
+      minWidth: 34,
+      textAlign: "right",
+    },
   });
 
-  const allZero = stats.every((s) => s.views === 0);
+  const allZero = surfaces.every((s) => s.views === 0);
+  const totalPlanDismissals = plans.reduce((sum, p) => sum + p.dismissals, 0);
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -407,50 +463,93 @@ export function PaywallStatsModal({
                   No paywall events recorded yet.{"\n"}Open a paywall to start tracking.
                 </Text>
               ) : (
-                stats.map((stat) => {
-                  const convColor = rateColour(stat.conversionRate);
-                  return (
-                    <View key={stat.name} style={s.card}>
-                      <View style={s.cardTop}>
-                        <Text style={s.surfaceName}>{surfaceLabel(stat.name)}</Text>
-                        <View style={[s.convBadge, { borderWidth: 1, borderColor: convColor + "55" }]}>
-                          <Text style={[s.convBadgeText, { color: convColor }]}>
-                            {stat.conversionRate.toFixed(1)}% conv.
-                          </Text>
+                <>
+                  {surfaces.map((stat) => {
+                    const convColor = rateColour(stat.conversionRate);
+                    return (
+                      <View key={stat.name} style={s.card}>
+                        <View style={s.cardTop}>
+                          <Text style={s.surfaceName}>{surfaceLabel(stat.name)}</Text>
+                          <View style={[s.convBadge, { borderWidth: 1, borderColor: convColor + "55" }]}>
+                            <Text style={[s.convBadgeText, { color: convColor }]}>
+                              {stat.conversionRate.toFixed(1)}% conv.
+                            </Text>
+                          </View>
                         </View>
-                      </View>
 
-                      <View style={s.metricsRow}>
-                        <View style={s.metric}>
-                          <Text style={s.metricLabel}>VIEWS</Text>
-                          <Text style={s.metricValue}>{stat.views}</Text>
-                          <Text style={s.metricSub}>impressions</Text>
+                        <View style={s.metricsRow}>
+                          <View style={s.metric}>
+                            <Text style={s.metricLabel}>VIEWS</Text>
+                            <Text style={s.metricValue}>{stat.views}</Text>
+                            <Text style={s.metricSub}>impressions</Text>
+                          </View>
+                          <View style={s.metric}>
+                            <Text style={s.metricLabel}>DISMISSED</Text>
+                            <Text style={[s.metricValue, { color: stat.dismissals > 0 ? "#FF9F0A" : "#F5EDD8" }]}>
+                              {stat.dismissals}
+                            </Text>
+                            <Text style={s.metricSub}>no purchase</Text>
+                          </View>
+                          <View style={s.metric}>
+                            <Text style={s.metricLabel}>CONVERTED</Text>
+                            <Text style={[s.metricValue, { color: stat.purchases > 0 ? "#34C759" : "#F5EDD8" }]}>
+                              {stat.purchases}
+                            </Text>
+                            <Text style={s.metricSub}>purchases</Text>
+                          </View>
                         </View>
-                        <View style={s.metric}>
-                          <Text style={s.metricLabel}>DISMISSED</Text>
-                          <Text style={[s.metricValue, { color: stat.dismissals > 0 ? "#FF9F0A" : "#F5EDD8" }]}>
-                            {stat.dismissals}
-                          </Text>
-                          <Text style={s.metricSub}>no purchase</Text>
-                        </View>
-                        <View style={s.metric}>
-                          <Text style={s.metricLabel}>CONVERTED</Text>
-                          <Text style={[s.metricValue, { color: stat.purchases > 0 ? "#34C759" : "#F5EDD8" }]}>
-                            {stat.purchases}
-                          </Text>
-                          <Text style={s.metricSub}>purchases</Text>
-                        </View>
-                      </View>
 
-                      <View>
-                        <Text style={s.barLabel}>Views vs overall traffic</Text>
-                        <Bar value={stat.views} max={maxViews} color="#4A90D9" />
-                      </View>
+                        <View>
+                          <Text style={s.barLabel}>Views vs overall traffic</Text>
+                          <Bar value={stat.views} max={maxViews} color="#4A90D9" />
+                        </View>
 
-                      <TimeToConvert firstSeenAt={stat.firstSeenAt} purchasedAt={stat.purchasedAt} />
+                        <TimeToConvert firstSeenAt={stat.firstSeenAt} purchasedAt={stat.purchasedAt} />
+                      </View>
+                    );
+                  })}
+
+                  {/* Plan abandonment breakdown */}
+                  <View style={s.card}>
+                    <View style={s.cardTop}>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
+                        <Ionicons name="exit-outline" size={15} color="#FF9F0A" />
+                        <Text style={s.surfaceName}>Plan Abandonment</Text>
+                      </View>
+                      <View style={[s.convBadge, { borderWidth: 1, borderColor: "rgba(255,159,10,0.35)" }]}>
+                        <Text style={[s.convBadgeText, { color: "#FF9F0A" }]}>
+                          {totalPlanDismissals} total
+                        </Text>
+                      </View>
                     </View>
-                  );
-                })
+
+                    {totalPlanDismissals === 0 ? (
+                      <Text style={[s.metricSub, { textAlign: "center", paddingVertical: 6 }]}>
+                        No plan-level dismissals recorded yet.
+                      </Text>
+                    ) : (
+                      plans.map((plan) => {
+                        const pct = totalPlanDismissals > 0 ? (plan.dismissals / totalPlanDismissals) * 100 : 0;
+                        return (
+                          <View key={plan.id} style={s.planRow}>
+                            <View style={s.planLabelRow}>
+                              <Text style={s.planLabel}>{plan.label}</Text>
+                              <Text style={s.planCount}>
+                                {plan.dismissals} {plan.dismissals === 1 ? "time" : "times"}
+                              </Text>
+                              <Text style={s.planPct}>{pct.toFixed(0)}%</Text>
+                            </View>
+                            <Bar value={plan.dismissals} max={Math.max(1, ...plans.map((p) => p.dismissals))} color="#FF9F0A" />
+                          </View>
+                        );
+                      })
+                    )}
+
+                    <Text style={[s.metricSub, { marginTop: 2 }]}>
+                      Plan highlighted when user closed without buying
+                    </Text>
+                  </View>
+                </>
               )}
 
               <Text style={s.note}>

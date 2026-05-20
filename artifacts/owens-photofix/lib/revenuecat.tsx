@@ -36,6 +36,15 @@ export function paywallPurchasedAtKey(name: string): string {
 }
 
 /**
+ * Per-plan dismissal count key — records how many times the paywall was
+ * dismissed while a specific plan (e.g. "annual", "monthly", "perpic") was
+ * selected. Used by the dev stats screen for plan abandonment breakdown.
+ */
+export function paywallDismissPlanCountKey(plan: string): string {
+  return `onjjem_paywall_dismiss_plan_count_${plan}`;
+}
+
+/**
  * Call once as early as possible after RevenueCat is configured (e.g. in the
  * root layout). Sets subscriber attributes that mark the install event:
  *
@@ -258,6 +267,15 @@ export async function trackPaywallDismissal(paywallName: string, selectedPlan?: 
     const rawSurface = await AsyncStorage.getItem(surfaceKey);
     const surfaceCount = rawSurface ? (parseInt(rawSurface, 10) || 0) + 1 : 1;
     await AsyncStorage.setItem(surfaceKey, String(surfaceCount));
+
+    // Persist a per-plan dismissal count so the dev stats screen can show
+    // which plan users had selected when they abandoned the paywall.
+    if (selectedPlan) {
+      const planKey = paywallDismissPlanCountKey(selectedPlan);
+      const rawPlan = await AsyncStorage.getItem(planKey);
+      const planCount = rawPlan ? (parseInt(rawPlan, 10) || 0) + 1 : 1;
+      await AsyncStorage.setItem(planKey, String(planCount));
+    }
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }
