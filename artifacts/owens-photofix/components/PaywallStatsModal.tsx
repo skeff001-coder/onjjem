@@ -13,8 +13,11 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import Purchases from "react-native-purchases";
 import { useColors } from "@/hooks/useColors";
 import {
+  PAYWALL_DISMISS_COUNT_KEY,
+  PAYWALL_VIEW_COUNT_KEY,
   paywallDismissCountKey,
   paywallDismissPlanCountKey,
   paywallFirstSeenKey,
@@ -206,6 +209,8 @@ export function PaywallStatsModal({
           style: "destructive",
           onPress: async () => {
             const keys = [
+              PAYWALL_VIEW_COUNT_KEY,
+              PAYWALL_DISMISS_COUNT_KEY,
               ...KNOWN_SURFACES.flatMap((name) => [
                 paywallViewCountKey(name),
                 paywallDismissCountKey(name),
@@ -214,6 +219,14 @@ export function PaywallStatsModal({
               ...KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id)),
             ];
             await AsyncStorage.multiRemove(keys);
+            try {
+              await Purchases.setAttributes({
+                paywall_view_count: "0",
+                paywall_dismiss_count: "0",
+              });
+            } catch {
+              // Non-critical — proceed even if the RC call fails
+            }
             await refresh();
           },
         },
