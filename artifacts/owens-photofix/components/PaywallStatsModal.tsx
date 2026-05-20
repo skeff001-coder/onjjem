@@ -416,6 +416,8 @@ export function PaywallStatsModal({
                 paywallViewCountKey(name),
                 paywallDismissCountKey(name),
                 paywallPurchaseCountKey(name),
+                paywallFirstSeenKey(name),
+                paywallPurchasedAtKey(name),
                 ...KNOWN_PLANS.map((p) => paywallPurchasePlanCountKey(name, p.id)),
               ]),
               ...KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id)),
