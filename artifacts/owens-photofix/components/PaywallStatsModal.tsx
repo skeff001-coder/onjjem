@@ -1,4 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -616,6 +618,75 @@ export function PaywallStatsModal({
     await Share.share({ message: lines.join("\n") });
   }, [surfaces, plans, installFirstSeenAt, globalPaywallFirstSeenAt]);
 
+  const handleExport = useCallback(async () => {
+    try {
+      const now = new Date().toISOString();
+
+      const csvEscape = (v: string | number) => {
+        const str = String(v);
+        return str.includes(",") || str.includes('"') || str.includes("\n")
+          ? `"${str.replace(/"/g, '""')}"`
+          : str;
+      };
+
+      const header = [
+        "surface",
+        "views",
+        "dismissals",
+        "purchases",
+        "conversion_rate_pct",
+        "plan_purchases_annual",
+        "plan_purchases_monthly",
+        "plan_purchases_perpic",
+        "plan_dismissals_annual",
+        "plan_dismissals_monthly",
+        "plan_dismissals_perpic",
+        "first_seen_at",
+        "purchased_at",
+      ];
+
+      const rows: string[][] = surfaces.map((s) => [
+        csvEscape(s.name),
+        csvEscape(s.views),
+        csvEscape(s.dismissals),
+        csvEscape(s.purchases),
+        csvEscape(s.conversionRate.toFixed(2)),
+        csvEscape(s.planPurchases["annual"] ?? 0),
+        csvEscape(s.planPurchases["monthly"] ?? 0),
+        csvEscape(s.planPurchases["perpic"] ?? 0),
+        csvEscape(s.planDismissals["annual"] ?? 0),
+        csvEscape(s.planDismissals["monthly"] ?? 0),
+        csvEscape(s.planDismissals["perpic"] ?? 0),
+        csvEscape(s.firstSeenAt ?? ""),
+        csvEscape(s.purchasedAt ?? ""),
+      ]);
+
+      const csvContent = [header.join(","), ...rows.map((r) => r.join(","))].join("\n");
+
+      const dateTag = now.slice(0, 10).replace(/-/g, "");
+      const filename = `paywall_stats_${dateTag}.csv`;
+      const path = `${FileSystem.cacheDirectory}${filename}`;
+
+      await FileSystem.writeAsStringAsync(path, csvContent, {
+        encoding: FileSystem.EncodingType.UTF8,
+      });
+
+      const canShare = await Sharing.isAvailableAsync();
+      if (!canShare) {
+        Alert.alert("Sharing not available", "This device does not support file sharing.");
+        return;
+      }
+
+      await Sharing.shareAsync(path, {
+        mimeType: "text/csv",
+        dialogTitle: "Export paywall stats",
+        UTI: "public.comma-separated-values-text",
+      });
+    } catch {
+      Alert.alert("Export failed", "Could not generate the export file. Please try again.");
+    }
+  }, [surfaces]);
+
   const handleReset = useCallback(() => {
     Alert.alert(
       "Reset stats?",
@@ -833,6 +904,19 @@ export function PaywallStatsModal({
       fontSize: 13,
       fontFamily: "Inter_600SemiBold",
       color: "rgba(74,144,217,0.85)",
+    },
+    exportBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      paddingVertical: 10,
+      marginTop: 2,
+    },
+    exportBtnText: {
+      fontSize: 13,
+      fontFamily: "Inter_600SemiBold",
+      color: "rgba(52,199,89,0.85)",
     },
     resetBtn: {
       flexDirection: "row",
@@ -1140,6 +1224,11 @@ export function PaywallStatsModal({
               <TouchableOpacity style={s.shareBtn} onPress={handleShare} activeOpacity={0.7}>
                 <Ionicons name="share-outline" size={14} color="rgba(74,144,217,0.85)" />
                 <Text style={s.shareBtnText}>Share stats</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={s.exportBtn} onPress={handleExport} activeOpacity={0.7}>
+                <Ionicons name="download-outline" size={14} color="rgba(52,199,89,0.85)" />
+                <Text style={s.exportBtnText}>Export stats (CSV)</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={s.resetBtn} onPress={handleReset} activeOpacity={0.7}>
