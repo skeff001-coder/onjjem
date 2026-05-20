@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PRICING } from "@/lib/pricing";
-import { trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
+import { trackPaywallDismissal, trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   visible: boolean;
@@ -37,11 +37,23 @@ export function SubscribeModal({ visible, onClose }: Props) {
     isSubscribed,
   } = useSubscription();
 
+  // Track whether a purchase completed in this modal session so we can skip
+  // the dismissal event when onClose is called after a successful purchase.
+  const purchasedRef = useRef(false);
+
   useEffect(() => {
     if (visible) {
+      purchasedRef.current = false;
       void trackPaywallImpression("subscribe_modal");
     }
   }, [visible]);
+
+  const handleClose = () => {
+    if (!purchasedRef.current) {
+      void trackPaywallDismissal("subscribe_modal");
+    }
+    onClose();
+  };
 
   const handleRestore = async () => {
     try {
@@ -103,6 +115,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
     }
     try {
       await purchase(selected.pkg);
+      purchasedRef.current = true;
       onClose();
     } catch (err: any) {
       if (err?.userCancelled) return;
@@ -111,7 +124,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
   };
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>
       <View style={s.root}>
 
         {/* Gold bar */}
@@ -131,7 +144,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
         >
           {/* Header */}
           <View style={s.header}>
-            <TouchableOpacity style={s.closeBtn} onPress={onClose} activeOpacity={0.7}>
+            <TouchableOpacity style={s.closeBtn} onPress={handleClose} activeOpacity={0.7}>
               <Ionicons name="close" size={20} color="rgba(250,247,242,0.5)" />
             </TouchableOpacity>
             <Text style={s.title}>Unlock Full Quality</Text>

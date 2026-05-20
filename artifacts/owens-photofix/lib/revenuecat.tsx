@@ -13,6 +13,7 @@ import Purchases, {
 const INSTALL_FIRST_SEEN_KEY = "onjjem_install_first_seen_at";
 const FIRST_PAYWALL_SEEN_KEY = "onjjem_paywall_first_seen_at";
 const PAYWALL_VIEW_COUNT_KEY = "onjjem_paywall_view_count";
+const PAYWALL_DISMISS_COUNT_KEY = "onjjem_paywall_dismiss_count";
 
 /**
  * Call once as early as possible after RevenueCat is configured (e.g. in the
@@ -141,6 +142,46 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
     // Persist markers only after a successful sync
     await AsyncStorage.setItem(PAYWALL_VIEW_COUNT_KEY, String(count));
     if (isFirstView) await AsyncStorage.setItem(FIRST_PAYWALL_SEEN_KEY, now);
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
+/**
+ * Call this whenever a paywall surface is dismissed without a completed purchase.
+ *
+ * Sets custom subscriber attributes on the RevenueCat customer profile:
+ *   - paywall_dismissed_at    — ISO timestamp of the most recent dismissal
+ *   - paywall_dismissed_name  — which paywall surface was dismissed
+ *   - paywall_dismiss_count   — cumulative count of all dismissals (no-purchase closes)
+ *
+ * Together with `paywall_view_count` these allow a per-surface conversion rate
+ * (views ÷ purchases, or equivalently 1 − dismissals/views) to be computed for
+ * each paywall in RevenueCat Charts or any connected downstream tool.
+ *
+ * Only call this when the user has definitively closed the paywall without buying —
+ * do NOT call it after a successful purchase even if `onClose` is invoked.
+ */
+export async function trackPaywallDismissal(paywallName: string): Promise<void> {
+  try {
+    const now = new Date().toISOString();
+
+    const rawCount = await AsyncStorage.getItem(PAYWALL_DISMISS_COUNT_KEY);
+    const count = rawCount ? (parseInt(rawCount, 10) || 0) + 1 : 1;
+
+    const attrs: Record<string, string> = {
+      paywall_dismissed_at: now,
+      paywall_dismissed_name: paywallName,
+      paywall_dismiss_count: String(count),
+    };
+
+    // Set attributes and sync BEFORE writing the AsyncStorage marker so that a
+    // network failure causes a retry on the next dismissal rather than silently
+    // dropping the event.
+    await Purchases.setAttributes(attrs);
+    await Purchases.syncAttributesAndOfferingsIfNeeded();
+
+    await AsyncStorage.setItem(PAYWALL_DISMISS_COUNT_KEY, String(count));
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }

@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -16,7 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { PRICING } from "@/lib/pricing";
-import { trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
+import { trackPaywallDismissal, trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   visible: boolean;
@@ -62,11 +62,23 @@ export function ProPaywall({ visible, onClose }: Props) {
   const { monthlyPackage, purchase, restore, isPurchasing, isRestoring, isSubscribed } =
     useSubscription();
 
+  // Track whether a purchase completed in this modal session so we can skip
+  // the dismissal event when onClose is called after a successful purchase.
+  const purchasedRef = useRef(false);
+
   useEffect(() => {
     if (visible) {
+      purchasedRef.current = false;
       void trackPaywallImpression("pro_paywall");
     }
   }, [visible]);
+
+  const handleClose = () => {
+    if (!purchasedRef.current) {
+      void trackPaywallDismissal("pro_paywall");
+    }
+    onClose();
+  };
 
   const topPad = Platform.OS === "web" ? Math.max(insets.top, 56) : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom + 16;
@@ -86,6 +98,7 @@ export function ProPaywall({ visible, onClose }: Props) {
     }
     try {
       await purchase(monthlyPackage);
+      purchasedRef.current = true;
       onClose();
     } catch (err: any) {
       if (err?.userCancelled) return;
@@ -114,11 +127,11 @@ export function ProPaywall({ visible, onClose }: Props) {
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
     >
       <View style={[s.root, { backgroundColor: colors.background }]}>
         <View style={[s.topBar, { paddingTop: topPad + 6 }]}>
-          <TouchableOpacity style={[s.closeBtn, { backgroundColor: colors.card }]} onPress={onClose} activeOpacity={0.7}>
+          <TouchableOpacity style={[s.closeBtn, { backgroundColor: colors.card }]} onPress={handleClose} activeOpacity={0.7}>
             <Ionicons name="close" size={20} color={colors.mutedForeground} />
           </TouchableOpacity>
         </View>
