@@ -6,6 +6,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -495,6 +496,67 @@ export function PaywallStatsModal({
     }
   }, []);
 
+  const handleShare = useCallback(async () => {
+    const now = new Date().toISOString();
+    const lines: string[] = [];
+
+    lines.push("=== Paywall Stats ===");
+    lines.push(`Exported: ${now}`);
+    lines.push("");
+
+    if (installFirstSeenAt && globalPaywallFirstSeenAt) {
+      const diffMs =
+        new Date(globalPaywallFirstSeenAt).getTime() -
+        new Date(installFirstSeenAt).getTime();
+      lines.push(`Install → First paywall view: ${diffMs >= 0 ? formatTimeDiff(diffMs) : "< 1 hour"}`);
+      lines.push("");
+    }
+
+    const totalViews = surfaces.reduce((sum, s) => sum + s.views, 0);
+    const totalDismissals = surfaces.reduce((sum, s) => sum + s.dismissals, 0);
+    const totalPurchases = surfaces.reduce((sum, s) => sum + s.purchases, 0);
+    const overallConv = totalViews > 0 ? (totalPurchases / totalViews) * 100 : 0;
+
+    lines.push("--- All Surfaces (Totals) ---");
+    lines.push(`Views:      ${totalViews}`);
+    lines.push(`Dismissed:  ${totalDismissals}`);
+    lines.push(`Purchased:  ${totalPurchases}`);
+    lines.push(`Conv. rate: ${overallConv.toFixed(1)}%`);
+    lines.push("");
+
+    for (const stat of surfaces) {
+      lines.push(`--- ${surfaceLabel(stat.name)} ---`);
+      lines.push(`Views:      ${stat.views}`);
+      lines.push(`Dismissed:  ${stat.dismissals}`);
+      lines.push(`Purchased:  ${stat.purchases}`);
+      lines.push(`Conv. rate: ${stat.conversionRate.toFixed(1)}%`);
+      if (stat.firstSeenAt) lines.push(`First seen: ${stat.firstSeenAt}`);
+      if (stat.purchasedAt) lines.push(`Purchased at: ${stat.purchasedAt}`);
+      const planPurchaseEntries = KNOWN_PLANS.filter((p) => (stat.planPurchases[p.id] ?? 0) > 0);
+      if (planPurchaseEntries.length > 0) {
+        lines.push("Purchases by plan:");
+        for (const p of planPurchaseEntries) {
+          lines.push(`  ${p.label}: ${stat.planPurchases[p.id]}`);
+        }
+      }
+      const planDismissEntries = KNOWN_PLANS.filter((p) => (stat.planDismissals[p.id] ?? 0) > 0);
+      if (planDismissEntries.length > 0) {
+        lines.push("Dismissed on plan:");
+        for (const p of planDismissEntries) {
+          lines.push(`  ${p.label}: ${stat.planDismissals[p.id]}`);
+        }
+      }
+      lines.push("");
+    }
+
+    lines.push("--- Plan Conversion (global) ---");
+    for (const plan of plans) {
+      lines.push(`${plan.label}: ${plan.purchases} purchase(s), ${plan.dismissals} dismissal(s)`);
+    }
+
+    await Share.share({ message: lines.join("\n") });
+  }, [surfaces, plans, installFirstSeenAt, globalPaywallFirstSeenAt]);
+
   const handleReset = useCallback(() => {
     Alert.alert(
       "Reset stats?",
@@ -698,6 +760,19 @@ export function PaywallStatsModal({
       fontSize: 13,
       fontFamily: "Inter_600SemiBold",
       color: "rgba(201,150,12,0.7)",
+    },
+    shareBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      paddingVertical: 10,
+      marginTop: 2,
+    },
+    shareBtnText: {
+      fontSize: 13,
+      fontFamily: "Inter_600SemiBold",
+      color: "rgba(74,144,217,0.85)",
     },
     resetBtn: {
       flexDirection: "row",
@@ -1000,6 +1075,11 @@ export function PaywallStatsModal({
               <TouchableOpacity style={s.refreshBtn} onPress={refresh} activeOpacity={0.7}>
                 <Ionicons name="refresh-outline" size={14} color="rgba(201,150,12,0.7)" />
                 <Text style={s.refreshBtnText}>Refresh</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={s.shareBtn} onPress={handleShare} activeOpacity={0.7}>
+                <Ionicons name="share-outline" size={14} color="rgba(74,144,217,0.85)" />
+                <Text style={s.shareBtnText}>Share stats</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={s.resetBtn} onPress={handleReset} activeOpacity={0.7}>
