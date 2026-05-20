@@ -59,6 +59,18 @@ type PlanStat = {
   purchases: number;
 };
 
+const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] as const;
+
+function formatDateLabel(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "—";
+  const day = d.getDate();
+  const month = MONTH_NAMES[d.getMonth()];
+  const year = d.getFullYear();
+  const currentYear = new Date().getFullYear();
+  return year === currentYear ? `${day} ${month}` : `${day} ${month} ${year}`;
+}
+
 function formatTimeDiff(ms: number): string {
   const totalMinutes = Math.floor(ms / 60_000);
   const totalHours = Math.floor(totalMinutes / 60);
@@ -195,6 +207,27 @@ function InstallToPaywall({
           </Text>
         )}
       </View>
+      {(installFirstSeenAt || globalPaywallFirstSeenAt) && (
+        <View style={itpStyles.dateRow}>
+          {installFirstSeenAt ? (
+            <Text style={itpStyles.dateLabel}>
+              <Text style={itpStyles.dateDim}>Installed </Text>
+              {formatDateLabel(installFirstSeenAt)}
+            </Text>
+          ) : (
+            <Text style={itpStyles.dateMissing}>Install date unknown</Text>
+          )}
+          <Text style={itpStyles.dateSep}>·</Text>
+          {globalPaywallFirstSeenAt ? (
+            <Text style={itpStyles.dateLabel}>
+              <Text style={itpStyles.dateDim}>Paywall </Text>
+              {formatDateLabel(globalPaywallFirstSeenAt)}
+            </Text>
+          ) : (
+            <Text style={itpStyles.dateMissing}>Paywall not seen</Text>
+          )}
+        </View>
+      )}
       <Text style={itpStyles.hint}>
         Time between first app open and first time the paywall appeared
       </Text>
@@ -242,6 +275,32 @@ const itpStyles = StyleSheet.create({
     fontSize: 11,
     fontFamily: "Inter_400Regular",
     color: "rgba(245,215,142,0.35)",
+  },
+  dateRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    flexWrap: "wrap",
+  },
+  dateLabel: {
+    fontSize: 12,
+    fontFamily: "Inter_600SemiBold",
+    color: "rgba(74,144,217,0.85)",
+  },
+  dateDim: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(74,144,217,0.5)",
+  },
+  dateSep: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(74,144,217,0.3)",
+  },
+  dateMissing: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(245,215,142,0.3)",
   },
 });
 
