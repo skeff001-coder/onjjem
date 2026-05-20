@@ -68,7 +68,7 @@ export default function CheckoutScreen() {
           <TouchableOpacity onPress={() => router.replace("/")} activeOpacity={0.7} hitSlop={8}>
             <Text style={styles.headerEyebrow}>ONJJEM</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Checkout</Text>
+          <Text style={styles.headerTitle}>Order Request</Text>
         </View>
         <View style={styles.headerRight} />
       </View>
@@ -82,9 +82,9 @@ export default function CheckoutScreen() {
         <View style={styles.secureBanner}>
           <Ionicons name="shield-checkmark-outline" size={18} color="#1A7A4A" />
           <View style={styles.secureBannerText}>
-            <Text style={styles.secureBannerTitle}>Secure Order · SSL Encrypted</Text>
+            <Text style={styles.secureBannerTitle}>No Payment Taken Here</Text>
             <Text style={styles.secureBannerSub}>
-              Your order will be confirmed and our team will contact you within 2 hours to arrange payment and delivery.
+              This is an order request only. Our team will contact you within 2 hours to arrange payment and delivery — no card details are collected in the app.
             </Text>
           </View>
         </View>
@@ -146,10 +146,10 @@ export default function CheckoutScreen() {
           </View>
           <View style={styles.deliveryDivider} />
           <View style={styles.deliveryRow}>
-            <Ionicons name="card-outline" size={20} color={GOLD} />
+            <Ionicons name="mail-outline" size={20} color={GOLD} />
             <View style={styles.deliveryText}>
               <Text style={styles.deliveryTitle}>Payment</Text>
-              <Text style={styles.deliveryValue}>Visa · Mastercard · PayPal · Bank Transfer</Text>
+              <Text style={styles.deliveryValue}>Arranged by our team · via email or phone</Text>
             </View>
           </View>
         </View>
