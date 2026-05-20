@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useColors } from "@/hooks/useColors";
 import { PRICING } from "@/lib/pricing";
-import { trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
+import { trackPaywallImpression, trackPaywallPurchase, useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   selectedModeCount: number;
@@ -98,6 +98,7 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
     }
     try {
       await purchase(pkg);
+      void trackPaywallPurchase("enhancement_paywall", activePlan);
     } catch (err: any) {
       if (err?.userCancelled) return;
       Alert.alert("Purchase Failed", err?.message ?? "Unable to complete the purchase.");
