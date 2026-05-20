@@ -99,7 +99,7 @@ export function ProPaywall({ visible, onClose }: Props) {
     try {
       await purchase(monthlyPackage);
       purchasedRef.current = true;
-      void trackPaywallPurchase("pro_paywall");
+      void trackPaywallPurchase("pro_paywall", "monthly");
       onClose();
     } catch (err: any) {
       if (err?.userCancelled) return;

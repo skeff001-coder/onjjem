@@ -116,7 +116,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
     try {
       await purchase(selected.pkg);
       purchasedRef.current = true;
-      void trackPaywallPurchase("subscribe_modal");
+      void trackPaywallPurchase("subscribe_modal", plan);
       onClose();
     } catch (err: any) {
       if (err?.userCancelled) return;

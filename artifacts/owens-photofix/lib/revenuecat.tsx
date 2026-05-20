@@ -28,6 +28,9 @@ export function paywallDismissCountKey(name: string): string {
 export function paywallPurchaseCountKey(name: string): string {
   return `onjjem_paywall_purchase_count_${name}`;
 }
+export function paywallPurchasePlanCountKey(name: string, planId: string): string {
+  return `onjjem_paywall_purchase_count_${name}_${planId}`;
+}
 export function paywallFirstSeenKey(name: string): string {
   return `onjjem_paywall_first_seen_at_${name}`;
 }
@@ -218,20 +221,32 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
  * from views minus dismissals, which undercounts when users background the
  * app without explicitly dismissing the paywall.
  */
-export async function trackPaywallPurchase(paywallName: string): Promise<void> {
+export async function trackPaywallPurchase(paywallName: string, planId?: string): Promise<void> {
   try {
     const surfaceKey = paywallPurchaseCountKey(paywallName);
     const purchasedAtKey = paywallPurchasedAtKey(paywallName);
-    const [raw, existingPurchasedAt] = await Promise.all([
-      AsyncStorage.getItem(surfaceKey),
-      AsyncStorage.getItem(purchasedAtKey),
-    ]);
-    const count = raw ? (parseInt(raw, 10) || 0) + 1 : 1;
-    await AsyncStorage.setItem(surfaceKey, String(count));
+    const keysToRead: string[] = [surfaceKey, purchasedAtKey];
+    if (planId) keysToRead.push(paywallPurchasePlanCountKey(paywallName, planId));
+
+    const pairs = await AsyncStorage.multiGet(keysToRead);
+    const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
+
+    const count = map[surfaceKey] ? (parseInt(map[surfaceKey]!, 10) || 0) + 1 : 1;
+    const writes: [string, string][] = [[surfaceKey, String(count)]];
+
     // Record the first purchase timestamp for time-to-convert display
-    if (!existingPurchasedAt) {
-      await AsyncStorage.setItem(purchasedAtKey, new Date().toISOString());
+    if (!map[purchasedAtKey]) {
+      writes.push([purchasedAtKey, new Date().toISOString()]);
     }
+
+    // Per-surface-per-plan purchase count (e.g. onjjem_paywall_purchase_count_subscribe_modal_annual)
+    if (planId) {
+      const planKey = paywallPurchasePlanCountKey(paywallName, planId);
+      const planCount = map[planKey] ? (parseInt(map[planKey]!, 10) || 0) + 1 : 1;
+      writes.push([planKey, String(planCount)]);
+    }
+
+    await AsyncStorage.multiSet(writes);
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }
