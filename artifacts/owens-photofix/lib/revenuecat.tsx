@@ -20,10 +20,18 @@ const PAYWALL_VIEW_COUNT_KEY = "onjjem_paywall_view_count";
  *
  *   - install_first_seen_at  — ISO timestamp of first app open (set once)
  *   - platform               — "ios" | "android" | "web"
+ *   - locale                 — device locale/region tag (e.g. "en-GB", "fr-FR")
+ *   - device_model           — hardware model (e.g. "iPhone16,2")
+ *   - os_version             — OS version string (e.g. "18.4")
  *
  * These feed into RevenueCat Charts and any connected integration
  * (Mixpanel, Amplitude, etc.) as the "install" step of the
  * install → paywall view → purchase conversion funnel.
+ *
+ * locale + device_model + os_version allow Mixpanel/Amplitude to break down
+ * subscribers by country (via locale region tag) and device type after the
+ * RevenueCat → Mixpanel integration is enabled in the RevenueCat dashboard.
+ * See ANALYTICS_SETUP.md for the one-time dashboard setup steps.
  */
 /**
  * HOW TO VIEW THE CONVERSION FUNNEL IN REVENUECAT CHARTS
@@ -46,6 +54,22 @@ export async function trackAppInstall(): Promise<void> {
 
     const now = new Date().toISOString();
 
+    // Capture device locale (e.g. "en-GB", "fr-FR") — the region tag gives
+    // a reliable proxy for the subscriber's country when Mixpanel/Amplitude
+    // segments by this property after the RevenueCat integration is enabled.
+    let locale = "unknown";
+    try {
+      locale = Intl.DateTimeFormat().resolvedOptions().locale ?? "unknown";
+    } catch {
+      // Intl not available in this JS engine build — fall back to "unknown"
+    }
+
+    // Device model (e.g. "iPhone16,2") and OS version (e.g. "18.4") let
+    // Mixpanel/Amplitude break subscriptions down by hardware and software.
+    const deviceModel: string =
+      (Platform.constants as Record<string, unknown>)?.["Model"] as string ?? "unknown";
+    const osVersion = String(Platform.Version);
+
     // Set attributes and sync BEFORE writing the AsyncStorage marker.
     // If the network call fails (offline, transient error), the marker is never
     // written, so the next cold-start will automatically retry — preventing
@@ -53,6 +77,9 @@ export async function trackAppInstall(): Promise<void> {
     await Purchases.setAttributes({
       install_first_seen_at: now,
       platform: Platform.OS,
+      locale,
+      device_model: deviceModel,
+      os_version: osVersion,
     });
 
     // Push attributes to RevenueCat immediately so they appear in Charts
