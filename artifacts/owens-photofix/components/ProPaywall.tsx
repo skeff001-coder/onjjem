@@ -16,7 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { PRICING } from "@/lib/pricing";
-import { trackPaywallDismissal, trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
+import { trackPaywallDismissal, trackPaywallImpression, trackPaywallPurchase, useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   visible: boolean;
@@ -99,6 +99,7 @@ export function ProPaywall({ visible, onClose }: Props) {
     try {
       await purchase(monthlyPackage);
       purchasedRef.current = true;
+      void trackPaywallPurchase("pro_paywall");
       onClose();
     } catch (err: any) {
       if (err?.userCancelled) return;

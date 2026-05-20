@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PRICING } from "@/lib/pricing";
-import { trackPaywallDismissal, trackPaywallImpression, useSubscription } from "@/lib/revenuecat";
+import { trackPaywallDismissal, trackPaywallImpression, trackPaywallPurchase, useSubscription } from "@/lib/revenuecat";
 
 interface Props {
   visible: boolean;
@@ -116,6 +116,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
     try {
       await purchase(selected.pkg);
       purchasedRef.current = true;
+      void trackPaywallPurchase("subscribe_modal");
       onClose();
     } catch (err: any) {
       if (err?.userCancelled) return;

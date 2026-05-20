@@ -25,6 +25,9 @@ export function paywallViewCountKey(name: string): string {
 export function paywallDismissCountKey(name: string): string {
   return `onjjem_paywall_dismiss_count_${name}`;
 }
+export function paywallPurchaseCountKey(name: string): string {
+  return `onjjem_paywall_purchase_count_${name}`;
+}
 
 /**
  * Call once as early as possible after RevenueCat is configured (e.g. in the
@@ -184,6 +187,26 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
  *                      attribute `paywall_dismissed_plan` so RevenueCat Charts and any
  *                      connected integration can break down abandonment by price tier.
  */
+/**
+ * Call this immediately after a successful purchase on a paywall surface.
+ *
+ * Increments the per-surface purchase counter stored in AsyncStorage under
+ * `onjjem_paywall_purchase_count_<name>`. This gives an accurate conversion
+ * rate (real purchases ÷ views) rather than the estimated figure derived
+ * from views minus dismissals, which undercounts when users background the
+ * app without explicitly dismissing the paywall.
+ */
+export async function trackPaywallPurchase(paywallName: string): Promise<void> {
+  try {
+    const surfaceKey = paywallPurchaseCountKey(paywallName);
+    const raw = await AsyncStorage.getItem(surfaceKey);
+    const count = raw ? (parseInt(raw, 10) || 0) + 1 : 1;
+    await AsyncStorage.setItem(surfaceKey, String(count));
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
 export async function trackPaywallDismissal(paywallName: string, selectedPlan?: string): Promise<void> {
   try {
     const now = new Date().toISOString();

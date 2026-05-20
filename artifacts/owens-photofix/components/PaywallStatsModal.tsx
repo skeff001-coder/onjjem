@@ -14,7 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
-import { paywallDismissCountKey, paywallViewCountKey } from "@/lib/revenuecat";
+import { paywallDismissCountKey, paywallPurchaseCountKey, paywallViewCountKey } from "@/lib/revenuecat";
 
 const KNOWN_SURFACES = ["pro_paywall", "subscribe_modal", "enhancement_paywall"] as const;
 
@@ -22,6 +22,7 @@ type SurfaceStat = {
   name: string;
   views: number;
   dismissals: number;
+  purchases: number;
   conversionRate: number;
 };
 
@@ -29,6 +30,7 @@ async function loadStats(): Promise<SurfaceStat[]> {
   const keys = KNOWN_SURFACES.flatMap((name) => [
     paywallViewCountKey(name),
     paywallDismissCountKey(name),
+    paywallPurchaseCountKey(name),
   ]);
   const pairs = await AsyncStorage.multiGet(keys);
   const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
@@ -36,9 +38,9 @@ async function loadStats(): Promise<SurfaceStat[]> {
   return KNOWN_SURFACES.map((name) => {
     const views = parseInt(map[paywallViewCountKey(name)] ?? "0", 10) || 0;
     const dismissals = parseInt(map[paywallDismissCountKey(name)] ?? "0", 10) || 0;
-    const purchases = Math.max(0, views - dismissals);
+    const purchases = parseInt(map[paywallPurchaseCountKey(name)] ?? "0", 10) || 0;
     const conversionRate = views > 0 ? (purchases / views) * 100 : 0;
-    return { name, views, dismissals, conversionRate };
+    return { name, views, dismissals, purchases, conversionRate };
   });
 }
 
@@ -106,6 +108,7 @@ export function PaywallStatsModal({
             const keys = KNOWN_SURFACES.flatMap((name) => [
               paywallViewCountKey(name),
               paywallDismissCountKey(name),
+              paywallPurchaseCountKey(name),
             ]);
             await AsyncStorage.multiRemove(keys);
             await refresh();
@@ -331,7 +334,6 @@ export function PaywallStatsModal({
                 </Text>
               ) : (
                 stats.map((stat) => {
-                  const purchases = Math.max(0, stat.views - stat.dismissals);
                   const convColor = rateColour(stat.conversionRate);
                   return (
                     <View key={stat.name} style={s.card}>
@@ -359,8 +361,8 @@ export function PaywallStatsModal({
                         </View>
                         <View style={s.metric}>
                           <Text style={s.metricLabel}>CONVERTED</Text>
-                          <Text style={[s.metricValue, { color: purchases > 0 ? "#34C759" : "#F5EDD8" }]}>
-                            {purchases}
+                          <Text style={[s.metricValue, { color: stat.purchases > 0 ? "#34C759" : "#F5EDD8" }]}>
+                            {stat.purchases}
                           </Text>
                           <Text style={s.metricSub}>purchases</Text>
                         </View>
@@ -376,7 +378,7 @@ export function PaywallStatsModal({
               )}
 
               <Text style={s.note}>
-                Conversion = (views − dismissals) ÷ views.{"\n"}
+                Conversion = purchases ÷ views (real purchase events).{"\n"}
                 Data is local to this device only.
               </Text>
 
