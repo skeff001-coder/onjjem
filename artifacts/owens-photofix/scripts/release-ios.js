@@ -420,6 +420,15 @@ async function main() {
     );
     console.log("Standalone package.json written.");
 
+    // Generate a lockfile so EAS build servers can install dependencies
+    // deterministically. --package-lock-only skips the actual install.
+    console.log("Generating package-lock.json…");
+    execSync("npm install --package-lock-only --ignore-scripts", {
+      cwd: tmpDir,
+      stdio: "inherit",
+    });
+    console.log("Lockfile generated.");
+
     // ── Step 4: initialise git repo ────────────────────────────────────────────
     console.log("\n=== Step 4: initialise git repo in /tmp ===");
     execSync("git init && git add -A && git commit -m 'release'", {
