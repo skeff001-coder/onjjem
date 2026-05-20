@@ -14,7 +14,13 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
-import { paywallDismissCountKey, paywallPurchaseCountKey, paywallViewCountKey } from "@/lib/revenuecat";
+import {
+  paywallDismissCountKey,
+  paywallFirstSeenKey,
+  paywallPurchasedAtKey,
+  paywallPurchaseCountKey,
+  paywallViewCountKey,
+} from "@/lib/revenuecat";
 
 const KNOWN_SURFACES = ["pro_paywall", "subscribe_modal", "enhancement_paywall"] as const;
 
@@ -24,13 +30,28 @@ type SurfaceStat = {
   dismissals: number;
   purchases: number;
   conversionRate: number;
+  firstSeenAt: string | null;
+  purchasedAt: string | null;
 };
+
+function formatTimeDiff(ms: number): string {
+  const totalMinutes = Math.floor(ms / 60_000);
+  const totalHours = Math.floor(totalMinutes / 60);
+  if (totalHours < 24) {
+    return totalHours === 0 ? "< 1 hour" : `${totalHours}h`;
+  }
+  const days = Math.floor(totalHours / 24);
+  const remHours = totalHours % 24;
+  return remHours === 0 ? `${days}d` : `${days}d ${remHours}h`;
+}
 
 async function loadStats(): Promise<SurfaceStat[]> {
   const keys = KNOWN_SURFACES.flatMap((name) => [
     paywallViewCountKey(name),
     paywallDismissCountKey(name),
     paywallPurchaseCountKey(name),
+    paywallFirstSeenKey(name),
+    paywallPurchasedAtKey(name),
   ]);
   const pairs = await AsyncStorage.multiGet(keys);
   const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
@@ -40,7 +61,9 @@ async function loadStats(): Promise<SurfaceStat[]> {
     const dismissals = parseInt(map[paywallDismissCountKey(name)] ?? "0", 10) || 0;
     const purchases = parseInt(map[paywallPurchaseCountKey(name)] ?? "0", 10) || 0;
     const conversionRate = views > 0 ? (purchases / views) * 100 : 0;
-    return { name, views, dismissals, purchases, conversionRate };
+    const firstSeenAt = map[paywallFirstSeenKey(name)] ?? null;
+    const purchasedAt = map[paywallPurchasedAtKey(name)] ?? null;
+    return { name, views, dismissals, purchases, conversionRate, firstSeenAt, purchasedAt };
   });
 }
 
@@ -72,6 +95,57 @@ function Bar({ value, max, color }: { value: number; max: number; color: string 
 const barStyles = StyleSheet.create({
   track: { height: 6, borderRadius: 3, flexDirection: "row", overflow: "hidden", backgroundColor: "rgba(255,255,255,0.08)" },
   fill:  { borderRadius: 3 },
+});
+
+function TimeToConvert({
+  firstSeenAt,
+  purchasedAt,
+}: {
+  firstSeenAt: string | null;
+  purchasedAt: string | null;
+}) {
+  if (!firstSeenAt) return null;
+
+  let label: string;
+  let valueColor: string;
+
+  if (purchasedAt) {
+    const diffMs = new Date(purchasedAt).getTime() - new Date(firstSeenAt).getTime();
+    label = diffMs >= 0 ? formatTimeDiff(diffMs) : "< 1 hour";
+    valueColor = "#34C759";
+  } else {
+    label = "Not yet converted";
+    valueColor = "rgba(245,215,142,0.35)";
+  }
+
+  return (
+    <View style={ttcStyles.row}>
+      <Ionicons name="time-outline" size={12} color="rgba(245,215,142,0.4)" />
+      <Text style={ttcStyles.label}>Time to convert</Text>
+      <Text style={[ttcStyles.value, { color: valueColor }]}>{label}</Text>
+    </View>
+  );
+}
+
+const ttcStyles = StyleSheet.create({
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingTop: 4,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "rgba(201,150,12,0.12)",
+  },
+  label: {
+    flex: 1,
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(245,215,142,0.4)",
+  },
+  value: {
+    fontSize: 12,
+    fontFamily: "Inter_600SemiBold",
+  },
 });
 
 export function PaywallStatsModal({
@@ -372,6 +446,8 @@ export function PaywallStatsModal({
                         <Text style={s.barLabel}>Views vs overall traffic</Text>
                         <Bar value={stat.views} max={maxViews} color="#4A90D9" />
                       </View>
+
+                      <TimeToConvert firstSeenAt={stat.firstSeenAt} purchasedAt={stat.purchasedAt} />
                     </View>
                   );
                 })

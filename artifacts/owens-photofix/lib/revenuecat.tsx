@@ -28,6 +28,12 @@ export function paywallDismissCountKey(name: string): string {
 export function paywallPurchaseCountKey(name: string): string {
   return `onjjem_paywall_purchase_count_${name}`;
 }
+export function paywallFirstSeenKey(name: string): string {
+  return `onjjem_paywall_first_seen_at_${name}`;
+}
+export function paywallPurchasedAtKey(name: string): string {
+  return `onjjem_paywall_purchased_at_${name}`;
+}
 
 /**
  * Call once as early as possible after RevenueCat is configured (e.g. in the
@@ -157,11 +163,18 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
     await AsyncStorage.setItem(PAYWALL_VIEW_COUNT_KEY, String(count));
     if (isFirstView) await AsyncStorage.setItem(FIRST_PAYWALL_SEEN_KEY, now);
 
-    // Also persist a per-surface view count for the dev stats screen
+    // Also persist a per-surface view count and first-seen timestamp for the dev stats screen
     const surfaceKey = paywallViewCountKey(paywallName);
-    const rawSurface = await AsyncStorage.getItem(surfaceKey);
+    const surfaceFirstKey = paywallFirstSeenKey(paywallName);
+    const [rawSurface, rawSurfaceFirst] = await Promise.all([
+      AsyncStorage.getItem(surfaceKey),
+      AsyncStorage.getItem(surfaceFirstKey),
+    ]);
     const surfaceCount = rawSurface ? (parseInt(rawSurface, 10) || 0) + 1 : 1;
     await AsyncStorage.setItem(surfaceKey, String(surfaceCount));
+    if (!rawSurfaceFirst) {
+      await AsyncStorage.setItem(surfaceFirstKey, now);
+    }
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }
@@ -199,9 +212,17 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
 export async function trackPaywallPurchase(paywallName: string): Promise<void> {
   try {
     const surfaceKey = paywallPurchaseCountKey(paywallName);
-    const raw = await AsyncStorage.getItem(surfaceKey);
+    const purchasedAtKey = paywallPurchasedAtKey(paywallName);
+    const [raw, existingPurchasedAt] = await Promise.all([
+      AsyncStorage.getItem(surfaceKey),
+      AsyncStorage.getItem(purchasedAtKey),
+    ]);
     const count = raw ? (parseInt(raw, 10) || 0) + 1 : 1;
     await AsyncStorage.setItem(surfaceKey, String(count));
+    // Record the first purchase timestamp for time-to-convert display
+    if (!existingPurchasedAt) {
+      await AsyncStorage.setItem(purchasedAtKey, new Date().toISOString());
+    }
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }
