@@ -751,6 +751,13 @@ export function PaywallStatsModal({
   const totalPlanDismissals = plans.reduce((sum, p) => sum + p.dismissals, 0);
   const totalPlanPurchases = plans.reduce((sum, p) => sum + p.purchases, 0);
 
+  const totalViews = surfaces.reduce((sum, s) => sum + s.views, 0);
+  const totalDismissals = surfaces.reduce((sum, s) => sum + s.dismissals, 0);
+  const totalPurchases = surfaces.reduce((sum, s) => sum + s.purchases, 0);
+  const overallConvRate = totalViews > 0 ? (totalPurchases / totalViews) * 100 : 0;
+  const overallConvColor = rateColour(overallConvRate);
+  const maxPlanPurchases = Math.max(1, ...plans.map((p) => p.purchases));
+
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={s.overlay} onPress={onClose}>
@@ -788,6 +795,70 @@ export function PaywallStatsModal({
                 </Text>
               ) : (
                 <>
+                  {/* Global Totals card */}
+                  <View style={[s.card, { borderColor: "rgba(74,144,217,0.28)" }]}>
+                    <View style={s.cardTop}>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
+                        <Ionicons name="globe-outline" size={15} color="#4A90D9" />
+                        <Text style={[s.surfaceName, { color: "#A8C8F0" }]}>All Surfaces — Totals</Text>
+                      </View>
+                      <View style={[s.convBadge, { borderWidth: 1, borderColor: overallConvColor + "55" }]}>
+                        <Text style={[s.convBadgeText, { color: overallConvColor }]}>
+                          {overallConvRate.toFixed(1)}% conv.
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View style={s.metricsRow}>
+                      <View style={s.metric}>
+                        <Text style={s.metricLabel}>VIEWS</Text>
+                        <Text style={s.metricValue}>{totalViews}</Text>
+                        <Text style={s.metricSub}>all surfaces</Text>
+                      </View>
+                      <View style={s.metric}>
+                        <Text style={s.metricLabel}>DISMISSED</Text>
+                        <Text style={[s.metricValue, { color: totalDismissals > 0 ? "#FF9F0A" : "#F5EDD8" }]}>
+                          {totalDismissals}
+                        </Text>
+                        <Text style={s.metricSub}>no purchase</Text>
+                      </View>
+                      <View style={s.metric}>
+                        <Text style={s.metricLabel}>CONVERTED</Text>
+                        <Text style={[s.metricValue, { color: totalPurchases > 0 ? "#34C759" : "#F5EDD8" }]}>
+                          {totalPurchases}
+                        </Text>
+                        <Text style={s.metricSub}>purchases</Text>
+                      </View>
+                    </View>
+
+                    {totalPlanPurchases > 0 && (
+                      <View style={{ gap: 6, paddingTop: 4, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(74,144,217,0.15)" }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 2 }}>
+                          <Ionicons name="card-outline" size={11} color="rgba(74,144,217,0.6)" />
+                          <Text style={{ fontSize: 10, fontWeight: "700", fontFamily: "Inter_700Bold", color: "rgba(74,144,217,0.6)", letterSpacing: 1.2, textTransform: "uppercase" }}>
+                            Purchases by plan
+                          </Text>
+                        </View>
+                        {KNOWN_PLANS.map((p) => {
+                          const plan = plans.find((pl) => pl.id === p.id);
+                          const count = plan?.purchases ?? 0;
+                          const pct = totalPlanPurchases > 0 ? (count / totalPlanPurchases) * 100 : 0;
+                          if (count === 0) return null;
+                          return (
+                            <View key={p.id} style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                              <Text style={{ width: 60, fontSize: 12, fontFamily: "Inter_600SemiBold", color: "#F5EDD8" }}>{p.label}</Text>
+                              <View style={{ flex: 1 }}>
+                                <Bar value={count} max={maxPlanPurchases} color="#4A90D9" />
+                              </View>
+                              <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(245,215,142,0.5)", minWidth: 18, textAlign: "right" }}>{count}</Text>
+                              <Text style={{ fontSize: 12, fontFamily: "Inter_700Bold", color: "#4A90D9", minWidth: 30, textAlign: "right" }}>{pct.toFixed(0)}%</Text>
+                            </View>
+                          );
+                        })}
+                      </View>
+                    )}
+                  </View>
+
                   {surfaces.map((stat) => {
                     const convColor = rateColour(stat.conversionRate);
                     return (
