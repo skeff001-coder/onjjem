@@ -554,9 +554,11 @@ export function PaywallStatsModal({
       lines.push("");
     }
 
-    lines.push("--- Plan Conversion (global) ---");
+    lines.push("--- Plan Signal (global) ---");
     for (const plan of plans) {
-      lines.push(`${plan.label}: ${plan.purchases} purchase(s), ${plan.dismissals} dismissal(s)`);
+      const total = plan.purchases + plan.dismissals;
+      const signal = total > 0 ? ((plan.purchases / total) * 100).toFixed(0) + "%" : "—";
+      lines.push(`${plan.label}: ${plan.purchases} bought, ${plan.dismissals} left, signal ${signal}`);
     }
 
     await Share.share({ message: lines.join("\n") });
@@ -1074,87 +1076,85 @@ export function PaywallStatsModal({
                     );
                   })}
 
-                  {/* Plan conversion breakdown */}
-                  <View style={s.card}>
-                    <View style={s.cardTop}>
-                      <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-                        <Ionicons name="checkmark-circle-outline" size={15} color="#34C759" />
-                        <Text style={s.surfaceName}>Plan Conversion</Text>
+                  {/* Combined plan signal card */}
+                  {(totalPlanPurchases > 0 || totalPlanDismissals > 0) && (
+                    <View style={[s.card, { borderColor: "rgba(167,100,220,0.28)" }]}>
+                      <View style={s.cardTop}>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
+                          <Ionicons name="flash-outline" size={15} color="#A764DC" />
+                          <Text style={[s.surfaceName, { color: "#CDA0F0" }]}>Plan Signal</Text>
+                        </View>
+                        <View style={[s.convBadge, { borderWidth: 1, borderColor: "rgba(167,100,220,0.35)" }]}>
+                          <Text style={[s.convBadgeText, { color: "#A764DC" }]}>
+                            bought ÷ (bought + left)
+                          </Text>
+                        </View>
                       </View>
-                      <View style={[s.convBadge, { borderWidth: 1, borderColor: "rgba(52,199,89,0.35)" }]}>
-                        <Text style={[s.convBadgeText, { color: "#34C759" }]}>
-                          {totalPlanPurchases} total
-                        </Text>
-                      </View>
-                    </View>
 
-                    {totalPlanPurchases === 0 ? (
-                      <Text style={[s.metricSub, { textAlign: "center", paddingVertical: 6 }]}>
-                        No plan-level purchases recorded yet.
-                      </Text>
-                    ) : (
-                      plans.map((plan) => {
-                        const pct = totalPlanPurchases > 0 ? (plan.purchases / totalPlanPurchases) * 100 : 0;
+                      {/* Column headers */}
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 2 }}>
+                        <View style={{ width: 62 }} />
+                        <View style={{ flex: 1, alignItems: "center" }}>
+                          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                            <Ionicons name="card-outline" size={9} color="rgba(52,199,89,0.7)" />
+                            <Text style={{ fontSize: 9, fontWeight: "700", fontFamily: "Inter_700Bold", color: "rgba(52,199,89,0.7)", letterSpacing: 1.1, textTransform: "uppercase" }}>Bought</Text>
+                          </View>
+                        </View>
+                        <View style={{ flex: 1, alignItems: "center" }}>
+                          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                            <Ionicons name="exit-outline" size={9} color="rgba(255,159,10,0.7)" />
+                            <Text style={{ fontSize: 9, fontWeight: "700", fontFamily: "Inter_700Bold", color: "rgba(255,159,10,0.7)", letterSpacing: 1.1, textTransform: "uppercase" }}>Left</Text>
+                          </View>
+                        </View>
+                        <View style={{ width: 52, alignItems: "flex-end" }}>
+                          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                            <Ionicons name="flash-outline" size={9} color="rgba(167,100,220,0.7)" />
+                            <Text style={{ fontSize: 9, fontWeight: "700", fontFamily: "Inter_700Bold", color: "rgba(167,100,220,0.7)", letterSpacing: 1.1, textTransform: "uppercase" }}>Signal</Text>
+                          </View>
+                        </View>
+                      </View>
+
+                      {plans.map((plan) => {
+                        const signal = plan.purchases + plan.dismissals > 0
+                          ? (plan.purchases / (plan.purchases + plan.dismissals)) * 100
+                          : null;
+                        const signalColor = signal !== null ? rateColour(signal) : "rgba(245,215,142,0.3)";
                         return (
-                          <View key={plan.id} style={s.planRow}>
-                            <View style={s.planLabelRow}>
-                              <Text style={s.planLabel}>{plan.label}</Text>
-                              <Text style={s.planCount}>
-                                {plan.purchases} {plan.purchases === 1 ? "time" : "times"}
-                              </Text>
-                              <Text style={[s.planPct, { color: "#34C759" }]}>{pct.toFixed(0)}%</Text>
+                          <View key={plan.id} style={{ gap: 5 }}>
+                            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                              <Text style={{ width: 62, fontSize: 12, fontFamily: "Inter_600SemiBold", color: "#F5EDD8" }}>{plan.label}</Text>
+                              <View style={{ flex: 1, alignItems: "center" }}>
+                                <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: plan.purchases > 0 ? "#34C759" : "rgba(245,215,142,0.25)" }}>
+                                  {plan.purchases}
+                                </Text>
+                              </View>
+                              <View style={{ flex: 1, alignItems: "center" }}>
+                                <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: plan.dismissals > 0 ? "#FF9F0A" : "rgba(245,215,142,0.25)" }}>
+                                  {plan.dismissals}
+                                </Text>
+                              </View>
+                              <View style={{ width: 52, alignItems: "flex-end" }}>
+                                {signal !== null ? (
+                                  <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: signalColor }}>
+                                    {signal.toFixed(0)}%
+                                  </Text>
+                                ) : (
+                                  <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(245,215,142,0.25)" }}>—</Text>
+                                )}
+                              </View>
                             </View>
-                            <Bar value={plan.purchases} max={Math.max(1, ...plans.map((p) => p.purchases))} color="#34C759" />
+                            {signal !== null && (
+                              <Bar value={signal} max={100} color={signalColor} />
+                            )}
                           </View>
                         );
-                      })
-                    )}
+                      })}
 
-                    <Text style={[s.metricSub, { marginTop: 2 }]}>
-                      Plan highlighted when user completed a purchase
-                    </Text>
-                  </View>
-
-                  {/* Plan abandonment breakdown */}
-                  <View style={s.card}>
-                    <View style={s.cardTop}>
-                      <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-                        <Ionicons name="exit-outline" size={15} color="#FF9F0A" />
-                        <Text style={s.surfaceName}>Plan Abandonment</Text>
-                      </View>
-                      <View style={[s.convBadge, { borderWidth: 1, borderColor: "rgba(255,159,10,0.35)" }]}>
-                        <Text style={[s.convBadgeText, { color: "#FF9F0A" }]}>
-                          {totalPlanDismissals} total
-                        </Text>
-                      </View>
-                    </View>
-
-                    {totalPlanDismissals === 0 ? (
-                      <Text style={[s.metricSub, { textAlign: "center", paddingVertical: 6 }]}>
-                        No plan-level dismissals recorded yet.
+                      <Text style={[s.metricSub, { marginTop: 2 }]}>
+                        Signal = purchases ÷ (purchases + dismissals) per plan
                       </Text>
-                    ) : (
-                      plans.map((plan) => {
-                        const pct = totalPlanDismissals > 0 ? (plan.dismissals / totalPlanDismissals) * 100 : 0;
-                        return (
-                          <View key={plan.id} style={s.planRow}>
-                            <View style={s.planLabelRow}>
-                              <Text style={s.planLabel}>{plan.label}</Text>
-                              <Text style={s.planCount}>
-                                {plan.dismissals} {plan.dismissals === 1 ? "time" : "times"}
-                              </Text>
-                              <Text style={s.planPct}>{pct.toFixed(0)}%</Text>
-                            </View>
-                            <Bar value={plan.dismissals} max={Math.max(1, ...plans.map((p) => p.dismissals))} color="#FF9F0A" />
-                          </View>
-                        );
-                      })
-                    )}
-
-                    <Text style={[s.metricSub, { marginTop: 2 }]}>
-                      Plan highlighted when user closed without buying
-                    </Text>
-                  </View>
+                    </View>
+                  )}
                 </>
               )}
 
