@@ -16,6 +16,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Purchases from "react-native-purchases";
 import { useColors } from "@/hooks/useColors";
 import {
+  FIRST_PAYWALL_SEEN_KEY,
+  INSTALL_FIRST_SEEN_KEY,
   PAYWALL_DISMISS_COUNT_KEY,
   PAYWALL_VIEW_COUNT_KEY,
   paywallDismissCountKey,
@@ -63,7 +65,12 @@ function formatTimeDiff(ms: number): string {
   return remHours === 0 ? `${days}d` : `${days}d ${remHours}h`;
 }
 
-async function loadStats(): Promise<{ surfaces: SurfaceStat[]; plans: PlanStat[] }> {
+async function loadStats(): Promise<{
+  surfaces: SurfaceStat[];
+  plans: PlanStat[];
+  installFirstSeenAt: string | null;
+  globalPaywallFirstSeenAt: string | null;
+}> {
   const surfaceKeys = KNOWN_SURFACES.flatMap((name) => [
     paywallViewCountKey(name),
     paywallDismissCountKey(name),
@@ -74,7 +81,12 @@ async function loadStats(): Promise<{ surfaces: SurfaceStat[]; plans: PlanStat[]
   ]);
   const planKeys = KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id));
 
-  const pairs = await AsyncStorage.multiGet([...surfaceKeys, ...planKeys]);
+  const pairs = await AsyncStorage.multiGet([
+    ...surfaceKeys,
+    ...planKeys,
+    INSTALL_FIRST_SEEN_KEY,
+    FIRST_PAYWALL_SEEN_KEY,
+  ]);
   const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
 
   const surfaces = KNOWN_SURFACES.map((name) => {
@@ -97,7 +109,12 @@ async function loadStats(): Promise<{ surfaces: SurfaceStat[]; plans: PlanStat[]
     dismissals: parseInt(map[paywallDismissPlanCountKey(p.id)] ?? "0", 10) || 0,
   }));
 
-  return { surfaces, plans };
+  return {
+    surfaces,
+    plans,
+    installFirstSeenAt: map[INSTALL_FIRST_SEEN_KEY] ?? null,
+    globalPaywallFirstSeenAt: map[FIRST_PAYWALL_SEEN_KEY] ?? null,
+  };
 }
 
 function surfaceLabel(name: string): string {
@@ -128,6 +145,93 @@ function Bar({ value, max, color }: { value: number; max: number; color: string 
 const barStyles = StyleSheet.create({
   track: { height: 6, borderRadius: 3, flexDirection: "row", overflow: "hidden", backgroundColor: "rgba(255,255,255,0.08)" },
   fill:  { borderRadius: 3 },
+});
+
+function InstallToPaywall({
+  installFirstSeenAt,
+  globalPaywallFirstSeenAt,
+}: {
+  installFirstSeenAt: string | null;
+  globalPaywallFirstSeenAt: string | null;
+}) {
+  if (!installFirstSeenAt && !globalPaywallFirstSeenAt) return null;
+
+  let valueText: string;
+  let valueColor: string;
+
+  if (installFirstSeenAt && globalPaywallFirstSeenAt) {
+    const diffMs =
+      new Date(globalPaywallFirstSeenAt).getTime() -
+      new Date(installFirstSeenAt).getTime();
+    valueText = diffMs >= 0 ? formatTimeDiff(diffMs) : "< 1 hour";
+    valueColor = "#4A90D9";
+  } else {
+    valueText = "Paywall not seen yet";
+    valueColor = "rgba(245,215,142,0.35)";
+  }
+
+  return (
+    <View style={itpStyles.card}>
+      <View style={itpStyles.titleRow}>
+        <Ionicons name="rocket-outline" size={14} color="#4A90D9" />
+        <Text style={itpStyles.title}>Install → First paywall view</Text>
+      </View>
+      <View style={itpStyles.valueRow}>
+        <Text style={[itpStyles.value, { color: valueColor }]}>{valueText}</Text>
+        {(!installFirstSeenAt || !globalPaywallFirstSeenAt) && (
+          <Text style={itpStyles.missing}>
+            {!installFirstSeenAt ? "Install time not recorded" : "Paywall not yet seen"}
+          </Text>
+        )}
+      </View>
+      <Text style={itpStyles.hint}>
+        Time between first app open and first time the paywall appeared
+      </Text>
+    </View>
+  );
+}
+
+const itpStyles = StyleSheet.create({
+  card: {
+    backgroundColor: "#181410",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(74,144,217,0.25)",
+    padding: 16,
+    gap: 8,
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
+  title: {
+    fontSize: 13,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+    color: "rgba(74,144,217,0.9)",
+    letterSpacing: 0.2,
+  },
+  valueRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    gap: 8,
+  },
+  value: {
+    fontSize: 28,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+  },
+  missing: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(245,215,142,0.35)",
+  },
+  hint: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(245,215,142,0.35)",
+  },
 });
 
 function TimeToConvert({
@@ -278,6 +382,8 @@ export function PaywallStatsModal({
   const insets = useSafeAreaInsets();
   const [surfaces, setSurfaces] = useState<SurfaceStat[]>([]);
   const [plans, setPlans] = useState<PlanStat[]>([]);
+  const [installFirstSeenAt, setInstallFirstSeenAt] = useState<string | null>(null);
+  const [globalPaywallFirstSeenAt, setGlobalPaywallFirstSeenAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -286,6 +392,8 @@ export function PaywallStatsModal({
       const result = await loadStats();
       setSurfaces(result.surfaces);
       setPlans(result.plans);
+      setInstallFirstSeenAt(result.installFirstSeenAt);
+      setGlobalPaywallFirstSeenAt(result.globalPaywallFirstSeenAt);
     } finally {
       setLoading(false);
     }
@@ -565,6 +673,11 @@ export function PaywallStatsModal({
               contentContainerStyle={s.scroll}
               showsVerticalScrollIndicator={false}
             >
+              <InstallToPaywall
+                installFirstSeenAt={installFirstSeenAt}
+                globalPaywallFirstSeenAt={globalPaywallFirstSeenAt}
+              />
+
               {allZero ? (
                 <Text style={s.emptyText}>
                   No paywall events recorded yet.{"\n"}Open a paywall to start tracking.

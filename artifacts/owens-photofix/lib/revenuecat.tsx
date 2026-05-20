@@ -10,8 +10,8 @@ import Purchases, {
   type PurchasesPackage,
 } from "react-native-purchases";
 
-const INSTALL_FIRST_SEEN_KEY = "onjjem_install_first_seen_at";
-const FIRST_PAYWALL_SEEN_KEY = "onjjem_paywall_first_seen_at";
+export const INSTALL_FIRST_SEEN_KEY = "onjjem_install_first_seen_at";
+export const FIRST_PAYWALL_SEEN_KEY = "onjjem_paywall_first_seen_at";
 export const PAYWALL_VIEW_COUNT_KEY = "onjjem_paywall_view_count";
 export const PAYWALL_DISMISS_COUNT_KEY = "onjjem_paywall_dismiss_count";
 
