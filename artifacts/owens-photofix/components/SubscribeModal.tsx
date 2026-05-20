@@ -50,7 +50,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
 
   const handleClose = () => {
     if (!purchasedRef.current) {
-      void trackPaywallDismissal("subscribe_modal");
+      void trackPaywallDismissal("subscribe_modal", plan);
     }
     onClose();
   };

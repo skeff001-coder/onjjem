@@ -178,8 +178,13 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
  *
  * Only call this when the user has definitively closed the paywall without buying —
  * do NOT call it after a successful purchase even if `onClose` is invoked.
+ *
+ * @param selectedPlan  Optional — the plan the user had highlighted at dismissal time
+ *                      (e.g. "annual", "monthly", "perpic"). Stored as the subscriber
+ *                      attribute `paywall_dismissed_plan` so RevenueCat Charts and any
+ *                      connected integration can break down abandonment by price tier.
  */
-export async function trackPaywallDismissal(paywallName: string): Promise<void> {
+export async function trackPaywallDismissal(paywallName: string, selectedPlan?: string): Promise<void> {
   try {
     const now = new Date().toISOString();
 
@@ -191,6 +196,10 @@ export async function trackPaywallDismissal(paywallName: string): Promise<void> 
       paywall_dismissed_name: paywallName,
       paywall_dismiss_count: String(count),
     };
+
+    if (selectedPlan) {
+      attrs.paywall_dismissed_plan = selectedPlan;
+    }
 
     // Set attributes and sync BEFORE writing the AsyncStorage marker so that a
     // network failure causes a retry on the next dismissal rather than silently
