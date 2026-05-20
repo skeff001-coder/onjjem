@@ -1,9 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -83,27 +84,80 @@ const COMPARISON = [
 export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgradeUnlimited }: Props) {
   const colors = useColors();
   const [activePlan, setActivePlan] = useState<PlanId>("monthly");
+  const [purchased, setPurchased] = useState(false);
+  const [purchasedPlan, setPurchasedPlan] = useState<PlanId>("monthly");
+  const successOpacity = useRef(new Animated.Value(0)).current;
+  const successScale = useRef(new Animated.Value(0.85)).current;
   const { monthlyPackage, annualPackage, purchase, isPurchasing } = useSubscription();
 
   useEffect(() => {
     void trackPaywallImpression("enhancement_paywall");
   }, []);
 
+  useEffect(() => {
+    if (purchased) {
+      Animated.parallel([
+        Animated.timing(successOpacity, { toValue: 1, duration: 350, useNativeDriver: true }),
+        Animated.spring(successScale, { toValue: 1, useNativeDriver: true, bounciness: 10 }),
+      ]).start();
+    }
+  }, [purchased]);
+
   const handleUnlimitedPress = async () => {
     const pkg = activePlan === "annual" ? annualPackage : monthlyPackage;
     if (!pkg) {
-      // Fall back to opening the full subscribe modal if offerings haven't loaded
       onUpgradeUnlimited();
       return;
     }
     try {
       await purchase(pkg);
       void trackPaywallPurchase("enhancement_paywall", activePlan);
+      setPurchasedPlan(activePlan);
+      setPurchased(true);
     } catch (err: any) {
       if (err?.userCancelled) return;
       Alert.alert("Purchase Failed", err?.message ?? "Unable to complete the purchase.");
     }
   };
+
+  if (purchased) {
+    const plan = PLANS.find(p => p.id === purchasedPlan)!;
+    return (
+      <Animated.View style={[s.successRoot, { opacity: successOpacity, transform: [{ scale: successScale }] }]}>
+        <LinearGradient
+          colors={["#0D160F", "#12200F", "#0D160F"]}
+          style={s.successCard}
+        >
+          <LinearGradient
+            colors={[plan.accent, plan.accent + "AA"]}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+            style={s.successBar}
+          />
+          <View style={s.successInner}>
+            <View style={[s.successIconWrap, { backgroundColor: plan.accent + "22", borderColor: plan.accent + "55" }]}>
+              <Ionicons name="checkmark-circle" size={56} color={plan.accent} />
+            </View>
+            <Text style={s.successTitle}>You're now Pro!</Text>
+            <Text style={[s.successPlan, { color: plan.accent }]}>
+              {plan.label} plan activated
+            </Text>
+            <Text style={s.successBody}>
+              Full HD quality, all 6 enhancement modes, and unlimited photos are now unlocked on your account.
+            </Text>
+            <View style={[s.successDivider, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+            <View style={s.successPerks}>
+              {["Full HD quality output", "All 6 modes combined", "No watermark"].map(perk => (
+                <View key={perk} style={s.successPerkRow}>
+                  <Ionicons name="checkmark-circle" size={16} color={plan.accent} />
+                  <Text style={s.successPerkText}>{perk}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </LinearGradient>
+      </Animated.View>
+    );
+  }
 
   // Override displayed prices with live store prices when available
   const LIVE_PLANS = PLANS.map((p) =>
@@ -665,5 +719,75 @@ const s = StyleSheet.create({
     fontFamily: "Inter_600SemiBold",
     fontWeight: "600" as const,
     marginLeft: 6,
+  },
+
+  // Purchase success state
+  successRoot: {
+    flex: 1,
+  },
+  successCard: {
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(39,174,96,0.3)",
+  },
+  successBar: { height: 4 },
+  successInner: {
+    padding: 28,
+    gap: 12,
+    alignItems: "center",
+  },
+  successIconWrap: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 4,
+  },
+  successTitle: {
+    fontSize: 28,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: CREAM,
+    letterSpacing: -0.5,
+    textAlign: "center",
+  },
+  successPlan: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 0.5,
+    textAlign: "center",
+    textTransform: "uppercase",
+  },
+  successBody: {
+    fontSize: 15,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.65)",
+    lineHeight: 22,
+    textAlign: "center",
+    marginTop: 4,
+  },
+  successDivider: {
+    width: "100%",
+    height: 1,
+    marginVertical: 4,
+  },
+  successPerks: {
+    gap: 10,
+    alignSelf: "stretch",
+    marginTop: 4,
+  },
+  successPerkRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  successPerkText: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.75)",
   },
 });
