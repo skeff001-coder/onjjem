@@ -16,6 +16,17 @@ const PAYWALL_VIEW_COUNT_KEY = "onjjem_paywall_view_count";
 const PAYWALL_DISMISS_COUNT_KEY = "onjjem_paywall_dismiss_count";
 
 /**
+ * Per-surface AsyncStorage key helpers — used by the dev stats screen to show
+ * conversion rates broken down by paywall name.
+ */
+export function paywallViewCountKey(name: string): string {
+  return `onjjem_paywall_view_count_${name}`;
+}
+export function paywallDismissCountKey(name: string): string {
+  return `onjjem_paywall_dismiss_count_${name}`;
+}
+
+/**
  * Call once as early as possible after RevenueCat is configured (e.g. in the
  * root layout). Sets subscriber attributes that mark the install event:
  *
@@ -142,6 +153,12 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
     // Persist markers only after a successful sync
     await AsyncStorage.setItem(PAYWALL_VIEW_COUNT_KEY, String(count));
     if (isFirstView) await AsyncStorage.setItem(FIRST_PAYWALL_SEEN_KEY, now);
+
+    // Also persist a per-surface view count for the dev stats screen
+    const surfaceKey = paywallViewCountKey(paywallName);
+    const rawSurface = await AsyncStorage.getItem(surfaceKey);
+    const surfaceCount = rawSurface ? (parseInt(rawSurface, 10) || 0) + 1 : 1;
+    await AsyncStorage.setItem(surfaceKey, String(surfaceCount));
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }
@@ -182,6 +199,12 @@ export async function trackPaywallDismissal(paywallName: string): Promise<void> 
     await Purchases.syncAttributesAndOfferingsIfNeeded();
 
     await AsyncStorage.setItem(PAYWALL_DISMISS_COUNT_KEY, String(count));
+
+    // Also persist a per-surface dismiss count for the dev stats screen
+    const surfaceKey = paywallDismissCountKey(paywallName);
+    const rawSurface = await AsyncStorage.getItem(surfaceKey);
+    const surfaceCount = rawSurface ? (parseInt(rawSurface, 10) || 0) + 1 : 1;
+    await AsyncStorage.setItem(surfaceKey, String(surfaceCount));
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }

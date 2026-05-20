@@ -50,6 +50,7 @@ import { WhatsNewModal, hasWhatsNewForVersion } from "@/components/WhatsNewModal
 import { EnhancementTipSheet } from "@/components/EnhancementTipSheet";
 import { ResultTipSheet } from "@/components/ResultTipSheet";
 import { saveToHistory } from "@/lib/photoHistory";
+import { PaywallStatsModal } from "@/components/PaywallStatsModal";
 
 type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
 type AppState = "idle" | "selected" | "processing" | "done" | "batch-selected" | "batch-processing" | "batch-done";
@@ -110,6 +111,7 @@ export default function HomeScreen() {
   const [contactVisible, setContactVisible] = useState(false);
   const [referralVisible, setReferralVisible] = useState(false);
   const [subscribeVisible, setSubscribeVisible] = useState(false);
+  const [statsVisible, setStatsVisible] = useState(false);
   const { perPhotoPackage, purchase: purchaseSubscription } = useSubscription();
 
   const buyOnePhoto = async () => {
@@ -1810,6 +1812,18 @@ export default function HomeScreen() {
           <Ionicons name="star-outline" size={18} color={colors.mutedForeground} />
           <Text style={s.contactSupportText}>Rate ONJJEM on the App Store</Text>
         </TouchableOpacity>
+
+        {/* Version label — long-press opens dev paywall stats */}
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onLongPress={() => setStatsVisible(true)}
+          delayLongPress={800}
+          style={s.versionLabel}
+        >
+          <Text style={s.versionLabelText}>
+            v{Constants.expoConfig?.version ?? "—"}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
 
       {/* Contact our experts button */}
@@ -1828,6 +1842,7 @@ export default function HomeScreen() {
       <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />
       <ReferralModal visible={referralVisible} onClose={() => setReferralVisible(false)} />
       <SubscribeModal visible={subscribeVisible} onClose={() => setSubscribeVisible(false)} />
+      <PaywallStatsModal visible={statsVisible} onClose={() => setStatsVisible(false)} />
     </View>
   );
 }
@@ -3176,6 +3191,17 @@ function makeStyles(
       fontFamily: "Inter_500Medium",
       color: "#7A6E57",
       textAlign: "center" as const,
+    },
+    versionLabel: {
+      alignItems: "center" as const,
+      paddingVertical: 12,
+      paddingBottom: bottomPad + 4,
+    },
+    versionLabelText: {
+      fontSize: 11,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(255,255,255,0.18)",
+      letterSpacing: 0.8,
     },
     /* ── Jubilee Banner ── */
     jubileeBtn: {
