@@ -508,6 +508,7 @@ export function PaywallStatsModal({
             const keys = [
               PAYWALL_VIEW_COUNT_KEY,
               PAYWALL_DISMISS_COUNT_KEY,
+              FIRST_PAYWALL_SEEN_KEY,
               ...KNOWN_SURFACES.flatMap((name) => [
                 paywallViewCountKey(name),
                 paywallDismissCountKey(name),
@@ -525,6 +526,8 @@ export function PaywallStatsModal({
               await Purchases.setAttributes({
                 paywall_view_count: "0",
                 paywall_dismiss_count: "0",
+                paywall_first_seen_at: "",
+                paywall_last_seen_at: "",
               });
             } catch {
               // Non-critical — proceed even if the RC call fails
