@@ -357,69 +357,55 @@ const ttcStyles = StyleSheet.create({
   },
 });
 
-function PlanPurchaseBreakdown({
+function PlanBreakdown({
   planPurchases,
-  totalPurchases,
-}: {
-  planPurchases: Record<string, number>;
-  totalPurchases: number;
-}) {
-  const total = totalPurchases > 0 ? totalPurchases : KNOWN_PLANS.reduce((s, p) => s + (planPurchases[p.id] ?? 0), 0);
-  if (total === 0) return null;
-
-  return (
-    <View style={ppbStyles.wrap}>
-      <View style={ppbStyles.titleRow}>
-        <Ionicons name="card-outline" size={11} color="rgba(52,199,89,0.6)" />
-        <Text style={ppbStyles.title}>Purchases by plan</Text>
-      </View>
-      {KNOWN_PLANS.map((p) => {
-        const count = planPurchases[p.id] ?? 0;
-        const pct = total > 0 ? (count / total) * 100 : 0;
-        if (count === 0) return null;
-        return (
-          <View key={p.id} style={ppbStyles.row}>
-            <Text style={ppbStyles.label}>{p.label}</Text>
-            <View style={ppbStyles.barWrap}>
-              <Bar value={count} max={total} color="#34C759" />
-            </View>
-            <Text style={ppbStyles.count}>{count}</Text>
-            <Text style={ppbStyles.pct}>{pct.toFixed(0)}%</Text>
-          </View>
-        );
-      })}
-    </View>
-  );
-}
-
-function PlanDismissBreakdown({
   planDismissals,
+  totalPurchases,
   totalDismissals,
 }: {
+  planPurchases: Record<string, number>;
   planDismissals: Record<string, number>;
+  totalPurchases: number;
   totalDismissals: number;
 }) {
-  const total = totalDismissals > 0 ? totalDismissals : KNOWN_PLANS.reduce((s, p) => s + (planDismissals[p.id] ?? 0), 0);
-  if (total === 0) return null;
+  const totalP = totalPurchases > 0 ? totalPurchases : KNOWN_PLANS.reduce((s, p) => s + (planPurchases[p.id] ?? 0), 0);
+  const totalD = totalDismissals > 0 ? totalDismissals : KNOWN_PLANS.reduce((s, p) => s + (planDismissals[p.id] ?? 0), 0);
+
+  if (totalP === 0 && totalD === 0) return null;
 
   return (
-    <View style={pdbStyles.wrap}>
-      <View style={pdbStyles.titleRow}>
-        <Ionicons name="exit-outline" size={11} color="rgba(255,159,10,0.6)" />
-        <Text style={pdbStyles.title}>Dismissed on plan</Text>
+    <View style={pbStyles.wrap}>
+      <View style={pbStyles.headerRow}>
+        <View style={pbStyles.labelSpacer} />
+        <View style={pbStyles.colHeader}>
+          <Ionicons name="card-outline" size={10} color="rgba(52,199,89,0.7)" />
+          <Text style={[pbStyles.colHeaderText, { color: "rgba(52,199,89,0.7)" }]}>Bought</Text>
+        </View>
+        <View style={pbStyles.colHeader}>
+          <Ionicons name="exit-outline" size={10} color="rgba(255,159,10,0.7)" />
+          <Text style={[pbStyles.colHeaderText, { color: "rgba(255,159,10,0.7)" }]}>Left</Text>
+        </View>
       </View>
       {KNOWN_PLANS.map((p) => {
-        const count = planDismissals[p.id] ?? 0;
-        const pct = total > 0 ? (count / total) * 100 : 0;
-        if (count === 0) return null;
+        const bought = planPurchases[p.id] ?? 0;
+        const left = planDismissals[p.id] ?? 0;
+        if (bought === 0 && left === 0) return null;
         return (
-          <View key={p.id} style={pdbStyles.row}>
-            <Text style={pdbStyles.label}>{p.label}</Text>
-            <View style={pdbStyles.barWrap}>
-              <Bar value={count} max={total} color="#FF9F0A" />
+          <View key={p.id} style={pbStyles.row}>
+            <Text style={pbStyles.label}>{p.label}</Text>
+            <View style={pbStyles.cell}>
+              <Bar value={bought} max={Math.max(1, totalP)} color="#34C759" />
+              <Text style={[pbStyles.count, { color: bought > 0 ? "#34C759" : "rgba(245,215,142,0.25)" }]}>
+                {bought}
+              </Text>
             </View>
-            <Text style={pdbStyles.count}>{count}</Text>
-            <Text style={pdbStyles.pct}>{pct.toFixed(0)}%</Text>
+            <View style={pbStyles.divider} />
+            <View style={pbStyles.cell}>
+              <Bar value={left} max={Math.max(1, totalD)} color="#FF9F0A" />
+              <Text style={[pbStyles.count, { color: left > 0 ? "#FF9F0A" : "rgba(245,215,142,0.25)" }]}>
+                {left}
+              </Text>
+            </View>
           </View>
         );
       })}
@@ -427,104 +413,62 @@ function PlanDismissBreakdown({
   );
 }
 
-const pdbStyles = StyleSheet.create({
+const pbStyles = StyleSheet.create({
   wrap: {
-    gap: 6,
+    gap: 7,
     paddingTop: 4,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(255,159,10,0.15)",
+    borderTopColor: "rgba(201,150,12,0.12)",
   },
-  titleRow: {
+  headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
-    marginBottom: 2,
+    marginBottom: 1,
   },
-  title: {
-    fontSize: 10,
+  labelSpacer: {
+    width: 62,
+  },
+  colHeader: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 3,
+    paddingRight: 2,
+  },
+  colHeaderText: {
+    fontSize: 9,
     fontWeight: "700",
     fontFamily: "Inter_700Bold",
-    color: "rgba(255,159,10,0.6)",
-    letterSpacing: 1.2,
+    letterSpacing: 1.1,
     textTransform: "uppercase",
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 6,
   },
   label: {
-    width: 60,
+    width: 62,
     fontSize: 12,
     fontFamily: "Inter_600SemiBold",
     color: "#F5EDD8",
   },
-  barWrap: {
+  cell: {
     flex: 1,
-  },
-  count: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    color: "rgba(245,215,142,0.5)",
-    minWidth: 18,
-    textAlign: "right",
-  },
-  pct: {
-    fontSize: 12,
-    fontFamily: "Inter_700Bold",
-    color: "#FF9F0A",
-    minWidth: 30,
-    textAlign: "right",
-  },
-});
-
-const ppbStyles = StyleSheet.create({
-  wrap: {
-    gap: 6,
-    paddingTop: 4,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(52,199,89,0.15)",
-  },
-  titleRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    marginBottom: 2,
   },
-  title: {
-    fontSize: 10,
-    fontWeight: "700",
-    fontFamily: "Inter_700Bold",
-    color: "rgba(52,199,89,0.6)",
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  label: {
-    width: 60,
-    fontSize: 12,
-    fontFamily: "Inter_600SemiBold",
-    color: "#F5EDD8",
-  },
-  barWrap: {
-    flex: 1,
+  divider: {
+    width: StyleSheet.hairlineWidth,
+    height: 14,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   count: {
     fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    color: "rgba(245,215,142,0.5)",
-    minWidth: 18,
-    textAlign: "right",
-  },
-  pct: {
-    fontSize: 12,
     fontFamily: "Inter_700Bold",
-    color: "#34C759",
-    minWidth: 30,
+    minWidth: 18,
     textAlign: "right",
   },
 });
@@ -1118,9 +1062,12 @@ export function PaywallStatsModal({
                           <Bar value={stat.views} max={maxViews} color="#4A90D9" />
                         </View>
 
-                        <PlanPurchaseBreakdown planPurchases={stat.planPurchases} totalPurchases={stat.purchases} />
-
-                        <PlanDismissBreakdown planDismissals={stat.planDismissals} totalDismissals={stat.dismissals} />
+                        <PlanBreakdown
+                          planPurchases={stat.planPurchases}
+                          planDismissals={stat.planDismissals}
+                          totalPurchases={stat.purchases}
+                          totalDismissals={stat.dismissals}
+                        />
 
                         <TimeToConvert firstSeenAt={stat.firstSeenAt} purchasedAt={stat.purchasedAt} />
                       </View>
