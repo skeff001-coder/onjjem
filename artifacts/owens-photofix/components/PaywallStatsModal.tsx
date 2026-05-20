@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -91,6 +92,28 @@ export function PaywallStatsModal({
       setLoading(false);
     }
   }, []);
+
+  const handleReset = useCallback(() => {
+    Alert.alert(
+      "Reset stats?",
+      "This will zero out all paywall view and dismiss counts on this device. It cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Reset",
+          style: "destructive",
+          onPress: async () => {
+            const keys = KNOWN_SURFACES.flatMap((name) => [
+              paywallViewCountKey(name),
+              paywallDismissCountKey(name),
+            ]);
+            await AsyncStorage.multiRemove(keys);
+            await refresh();
+          },
+        },
+      ],
+    );
+  }, [refresh]);
 
   useEffect(() => {
     if (visible) void refresh();
@@ -252,6 +275,19 @@ export function PaywallStatsModal({
       fontFamily: "Inter_600SemiBold",
       color: "rgba(201,150,12,0.7)",
     },
+    resetBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      paddingVertical: 10,
+      marginTop: 2,
+    },
+    resetBtnText: {
+      fontSize: 13,
+      fontFamily: "Inter_600SemiBold",
+      color: "rgba(255,59,48,0.7)",
+    },
     emptyText: {
       fontSize: 13,
       fontFamily: "Inter_400Regular",
@@ -347,6 +383,11 @@ export function PaywallStatsModal({
               <TouchableOpacity style={s.refreshBtn} onPress={refresh} activeOpacity={0.7}>
                 <Ionicons name="refresh-outline" size={14} color="rgba(201,150,12,0.7)" />
                 <Text style={s.refreshBtnText}>Refresh</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={s.resetBtn} onPress={handleReset} activeOpacity={0.7}>
+                <Ionicons name="trash-outline" size={14} color="rgba(255,59,48,0.7)" />
+                <Text style={s.resetBtnText}>Reset stats</Text>
               </TouchableOpacity>
             </ScrollView>
           )}
