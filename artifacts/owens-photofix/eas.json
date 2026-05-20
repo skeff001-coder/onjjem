@@ -22,7 +22,8 @@
         "buildConfiguration": "Release"
       },
       "env": {
-        "EXPO_PUBLIC_REVENUECAT_IOS_API_KEY": "appl_GERIwqZAodXSClBKkxlSjxwPQZv"
+        "EXPO_PUBLIC_REVENUECAT_IOS_API_KEY": "appl_GERIwqZAodXSClBKkxlSjxwPQZv",
+        "EXPO_PUBLIC_DOMAIN": "photo-fix-ai.replit.app"
       }
     }
   },
