@@ -240,6 +240,13 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
  * rate (real purchases ÷ views) rather than the estimated figure derived
  * from views minus dismissals, which undercounts when users background the
  * app without explicitly dismissing the paywall.
+ *
+ * When `planId` is provided, also sets the RevenueCat subscriber attribute
+ * `last_purchased_plan` to record which plan was highlighted at the moment
+ * the subscribe button was tapped. This may differ from the product that was
+ * ultimately purchased (e.g. if the user quickly switched plans mid-session),
+ * so it complements the RevenueCat purchase record and allows cross-referencing
+ * in RevenueCat Charts or any connected downstream tool.
  */
 export async function trackPaywallPurchase(paywallName: string, planId?: string): Promise<void> {
   try {
@@ -272,6 +279,11 @@ export async function trackPaywallPurchase(paywallName: string, planId?: string)
       const globalPlanKey = paywallPurchaseGlobalPlanCountKey(planId);
       const globalPlanCount = map[globalPlanKey] ? (parseInt(map[globalPlanKey]!, 10) || 0) + 1 : 1;
       writes.push([globalPlanKey, String(globalPlanCount)]);
+
+      // Record which plan was highlighted at tap-time on the RevenueCat customer profile.
+      // This may differ from the purchased product if the user switched plans mid-session.
+      await Purchases.setAttributes({ last_purchased_plan: planId });
+      await Purchases.syncAttributesAndOfferingsIfNeeded();
     }
 
     await AsyncStorage.multiSet(writes);

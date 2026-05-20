@@ -763,7 +763,7 @@ export function PaywallStatsModal({
             </View>
             <View style={s.headerTextWrap}>
               <Text style={s.title}>Paywall Conversion Stats</Text>
-              <Text style={s.subtitle}>Dev-only · Local data · No external calls</Text>
+              <Text style={s.subtitle}>Dev-only · Local data · Plan data also flows to RevenueCat</Text>
             </View>
             <TouchableOpacity style={s.closeBtn} onPress={onClose} activeOpacity={0.7}>
               <Ionicons name="close" size={20} color="rgba(245,215,142,0.5)" />
