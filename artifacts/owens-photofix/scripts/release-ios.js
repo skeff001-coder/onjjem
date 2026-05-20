@@ -231,41 +231,31 @@ function askConfirm(question) {
 // ── Preview helpers ───────────────────────────────────────────────────────────
 
 /**
- * Use rsync --dry-run to list the files that would be copied to /tmp without
- * actually creating any directories or writing any files.
+ * Walk ARTIFACT_DIR and list the files that would be copied to /tmp,
+ * honouring the same exclusions as the real copy step.
  * Returns { files: string[], error: string | null }
  */
 function listFilesToSync() {
-  const result = spawnSync(
-    "rsync",
-    [
-      "-a",
-      "--dry-run",
-      "--itemize-changes",
-      "--exclude=node_modules",
-      "--exclude=.expo",
-      "--exclude=.git",
-      "--exclude=.replit-artifact",
-      "--exclude=server",
-      `${ARTIFACT_DIR}/`,
-      "/tmp/preview-placeholder/",
-    ],
-    { encoding: "utf8" },
-  );
-
-  if (result.error || (result.status !== 0 && !result.stdout)) {
-    return { files: [], error: "rsync unavailable — install rsync to see the file list" };
+  const EXCLUDE = new Set(["node_modules", ".expo", ".git", ".replit-artifact", "server"]);
+  const files = [];
+  function walk(dir, rel) {
+    let entries;
+    try { entries = fs.readdirSync(dir, { withFileTypes: true }); }
+    catch { return; }
+    for (const e of entries) {
+      const name = e.name;
+      const relPath = rel ? `${rel}/${name}` : name;
+      if (EXCLUDE.has(name)) continue;
+      if (e.isDirectory()) { walk(path.join(dir, name), relPath); }
+      else { files.push(relPath); }
+    }
   }
-
-  // rsync --itemize-changes lines look like ">f+++++++++ path/to/file"
-  // We only want transferred files (lines starting with ">f")
-  const files = (result.stdout ?? "")
-    .split("\n")
-    .filter((l) => l.startsWith(">f"))
-    .map((l) => l.replace(/^>f[+.]{9}\s+/, "").trim())
-    .filter(Boolean);
-
-  return { files, error: null };
+  try {
+    walk(ARTIFACT_DIR, "");
+    return { files, error: null };
+  } catch (err) {
+    return { files: [], error: String(err) };
+  }
 }
 
 /**
@@ -406,18 +396,14 @@ async function main() {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "eas-release-"));
     console.log(`Build directory: ${tmpDir}`);
 
-    execSync(
-      [
-        "rsync -a",
-        "--exclude='node_modules'",
-        "--exclude='.expo'",
-        "--exclude='.git'",
-        "--exclude='.replit-artifact'",
-        "--exclude='server'",       // API server — not needed for Expo build
-        `"${ARTIFACT_DIR}/" "${tmpDir}/"`,
-      ].join(" "),
-      { stdio: "inherit" },
-    );
+    const COPY_EXCLUDE = new Set(["node_modules", ".expo", ".git", ".replit-artifact", "server"]);
+    fs.cpSync(ARTIFACT_DIR, tmpDir, {
+      recursive: true,
+      filter: (src) => {
+        const name = path.basename(src);
+        return !COPY_EXCLUDE.has(name);
+      },
+    });
     console.log("Files copied.");
 
     // ── Step 3: generate standalone package.json ───────────────────────────────
