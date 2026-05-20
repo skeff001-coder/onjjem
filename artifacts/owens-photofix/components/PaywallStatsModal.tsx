@@ -26,6 +26,7 @@ import {
   paywallFirstSeenKey,
   paywallPurchasedAtKey,
   paywallPurchaseCountKey,
+  paywallPurchaseGlobalPlanCountKey,
   paywallPurchasePlanCountKey,
   paywallViewCountKey,
 } from "@/lib/revenuecat";
@@ -54,6 +55,7 @@ type PlanStat = {
   id: string;
   label: string;
   dismissals: number;
+  purchases: number;
 };
 
 function formatTimeDiff(ms: number): string {
@@ -82,11 +84,13 @@ async function loadStats(): Promise<{
     ...KNOWN_PLANS.map((p) => paywallPurchasePlanCountKey(name, p.id)),
     ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanCountKey(name, p.id)),
   ]);
-  const planKeys = KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id));
+  const planDismissKeys = KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id));
+  const planPurchaseKeys = KNOWN_PLANS.map((p) => paywallPurchaseGlobalPlanCountKey(p.id));
 
   const pairs = await AsyncStorage.multiGet([
     ...surfaceKeys,
-    ...planKeys,
+    ...planDismissKeys,
+    ...planPurchaseKeys,
     INSTALL_FIRST_SEEN_KEY,
     FIRST_PAYWALL_SEEN_KEY,
   ]);
@@ -112,6 +116,7 @@ async function loadStats(): Promise<{
     id: p.id,
     label: p.label,
     dismissals: parseInt(map[paywallDismissPlanCountKey(p.id)] ?? "0", 10) || 0,
+    purchases: parseInt(map[paywallPurchaseGlobalPlanCountKey(p.id)] ?? "0", 10) || 0,
   }));
 
   return {
@@ -513,6 +518,7 @@ export function PaywallStatsModal({
                 ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanCountKey(name, p.id)),
               ]),
               ...KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id)),
+              ...KNOWN_PLANS.map((p) => paywallPurchaseGlobalPlanCountKey(p.id)),
             ];
             await AsyncStorage.multiRemove(keys);
             try {
@@ -740,6 +746,7 @@ export function PaywallStatsModal({
 
   const allZero = surfaces.every((s) => s.views === 0);
   const totalPlanDismissals = plans.reduce((sum, p) => sum + p.dismissals, 0);
+  const totalPlanPurchases = plans.reduce((sum, p) => sum + p.purchases, 0);
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -826,6 +833,47 @@ export function PaywallStatsModal({
                       </View>
                     );
                   })}
+
+                  {/* Plan conversion breakdown */}
+                  <View style={s.card}>
+                    <View style={s.cardTop}>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
+                        <Ionicons name="checkmark-circle-outline" size={15} color="#34C759" />
+                        <Text style={s.surfaceName}>Plan Conversion</Text>
+                      </View>
+                      <View style={[s.convBadge, { borderWidth: 1, borderColor: "rgba(52,199,89,0.35)" }]}>
+                        <Text style={[s.convBadgeText, { color: "#34C759" }]}>
+                          {totalPlanPurchases} total
+                        </Text>
+                      </View>
+                    </View>
+
+                    {totalPlanPurchases === 0 ? (
+                      <Text style={[s.metricSub, { textAlign: "center", paddingVertical: 6 }]}>
+                        No plan-level purchases recorded yet.
+                      </Text>
+                    ) : (
+                      plans.map((plan) => {
+                        const pct = totalPlanPurchases > 0 ? (plan.purchases / totalPlanPurchases) * 100 : 0;
+                        return (
+                          <View key={plan.id} style={s.planRow}>
+                            <View style={s.planLabelRow}>
+                              <Text style={s.planLabel}>{plan.label}</Text>
+                              <Text style={s.planCount}>
+                                {plan.purchases} {plan.purchases === 1 ? "time" : "times"}
+                              </Text>
+                              <Text style={[s.planPct, { color: "#34C759" }]}>{pct.toFixed(0)}%</Text>
+                            </View>
+                            <Bar value={plan.purchases} max={Math.max(1, ...plans.map((p) => p.purchases))} color="#34C759" />
+                          </View>
+                        );
+                      })
+                    )}
+
+                    <Text style={[s.metricSub, { marginTop: 2 }]}>
+                      Plan highlighted when user completed a purchase
+                    </Text>
+                  </View>
 
                   {/* Plan abandonment breakdown */}
                   <View style={s.card}>

@@ -39,6 +39,16 @@ export function paywallPurchasedAtKey(name: string): string {
 }
 
 /**
+ * Global per-plan purchase count key — records how many times a purchase was
+ * completed while a specific plan (e.g. "annual", "monthly", "perpic") was
+ * selected, across all paywall surfaces. Used by the dev stats screen for plan
+ * conversion breakdown.
+ */
+export function paywallPurchaseGlobalPlanCountKey(plan: string): string {
+  return `onjjem_paywall_purchase_plan_count_${plan}`;
+}
+
+/**
  * Per-plan dismissal count key — records how many times the paywall was
  * dismissed while a specific plan (e.g. "annual", "monthly", "perpic") was
  * selected. Used by the dev stats screen for plan abandonment breakdown.
@@ -236,7 +246,10 @@ export async function trackPaywallPurchase(paywallName: string, planId?: string)
     const surfaceKey = paywallPurchaseCountKey(paywallName);
     const purchasedAtKey = paywallPurchasedAtKey(paywallName);
     const keysToRead: string[] = [surfaceKey, purchasedAtKey];
-    if (planId) keysToRead.push(paywallPurchasePlanCountKey(paywallName, planId));
+    if (planId) {
+      keysToRead.push(paywallPurchasePlanCountKey(paywallName, planId));
+      keysToRead.push(paywallPurchaseGlobalPlanCountKey(planId));
+    }
 
     const pairs = await AsyncStorage.multiGet(keysToRead);
     const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
@@ -249,11 +262,16 @@ export async function trackPaywallPurchase(paywallName: string, planId?: string)
       writes.push([purchasedAtKey, new Date().toISOString()]);
     }
 
-    // Per-surface-per-plan purchase count (e.g. onjjem_paywall_purchase_count_subscribe_modal_annual)
     if (planId) {
-      const planKey = paywallPurchasePlanCountKey(paywallName, planId);
-      const planCount = map[planKey] ? (parseInt(map[planKey]!, 10) || 0) + 1 : 1;
-      writes.push([planKey, String(planCount)]);
+      // Per-surface-per-plan purchase count (e.g. onjjem_paywall_purchase_count_subscribe_modal_annual)
+      const surfacePlanKey = paywallPurchasePlanCountKey(paywallName, planId);
+      const surfacePlanCount = map[surfacePlanKey] ? (parseInt(map[surfacePlanKey]!, 10) || 0) + 1 : 1;
+      writes.push([surfacePlanKey, String(surfacePlanCount)]);
+
+      // Global per-plan purchase count (onjjem_paywall_purchase_plan_count_<plan>)
+      const globalPlanKey = paywallPurchaseGlobalPlanCountKey(planId);
+      const globalPlanCount = map[globalPlanKey] ? (parseInt(map[globalPlanKey]!, 10) || 0) + 1 : 1;
+      writes.push([globalPlanKey, String(globalPlanCount)]);
     }
 
     await AsyncStorage.multiSet(writes);
