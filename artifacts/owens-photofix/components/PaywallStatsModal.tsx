@@ -629,6 +629,7 @@ export function PaywallStatsModal({
             const keys = [
               PAYWALL_VIEW_COUNT_KEY,
               PAYWALL_DISMISS_COUNT_KEY,
+              INSTALL_FIRST_SEEN_KEY,
               FIRST_PAYWALL_SEEN_KEY,
               ...KNOWN_SURFACES.flatMap((name) => [
                 paywallViewCountKey(name),
