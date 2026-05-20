@@ -22,6 +22,7 @@ import {
   PAYWALL_VIEW_COUNT_KEY,
   paywallDismissCountKey,
   paywallDismissPlanCountKey,
+  paywallDismissSurfacePlanCountKey,
   paywallFirstSeenKey,
   paywallPurchasedAtKey,
   paywallPurchaseCountKey,
@@ -46,6 +47,7 @@ type SurfaceStat = {
   firstSeenAt: string | null;
   purchasedAt: string | null;
   planPurchases: Record<string, number>;
+  planDismissals: Record<string, number>;
 };
 
 type PlanStat = {
@@ -78,6 +80,7 @@ async function loadStats(): Promise<{
     paywallFirstSeenKey(name),
     paywallPurchasedAtKey(name),
     ...KNOWN_PLANS.map((p) => paywallPurchasePlanCountKey(name, p.id)),
+    ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanCountKey(name, p.id)),
   ]);
   const planKeys = KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id));
 
@@ -97,10 +100,12 @@ async function loadStats(): Promise<{
     const firstSeenAt = map[paywallFirstSeenKey(name)] ?? null;
     const purchasedAt = map[paywallPurchasedAtKey(name)] ?? null;
     const planPurchases: Record<string, number> = {};
+    const planDismissals: Record<string, number> = {};
     for (const p of KNOWN_PLANS) {
       planPurchases[p.id] = parseInt(map[paywallPurchasePlanCountKey(name, p.id)] ?? "0", 10) || 0;
+      planDismissals[p.id] = parseInt(map[paywallDismissSurfacePlanCountKey(name, p.id)] ?? "0", 10) || 0;
     }
-    return { name, views, dismissals, purchases, conversionRate, firstSeenAt, purchasedAt, planPurchases };
+    return { name, views, dismissals, purchases, conversionRate, firstSeenAt, purchasedAt, planPurchases, planDismissals };
   });
 
   const plans: PlanStat[] = KNOWN_PLANS.map((p) => ({
@@ -320,6 +325,92 @@ function PlanPurchaseBreakdown({
   );
 }
 
+function PlanDismissBreakdown({
+  planDismissals,
+  totalDismissals,
+}: {
+  planDismissals: Record<string, number>;
+  totalDismissals: number;
+}) {
+  const total = totalDismissals > 0 ? totalDismissals : KNOWN_PLANS.reduce((s, p) => s + (planDismissals[p.id] ?? 0), 0);
+  if (total === 0) return null;
+
+  return (
+    <View style={pdbStyles.wrap}>
+      <View style={pdbStyles.titleRow}>
+        <Ionicons name="exit-outline" size={11} color="rgba(255,159,10,0.6)" />
+        <Text style={pdbStyles.title}>Dismissed on plan</Text>
+      </View>
+      {KNOWN_PLANS.map((p) => {
+        const count = planDismissals[p.id] ?? 0;
+        const pct = total > 0 ? (count / total) * 100 : 0;
+        if (count === 0) return null;
+        return (
+          <View key={p.id} style={pdbStyles.row}>
+            <Text style={pdbStyles.label}>{p.label}</Text>
+            <View style={pdbStyles.barWrap}>
+              <Bar value={count} max={total} color="#FF9F0A" />
+            </View>
+            <Text style={pdbStyles.count}>{count}</Text>
+            <Text style={pdbStyles.pct}>{pct.toFixed(0)}%</Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+const pdbStyles = StyleSheet.create({
+  wrap: {
+    gap: 6,
+    paddingTop: 4,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "rgba(255,159,10,0.15)",
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 2,
+  },
+  title: {
+    fontSize: 10,
+    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
+    color: "rgba(255,159,10,0.6)",
+    letterSpacing: 1.2,
+    textTransform: "uppercase",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  label: {
+    width: 60,
+    fontSize: 12,
+    fontFamily: "Inter_600SemiBold",
+    color: "#F5EDD8",
+  },
+  barWrap: {
+    flex: 1,
+  },
+  count: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(245,215,142,0.5)",
+    minWidth: 18,
+    textAlign: "right",
+  },
+  pct: {
+    fontSize: 12,
+    fontFamily: "Inter_700Bold",
+    color: "#FF9F0A",
+    minWidth: 30,
+    textAlign: "right",
+  },
+});
+
 const ppbStyles = StyleSheet.create({
   wrap: {
     gap: 6,
@@ -419,6 +510,7 @@ export function PaywallStatsModal({
                 paywallFirstSeenKey(name),
                 paywallPurchasedAtKey(name),
                 ...KNOWN_PLANS.map((p) => paywallPurchasePlanCountKey(name, p.id)),
+                ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanCountKey(name, p.id)),
               ]),
               ...KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id)),
             ];
@@ -727,6 +819,8 @@ export function PaywallStatsModal({
                         </View>
 
                         <PlanPurchaseBreakdown planPurchases={stat.planPurchases} totalPurchases={stat.purchases} />
+
+                        <PlanDismissBreakdown planDismissals={stat.planDismissals} totalDismissals={stat.dismissals} />
 
                         <TimeToConvert firstSeenAt={stat.firstSeenAt} purchasedAt={stat.purchasedAt} />
                       </View>

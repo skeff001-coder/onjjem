@@ -48,6 +48,16 @@ export function paywallDismissPlanCountKey(plan: string): string {
 }
 
 /**
+ * Per-surface-per-plan dismissal count key — records how many times a
+ * specific paywall surface was dismissed while a given plan was highlighted.
+ * Enables the dev stats screen to show plan abandonment broken down *per
+ * surface*, not just globally across all paywalls.
+ */
+export function paywallDismissSurfacePlanCountKey(surface: string, plan: string): string {
+  return `onjjem_paywall_dismiss_count_${surface}_${plan}`;
+}
+
+/**
  * Call once as early as possible after RevenueCat is configured (e.g. in the
  * root layout). Sets subscriber attributes that mark the install event:
  *
@@ -287,9 +297,15 @@ export async function trackPaywallDismissal(paywallName: string, selectedPlan?: 
     // which plan users had selected when they abandoned the paywall.
     if (selectedPlan) {
       const planKey = paywallDismissPlanCountKey(selectedPlan);
-      const rawPlan = await AsyncStorage.getItem(planKey);
-      const planCount = rawPlan ? (parseInt(rawPlan, 10) || 0) + 1 : 1;
-      await AsyncStorage.setItem(planKey, String(planCount));
+      const surfacePlanKey = paywallDismissSurfacePlanCountKey(paywallName, selectedPlan);
+      const pairs = await AsyncStorage.multiGet([planKey, surfacePlanKey]);
+      const pairMap = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
+      const planCount = pairMap[planKey] ? (parseInt(pairMap[planKey]!, 10) || 0) + 1 : 1;
+      const surfacePlanCount = pairMap[surfacePlanKey] ? (parseInt(pairMap[surfacePlanKey]!, 10) || 0) + 1 : 1;
+      await AsyncStorage.multiSet([
+        [planKey, String(planCount)],
+        [surfacePlanKey, String(surfacePlanCount)],
+      ]);
     }
   } catch {
     // Non-critical — analytics failures must never affect the user experience

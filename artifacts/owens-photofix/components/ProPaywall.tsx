@@ -75,7 +75,7 @@ export function ProPaywall({ visible, onClose }: Props) {
 
   const handleClose = () => {
     if (!purchasedRef.current) {
-      void trackPaywallDismissal("pro_paywall");
+      void trackPaywallDismissal("pro_paywall", "monthly");
     }
     onClose();
   };
