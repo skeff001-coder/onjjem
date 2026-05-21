@@ -123,11 +123,29 @@ The `release:ios` script is defined in `artifacts/owens-photofix/package.json`.
 
 ---
 
-## Get a push notification when your build finishes (optional)
+## Get notified when your build finishes (optional)
 
-Builds take 20–40 minutes. Instead of watching the console, you can get a push alert straight to your iPhone when the build succeeds or fails.
+Builds take 20–40 minutes. Instead of watching the console, you can receive an email and/or a push alert on your iPhone when the build succeeds or fails.
 
-**One-time setup (2 minutes):**
+Both channels use [ntfy.sh](https://ntfy.sh) — no account or API key required.
+
+---
+
+### Option A — Email notification
+
+Set one secret in Replit and you will get an email every time a build succeeds or fails.
+
+**One-time setup:**
+
+1. In Replit, open **Secrets** and add a new secret:
+   - **Key:** `NOTIFY_EMAIL`
+   - **Value:** your email address (e.g. `skeff001@yahoo.com`)
+
+That's it. ntfy.sh will forward each build notification to your inbox for free.
+
+---
+
+### Option B — iPhone push notification (ntfy app)
 
 1. Install the free **ntfy** app on your iPhone — search "ntfy" in the App Store or go to [ntfy.sh](https://ntfy.sh).
 2. Open the app and tap **Subscribe to topic**.
@@ -136,11 +154,19 @@ Builds take 20–40 minutes. Instead of watching the console, you can get a push
    - **Key:** `NOTIFY_TOPIC`
    - **Value:** the topic name you chose (e.g. `onjjem-builds-skeff001`)
 
-That's it. The next time you run `release:ios`, you will receive:
-- A **green** notification when the build is submitted to App Store Connect.
-- A **red** notification if the build or submit step fails, so you can fix it quickly.
+---
 
-If you skip this setup the release script still works normally — notifications are silently skipped.
+### Using both at the same time
+
+Set both `NOTIFY_EMAIL` and `NOTIFY_TOPIC` to receive the same notification via email **and** as a push alert on your iPhone simultaneously.
+
+---
+
+In all cases the next time you run `release:ios`, you will receive:
+- A **success** notification when the build is submitted to App Store Connect.
+- A **failure** notification if the build or submit step fails, so you can fix it quickly.
+
+If neither secret is set the release script still works normally — notifications are silently skipped.
 
 ---
 

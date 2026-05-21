@@ -26,6 +26,10 @@
  * Set NOTIFY_TOPIC in Replit Secrets (e.g. "onjjem-builds-skeff001").
  * Install the free ntfy app on your iPhone and subscribe to that topic.
  * If NOTIFY_TOPIC is not set the release still runs — notifications are skipped.
+ *
+ * Set NOTIFY_EMAIL in Replit Secrets to also receive an email when the build
+ * succeeds or fails. ntfy.sh forwards each notification to that address for free.
+ * NOTIFY_EMAIL works with or without NOTIFY_TOPIC.
  */
 
 "use strict";
@@ -64,12 +68,21 @@ const YES = process.argv.includes("--yes") || !process.stdin.isTTY;
 function notify(title, message, { priority = "default", tags = [] } = {}) {
   return new Promise((resolve) => {
     const topic = process.env.NOTIFY_TOPIC;
-    if (!topic) {
-      console.log(`[notify] NOTIFY_TOPIC not set — skipping: ${title}`);
+    const email = process.env.NOTIFY_EMAIL;
+
+    if (!topic && !email) {
+      console.log(`[notify] NOTIFY_TOPIC and NOTIFY_EMAIL not set — skipping: ${title}`);
       return resolve();
     }
 
-    const body = JSON.stringify({ topic, title, message, priority, tags });
+    // ntfy.sh requires a topic even when only forwarding to email.
+    // Use a deterministic fallback so email-only mode still works.
+    const effectiveTopic = topic || "owens-photofix-email-only";
+
+    const payload = { topic: effectiveTopic, title, message, priority, tags };
+    if (email) payload.email = email;
+
+    const body = JSON.stringify(payload);
 
     const req = https.request(
       {
@@ -264,12 +277,15 @@ function listFilesToSync() {
  */
 function checkEnvVars() {
   const required = ["EXPO_TOKEN"];
-  const optional = ["NOTIFY_TOPIC"];
+  const optional = [
+    { key: "NOTIFY_TOPIC", hint: "push notifications (ntfy app on iPhone) will be skipped" },
+    { key: "NOTIFY_EMAIL", hint: "email notifications will be skipped" },
+  ];
 
   const missing = required.filter((v) => !process.env[v]);
-  const warnings = optional.filter((v) => !process.env[v]).map(
-    (v) => `${v} not set — push notifications will be skipped`,
-  );
+  const warnings = optional
+    .filter(({ key }) => !process.env[key])
+    .map(({ key, hint }) => `${key} not set — ${hint}`);
 
   return { missing, warnings };
 }
