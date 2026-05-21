@@ -569,6 +569,81 @@ const gh = StyleSheet.create({
   },
 });
 
+// ── Filter Chips ──
+const ALL_FILTER = "all";
+
+function FilterChips({
+  modes,
+  active,
+  onSelect,
+}: {
+  modes: string[];
+  active: string;
+  onSelect: (mode: string) => void;
+}) {
+  const chips = [ALL_FILTER, ...modes];
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={fc.row}
+      style={fc.strip}
+    >
+      {chips.map((chip) => {
+        const isActive = chip === active;
+        const label = chip === ALL_FILTER ? "All" : (ENHANCEMENT_LABELS[chip] ?? chip);
+        return (
+          <TouchableOpacity
+            key={chip}
+            style={[fc.chip, isActive && fc.chipActive]}
+            onPress={() => onSelect(chip)}
+            activeOpacity={0.75}
+          >
+            <Text style={[fc.chipText, isActive && fc.chipTextActive]}>{label}</Text>
+          </TouchableOpacity>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+const fc = StyleSheet.create({
+  strip: {
+    flexShrink: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: GOLD_BORDER,
+    backgroundColor: CREAM,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    gap: 8,
+  },
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: GOLD_BORDER,
+    backgroundColor: CREAM,
+  },
+  chipActive: {
+    backgroundColor: GOLD,
+    borderColor: GOLD,
+  },
+  chipText: {
+    fontSize: 13,
+    fontWeight: "600" as const,
+    fontFamily: "Inter_600SemiBold",
+    color: MUTED,
+  },
+  chipTextActive: {
+    color: "#fff",
+  },
+});
+
 // ── Main Screen ──
 export default function MyPhotosScreen() {
   const insets = useSafeAreaInsets();
@@ -580,6 +655,7 @@ export default function MyPhotosScreen() {
   const [selectedEntry, setSelectedEntry] = useState<HistoryEntry | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<string>(ALL_FILTER);
   const hintOpacity = useRef(new Animated.Value(0)).current;
   const hintAnimRef = useRef<Animated.CompositeAnimation | null>(null);
 
@@ -653,6 +729,24 @@ export default function MyPhotosScreen() {
     await deleteFromHistory(id);
     setHistory((prev) => prev.filter((e) => e.id !== id));
   };
+
+  // Derive the set of modes that actually appear in history (preserving ENHANCEMENT_LABELS order)
+  const availableModes = Object.keys(ENHANCEMENT_LABELS).filter((m) =>
+    history.some((e) => e.modes.includes(m)),
+  );
+
+  // If the active filter mode was removed from history (e.g. all matching items deleted),
+  // reset back to "All" so the user is never left with an empty gallery and no way to recover.
+  useEffect(() => {
+    if (activeFilter !== ALL_FILTER && !availableModes.includes(activeFilter)) {
+      setActiveFilter(ALL_FILTER);
+    }
+  }, [availableModes, activeFilter]);
+
+  const filteredHistory =
+    activeFilter === ALL_FILTER
+      ? history
+      : history.filter((e) => e.modes.includes(activeFilter));
 
   const handleLabelChange = useCallback((id: string, label: string) => {
     setHistory((prev) =>
@@ -732,23 +826,42 @@ export default function MyPhotosScreen() {
           </TouchableOpacity>
         </ScrollView>
       ) : (
-        <FlatList
-          data={history}
-          keyExtractor={(item) => item.id}
-          numColumns={3}
-          renderItem={renderThumb}
-          contentContainerStyle={[s.grid, { paddingBottom: insets.bottom + 32 }]}
-          columnWrapperStyle={s.gridRow}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={s.listHeader}>
-              <Text style={s.listHeaderText}>
-                {history.length} {history.length === 1 ? "restoration" : "restorations"} saved
-              </Text>
-              <Text style={s.listHeaderSub}>Tap any photo to compare before &amp; after</Text>
+        <>
+          {availableModes.length >= 1 && (
+            <FilterChips
+              modes={availableModes}
+              active={activeFilter}
+              onSelect={setActiveFilter}
+            />
+          )}
+          {filteredHistory.length === 0 ? (
+            <View style={s.emptyWrap}>
+              <View style={s.emptyIconWrap}>
+                <Ionicons name="filter-outline" size={40} color={GOLD_BORDER} />
+              </View>
+              <Text style={s.emptyTitle}>No {ENHANCEMENT_LABELS[activeFilter] ?? activeFilter} photos</Text>
+              <Text style={s.emptySub}>Try selecting a different filter above.</Text>
             </View>
-          }
-        />
+          ) : (
+            <FlatList
+              data={filteredHistory}
+              keyExtractor={(item) => item.id}
+              numColumns={3}
+              renderItem={renderThumb}
+              contentContainerStyle={[s.grid, { paddingBottom: insets.bottom + 32 }]}
+              columnWrapperStyle={s.gridRow}
+              showsVerticalScrollIndicator={false}
+              ListHeaderComponent={
+                <View style={s.listHeader}>
+                  <Text style={s.listHeaderText}>
+                    {filteredHistory.length} {filteredHistory.length === 1 ? "restoration" : "restorations"}{activeFilter !== ALL_FILTER ? ` · ${ENHANCEMENT_LABELS[activeFilter] ?? activeFilter}` : " saved"}
+                  </Text>
+                  <Text style={s.listHeaderSub}>Tap any photo to compare before &amp; after</Text>
+                </View>
+              }
+            />
+          )}
+        </>
       )}
 
       <DetailModal
