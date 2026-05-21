@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   Linking,
   Modal,
   ScrollView,
@@ -26,6 +27,10 @@ type Plan = "perpic" | "monthly" | "annual";
 export function SubscribeModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const [plan, setPlan] = useState<Plan>("annual");
+  const [purchased, setPurchased] = useState(false);
+  const [purchasedPlan, setPurchasedPlan] = useState<Plan>("annual");
+  const successOpacity = useRef(new Animated.Value(0)).current;
+  const successScale = useRef(new Animated.Value(0.85)).current;
   const {
     monthlyPackage,
     annualPackage,
@@ -44,9 +49,23 @@ export function SubscribeModal({ visible, onClose }: Props) {
   useEffect(() => {
     if (visible) {
       purchasedRef.current = false;
+      setPurchased(false);
+      successOpacity.setValue(0);
+      successScale.setValue(0.85);
       void trackPaywallImpression("subscribe_modal");
     }
   }, [visible]);
+
+  useEffect(() => {
+    if (purchased) {
+      Animated.parallel([
+        Animated.timing(successOpacity, { toValue: 1, duration: 350, useNativeDriver: true }),
+        Animated.spring(successScale, { toValue: 1, useNativeDriver: true, bounciness: 10 }),
+      ]).start();
+      const timer = setTimeout(() => { onClose(); }, 2200);
+      return () => clearTimeout(timer);
+    }
+  }, [purchased]);
 
   const handleClose = () => {
     if (!purchasedRef.current) {
@@ -117,16 +136,58 @@ export function SubscribeModal({ visible, onClose }: Props) {
       await purchase(selected.pkg);
       purchasedRef.current = true;
       void trackPaywallPurchase("subscribe_modal", plan);
-      onClose();
+      setPurchasedPlan(plan);
+      setPurchased(true);
     } catch (err: any) {
       if (err?.userCancelled) return;
       Alert.alert("Purchase Failed", err?.message ?? "Unable to complete the purchase.");
     }
   };
 
+  const successPlan = PLANS.find((p) => p.id === purchasedPlan)!;
+  const successPerks =
+    purchasedPlan === "perpic"
+      ? ["Full HD quality output", "All 6 modes", "No watermark"]
+      : purchasedPlan === "monthly"
+      ? ["Unlimited HD photos", "All 6 modes combined", "Cancel anytime"]
+      : ["Unlimited HD photos", "All 6 modes combined", "Save over 80%"];
+
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>
       <View style={s.root}>
+
+        {purchased && (
+          <Animated.View style={[s.successOverlay, { opacity: successOpacity, transform: [{ scale: successScale }] }]}>
+            <LinearGradient colors={["#0D160F", "#12200F", "#0D160F"]} style={s.successCard}>
+              <LinearGradient
+                colors={[successPlan.color, successPlan.color + "AA"]}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={s.successBar}
+              />
+              <View style={s.successInner}>
+                <View style={[s.successIconWrap, { backgroundColor: successPlan.color + "22", borderColor: successPlan.color + "55" }]}>
+                  <Ionicons name="checkmark-circle" size={56} color={successPlan.color} />
+                </View>
+                <Text style={s.successTitle}>You're now Pro!</Text>
+                <Text style={[s.successPlanLabel, { color: successPlan.color }]}>
+                  {successPlan.label} plan activated
+                </Text>
+                <Text style={s.successBody}>
+                  Full HD quality, all 6 enhancement modes, and unlimited photos are now unlocked on your account.
+                </Text>
+                <View style={s.successDivider} />
+                <View style={s.successPerks}>
+                  {successPerks.map((perk) => (
+                    <View key={perk} style={s.successPerkRow}>
+                      <Ionicons name="checkmark-circle" size={16} color={successPlan.color} />
+                      <Text style={s.successPerkText}>{perk}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </LinearGradient>
+          </Animated.View>
+        )}
 
         {/* Gold bar */}
         <LinearGradient
@@ -414,5 +475,79 @@ const s = StyleSheet.create({
     color: "rgba(201,150,12,0.55)",
     textAlign: "center",
     textDecorationLine: "underline",
+  },
+
+  successOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#0E0C08",
+    padding: 24,
+  },
+  successCard: {
+    width: "100%",
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+  },
+  successBar: { height: 4 },
+  successInner: {
+    padding: 28,
+    alignItems: "center",
+    gap: 10,
+  },
+  successIconWrap: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    marginBottom: 4,
+  },
+  successTitle: {
+    fontSize: 26,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: CREAM,
+    letterSpacing: -0.3,
+  },
+  successPlanLabel: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 0.2,
+  },
+  successBody: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.55)",
+    textAlign: "center",
+    lineHeight: 21,
+    paddingHorizontal: 4,
+    marginTop: 2,
+  },
+  successDivider: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "rgba(255,255,255,0.07)",
+    marginVertical: 4,
+  },
+  successPerks: { width: "100%", gap: 10 },
+  successPerkRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  successPerkText: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.75)",
   },
 });

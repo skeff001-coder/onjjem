@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   Image,
   Linking,
   Modal,
@@ -60,6 +62,9 @@ const PRO_FEATURES = [
 export function ProPaywall({ visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const [purchased, setPurchased] = useState(false);
+  const successOpacity = useRef(new Animated.Value(0)).current;
+  const successScale = useRef(new Animated.Value(0.85)).current;
   const { monthlyPackage, purchase, restore, isPurchasing, isRestoring, isSubscribed } =
     useSubscription();
 
@@ -70,9 +75,23 @@ export function ProPaywall({ visible, onClose }: Props) {
   useEffect(() => {
     if (visible) {
       purchasedRef.current = false;
+      setPurchased(false);
+      successOpacity.setValue(0);
+      successScale.setValue(0.85);
       void trackPaywallImpression("pro_paywall");
     }
   }, [visible]);
+
+  useEffect(() => {
+    if (purchased) {
+      Animated.parallel([
+        Animated.timing(successOpacity, { toValue: 1, duration: 350, useNativeDriver: true }),
+        Animated.spring(successScale, { toValue: 1, useNativeDriver: true, bounciness: 10 }),
+      ]).start();
+      const timer = setTimeout(() => { onClose(); }, 2200);
+      return () => clearTimeout(timer);
+    }
+  }, [purchased]);
 
   const handleClose = () => {
     if (!purchasedRef.current) {
@@ -101,7 +120,7 @@ export function ProPaywall({ visible, onClose }: Props) {
       await purchase(monthlyPackage);
       purchasedRef.current = true;
       void trackPaywallPurchase("pro_paywall", "monthly");
-      onClose();
+      setPurchased(true);
     } catch (err: any) {
       if (err?.userCancelled) return;
       Alert.alert("Purchase Failed", err?.message ?? "Unable to complete the purchase.");
@@ -124,6 +143,9 @@ export function ProPaywall({ visible, onClose }: Props) {
 
   const loading = isPurchasing || isRestoring;
 
+  const SUCCESS_COLOR = "#F5C842";
+  const SUCCESS_PERKS = ["Unlimited HD photos", "All 6 modes combined", "No watermark"];
+
   return (
     <Modal
       visible={visible}
@@ -132,6 +154,40 @@ export function ProPaywall({ visible, onClose }: Props) {
       onRequestClose={handleClose}
     >
       <View style={[s.root, { backgroundColor: colors.background }]}>
+
+        {purchased && (
+          <Animated.View style={[s.successOverlay, { opacity: successOpacity, transform: [{ scale: successScale }] }]}>
+            <LinearGradient colors={["#0D160F", "#12200F", "#0D160F"]} style={s.successCard}>
+              <LinearGradient
+                colors={[SUCCESS_COLOR, SUCCESS_COLOR + "AA"]}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={s.successBar}
+              />
+              <View style={s.successInner}>
+                <View style={[s.successIconWrap, { backgroundColor: SUCCESS_COLOR + "22", borderColor: SUCCESS_COLOR + "55" }]}>
+                  <Ionicons name="checkmark-circle" size={56} color={SUCCESS_COLOR} />
+                </View>
+                <Text style={s.successTitle}>You're now Pro!</Text>
+                <Text style={[s.successPlanLabel, { color: SUCCESS_COLOR }]}>
+                  Monthly plan activated
+                </Text>
+                <Text style={s.successBody}>
+                  Full HD quality, all 6 enhancement modes, and unlimited photos are now unlocked on your account.
+                </Text>
+                <View style={s.successDivider} />
+                <View style={s.successPerks}>
+                  {SUCCESS_PERKS.map((perk) => (
+                    <View key={perk} style={s.successPerkRow}>
+                      <Ionicons name="checkmark-circle" size={16} color={SUCCESS_COLOR} />
+                      <Text style={s.successPerkText}>{perk}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </LinearGradient>
+          </Animated.View>
+        )}
+
         <View style={[s.topBar, { paddingTop: topPad + 6 }]}>
           <TouchableOpacity style={[s.closeBtn, { backgroundColor: colors.card }]} onPress={handleClose} activeOpacity={0.7}>
             <Ionicons name="close" size={20} color={colors.mutedForeground} />
@@ -464,5 +520,79 @@ const s = StyleSheet.create({
   legalLinkSep: {
     fontSize: 10,
     opacity: 0.3,
+  },
+
+  successOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#0E0C08",
+    padding: 24,
+  },
+  successCard: {
+    width: "100%",
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+  },
+  successBar: { height: 4 },
+  successInner: {
+    padding: 28,
+    alignItems: "center",
+    gap: 10,
+  },
+  successIconWrap: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    marginBottom: 4,
+  },
+  successTitle: {
+    fontSize: 26,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: "#FAF7F2",
+    letterSpacing: -0.3,
+  },
+  successPlanLabel: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 0.2,
+  },
+  successBody: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.55)",
+    textAlign: "center",
+    lineHeight: 21,
+    paddingHorizontal: 4,
+    marginTop: 2,
+  },
+  successDivider: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "rgba(255,255,255,0.07)",
+    marginVertical: 4,
+  },
+  successPerks: { width: "100%", gap: 10 },
+  successPerkRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  successPerkText: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.75)",
   },
 });
