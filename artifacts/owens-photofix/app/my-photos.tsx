@@ -37,6 +37,9 @@ const MUTED = "#7A6E57";
 const SCREEN_W = Dimensions.get("window").width;
 const THUMB_SIZE = (SCREEN_W - 18 * 2 - 10) / 3;
 
+const SORT_ORDER_KEY = "gallery_sort_order";
+type SortOrder = "newest" | "oldest";
+
 const ENHANCEMENT_LABELS: Record<string, string> = {
   sharpen: "Sharpen",
   brighten: "Brighten",
@@ -656,8 +659,25 @@ export default function MyPhotosScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string>(ALL_FILTER);
+  const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
   const hintOpacity = useRef(new Animated.Value(0)).current;
   const hintAnimRef = useRef<Animated.CompositeAnimation | null>(null);
+
+  // Load persisted sort order on mount
+  useEffect(() => {
+    void AsyncStorage.getItem(SORT_ORDER_KEY).then((saved) => {
+      if (saved === "oldest" || saved === "newest") setSortOrder(saved);
+    });
+  }, []);
+
+  const toggleSortOrder = useCallback(async () => {
+    await Haptics.selectionAsync();
+    setSortOrder((prev) => {
+      const next: SortOrder = prev === "newest" ? "oldest" : "newest";
+      void AsyncStorage.setItem(SORT_ORDER_KEY, next);
+      return next;
+    });
+  }, []);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -743,10 +763,16 @@ export default function MyPhotosScreen() {
     }
   }, [availableModes, activeFilter]);
 
-  const filteredHistory =
-    activeFilter === ALL_FILTER
-      ? history
-      : history.filter((e) => e.modes.includes(activeFilter));
+  const filteredHistory = React.useMemo(() => {
+    const base =
+      activeFilter === ALL_FILTER
+        ? history
+        : history.filter((e) => e.modes.includes(activeFilter));
+    if (sortOrder === "oldest") {
+      return [...base].sort((a, b) => a.timestamp - b.timestamp);
+    }
+    return [...base].sort((a, b) => b.timestamp - a.timestamp);
+  }, [history, activeFilter, sortOrder]);
 
   const handleLabelChange = useCallback((id: string, label: string) => {
     setHistory((prev) =>
@@ -793,7 +819,14 @@ export default function MyPhotosScreen() {
           <Text style={s.headerEyebrow}>ONJJEM</Text>
           <Text style={s.headerTitle}>My Restorations</Text>
         </TouchableOpacity>
-        <View style={s.headerRight} />
+        <TouchableOpacity style={s.sortBtn} onPress={toggleSortOrder} activeOpacity={0.7}>
+          <Ionicons
+            name={sortOrder === "newest" ? "arrow-down" : "arrow-up"}
+            size={14}
+            color={GOLD}
+          />
+          <Text style={s.sortBtnText}>{sortOrder === "newest" ? "New" : "Old"}</Text>
+        </TouchableOpacity>
       </View>
 
       {loading ? (
@@ -900,7 +933,25 @@ const s = StyleSheet.create({
   headerCenter: { flex: 1, alignItems: "center", gap: 1 },
   headerEyebrow: { fontSize: 10, fontWeight: "700" as const, fontFamily: "Inter_700Bold", color: GOLD, letterSpacing: 3 },
   headerTitle: { fontSize: 18, fontWeight: "700" as const, fontFamily: "Inter_700Bold", color: DARK, letterSpacing: 0.2 },
-  headerRight: { width: 40 },
+  sortBtn: {
+    width: 52,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: GOLD_BG,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 3,
+    borderWidth: 1,
+    borderColor: GOLD_BORDER,
+  },
+  sortBtnText: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    fontFamily: "Inter_700Bold",
+    color: GOLD,
+    letterSpacing: 0.3,
+  },
 
   grid: { paddingHorizontal: 18, paddingTop: 14 },
   gridRow: { gap: 5 },
