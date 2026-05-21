@@ -377,6 +377,7 @@ function PlanBreakdown({
     <View style={pbStyles.wrap}>
       <View style={pbStyles.headerRow}>
         <View style={pbStyles.labelSpacer} />
+        {totalP > 0 && <View style={pbStyles.shareHeader} />}
         <View style={pbStyles.colHeader}>
           <Ionicons name="card-outline" size={10} color="rgba(52,199,89,0.7)" />
           <Text style={[pbStyles.colHeaderText, { color: "rgba(52,199,89,0.7)" }]}>Bought</Text>
@@ -390,9 +391,19 @@ function PlanBreakdown({
         const bought = planPurchases[p.id] ?? 0;
         const left = planDismissals[p.id] ?? 0;
         if (bought === 0 && left === 0) return null;
+        const sharePct = totalP > 0 ? Math.round((bought / totalP) * 100) : null;
         return (
           <View key={p.id} style={pbStyles.row}>
             <Text style={pbStyles.label}>{p.label}</Text>
+            {totalP > 0 && (
+              <View style={pbStyles.shareCell}>
+                {sharePct !== null && sharePct > 0 ? (
+                  <Text style={pbStyles.sharePct}>{sharePct}%</Text>
+                ) : (
+                  <Text style={pbStyles.sharePctDim}>—</Text>
+                )}
+              </View>
+            )}
             <View style={pbStyles.cell}>
               <Bar value={bought} max={Math.max(1, totalP)} color="#34C759" />
               <Text style={[pbStyles.count, { color: bought > 0 ? "#34C759" : "rgba(245,215,142,0.25)" }]}>
@@ -469,6 +480,25 @@ const pbStyles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Inter_700Bold",
     minWidth: 18,
+    textAlign: "right",
+  },
+  shareHeader: {
+    width: 38,
+  },
+  shareCell: {
+    width: 38,
+    alignItems: "flex-end",
+  },
+  sharePct: {
+    fontSize: 12,
+    fontFamily: "Inter_700Bold",
+    color: "rgba(52,199,89,0.85)",
+    textAlign: "right",
+  },
+  sharePctDim: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(245,215,142,0.2)",
     textAlign: "right",
   },
 });
