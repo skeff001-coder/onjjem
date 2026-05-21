@@ -26,7 +26,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { deleteFromHistory, loadHistory, updateHistoryLabel, type HistoryEntry } from "@/lib/photoHistory";
-import { resetOnboardingHints } from "@/lib/onboardingHints";
+import { resetOnboardingHints, ONBOARDING_HINT_KEYS, ONBOARDING_HINT_LABELS, type OnboardingHintKey } from "@/lib/onboardingHints";
 import { PinchZoomView } from "@/components/PinchZoomView";
 
 const GOLD = "#C9960C";
@@ -656,6 +656,204 @@ const fc = StyleSheet.create({
   },
 });
 
+// ── Hint Reset Modal ──
+function HintResetModal({
+  visible,
+  onClose,
+  onConfirm,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onConfirm: (keys: OnboardingHintKey[]) => void;
+}) {
+  const insets = useSafeAreaInsets();
+  const [selected, setSelected] = useState<Set<OnboardingHintKey>>(
+    () => new Set(ONBOARDING_HINT_KEYS),
+  );
+
+  useEffect(() => {
+    if (visible) {
+      setSelected(new Set(ONBOARDING_HINT_KEYS));
+    }
+  }, [visible]);
+
+  const toggleKey = (key: OnboardingHintKey) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
+
+  const allSelected = selected.size === ONBOARDING_HINT_KEYS.length;
+
+  const toggleAll = () => {
+    if (allSelected) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(ONBOARDING_HINT_KEYS));
+    }
+  };
+
+  const handleConfirm = () => {
+    const keys = ONBOARDING_HINT_KEYS.filter((k) => selected.has(k));
+    onConfirm(keys);
+  };
+
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+      <View style={hr.overlay}>
+        <View style={[hr.sheet, { paddingBottom: insets.bottom + 16 }]}>
+          <LinearGradient colors={[GOLD, "#F5D78E", GOLD, "#A67C00"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={hr.goldBar} />
+
+          <View style={hr.headerRow}>
+            <Ionicons name="refresh-circle-outline" size={20} color={GOLD} />
+            <Text style={hr.title}>Reset Hints</Text>
+          </View>
+          <Text style={hr.subtitle}>Choose which hints to clear. They will reappear the next time each flow is triggered.</Text>
+
+          <View style={hr.divider} />
+
+          <TouchableOpacity style={hr.selectAllRow} onPress={toggleAll} activeOpacity={0.7}>
+            <View style={[hr.checkbox, allSelected && hr.checkboxChecked]}>
+              {allSelected && <Ionicons name="checkmark" size={13} color="#fff" />}
+            </View>
+            <Text style={hr.selectAllText}>Select all</Text>
+          </TouchableOpacity>
+
+          {ONBOARDING_HINT_KEYS.map((key) => {
+            const isChecked = selected.has(key);
+            return (
+              <TouchableOpacity
+                key={key}
+                style={hr.row}
+                onPress={() => toggleKey(key)}
+                activeOpacity={0.7}
+              >
+                <View style={[hr.checkbox, isChecked && hr.checkboxChecked]}>
+                  {isChecked && <Ionicons name="checkmark" size={13} color="#fff" />}
+                </View>
+                <Text style={hr.rowLabel}>{ONBOARDING_HINT_LABELS[key]}</Text>
+                <Text style={hr.rowKey}>{key}</Text>
+              </TouchableOpacity>
+            );
+          })}
+
+          <View style={hr.divider} />
+
+          <View style={hr.btnRow}>
+            <TouchableOpacity style={hr.cancelBtn} onPress={onClose} activeOpacity={0.7}>
+              <Text style={hr.cancelBtnText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[hr.confirmBtn, selected.size === 0 && hr.confirmBtnDisabled]}
+              onPress={handleConfirm}
+              activeOpacity={0.8}
+              disabled={selected.size === 0}
+            >
+              <Ionicons name="refresh" size={15} color={selected.size === 0 ? MUTED : "#fff"} />
+              <Text style={[hr.confirmBtnText, selected.size === 0 && hr.confirmBtnTextDisabled]}>
+                Reset {selected.size === ONBOARDING_HINT_KEYS.length ? "All" : selected.size > 0 ? `${selected.size}` : "None"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+const hr = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.52)",
+    justifyContent: "flex-end",
+  },
+  sheet: {
+    backgroundColor: CREAM,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    overflow: "hidden",
+    paddingHorizontal: 20,
+  },
+  goldBar: { height: 3, marginHorizontal: -20 },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingTop: 20,
+    paddingBottom: 6,
+  },
+  title: { fontSize: 17, fontWeight: "700" as const, fontFamily: "Inter_700Bold", color: DARK },
+  subtitle: { fontSize: 13, color: MUTED, fontFamily: "Inter_400Regular", lineHeight: 18, paddingBottom: 14 },
+  divider: { height: 1, backgroundColor: GOLD_BORDER, marginVertical: 4 },
+  selectAllRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 12,
+  },
+  selectAllText: { fontSize: 13, fontWeight: "600" as const, fontFamily: "Inter_600SemiBold", color: DARK },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 11,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(201,150,12,0.12)",
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: GOLD_BORDER,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  checkboxChecked: {
+    backgroundColor: GOLD,
+    borderColor: GOLD,
+  },
+  rowLabel: { fontSize: 14, fontWeight: "600" as const, fontFamily: "Inter_600SemiBold", color: DARK, flex: 1 },
+  rowKey: { fontSize: 10, color: MUTED, fontFamily: "Inter_400Regular", letterSpacing: 0.2 },
+  btnRow: {
+    flexDirection: "row",
+    gap: 10,
+    paddingTop: 16,
+  },
+  cancelBtn: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: GOLD_BORDER,
+    backgroundColor: GOLD_BG,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cancelBtnText: { fontSize: 14, fontWeight: "600" as const, fontFamily: "Inter_600SemiBold", color: DARK },
+  confirmBtn: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 14,
+    borderRadius: 14,
+    backgroundColor: GOLD,
+  },
+  confirmBtnDisabled: { backgroundColor: GOLD_BG, borderWidth: 1.5, borderColor: GOLD_BORDER },
+  confirmBtnText: { fontSize: 14, fontWeight: "700" as const, fontFamily: "Inter_700Bold", color: "#fff" },
+  confirmBtnTextDisabled: { color: MUTED },
+});
+
 // ── Main Screen ──
 export default function MyPhotosScreen() {
   const insets = useSafeAreaInsets();
@@ -667,6 +865,7 @@ export default function MyPhotosScreen() {
   const [selectedEntry, setSelectedEntry] = useState<HistoryEntry | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const [hintResetModalVisible, setHintResetModalVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string>(ALL_FILTER);
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
   const hintOpacity = useRef(new Animated.Value(0)).current;
@@ -815,13 +1014,9 @@ export default function MyPhotosScreen() {
         <TouchableOpacity
           style={s.headerCenter}
           activeOpacity={1}
-          onLongPress={async () => {
-            try {
-              await resetOnboardingHints();
-              Alert.alert("Hints Reset", "All first-run hints have been cleared. They will reappear the next time each flow is triggered.");
-            } catch {
-              Alert.alert("Reset Failed", "Could not clear hints. Please try again.");
-            }
+          onLongPress={() => {
+            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            setHintResetModalVisible(true);
           }}
           delayLongPress={1500}
         >
@@ -912,6 +1107,26 @@ export default function MyPhotosScreen() {
         onClose={() => setModalVisible(false)}
         onDelete={handleDelete}
         onLabelChange={handleLabelChange}
+      />
+
+      <HintResetModal
+        visible={hintResetModalVisible}
+        onClose={() => setHintResetModalVisible(false)}
+        onConfirm={async (keys) => {
+          setHintResetModalVisible(false);
+          try {
+            await resetOnboardingHints(keys);
+            const label =
+              keys.length === ONBOARDING_HINT_KEYS.length
+                ? "All hints"
+                : keys.length === 1
+                  ? `"${ONBOARDING_HINT_LABELS[keys[0]]}"`
+                  : `${keys.length} hints`;
+            Alert.alert("Hints Reset", `${label} cleared. ${keys.length === 1 ? "It" : "They"} will reappear the next time each flow is triggered.`);
+          } catch {
+            Alert.alert("Reset Failed", "Could not clear hints. Please try again.");
+          }
+        }}
       />
     </View>
   );
