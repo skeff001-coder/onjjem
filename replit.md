@@ -23,13 +23,29 @@ directory (avoiding Replit's large workspace and git restrictions), then chains
 `eas build --platform ios --profile production --non-interactive` followed by
 `eas submit --platform ios --profile production --non-interactive`.
 
-For new-feature or breaking-change releases, pass the flag directly to `release:ios`:
+Three release variants are available depending on the scope of the release:
+
+| Script | Bump type | Example | When to use |
+|---|---|---|---|
+| `release:ios` | patch | 1.0.0 → 1.0.1 | Bug fixes, small tweaks |
+| `release:ios:minor` | minor | 1.0.1 → 1.1.0 | New features |
+| `release:ios:major` | major | 1.1.0 → 2.0.0 | Breaking changes |
 
 ```bash
-# minor bump (e.g. 1.0.1 → 1.1.0) — new features
-pnpm --filter @workspace/owens-photofix run release:ios -- --minor
+# patch bump (default) — bug fixes
+pnpm --filter @workspace/owens-photofix run release:ios
 
-# major bump (e.g. 1.1.0 → 2.0.0) — breaking changes
+# minor bump — new features
+pnpm --filter @workspace/owens-photofix run release:ios:minor
+
+# major bump — breaking changes
+pnpm --filter @workspace/owens-photofix run release:ios:major
+```
+
+You can also pass the flag directly to `release:ios` if you prefer:
+
+```bash
+pnpm --filter @workspace/owens-photofix run release:ios -- --minor
 pnpm --filter @workspace/owens-photofix run release:ios -- --major
 ```
 
