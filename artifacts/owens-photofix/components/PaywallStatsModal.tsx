@@ -633,6 +633,23 @@ export function PaywallStatsModal({
     }
   }, [surfaces]);
 
+  const paywallStatKeys = [
+    PAYWALL_VIEW_COUNT_KEY,
+    PAYWALL_DISMISS_COUNT_KEY,
+    FIRST_PAYWALL_SEEN_KEY,
+    ...KNOWN_SURFACES.flatMap((name) => [
+      paywallViewCountKey(name),
+      paywallDismissCountKey(name),
+      paywallPurchaseCountKey(name),
+      paywallFirstSeenKey(name),
+      paywallPurchasedAtKey(name),
+      ...KNOWN_PLANS.map((p) => paywallPurchasePlanCountKey(name, p.id)),
+      ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanCountKey(name, p.id)),
+    ]),
+    ...KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id)),
+    ...KNOWN_PLANS.map((p) => paywallPurchaseGlobalPlanCountKey(p.id)),
+  ];
+
   const handleReset = useCallback(() => {
     Alert.alert(
       "Reset stats?",
@@ -643,24 +660,7 @@ export function PaywallStatsModal({
           text: "Reset",
           style: "destructive",
           onPress: async () => {
-            const keys = [
-              PAYWALL_VIEW_COUNT_KEY,
-              PAYWALL_DISMISS_COUNT_KEY,
-              INSTALL_FIRST_SEEN_KEY,
-              FIRST_PAYWALL_SEEN_KEY,
-              ...KNOWN_SURFACES.flatMap((name) => [
-                paywallViewCountKey(name),
-                paywallDismissCountKey(name),
-                paywallPurchaseCountKey(name),
-                paywallFirstSeenKey(name),
-                paywallPurchasedAtKey(name),
-                ...KNOWN_PLANS.map((p) => paywallPurchasePlanCountKey(name, p.id)),
-                ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanCountKey(name, p.id)),
-              ]),
-              ...KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id)),
-              ...KNOWN_PLANS.map((p) => paywallPurchaseGlobalPlanCountKey(p.id)),
-            ];
-            await AsyncStorage.multiRemove(keys);
+            await AsyncStorage.multiRemove(paywallStatKeys);
             try {
               await Purchases.setAttributes({
                 paywall_view_count: "0",
@@ -676,7 +676,36 @@ export function PaywallStatsModal({
         },
       ],
     );
-  }, [refresh]);
+  }, [refresh, paywallStatKeys]);
+
+  const handleFullReset = useCallback(() => {
+    Alert.alert(
+      "Full reset?",
+      'This will also clear the install timestamp, making the "Install \u2192 First paywall view" card go blank. It cannot be undone.',
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Full Reset",
+          style: "destructive",
+          onPress: async () => {
+            await AsyncStorage.multiRemove([...paywallStatKeys, INSTALL_FIRST_SEEN_KEY]);
+            try {
+              await Purchases.setAttributes({
+                paywall_view_count: "0",
+                paywall_dismiss_count: "0",
+                paywall_first_seen_at: "",
+                paywall_last_seen_at: "",
+                install_first_seen_at: "",
+              });
+            } catch {
+              // Non-critical — proceed even if the RC call fails
+            }
+            await refresh();
+          },
+        },
+      ],
+    );
+  }, [refresh, paywallStatKeys]);
 
   useEffect(() => {
     if (visible) void refresh();
@@ -876,6 +905,19 @@ export function PaywallStatsModal({
       fontSize: 13,
       fontFamily: "Inter_600SemiBold",
       color: "rgba(255,59,48,0.7)",
+    },
+    fullResetBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      paddingVertical: 8,
+      marginTop: 0,
+    },
+    fullResetBtnText: {
+      fontSize: 12,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(255,59,48,0.45)",
     },
     emptyText: {
       fontSize: 13,
@@ -1181,6 +1223,11 @@ export function PaywallStatsModal({
               <TouchableOpacity style={s.resetBtn} onPress={handleReset} activeOpacity={0.7}>
                 <Ionicons name="trash-outline" size={14} color="rgba(255,59,48,0.7)" />
                 <Text style={s.resetBtnText}>Reset stats</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={s.fullResetBtn} onPress={handleFullReset} activeOpacity={0.7}>
+                <Ionicons name="nuclear-outline" size={14} color="rgba(255,59,48,0.45)" />
+                <Text style={s.fullResetBtnText}>Full reset (incl. install time)</Text>
               </TouchableOpacity>
             </ScrollView>
           )}
