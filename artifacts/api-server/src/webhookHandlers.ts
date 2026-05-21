@@ -1,5 +1,6 @@
 import { getStripeSync, getUncachableStripeClient } from "./stripeClient";
 import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/bagsOfLove";
+import { sendOrderConfirmation, sendAdminNotification } from "./email/mailer";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
@@ -98,24 +99,82 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   await ensureFulfilmentTable();
 
   const paymentIntent = session["payment_intent"];
+  const amountPaid = (session["amount_total"] as number | undefined) ?? 0;
+  const currency = (session["currency"] as string | undefined) ?? "gbp";
+  const customerName =
+    (shippingDetails?.["name"] as string | undefined) ??
+    (details?.["name"] as string | undefined) ??
+    "Customer";
+
+  const shippingAddress = {
+    name: customerName,
+    line1: (addr["line1"] as string | undefined) ?? "",
+    line2: addr["line2"] as string | undefined,
+    city: (addr["city"] as string | undefined) ?? "",
+    postal_code: (addr["postal_code"] as string | undefined) ?? "",
+    country: (addr["country"] as string | undefined) ?? "GB",
+  };
+
+  // Look up a human-readable product name from Stripe metadata/line items
+  let productName = sku;
+  try {
+    const lineItems2 = session["line_items"] as { data?: unknown[] } | undefined;
+    const li = lineItems2?.data?.[0] as Record<string, unknown> | undefined;
+    const desc = li?.["description"] as string | undefined;
+    if (desc) productName = desc;
+  } catch { /* non-fatal */ }
 
   await fulfilOrder({
     stripeSessionId: sessionId,
     stripePaymentIntentId: typeof paymentIntent === "string" ? paymentIntent : null,
     sku,
     customerEmail: email,
-    shippingAddress: {
-      name: (shippingDetails?.["name"] as string | undefined) ?? (details?.["name"] as string | undefined) ?? "",
-      line1: (addr["line1"] as string | undefined) ?? "",
-      line2: addr["line2"] as string | undefined,
-      city: (addr["city"] as string | undefined) ?? "",
-      postal_code: (addr["postal_code"] as string | undefined) ?? "",
-      country: (addr["country"] as string | undefined) ?? "GB",
-    },
+    shippingAddress,
     photoBase64,
-    amountPaid: (session["amount_total"] as number | undefined) ?? 0,
-    currency: (session["currency"] as string | undefined) ?? "gbp",
+    amountPaid,
+    currency,
   });
+
+  // ── Send customer confirmation + admin notification ───────────────────────
+  const bolOrderId = await getBolOrderId(sessionId);
+  const fulfilmentStatus = bolOrderId ? "auto" : "queued";
+
+  await Promise.allSettled([
+    sendOrderConfirmation({
+      customerName,
+      customerEmail: email,
+      productName,
+      amountPaid,
+      currency,
+      shippingAddress,
+      stripeSessionId: sessionId,
+    }),
+    sendAdminNotification({
+      customerName,
+      customerEmail: email,
+      productName,
+      amountPaid,
+      currency,
+      sku,
+      shippingAddress,
+      stripeSessionId: sessionId,
+      bolOrderId,
+      fulfilmentStatus,
+    }),
+  ]);
+}
+
+async function getBolOrderId(stripeSessionId: string): Promise<string | null> {
+  try {
+    const rows = await db.execute(sql`
+      SELECT bol_order_id FROM fulfilment_queue
+      WHERE stripe_session = ${stripeSessionId} AND bol_order_id IS NOT NULL
+      LIMIT 1
+    `);
+    return (rows.rows[0]?.bol_order_id as string) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 // ── Stripe webhook processor ──────────────────────────────────────────────────
