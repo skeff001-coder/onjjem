@@ -16,9 +16,11 @@ interface Props {
   after: ImageSourcePropType;
   accent: string;
   animate?: boolean;
+  /** When true the divider sweeps back and forth continuously until the user drags. Defaults to true. */
+  loop?: boolean;
 }
 
-export function WelcomeSlider({ before, after, accent, animate }: Props) {
+export function WelcomeSlider({ before, after, accent, animate, loop = true }: Props) {
   const containerWidthRef = useRef(300);
   const [containerWidth, setContainerWidth] = useState(300);
   const startPositionRef = useRef(0.5);
@@ -53,6 +55,9 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
     if (!animate) {
       if (prevAnimateRef.current) {
         hasAnimatedRef.current = false;
+        hintSequenceRef.current?.stop();
+        hintSequenceRef.current = null;
+        sliderPosAnim.setValue(0.5);
       }
       prevAnimateRef.current = false;
       return;
@@ -65,28 +70,53 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
 
     // Wait for the slide's fade-in animation (300 ms) to finish first.
     const delay = setTimeout(() => {
-      const seq = Animated.sequence([
-        Animated.timing(sliderPosAnim, {
-          toValue: 0.18,
-          duration: 500,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: false,
-        }),
-        Animated.timing(sliderPosAnim, {
-          toValue: 0.82,
-          duration: 600,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: false,
-        }),
-        Animated.timing(sliderPosAnim, {
-          toValue: 0.5,
-          duration: 400,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: false,
-        }),
-      ]);
-      hintSequenceRef.current = seq;
-      seq.start(() => { hintSequenceRef.current = null; });
+      if (loop) {
+        // Continuous pendulum: sweeps left ↔ right indefinitely.
+        // Animated.loop replays from the current animated value each iteration,
+        // so [→0.18, →0.82] naturally produces 0.5→0.18→0.82→0.18→0.82…
+        const anim = Animated.loop(
+          Animated.sequence([
+            Animated.timing(sliderPosAnim, {
+              toValue: 0.18,
+              duration: 900,
+              easing: Easing.inOut(Easing.sin),
+              useNativeDriver: false,
+            }),
+            Animated.timing(sliderPosAnim, {
+              toValue: 0.82,
+              duration: 900,
+              easing: Easing.inOut(Easing.sin),
+              useNativeDriver: false,
+            }),
+          ])
+        );
+        hintSequenceRef.current = anim;
+        anim.start(() => { hintSequenceRef.current = null; });
+      } else {
+        // One-shot sweep (loop prop disabled).
+        const seq = Animated.sequence([
+          Animated.timing(sliderPosAnim, {
+            toValue: 0.18,
+            duration: 500,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: false,
+          }),
+          Animated.timing(sliderPosAnim, {
+            toValue: 0.82,
+            duration: 600,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: false,
+          }),
+          Animated.timing(sliderPosAnim, {
+            toValue: 0.5,
+            duration: 400,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: false,
+          }),
+        ]);
+        hintSequenceRef.current = seq;
+        seq.start(() => { hintSequenceRef.current = null; });
+      }
     }, 320);
 
     return () => {
@@ -94,7 +124,7 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
       hintSequenceRef.current?.stop();
       hintSequenceRef.current = null;
     };
-  }, [animate, sliderPosAnim]);
+  }, [animate, loop, sliderPosAnim]);
 
   const panResponder = useRef(
     PanResponder.create({
