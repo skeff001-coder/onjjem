@@ -836,9 +836,18 @@ export function PaywallStatsModal({
   ];
 
   const handleReset = useCallback(() => {
+    const totalViews = surfaces.reduce((sum, s) => sum + s.views, 0);
+    const totalPurchases = surfaces.reduce((sum, s) => sum + s.purchases, 0);
+    const totalDismissals = surfaces.reduce((sum, s) => sum + s.dismissals, 0);
+
+    const statsSummary =
+      totalViews === 0 && totalPurchases === 0 && totalDismissals === 0
+        ? "No data recorded yet."
+        : `Current data: ${totalViews} view${totalViews !== 1 ? "s" : ""}, ${totalPurchases} purchase${totalPurchases !== 1 ? "s" : ""}, ${totalDismissals} dismissal${totalDismissals !== 1 ? "s" : ""}.`;
+
     Alert.alert(
       "Reset stats?",
-      "This will zero out all paywall view and dismiss counts on this device. It cannot be undone.",
+      `${statsSummary}\n\nThis will zero out all paywall view and dismiss counts on this device. It cannot be undone.`,
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -862,12 +871,25 @@ export function PaywallStatsModal({
         },
       ],
     );
-  }, [refresh, showResetToast, paywallStatKeys]);
+  }, [refresh, showResetToast, paywallStatKeys, surfaces]);
 
   const handleFullReset = useCallback(() => {
+    const totalViews = surfaces.reduce((sum, s) => sum + s.views, 0);
+    const totalPurchases = surfaces.reduce((sum, s) => sum + s.purchases, 0);
+    const totalDismissals = surfaces.reduce((sum, s) => sum + s.dismissals, 0);
+
+    const installLine = installFirstSeenAt
+      ? `Installed: ${formatDateLabel(installFirstSeenAt)}`
+      : "Install date: not recorded";
+
+    const statsSummary =
+      totalViews === 0 && totalPurchases === 0 && totalDismissals === 0
+        ? "No paywall data recorded yet."
+        : `${totalViews} view${totalViews !== 1 ? "s" : ""}, ${totalPurchases} purchase${totalPurchases !== 1 ? "s" : ""}, ${totalDismissals} dismissal${totalDismissals !== 1 ? "s" : ""}`;
+
     Alert.alert(
       "Full reset?",
-      'This will also clear the install timestamp, making the "Install \u2192 First paywall view" card go blank. It cannot be undone.',
+      `${installLine}\nPaywall stats: ${statsSummary}\n\nThis will also clear the install timestamp, making the "Install \u2192 First paywall view" card go blank. It cannot be undone.`,
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -892,7 +914,7 @@ export function PaywallStatsModal({
         },
       ],
     );
-  }, [refresh, showResetToast, paywallStatKeys]);
+  }, [refresh, showResetToast, paywallStatKeys, surfaces, installFirstSeenAt]);
 
   const handleSegmentTap = useCallback((surfaceName: string) => {
     const y = cardOffsets[surfaceName];
