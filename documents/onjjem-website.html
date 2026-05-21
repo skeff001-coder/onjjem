@@ -248,6 +248,90 @@
     .status-msg.error { background: rgba(255,82,82,0.08); color: #FF8080; }
     .status-msg.success { background: rgba(39,174,96,0.08); color: #5DE391; }
 
+    /* ── EMAIL SIGNUP POPUP ── */
+    .signup-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 400;
+      background: rgba(0,0,0,0.72); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .signup-backdrop.open { display: flex; }
+    .signup-modal {
+      background: #1A1610;
+      border: 1px solid rgba(201,150,12,0.3);
+      border-radius: 24px;
+      max-width: 520px; width: 100%;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+      position: relative;
+    }
+    .signup-hero-strip {
+      background: linear-gradient(135deg, #0E0C08 0%, #1C1608 50%, #0E0C08 100%);
+      border-bottom: 1px solid rgba(201,150,12,0.2);
+      padding: 36px 40px 28px;
+      text-align: center;
+    }
+    .signup-badge {
+      display: inline-block;
+      background: rgba(201,150,12,0.12);
+      border: 1px solid rgba(201,150,12,0.35);
+      color: var(--gold);
+      font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; padding: 6px 16px; border-radius: 40px;
+      margin-bottom: 18px;
+    }
+    .signup-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 5vw, 34px);
+      font-weight: 900; color: var(--cream); line-height: 1.15;
+      margin: 0 0 10px;
+    }
+    .signup-headline em {
+      font-style: normal;
+      background: linear-gradient(90deg, #C9960C, #F5D78E, #C9960C);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .signup-sub {
+      font-size: 14px; color: rgba(250,247,242,0.5); line-height: 1.6; margin: 0;
+    }
+    .signup-body { padding: 28px 40px 32px; }
+    .signup-form { display: flex; gap: 10px; }
+    .signup-input {
+      flex: 1; background: rgba(250,247,242,0.06);
+      border: 1px solid rgba(201,150,12,0.25); border-radius: 12px;
+      padding: 14px 18px; color: var(--cream); font-size: 14px;
+      font-family: 'Inter', sans-serif; outline: none;
+      transition: border-color 0.2s;
+    }
+    .signup-input:focus { border-color: var(--gold); }
+    .signup-input::placeholder { color: rgba(250,247,242,0.3); }
+    .signup-btn {
+      background: linear-gradient(135deg, #8B6200, #C9960C, #F5D78E, #C9960C);
+      color: #0E0C08; font-size: 13px; font-weight: 700; padding: 14px 22px;
+      border-radius: 12px; border: none; cursor: pointer; white-space: nowrap;
+      transition: opacity 0.2s; letter-spacing: 0.2px;
+    }
+    .signup-btn:hover { opacity: 0.88; }
+    .signup-btn:disabled { opacity: 0.5; cursor: default; }
+    .signup-note { font-size: 11px; color: rgba(250,247,242,0.25); text-align: center; margin-top: 12px; line-height: 1.5; }
+    .signup-close {
+      position: absolute; top: 14px; right: 16px;
+      background: none; border: none; color: rgba(250,247,242,0.3);
+      font-size: 20px; cursor: pointer; padding: 4px 8px; line-height: 1;
+      transition: color 0.2s;
+    }
+    .signup-close:hover { color: var(--cream); }
+    .signup-success { text-align: center; padding: 8px 0 4px; }
+    .signup-success-icon { font-size: 40px; margin-bottom: 12px; }
+    .signup-success h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--cream); margin-bottom: 8px; }
+    .signup-success p { font-size: 14px; color: rgba(250,247,242,0.5); line-height: 1.6; margin-bottom: 16px; }
+    .signup-code-box {
+      background: rgba(201,150,12,0.1); border: 2px dashed rgba(201,150,12,0.4);
+      border-radius: 10px; padding: 14px 20px; margin: 0 auto 16px;
+      display: inline-block;
+    }
+    .signup-code-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .signup-code-value { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; color: var(--cream); letter-spacing: 4px; }
+
     /* ── ORDER SUCCESS ── */
     #order-success-banner { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.4); color: #5DE391; padding: 16px 28px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 300; text-align: center; max-width: 480px; width: 90%; }
 
@@ -799,6 +883,40 @@
   </div>
 </div>
 
+<!-- EMAIL SIGNUP POPUP -->
+<div class="signup-backdrop" id="signupBackdrop">
+  <div class="signup-modal">
+    <button class="signup-close" onclick="closeSignup()" aria-label="Close">✕</button>
+
+    <div class="signup-hero-strip">
+      <div class="signup-badge">✦ &nbsp;Welcome Gift</div>
+      <h2 class="signup-headline">Get <em>10% off</em><br>your first order</h2>
+      <p class="signup-sub">Join ONJJEM and we'll send your exclusive discount code straight to your inbox.</p>
+    </div>
+
+    <div class="signup-body">
+      <div id="signupFormWrap">
+        <div class="signup-form">
+          <input class="signup-input" type="email" id="signupEmail" placeholder="Your email address" autocomplete="email" />
+          <button class="signup-btn" id="signupBtn" onclick="submitSignup()">Get 10% Off</button>
+        </div>
+        <p class="signup-note">No spam, ever. Unsubscribe anytime. &nbsp;·&nbsp; Your photo is never stored on our servers.</p>
+      </div>
+
+      <div class="signup-success" id="signupSuccess" style="display:none">
+        <div class="signup-success-icon">✦</div>
+        <h3>You're in!</h3>
+        <p>Your discount code is on its way to your inbox.<br>Use it on any order — no expiry.</p>
+        <div class="signup-code-box">
+          <div class="signup-code-label">Your code</div>
+          <div class="signup-code-value" id="signupCodeDisplay">WELCOME10</div>
+        </div>
+        <button class="btn-primary" style="font-size:13px;padding:12px 28px;" onclick="closeSignup()">✦ &nbsp;Restore a Photo Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ORDER SUCCESS BANNER -->
 <div id="order-success-banner">
   ✅ Payment successful! Check your email for next steps — then reply with your restored photo to begin production.
@@ -1086,6 +1204,52 @@ async function proceedToCheckout() {
 // Close modals on backdrop click
 document.getElementById('payModal').addEventListener('click', e => { if (e.target === document.getElementById('payModal')) closePayModal(); });
 document.getElementById('prodModal').addEventListener('click', e => { if (e.target === document.getElementById('prodModal')) closeProdModal(); });
+document.getElementById('signupBackdrop').addEventListener('click', e => { if (e.target === document.getElementById('signupBackdrop')) closeSignup(); });
+
+// ── Email signup popup ─────────────────────────────────────────────────────────
+function openSignup() { document.getElementById('signupBackdrop').classList.add('open'); }
+function closeSignup() { document.getElementById('signupBackdrop').classList.remove('open'); }
+
+async function submitSignup() {
+  const input = document.getElementById('signupEmail');
+  const btn   = document.getElementById('signupBtn');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) { input.focus(); return; }
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  try {
+    const r = await fetch('/api/email-signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await r.json();
+    if (data.ok) {
+      if (data.code) document.getElementById('signupCodeDisplay').textContent = data.code;
+      document.getElementById('signupFormWrap').style.display = 'none';
+      document.getElementById('signupSuccess').style.display  = 'block';
+      sessionStorage.setItem('onjjem_signup_done', '1');
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Get 10% Off';
+      input.style.borderColor = '#FF8080';
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Get 10% Off';
+  }
+}
+
+// Allow Enter key in email input
+document.getElementById('signupEmail').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitSignup();
+});
+
+// Show popup after 6 seconds — once per session, not shown if already subscribed
+(function() {
+  if (sessionStorage.getItem('onjjem_signup_done')) return;
+  setTimeout(openSignup, 6000);
+})();
 </script>
 
 </body>

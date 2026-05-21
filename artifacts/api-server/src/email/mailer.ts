@@ -344,3 +344,73 @@ export async function sendAdminNotification(data: AdminNotificationData): Promis
     "Admin order notification email sent",
   );
 }
+
+// ── Welcome / discount email ───────────────────────────────────────────────────
+
+export async function sendWelcomeEmail(toEmail: string, discountCode: string): Promise<void> {
+  const transport = createTransport();
+  if (!transport) {
+    logger.warn("EMAIL_PASS not set — skipping welcome email");
+    return;
+  }
+
+  const body = `
+    <tr><td style="padding:36px 40px 28px">
+      <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">Welcome to ONJJEM</p>
+      <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:#FAF7F2;margin:0 0 18px;line-height:1.25">
+        Your 10% discount<br>is waiting for you ✦
+      </h1>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 28px">
+        Thank you for joining ONJJEM. As a welcome gift, here is your exclusive
+        discount code — use it on any order on the website.
+      </p>
+
+      <!-- Discount code box -->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px">
+        <tr>
+          <td align="center" style="background:rgba(201,150,12,0.1);border:2px dashed rgba(201,150,12,0.45);border-radius:12px;padding:22px">
+            <p style="font-size:11px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 8px">Your discount code</p>
+            <p style="font-size:32px;font-weight:700;letter-spacing:.15em;color:#FAF7F2;font-family:Georgia,serif;margin:0">${discountCode}</p>
+            <p style="font-size:12px;color:${MUTED};margin:8px 0 0">10% off your first order &nbsp;·&nbsp; No expiry</p>
+          </td>
+        </tr>
+      </table>
+
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 28px">
+        <tr>
+          <td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:1px">
+            <a href="https://onjjem.com/#tool"
+              style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 32px;font-family:Georgia,serif;font-size:15px;font-weight:700;color:#F5D78E;text-decoration:none;letter-spacing:.03em">
+              ✦ &nbsp;Restore a Photo Now
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
+        Upload any old, blurry, or black-and-white photo and see it brought back to life in seconds.
+        Then order it as a luxury print, canvas, cushion or jigsaw — delivered straight to your door from our London studio.
+      </p>
+    </td></tr>
+    <tr><td style="height:1px;background:rgba(201,150,12,0.15)"></td></tr>
+    <tr><td style="padding:16px 40px;text-align:center">
+      <p style="font-size:11px;color:${MUTED};margin:0">
+        You're receiving this because you subscribed at onjjem.com.
+        &nbsp;·&nbsp;
+        <a href="mailto:hello@onjjem.com?subject=Unsubscribe&body=Please%20remove%20me%20from%20your%20list" style="color:${MUTED}">Unsubscribe</a>
+      </p>
+    </td></tr>
+  `;
+
+  await transport.sendMail({
+    from: FROM(),
+    to: toEmail,
+    subject: "Your 10% welcome discount — ONJJEM Photo Restoration ✦",
+    html: baseTemplate(
+      "Welcome! Your exclusive 10% discount code is inside.",
+      body,
+    ),
+  });
+
+  logger.info({ to: toEmail }, "Welcome email sent");
+}
