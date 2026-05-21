@@ -7,6 +7,7 @@ export interface HistoryEntry {
   modes: string[];
   originalLocalUri: string;
   resultLocalUri: string;
+  label?: string;
 }
 
 const HISTORY_KEY = "photo_history_v1";
@@ -34,6 +35,16 @@ export async function saveToHistory(entry: HistoryEntry): Promise<void> {
     await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(combined.slice(0, MAX_ENTRIES)));
   } catch {
     // fail silently — not critical to the main flow
+  }
+}
+
+export async function updateHistoryLabel(id: string, label: string): Promise<void> {
+  try {
+    const existing = await loadHistory();
+    const updated = existing.map((e) => (e.id === id ? { ...e, label: label.trim() || undefined } : e));
+    await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+  } catch {
+    // fail silently
   }
 }
 

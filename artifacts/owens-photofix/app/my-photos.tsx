@@ -19,11 +19,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { deleteFromHistory, loadHistory, type HistoryEntry } from "@/lib/photoHistory";
+import { deleteFromHistory, loadHistory, updateHistoryLabel, type HistoryEntry } from "@/lib/photoHistory";
 import { resetOnboardingHints } from "@/lib/onboardingHints";
 
 const GOLD = "#C9960C";
@@ -176,13 +177,26 @@ function DetailModal({
   visible,
   onClose,
   onDelete,
+  onLabelChange,
 }: {
   entry: HistoryEntry | null;
   visible: boolean;
   onClose: () => void;
   onDelete: (id: string) => void;
+  onLabelChange: (id: string, label: string) => void;
 }) {
   const insets = useSafeAreaInsets();
+  const [labelText, setLabelText] = useState(entry?.label ?? "");
+
+  useEffect(() => {
+    setLabelText(entry?.label ?? "");
+  }, [entry?.id, entry?.label]);
+
+  const handleLabelBlur = async () => {
+    if (!entry) return;
+    await updateHistoryLabel(entry.id, labelText);
+    onLabelChange(entry.id, labelText.trim());
+  };
 
   const handleShare = async () => {
     if (!entry) return;
@@ -260,6 +274,21 @@ function DetailModal({
               <Text style={dm.modeBadgeText}>{modeLabel}</Text>
             </View>
             <Text style={dm.timeText}>{formatTime(entry.timestamp)}</Text>
+          </View>
+
+          <View style={dm.labelWrap}>
+            <Ionicons name="pricetag-outline" size={14} color={GOLD} style={dm.labelIcon} />
+            <TextInput
+              style={dm.labelInput}
+              value={labelText}
+              onChangeText={setLabelText}
+              onBlur={handleLabelBlur}
+              placeholder="Add a name or note…"
+              placeholderTextColor={MUTED}
+              returnKeyType="done"
+              onSubmitEditing={handleLabelBlur}
+              maxLength={80}
+            />
           </View>
 
           <View style={dm.sliderWrap}>
@@ -376,6 +405,24 @@ const dm = StyleSheet.create({
     paddingVertical: 14,
   },
   shareAnyBtnText: { fontSize: 14, fontWeight: "600" as const, fontFamily: "Inter_600SemiBold", color: DARK },
+  labelWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: GOLD_BG,
+    borderWidth: 1,
+    borderColor: GOLD_BORDER,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+  },
+  labelIcon: { marginRight: 8 },
+  labelInput: {
+    flex: 1,
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: DARK,
+    paddingVertical: 12,
+  },
 });
 
 // ── Gallery Hint Toast ──
@@ -537,13 +584,20 @@ export default function MyPhotosScreen() {
     setHistory((prev) => prev.filter((e) => e.id !== id));
   };
 
+  const handleLabelChange = useCallback((id: string, label: string) => {
+    setHistory((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, label: label || undefined } : e)),
+    );
+    setSelectedEntry((prev) => (prev?.id === id ? { ...prev, label: label || undefined } : prev));
+  }, []);
+
   const renderThumb = ({ item }: { item: HistoryEntry }) => (
     <Pressable style={s.thumb} onPress={() => openEntry(item)}>
       <Image source={{ uri: item.resultLocalUri }} style={s.thumbImage} resizeMode="cover" />
       <LinearGradient colors={["transparent", "rgba(0,0,0,0.62)"]} style={s.thumbGradient} />
       <View style={s.thumbMeta}>
         <Text style={s.thumbMode} numberOfLines={1}>
-          {buildModeLabel(item.modes)}
+          {item.label ? item.label : buildModeLabel(item.modes)}
         </Text>
         <Text style={s.thumbDate}>{formatDate(item.timestamp)}</Text>
       </View>
@@ -632,6 +686,7 @@ export default function MyPhotosScreen() {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onDelete={handleDelete}
+        onLabelChange={handleLabelChange}
       />
     </View>
   );
