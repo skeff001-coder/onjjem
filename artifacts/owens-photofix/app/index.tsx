@@ -458,6 +458,28 @@ export default function HomeScreen() {
 
     // ── Multi-select: start batch flow ───────────────────────────────────────
     if (!result.canceled && result.assets.length > 1) {
+      const BATCH_CAP = 10;
+      if (result.assets.length > BATCH_CAP) {
+        const confirmed = await new Promise<boolean>((resolve) => {
+          Alert.alert(
+            "Too Many Photos",
+            `You selected ${result.assets.length} photos. ONJJEM can process up to ${BATCH_CAP} photos at a time to keep things fast and reliable.\n\nWould you like to restore the first ${BATCH_CAP} photos?`,
+            [
+              {
+                text: `Process First ${BATCH_CAP}`,
+                onPress: () => resolve(true),
+              },
+              {
+                text: "Cancel",
+                style: "cancel",
+                onPress: () => resolve(false),
+              },
+            ],
+          );
+        });
+        if (!confirmed) return;
+        result.assets.splice(BATCH_CAP);
+      }
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       const defaultModes = new Set(selectedModes);
       const items: BatchItem[] = result.assets.map((asset) => ({
@@ -1289,6 +1311,14 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               ))}
             </ScrollView>
+            <Text style={s.batchEstTime}>
+              {(() => {
+                const totalSecs = batchItems.length * selectedModes.size * 15;
+                if (totalSecs < 60) return `~${totalSecs}s estimated`;
+                const mins = Math.ceil(totalSecs / 60);
+                return `~${mins} minute${mins === 1 ? "" : "s"} estimated`;
+              })()}
+            </Text>
           </View>
         )}
 
@@ -3755,6 +3785,12 @@ function makeStyles(
       flexDirection: "row" as const,
       gap: 8,
       paddingRight: 4,
+    },
+    batchEstTime: {
+      fontSize: 11,
+      color: "rgba(255,255,255,0.45)",
+      marginTop: 8,
+      textAlign: "center" as const,
     },
     batchThumbWrap: {
       position: "relative" as const,
