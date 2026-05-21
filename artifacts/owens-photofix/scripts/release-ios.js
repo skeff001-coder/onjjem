@@ -598,14 +598,15 @@ async function main() {
     );
     console.log("Standalone package.json written.");
 
-    // Generate a lockfile so EAS build servers can install dependencies
-    // deterministically. --package-lock-only skips the actual install.
-    console.log("Generating package-lock.json…");
-    execSync("npm install --package-lock-only --ignore-scripts", {
+    // Install dependencies so EAS can resolve Expo config plugins (like expo-router)
+    // locally before queuing the build. This also generates a package-lock.json
+    // for the EAS build servers to use.
+    console.log("Installing dependencies (this takes ~30s)…");
+    execSync("npm install --ignore-scripts", {
       cwd: tmpDir,
       stdio: "inherit",
     });
-    console.log("Lockfile generated.");
+    console.log("Dependencies installed.");
 
     // ── Step 4: initialise git repo ────────────────────────────────────────────
     console.log("\n=== Step 4: initialise git repo in /tmp ===");
