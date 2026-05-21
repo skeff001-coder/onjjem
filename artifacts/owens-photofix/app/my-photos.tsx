@@ -69,6 +69,9 @@ function DualUriSlider({ beforeUri, afterUri }: { beforeUri: string; afterUri: s
   const positionRef = useRef(0.5);
   const [sliderPos, setSliderPos] = useState(0.5);
 
+  const hintOpacity = useRef(new Animated.Value(1)).current;
+  const hintHiddenRef = useRef(false);
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -79,6 +82,14 @@ function DualUriSlider({ beforeUri, afterUri }: { beforeUri: string; afterUri: s
         startPositionRef.current = positionRef.current;
       },
       onPanResponderMove: (_, gestureState) => {
+        if (!hintHiddenRef.current && Math.abs(gestureState.dx) > 4) {
+          hintHiddenRef.current = true;
+          Animated.timing(hintOpacity, {
+            toValue: 0,
+            duration: 180,
+            useNativeDriver: true,
+          }).start();
+        }
         const newPos = Math.max(
           0.03,
           Math.min(0.97, startPositionRef.current + gestureState.dx / containerWidthRef.current),
@@ -119,6 +130,12 @@ function DualUriSlider({ beforeUri, afterUri }: { beforeUri: string; afterUri: s
           <Ionicons name="chevron-back" size={13} color="#111" />
           <Ionicons name="chevron-forward" size={13} color="#111" />
         </View>
+        <Animated.View
+          style={[sl.hintBubble, { opacity: hintOpacity }]}
+          pointerEvents="none"
+        >
+          <Text style={sl.hintText}>DRAG</Text>
+        </Animated.View>
         <View style={sl.dividerLine} />
       </View>
     </View>
@@ -169,6 +186,20 @@ const sl = StyleSheet.create({
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
     elevation: 6,
+  },
+  hintBubble: {
+    backgroundColor: "rgba(0,0,0,0.62)",
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 5,
+    marginTop: 5,
+    marginBottom: -5,
+  },
+  hintText: {
+    color: "#fff",
+    fontSize: 8,
+    fontWeight: "800" as const,
+    letterSpacing: 1.4,
   },
 });
 
