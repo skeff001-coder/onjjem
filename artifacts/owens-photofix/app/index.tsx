@@ -64,6 +64,7 @@ type BatchItem = {
   resultLocalUri: string | null;
   status: "pending" | "processing" | "done" | "error";
   errorMessage?: string;
+  modes: Set<EnhancementMode>;
 };
 
 const ENHANCEMENTS: {
@@ -151,6 +152,7 @@ export default function HomeScreen() {
   const cancelledRef = useRef(false);
   const [batchItems, setBatchItems] = useState<BatchItem[]>([]);
   const [batchCurrentIndex, setBatchCurrentIndex] = useState(0);
+  const [perPhotoPickerItemId, setPerPhotoPickerItemId] = useState<string | null>(null);
 
   // Pinch-to-zoom discovery hint
   const [showPinchHint, setShowPinchHint] = useState(false);
@@ -457,6 +459,7 @@ export default function HomeScreen() {
     // ── Multi-select: start batch flow ───────────────────────────────────────
     if (!result.canceled && result.assets.length > 1) {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      const defaultModes = new Set(selectedModes);
       const items: BatchItem[] = result.assets.map((asset) => ({
         id: `${Date.now()}_${Math.random().toString(36).slice(2)}`,
         uri: asset.uri,
@@ -464,6 +467,7 @@ export default function HomeScreen() {
         resultBase64: null,
         resultLocalUri: null,
         status: "pending" as const,
+        modes: new Set(defaultModes),
       }));
       setBatchItems(items);
       setBatchCurrentIndex(0);
@@ -712,7 +716,7 @@ export default function HomeScreen() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               imageBase64: base64,
-              modes: Array.from(selectedModes),
+              modes: Array.from(item.modes),
             }),
             signal: controller.signal,
           });
@@ -761,7 +765,7 @@ export default function HomeScreen() {
           await saveToHistory({
             id: String(ts),
             timestamp: ts,
-            modes: Array.from(selectedModes),
+            modes: Array.from(item.modes),
             originalLocalUri: origPath,
             resultLocalUri: resultPath,
           });
@@ -1244,7 +1248,7 @@ export default function HomeScreen() {
         {appState === "batch-selected" && batchItems.length > 0 && (
           <View style={s.batchSelBlock}>
             <Text style={s.batchSelTitle}>
-              {batchItems.length} Photos Selected
+              {batchItems.length} Photos Selected — tap to customise
             </Text>
             <ScrollView
               horizontal
@@ -1252,12 +1256,37 @@ export default function HomeScreen() {
               contentContainerStyle={s.batchThumbRow}
             >
               {batchItems.map((item, idx) => (
-                <View key={item.id} style={s.batchThumbWrap}>
+                <TouchableOpacity
+                  key={item.id}
+                  style={s.batchThumbWrap}
+                  onPress={() => {
+                    Haptics.selectionAsync();
+                    setPerPhotoPickerItemId(item.id);
+                  }}
+                  activeOpacity={0.75}
+                >
                   <Image source={{ uri: item.uri }} style={s.batchThumb} resizeMode="cover" />
                   <View style={s.batchThumbBadge}>
                     <Text style={s.batchThumbNum}>{idx + 1}</Text>
                   </View>
-                </View>
+                  {/* Mode dot badges — one per selected enhancement */}
+                  <View style={s.batchThumbDotsRow}>
+                    {Array.from(item.modes).map((modeId) => {
+                      const enh = ENHANCEMENTS.find((e) => e.id === modeId);
+                      if (!enh) return null;
+                      return (
+                        <View
+                          key={modeId}
+                          style={[s.batchThumbModeDot, { backgroundColor: enh.accent }]}
+                        />
+                      );
+                    })}
+                  </View>
+                  {/* Edit icon overlay */}
+                  <View style={s.batchThumbEditOverlay}>
+                    <Ionicons name="options-outline" size={14} color="#fff" />
+                  </View>
+                </TouchableOpacity>
               ))}
             </ScrollView>
           </View>
@@ -1941,6 +1970,133 @@ export default function HomeScreen() {
       <ReferralModal visible={referralVisible} onClose={() => setReferralVisible(false)} />
       <SubscribeModal visible={subscribeVisible} onClose={() => setSubscribeVisible(false)} />
       <PaywallStatsModal visible={statsVisible} onClose={() => setStatsVisible(false)} />
+
+      {/* Per-photo enhancement picker bottom sheet */}
+      {(() => {
+        const pickerItem = batchItems.find((it) => it.id === perPhotoPickerItemId) ?? null;
+        if (!pickerItem) return null;
+        const itemIdx = batchItems.findIndex((it) => it.id === perPhotoPickerItemId);
+        return (
+          <Modal
+            visible={!!pickerItem}
+            animationType="slide"
+            transparent
+            statusBarTranslucent
+            onRequestClose={() => setPerPhotoPickerItemId(null)}
+          >
+            <Pressable
+              style={s.perPhotoBackdrop}
+              onPress={() => setPerPhotoPickerItemId(null)}
+            >
+              <Pressable style={[s.perPhotoSheet, { paddingBottom: Math.max(insets.bottom, 24) }]}>
+                {/* Handle */}
+                <View style={s.perPhotoHandle} />
+
+                {/* Header */}
+                <View style={s.perPhotoHeaderRow}>
+                  <Image
+                    source={{ uri: pickerItem.uri }}
+                    style={s.perPhotoThumbPreview}
+                    resizeMode="cover"
+                  />
+                  <View style={{ flex: 1 }}>
+                    <LinearGradient
+                      colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={s.perPhotoBadge}
+                    >
+                      <Ionicons name="options-outline" size={10} color="#0A0804" />
+                      <Text style={s.perPhotoBadgeText}>PHOTO {itemIdx + 1} OF {batchItems.length}</Text>
+                    </LinearGradient>
+                    <Text style={s.perPhotoTitle}>Choose Enhancements</Text>
+                    <Text style={s.perPhotoSub}>Select up to 3 for this photo</Text>
+                  </View>
+                </View>
+
+                {/* Enhancement grid — 3×2 */}
+                <View style={s.perPhotoGrid}>
+                  {ENHANCEMENTS.map((enh) => {
+                    const isSelected = pickerItem.modes.has(enh.id);
+                    const atLimit = pickerItem.modes.size >= 3 && !isSelected;
+                    return (
+                      <TouchableOpacity
+                        key={enh.id}
+                        style={[
+                          s.perPhotoCard,
+                          isSelected && { borderColor: enh.accent, borderWidth: 2 },
+                          atLimit && { opacity: 0.4 },
+                        ]}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                          if (atLimit) return;
+                          Haptics.selectionAsync();
+                          setBatchItems((prev) =>
+                            prev.map((it) => {
+                              if (it.id !== pickerItem.id) return it;
+                              const next = new Set(it.modes);
+                              if (next.has(enh.id)) {
+                                if (next.size === 1) return it;
+                                next.delete(enh.id);
+                              } else {
+                                next.add(enh.id);
+                              }
+                              return { ...it, modes: next };
+                            })
+                          );
+                        }}
+                      >
+                        <LinearGradient
+                          colors={
+                            isSelected
+                              ? [`${enh.accent}28`, `${enh.accent}12`]
+                              : ["#1C1A14", "#16140F"]
+                          }
+                          style={s.perPhotoCardGradient}
+                        >
+                          {isSelected && (
+                            <View style={[s.perPhotoCheckBadge, { backgroundColor: enh.accent }]}>
+                              <Ionicons name="checkmark" size={10} color="#fff" />
+                            </View>
+                          )}
+                          <View
+                            style={[
+                              s.perPhotoIconCircle,
+                              { backgroundColor: `${enh.accent}26`, borderColor: `${enh.accent}66` },
+                              isSelected && { backgroundColor: `${enh.accent}44`, borderColor: enh.accent },
+                            ]}
+                          >
+                            <Ionicons name={enh.icon} size={24} color={enh.accent} />
+                          </View>
+                          <Text style={[s.perPhotoCardTitle, { color: enh.accent }]}>{enh.title}</Text>
+                          <Text style={s.perPhotoCardSub}>{enh.subtitle}</Text>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                {/* Done button */}
+                <TouchableOpacity
+                  onPress={() => setPerPhotoPickerItemId(null)}
+                  activeOpacity={0.88}
+                  style={s.perPhotoDoneBtnWrap}
+                >
+                  <LinearGradient
+                    colors={["#C9960C", "#F5D78E", "#C9960C"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={s.perPhotoDoneBtn}
+                  >
+                    <Text style={s.perPhotoDoneBtnText}>Done</Text>
+                    <Ionicons name="checkmark" size={18} color="#0A0804" />
+                  </LinearGradient>
+                </TouchableOpacity>
+              </Pressable>
+            </Pressable>
+          </Modal>
+        );
+      })()}
     </View>
   );
 }
@@ -3627,6 +3783,28 @@ function makeStyles(
       fontFamily: "Inter_700Bold",
       color: "#1C1A14",
     },
+    batchThumbDotsRow: {
+      position: "absolute" as const,
+      bottom: 4,
+      left: 4,
+      flexDirection: "row" as const,
+      gap: 3,
+    },
+    batchThumbModeDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: "rgba(255,255,255,0.4)",
+    },
+    batchThumbEditOverlay: {
+      position: "absolute" as const,
+      bottom: 4,
+      right: 4,
+      backgroundColor: "rgba(0,0,0,0.55)",
+      borderRadius: 6,
+      padding: 3,
+    },
     batchProgressLabel: {
       fontSize: 13,
       fontFamily: "Inter_600SemiBold",
@@ -3733,6 +3911,140 @@ function makeStyles(
       fontWeight: "600" as const,
       fontFamily: "Inter_600SemiBold",
       color: "#fff",
+    },
+
+    perPhotoBackdrop: {
+      flex: 1,
+      justifyContent: "flex-end" as const,
+      backgroundColor: "rgba(0,0,0,0.6)",
+    },
+    perPhotoSheet: {
+      backgroundColor: "#0F0D09",
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      paddingHorizontal: 20,
+      paddingTop: 12,
+      borderTopWidth: 1,
+      borderLeftWidth: 1,
+      borderRightWidth: 1,
+      borderColor: "rgba(201,150,12,0.18)",
+    },
+    perPhotoHandle: {
+      width: 40,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: "rgba(245,237,216,0.2)",
+      alignSelf: "center" as const,
+      marginBottom: 18,
+    },
+    perPhotoHeaderRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 14,
+      marginBottom: 20,
+    },
+    perPhotoThumbPreview: {
+      width: 56,
+      height: 56,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.4)",
+      flexShrink: 0,
+    },
+    perPhotoBadge: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 5,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: 20,
+      alignSelf: "flex-start" as const,
+      marginBottom: 6,
+    },
+    perPhotoBadgeText: {
+      fontSize: 9,
+      fontWeight: "800" as const,
+      color: "#0A0804",
+      letterSpacing: 1.2,
+    },
+    perPhotoTitle: {
+      fontSize: 18,
+      fontWeight: "800" as const,
+      color: "#F5EDD8",
+      letterSpacing: 0.2,
+    },
+    perPhotoSub: {
+      fontSize: 12,
+      color: "rgba(245,237,216,0.45)",
+      marginTop: 2,
+    },
+    perPhotoGrid: {
+      flexDirection: "row" as const,
+      flexWrap: "wrap" as const,
+      gap: 8,
+      marginBottom: 18,
+    },
+    perPhotoCard: {
+      width: "30.5%" as any,
+      borderRadius: 12,
+      overflow: "hidden" as const,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.18)",
+    },
+    perPhotoCardGradient: {
+      paddingVertical: 12,
+      paddingHorizontal: 8,
+      alignItems: "center" as const,
+      gap: 6,
+      minHeight: 90,
+      justifyContent: "center" as const,
+    },
+    perPhotoCheckBadge: {
+      position: "absolute" as const,
+      top: 6,
+      right: 6,
+      borderRadius: 8,
+      width: 16,
+      height: 16,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    perPhotoIconCircle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      borderWidth: 1,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    perPhotoCardTitle: {
+      fontSize: 12,
+      fontWeight: "700" as const,
+      textAlign: "center" as const,
+      letterSpacing: 0.2,
+    },
+    perPhotoCardSub: {
+      fontSize: 10,
+      color: "rgba(245,237,216,0.45)",
+      textAlign: "center" as const,
+      lineHeight: 13,
+    },
+    perPhotoDoneBtnWrap: {
+      borderRadius: 14,
+      overflow: "hidden" as const,
+    },
+    perPhotoDoneBtn: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 8,
+      paddingVertical: 16,
+    },
+    perPhotoDoneBtnText: {
+      fontSize: 16,
+      fontWeight: "800" as const,
+      color: "#0A0804",
+      letterSpacing: 0.3,
     },
   });
 }
