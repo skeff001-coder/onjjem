@@ -14,8 +14,10 @@ import {
 } from "react-native";
 import Animated, {
   Easing,
+  interpolateColor,
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -67,6 +69,32 @@ const SLIDES: {
 const ANIM_DURATION = 300;
 const ANIM_EASING = Easing.out(Easing.quad);
 const TRANSLATE_START = 14;
+const DOT_INACTIVE_COLOR = "rgba(245,237,216,0.25)";
+const DOT_SPRING = { damping: 18, stiffness: 220 };
+
+interface DotProps {
+  isActive: boolean;
+  accent: string;
+}
+
+function AnimatedDot({ isActive, accent }: DotProps) {
+  const progress = useSharedValue(isActive ? 1 : 0);
+
+  useEffect(() => {
+    progress.value = withSpring(isActive ? 1 : 0, DOT_SPRING);
+  }, [isActive, accent]);
+
+  const animStyle = useAnimatedStyle(() => ({
+    width: 7 + (22 - 7) * progress.value,
+    backgroundColor: interpolateColor(
+      progress.value,
+      [0, 1],
+      [DOT_INACTIVE_COLOR, accent],
+    ),
+  }));
+
+  return <Animated.View style={[styles.dot, animStyle]} />;
+}
 
 interface SlideProps {
   item: (typeof SLIDES)[number];
@@ -147,8 +175,6 @@ export function WelcomeModal({ visible, onDismiss, initialIndex, onIndexChange }
 
   const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
-  const activeAccent = SLIDES[activeIndex]?.accent ?? "#C9960C";
-
   return (
     <Modal
       visible={visible}
@@ -207,13 +233,11 @@ export function WelcomeModal({ visible, onDismiss, initialIndex, onIndexChange }
 
         {/* Dot indicators */}
         <View style={styles.dots}>
-          {SLIDES.map((_, i) => (
-            <View
+          {SLIDES.map((slide, i) => (
+            <AnimatedDot
               key={i}
-              style={[
-                styles.dot,
-                i === activeIndex && [styles.dotActive, { backgroundColor: activeAccent }],
-              ]}
+              isActive={i === activeIndex}
+              accent={slide.accent}
             />
           ))}
         </View>
@@ -315,13 +339,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   dot: {
-    width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: "rgba(245,237,216,0.25)",
-  },
-  dotActive: {
-    width: 22,
   },
   ctaWrap: {
     width: SCREEN_W - 56,
