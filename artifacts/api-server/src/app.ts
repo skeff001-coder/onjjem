@@ -157,6 +157,45 @@ app.get(["/privacy", "/api/privacy"], (_req: Request, res: Response) => {
   res.send(PRIVACY_HTML);
 });
 
+app.get(["/terms", "/api/terms"], (_req: Request, res: Response) => {
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  res.send(`<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terms of Use — ONJJEM Photo Restoration</title>
+<style>${BRAND_CSS}</style></head>
+<body>
+<p class="eyebrow">ONJJEM · London</p>
+<h1>Terms of Use</h1>
+<p>Last updated: May 2025</p>
+<hr class="divider">
+<p>By downloading or using ONJJEM Photo Restoration ("the App"), you agree to these Terms of Use. Please read them carefully.</p>
+<h2>Licence</h2>
+<p>We grant you a personal, non-exclusive, non-transferable, revocable licence to use the App on Apple-branded devices you own or control, subject to these Terms and the App Store Terms of Service.</p>
+<h2>Subscriptions &amp; In-App Purchases</h2>
+<ul>
+  <li><strong>ONJJEM Pro Monthly</strong> — auto-renewing monthly subscription. Billed monthly until cancelled.</li>
+  <li><strong>ONJJEM Pro Annual</strong> — auto-renewing annual subscription. Billed once per year until cancelled.</li>
+  <li><strong>Single Photo Enhancement</strong> — one-time purchase per photo; not a subscription.</li>
+</ul>
+<p>Payment is charged to your Apple ID account at confirmation of purchase. Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current period. Manage or cancel your subscription at any time in <strong>iPhone Settings → [Your Name] → Subscriptions</strong>.</p>
+<h2>User Content</h2>
+<p>You retain all rights to photos you upload. You grant us a limited licence to process your photos solely to deliver the App's enhancement service. We do not store, sell, or use your photos for any other purpose. See our <a href="/privacy">Privacy Policy</a> for full details.</p>
+<h2>Acceptable Use</h2>
+<p>You may not use the App to upload content that is illegal, harmful, or infringes third-party rights. We reserve the right to suspend access for violations.</p>
+<h2>Disclaimer &amp; Limitation of Liability</h2>
+<p>The App is provided "as is". We make no warranties regarding the accuracy or quality of AI enhancements. To the maximum extent permitted by law, ONJJEM shall not be liable for any indirect, incidental, or consequential damages arising from your use of the App.</p>
+<h2>Governing Law</h2>
+<p>These Terms are governed by the laws of England and Wales.</p>
+<h2>Apple Standard EULA</h2>
+<p>This App is also subject to the <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Apple Standard End User Licence Agreement</a>.</p>
+<h2>Contact</h2>
+<p>Questions? <a href="/support">Contact us</a>.</p>
+<p class="footer">&copy; 2025 ONJJEM Photo Restoration &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Use</a></p>
+</body>
+</html>`);
+});
+
 app.get(["/support", "/api/support"], (_req: Request, res: Response) => {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.send(SUPPORT_HTML);

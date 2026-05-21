@@ -320,7 +320,20 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
                 )}
               </LinearGradient>
             </TouchableOpacity>
-            <Text style={s.unlimitedLegal}>Cancel anytime in iPhone Settings → App Store → Subscriptions</Text>
+            <Text style={s.unlimitedLegal}>
+              Subscription renews automatically. Cancel anytime in iPhone Settings → Apple ID → Subscriptions.
+            </Text>
+            <View style={s.legalLinks}>
+              <Text
+                style={s.legalLink}
+                onPress={() => require("react-native").Linking.openURL("https://onjjem.co.uk/privacy")}
+              >Privacy Policy</Text>
+              <Text style={s.legalLinkSep}>·</Text>
+              <Text
+                style={s.legalLink}
+                onPress={() => require("react-native").Linking.openURL("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")}
+              >Terms of Use</Text>
+            </View>
           </LinearGradient>
         );
       })()}
@@ -687,8 +700,26 @@ const s = StyleSheet.create({
     color: "rgba(250,247,242,0.3)",
     textAlign: "center",
     paddingHorizontal: 16,
-    paddingBottom: 14,
+    paddingTop: 4,
     lineHeight: 14,
+  },
+  legalLinks: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingBottom: 14,
+    paddingTop: 4,
+  },
+  legalLink: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.35)",
+    textDecorationLine: "underline" as const,
+  },
+  legalLinkSep: {
+    fontSize: 10,
+    color: "rgba(250,247,242,0.2)",
   },
 
   // Quote

@@ -250,6 +250,14 @@ export function SubscribeModal({ visible, onClose }: Props) {
               >
                 <Text style={s.privacyLink}>Privacy Policy</Text>
               </TouchableOpacity>
+              <Text style={s.footerLinkSep}>·</Text>
+              <TouchableOpacity
+                onPress={() => Linking.openURL("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")}
+                activeOpacity={0.7}
+                style={s.footerLinkBtn}
+              >
+                <Text style={s.privacyLink}>Terms of Use</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>

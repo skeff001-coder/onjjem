@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Linking,
   Modal,
   Platform,
   Pressable,
@@ -220,8 +221,18 @@ export function ProPaywall({ visible, onClose }: Props) {
           </Pressable>
 
           <Text style={[s.legal, { color: colors.mutedForeground }]}>
-            Subscription renews automatically at {priceLabel}{periodLabel}. Cancel anytime in your iPhone Settings → App Store → Subscriptions.
+            Subscription renews automatically at {priceLabel}{periodLabel}. Cancel anytime in your iPhone Settings → Apple ID → Subscriptions.
           </Text>
+
+          <View style={s.legalLinks}>
+            <TouchableOpacity onPress={() => Linking.openURL("https://onjjem.co.uk/privacy")} activeOpacity={0.7}>
+              <Text style={[s.legalLink, { color: colors.mutedForeground }]}>Privacy Policy</Text>
+            </TouchableOpacity>
+            <Text style={[s.legalLinkSep, { color: colors.mutedForeground }]}>·</Text>
+            <TouchableOpacity onPress={() => Linking.openURL("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")} activeOpacity={0.7}>
+              <Text style={[s.legalLink, { color: colors.mutedForeground }]}>Terms of Use</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -436,5 +447,22 @@ const s = StyleSheet.create({
     lineHeight: 15,
     opacity: 0.55,
     paddingHorizontal: 4,
+  },
+  legalLinks: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingBottom: 2,
+  },
+  legalLink: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    opacity: 0.45,
+    textDecorationLine: "underline" as const,
+  },
+  legalLinkSep: {
+    fontSize: 10,
+    opacity: 0.3,
   },
 });
