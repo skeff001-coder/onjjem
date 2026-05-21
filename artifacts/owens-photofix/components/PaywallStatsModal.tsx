@@ -541,11 +541,18 @@ export function PaywallStatsModal({
   }, []);
 
   const handleShare = useCallback(async () => {
-    const now = new Date().toISOString();
+    const nowDate = new Date();
+    const exportedAt = nowDate.toLocaleString(undefined, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
     const lines: string[] = [];
 
     lines.push("=== Paywall Stats ===");
-    lines.push(`Exported: ${now}`);
+    lines.push(`Exported: ${exportedAt}`);
     lines.push("");
 
     if (installFirstSeenAt && globalPaywallFirstSeenAt) {
