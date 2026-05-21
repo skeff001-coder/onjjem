@@ -68,6 +68,23 @@ export function hasWhatsNewForVersion(version: string): boolean {
   return version in CHANGELOG;
 }
 
+/**
+ * Returns the most recent version key in the CHANGELOG, or null if empty.
+ * Versions are compared using semver ordering so "1.0.10" > "1.0.9".
+ */
+export function getLatestChangelogVersion(): string | null {
+  const keys = Object.keys(CHANGELOG);
+  if (keys.length === 0) return null;
+  return keys.reduce((best, cur) => {
+    const parse = (v: string) => v.split(".").map((n) => parseInt(n, 10) || 0);
+    const [bMaj, bMin, bPat] = parse(best);
+    const [cMaj, cMin, cPat] = parse(cur);
+    if (cMaj !== bMaj) return cMaj > bMaj ? cur : best;
+    if (cMin !== bMin) return cMin > bMin ? cur : best;
+    return cPat > bPat ? cur : best;
+  });
+}
+
 interface Props {
   visible: boolean;
   version: string;

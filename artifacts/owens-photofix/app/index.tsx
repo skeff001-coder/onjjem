@@ -47,7 +47,7 @@ import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { TrustFooter } from "@/components/TrustFooter";
 import { RubyHeartIcon } from "@/components/RubyHeartIcon";
 import { WelcomeModal } from "@/components/WelcomeModal";
-import { WhatsNewModal, hasWhatsNewForVersion } from "@/components/WhatsNewModal";
+import { WhatsNewModal, hasWhatsNewForVersion, getLatestChangelogVersion } from "@/components/WhatsNewModal";
 import { EnhancementTipSheet } from "@/components/EnhancementTipSheet";
 import { ResultTipSheet } from "@/components/ResultTipSheet";
 import { pruneHistory, saveToHistory } from "@/lib/photoHistory";
@@ -110,6 +110,8 @@ export default function HomeScreen() {
   const [lastWelcomeIndex, setLastWelcomeIndex] = useState(0);
   const [whatsNewVisible, setWhatsNewVisible] = useState(false);
   const [whatsNewVersion, setWhatsNewVersion] = useState("");
+  const [whatsNewManualVisible, setWhatsNewManualVisible] = useState(false);
+  const [whatsNewManualVersion, setWhatsNewManualVersion] = useState("");
   const [tipSheetVisible, setTipSheetVisible] = useState(false);
   const [resultTipVisible, setResultTipVisible] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
@@ -355,6 +357,16 @@ export default function HomeScreen() {
     }
     setWhatsNewVisible(false);
   };
+
+  const handleShowWhatsNewManually = useCallback(() => {
+    const currentVersion = Constants.expoConfig?.version ?? "";
+    const displayVersion = hasWhatsNewForVersion(currentVersion)
+      ? currentVersion
+      : getLatestChangelogVersion() ?? currentVersion;
+    if (!displayVersion) return;
+    setWhatsNewManualVersion(displayVersion);
+    setWhatsNewManualVisible(true);
+  }, []);
 
   // Open the native App Store review sheet if the OS supports it; otherwise
   // fall back to the App Store product page so the user can leave a review there.
@@ -948,6 +960,7 @@ export default function HomeScreen() {
         onIndexChange={setLastWelcomeIndex}
       />
       <WhatsNewModal visible={whatsNewVisible} version={whatsNewVersion} onDismiss={handleWhatsNewDismiss} />
+      <WhatsNewModal visible={whatsNewManualVisible} version={whatsNewManualVersion} onDismiss={() => setWhatsNewManualVisible(false)} />
       <EnhancementTipSheet visible={tipSheetVisible} onDismiss={handleTipSheetDismiss} />
       <ResultTipSheet visible={resultTipVisible} onDismiss={handleResultTipDismiss} />
 
@@ -1970,6 +1983,16 @@ export default function HomeScreen() {
         >
           <Ionicons name="star-outline" size={18} color={colors.mutedForeground} />
           <Text style={s.contactSupportText}>Rate ONJJEM on the App Store</Text>
+        </TouchableOpacity>
+
+        {/* What's New / Release Notes */}
+        <TouchableOpacity
+          style={s.contactSupportBtn}
+          onPress={handleShowWhatsNewManually}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="sparkles-outline" size={18} color={colors.mutedForeground} />
+          <Text style={s.contactSupportText}>What's New</Text>
         </TouchableOpacity>
 
         {/* Version label — long-press opens dev paywall stats; 5 quick taps opens dev settings */}
