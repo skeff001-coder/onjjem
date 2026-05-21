@@ -27,6 +27,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { deleteFromHistory, loadHistory, updateHistoryLabel, type HistoryEntry } from "@/lib/photoHistory";
 import { resetOnboardingHints } from "@/lib/onboardingHints";
+import { PinchZoomView } from "@/components/PinchZoomView";
 
 const GOLD = "#C9960C";
 const GOLD_BG = "#FDF6DC";
@@ -348,7 +349,11 @@ function DetailModal({
           </View>
 
           <View style={dm.sliderWrap}>
-            <DualUriSlider beforeUri={entry.originalLocalUri} afterUri={entry.resultLocalUri} />
+            <View style={dm.zoomWrapper}>
+              <PinchZoomView style={{ width: "100%", height: "100%" }}>
+                <DualUriSlider beforeUri={entry.originalLocalUri} afterUri={entry.resultLocalUri} />
+              </PinchZoomView>
+            </View>
             <View style={dm.dragHint}>
               <Ionicons name="swap-horizontal-outline" size={13} color={MUTED} />
               <Text style={dm.dragHintText}>Drag the handle to compare before &amp; after</Text>
@@ -434,6 +439,10 @@ const dm = StyleSheet.create({
   modeBadgeText: { fontSize: 11, fontWeight: "700" as const, fontFamily: "Inter_700Bold", color: GOLD, letterSpacing: 0.8 },
   timeText: { fontSize: 12, color: MUTED, fontFamily: "Inter_400Regular" },
   sliderWrap: { gap: 8 },
+  zoomWrapper: {
+    width: "100%",
+    aspectRatio: 1,
+  },
   dragHint: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 5 },
   dragHintText: { fontSize: 11, color: MUTED, fontFamily: "Inter_400Regular", letterSpacing: 0.3 },
   shareBtn: {
