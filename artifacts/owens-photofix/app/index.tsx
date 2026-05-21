@@ -46,6 +46,7 @@ import { ReferralModal } from "@/components/ReferralModal";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
 import { TrustFooter } from "@/components/TrustFooter";
 import { RubyHeartIcon } from "@/components/RubyHeartIcon";
+import { AIConsentModal } from "@/components/AIConsentModal";
 import { WelcomeModal } from "@/components/WelcomeModal";
 import { WhatsNewModal, hasWhatsNewForVersion, getLatestChangelogVersion } from "@/components/WhatsNewModal";
 import { EnhancementTipSheet } from "@/components/EnhancementTipSheet";
@@ -126,6 +127,8 @@ export default function HomeScreen() {
   const [reviewNudgeCount, setReviewNudgeCount] = useState<number | null>(null);
   const [proWelcomeVisible, setProWelcomeVisible] = useState(false);
   const proWelcomeCheckedRef = useRef(false);
+  const [aiConsentVisible, setAiConsentVisible] = useState(false);
+  const pendingProcessRef = useRef<"single" | "batch" | null>(null);
   const { perPhotoPackage, purchase: purchaseSubscription, isSubscribed, isLoading: isSubscriptionLoading } = useSubscription();
 
   const buyOnePhoto = async () => {
@@ -608,6 +611,45 @@ export default function HomeScreen() {
     }
   };
 
+  const handleProcessWithConsent = async (type: "single" | "batch") => {
+    try {
+      const consent = await AsyncStorage.getItem("ai_processing_consent_v1");
+      if (consent === "accepted") {
+        if (type === "batch") {
+          void processBatch();
+        } else {
+          void processPhoto();
+        }
+        return;
+      }
+    } catch {
+      // Fall through to show consent modal
+    }
+    pendingProcessRef.current = type;
+    setAiConsentVisible(true);
+  };
+
+  const handleConsentAccept = async () => {
+    try {
+      await AsyncStorage.setItem("ai_processing_consent_v1", "accepted");
+    } catch {
+      // Non-critical
+    }
+    setAiConsentVisible(false);
+    const pending = pendingProcessRef.current;
+    pendingProcessRef.current = null;
+    if (pending === "batch") {
+      void processBatch();
+    } else if (pending === "single") {
+      void processPhoto();
+    }
+  };
+
+  const handleConsentDecline = () => {
+    pendingProcessRef.current = null;
+    setAiConsentVisible(false);
+  };
+
   const processPhoto = async () => {
     if (!originalUri) return;
 
@@ -1004,6 +1046,11 @@ export default function HomeScreen() {
       <EnhancementTipSheet visible={tipSheetVisible} onDismiss={handleTipSheetDismiss} />
       <ResultTipSheet visible={resultTipVisible} onDismiss={handleResultTipDismiss} />
       <ProWelcomeBanner visible={proWelcomeVisible} onDismiss={handleProWelcomeDismiss} />
+      <AIConsentModal
+        visible={aiConsentVisible}
+        onAccept={handleConsentAccept}
+        onDecline={handleConsentDecline}
+      />
 
       {/* Enhancement description bottom sheet */}
       {(() => {
@@ -1595,7 +1642,9 @@ export default function HomeScreen() {
               onPress={selectedModes.size > 0
                 ? (hasUsedFreeTrial
                     ? () => setSubscribeVisible(true)
-                    : appState === "batch-selected" ? processBatch : processPhoto)
+                    : appState === "batch-selected"
+                      ? () => void handleProcessWithConsent("batch")
+                      : () => void handleProcessWithConsent("single"))
                 : undefined}
               activeOpacity={0.85}
             >

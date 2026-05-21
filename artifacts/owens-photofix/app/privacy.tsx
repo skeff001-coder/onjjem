@@ -27,8 +27,12 @@ const SECTIONS = [
     body: "When you tap 'Upload a Photo', the app requests permission to access your photo library. This permission is used only to let you select a photo — we do not scan, copy, or access any other photos on your device.\n\nYou can revoke this permission at any time in: iPhone Settings → Privacy & Security → Photos → ONJJEM.",
   },
   {
+    title: "AI Processing Service",
+    body: "To enhance your photos, the image you select is transmitted over an encrypted HTTPS connection to ONJJEM's AI processing server (photo-fix-ai.replit.app), operated by ONJJEM and hosted in the United Kingdom.\n\nNo third-party AI companies receive your photo. The processing server applies AI-based image enhancement (sharpening, colour restoration, noise removal, etc.) and immediately returns the result to your device. Your photo is permanently deleted from the server as soon as processing is complete — it is never stored, retained, or shared.\n\nYour permission is requested before your photo is sent for the first time. You may withdraw consent at any time by uninstalling the app.",
+  },
+  {
     title: "Data Sharing",
-    body: "We do not sell, rent, or share your personal data or photos with any third parties.\n\nThe only data transmission is your selected photo being sent to our server for processing, over an encrypted HTTPS connection.",
+    body: "We do not sell, rent, or share your personal data or photos with any third parties.\n\nThe only data transmission is your selected photo being sent to ONJJEM's own secure processing server, over an encrypted HTTPS connection. No external or third-party AI services receive your data.",
   },
   {
     title: "Data Retention",
@@ -66,7 +70,7 @@ export default function PrivacyScreen() {
           <Text style={s.backText}>Back</Text>
         </TouchableOpacity>
         <Text style={s.title}>Privacy Policy</Text>
-        <Text style={s.updated}>Last updated: May 2025</Text>
+        <Text style={s.updated}>Last updated: May 2026</Text>
       </View>
 
       <ScrollView
