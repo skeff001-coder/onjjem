@@ -49,7 +49,7 @@ import { WelcomeModal } from "@/components/WelcomeModal";
 import { WhatsNewModal, hasWhatsNewForVersion } from "@/components/WhatsNewModal";
 import { EnhancementTipSheet } from "@/components/EnhancementTipSheet";
 import { ResultTipSheet } from "@/components/ResultTipSheet";
-import { saveToHistory } from "@/lib/photoHistory";
+import { pruneHistory, saveToHistory } from "@/lib/photoHistory";
 import { PaywallStatsModal } from "@/components/PaywallStatsModal";
 
 type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
@@ -380,6 +380,11 @@ export default function HomeScreen() {
     }
     setTipSheetVisible(false);
   };
+
+  // Prune old gallery entries on every launch
+  useEffect(() => {
+    void pruneHistory();
+  }, []);
 
   // Load persisted free trial state on mount
   useEffect(() => {
