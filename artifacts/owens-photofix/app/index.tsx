@@ -118,6 +118,8 @@ export default function HomeScreen() {
   const [subscribeVisible, setSubscribeVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
   const [descModalMode, setDescModalMode] = useState<EnhancementMode | null>(null);
+  const versionTapCountRef = useRef(0);
+  const versionTapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [reviewNudgeCount, setReviewNudgeCount] = useState<number | null>(null);
   const { perPhotoPackage, purchase: purchaseSubscription } = useSubscription();
 
@@ -1970,11 +1972,24 @@ export default function HomeScreen() {
           <Text style={s.contactSupportText}>Rate ONJJEM on the App Store</Text>
         </TouchableOpacity>
 
-        {/* Version label — long-press opens dev paywall stats */}
+        {/* Version label — long-press opens dev paywall stats; 5 quick taps opens dev settings */}
         <TouchableOpacity
           activeOpacity={0.6}
           onLongPress={() => setStatsVisible(true)}
           delayLongPress={800}
+          onPress={() => {
+            versionTapCountRef.current += 1;
+            if (versionTapTimerRef.current) clearTimeout(versionTapTimerRef.current);
+            if (versionTapCountRef.current >= 5) {
+              versionTapCountRef.current = 0;
+              void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              router.push("/dev-settings" as Parameters<typeof router.push>[0]);
+            } else {
+              versionTapTimerRef.current = setTimeout(() => {
+                versionTapCountRef.current = 0;
+              }, 1500);
+            }
+          }}
           style={s.versionLabel}
         >
           <Text style={s.versionLabelText}>
