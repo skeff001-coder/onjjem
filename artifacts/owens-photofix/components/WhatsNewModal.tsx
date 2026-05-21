@@ -32,6 +32,23 @@ interface VersionNotes {
  * The key must match the version string in app.json exactly.
  */
 export const CHANGELOG: Record<string, VersionNotes> = {
+  "1.0.9": {
+    headline: "What's New in v1.0.9",
+    items: [
+      {
+        icon: "shield-checkmark-outline",
+        accent: "#C9960C",
+        title: "Privacy & Transparency",
+        body: "We now clearly explain what happens to your photo before it is processed — what is sent, who receives it, and how it is protected.",
+      },
+      {
+        icon: "lock-closed-outline",
+        accent: "#4A90D9",
+        title: "Your Data, Your Choice",
+        body: "You are asked for permission before your photo is sent for enhancement. Your photo is processed and immediately deleted — never stored or shared.",
+      },
+    ],
+  },
   "1.0.8": {
     headline: "What's New in v1.0.8",
     items: [
