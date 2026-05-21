@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Clipboard from "expo-clipboard";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -540,7 +541,7 @@ export function PaywallStatsModal({
     }
   }, []);
 
-  const handleShare = useCallback(async () => {
+  const buildStatsText = useCallback((): string => {
     const nowDate = new Date();
     const exportedAt = nowDate.toLocaleString(undefined, {
       day: "numeric",
@@ -607,8 +608,20 @@ export function PaywallStatsModal({
       lines.push(`${plan.label}: ${plan.purchases} bought, ${plan.dismissals} left, signal ${signal}`);
     }
 
-    await Share.share({ message: lines.join("\n") });
+    return lines.join("\n");
   }, [surfaces, plans, installFirstSeenAt, globalPaywallFirstSeenAt]);
+
+  const handleShare = useCallback(async () => {
+    await Share.share({ message: buildStatsText() });
+  }, [buildStatsText]);
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = useCallback(async () => {
+    await Clipboard.setStringAsync(buildStatsText());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }, [buildStatsText]);
 
   const handleExport = useCallback(async () => {
     try {
@@ -934,6 +947,19 @@ export function PaywallStatsModal({
       fontSize: 13,
       fontFamily: "Inter_600SemiBold",
       color: "rgba(74,144,217,0.85)",
+    },
+    copyBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      paddingVertical: 10,
+      marginTop: 2,
+    },
+    copyBtnText: {
+      fontSize: 13,
+      fontFamily: "Inter_600SemiBold",
+      color: "rgba(167,100,220,0.85)",
     },
     exportBtn: {
       flexDirection: "row",
@@ -1324,10 +1350,22 @@ export function PaywallStatsModal({
                 <Text style={s.refreshBtnText}>Refresh</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={s.shareBtn} onPress={handleShare} activeOpacity={0.7}>
-                <Ionicons name="share-outline" size={14} color="rgba(74,144,217,0.85)" />
-                <Text style={s.shareBtnText}>Share stats</Text>
-              </TouchableOpacity>
+              <View style={{ flexDirection: "row", gap: 8 }}>
+                <TouchableOpacity style={[s.shareBtn, { flex: 1 }]} onPress={handleShare} activeOpacity={0.7}>
+                  <Ionicons name="share-outline" size={14} color="rgba(74,144,217,0.85)" />
+                  <Text style={s.shareBtnText}>Share stats</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[s.copyBtn, { flex: 1 }]} onPress={handleCopy} activeOpacity={0.7}>
+                  <Ionicons
+                    name={copied ? "checkmark-outline" : "copy-outline"}
+                    size={14}
+                    color={copied ? "rgba(52,199,89,0.85)" : "rgba(167,100,220,0.85)"}
+                  />
+                  <Text style={[s.copyBtnText, copied && { color: "rgba(52,199,89,0.85)" }]}>
+                    {copied ? "Copied!" : "Copy stats"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
               <TouchableOpacity style={s.exportBtn} onPress={handleExport} activeOpacity={0.7}>
                 <Ionicons name="download-outline" size={14} color="rgba(52,199,89,0.85)" />

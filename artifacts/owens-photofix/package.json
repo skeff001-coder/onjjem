@@ -64,6 +64,7 @@
     "@expo-google-fonts/bebas-neue": "^0.4.1",
     "@expo-google-fonts/cinzel": "^0.4.2",
     "@expo-google-fonts/playfair-display": "^0.4.2",
+    "expo-clipboard": "^55.0.13",
     "expo-media-library": "^18.2.1",
     "expo-store-review": "^55.0.14",
     "react-native-purchases": "9.7.2"
