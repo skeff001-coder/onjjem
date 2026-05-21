@@ -137,7 +137,7 @@ app.get(["/", "/home"], (_req: Request, res: Response) => {
 
 // Gallery images for the website
 app.get("/api/gallery/:filename", (req: Request, res: Response) => {
-  const safe = path.basename(req.params["filename"] ?? "");
+  const safe = path.basename(String(req.params["filename"] ?? ""));
   res.sendFile(
     path.resolve(__dirname, "../../../artifacts/owens-photofix/assets/gallery", safe),
     (err) => {

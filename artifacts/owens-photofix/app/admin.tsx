@@ -33,6 +33,19 @@ import {
 
 const ADMIN_PIN = "1234";
 
+type AnalyticsData = {
+  metrics: {
+    active_subscriptions: number;
+    mrr: number;
+    revenue: number;
+    new_customers: number;
+    active_users: number;
+  };
+  countries: { label: string; count: number }[];
+  appVersions: { label: string; count: number }[];
+  totalCustomers: number;
+};
+
 export default function AdminScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -44,6 +57,7 @@ export default function AdminScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(false);
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
 
   const tryUnlock = () => {
     if (pin === ADMIN_PIN) {
@@ -58,9 +72,18 @@ export default function AdminScreen() {
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
-    const [ordersData, inquiriesData] = await Promise.all([loadOrders(), loadInquiries()]);
+    const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
+    const [ordersData, inquiriesData, analyticsResp] = await Promise.all([
+      loadOrders(),
+      loadInquiries(),
+      fetch(`https://${domain}/api/analytics`).catch(() => null),
+    ]);
     setOrders(ordersData);
     setInquiries(inquiriesData);
+    if (analyticsResp?.ok) {
+      const data = await analyticsResp.json() as AnalyticsData;
+      setAnalytics(data);
+    }
     setLoading(false);
   }, []);
 
@@ -152,6 +175,81 @@ export default function AdminScreen() {
           contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 32 }]}
           showsVerticalScrollIndicator={false}
         >
+          {/* ── SUBSCRIBER ANALYTICS SECTION ── */}
+          {analytics && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeaderRow}>
+                <View style={styles.sectionHeaderLeft}>
+                  <Ionicons name="bar-chart-outline" size={16} color="#7C3AED" />
+                  <Text style={[styles.sectionTitle, { color: "#7C3AED" }]}>Subscriber Analytics</Text>
+                </View>
+                <Text style={[styles.analyticsSubtitle, { color: colors.mutedForeground }]}>live · RevenueCat</Text>
+              </View>
+
+              {/* Overview metrics row */}
+              <View style={[styles.analyticsMetricsRow, { borderColor: colors.border }]}>
+                {[
+                  { label: "Active Subs", value: String(analytics.metrics.active_subscriptions) },
+                  { label: "MRR", value: `$${analytics.metrics.mrr.toFixed(2)}` },
+                  { label: "Revenue", value: `$${analytics.metrics.revenue.toFixed(2)}` },
+                  { label: "Customers", value: String(analytics.totalCustomers) },
+                ].map((m, i, arr) => (
+                  <React.Fragment key={m.label}>
+                    <View style={styles.analyticsStat}>
+                      <Text style={[styles.analyticsStatValue, { color: colors.foreground }]}>{m.value}</Text>
+                      <Text style={[styles.analyticsStatLabel, { color: colors.mutedForeground }]}>{m.label}</Text>
+                    </View>
+                    {i < arr.length - 1 && <View style={[styles.analyticsStatDivider, { backgroundColor: colors.border }]} />}
+                  </React.Fragment>
+                ))}
+              </View>
+
+              {/* Country breakdown */}
+              {analytics.countries.length > 0 && (
+                <View style={styles.analyticsCard}>
+                  <View style={styles.analyticsCardHeader}>
+                    <Ionicons name="globe-outline" size={13} color="#7C3AED" />
+                    <Text style={[styles.analyticsCardTitle, { color: colors.foreground }]}>Users by Country</Text>
+                  </View>
+                  {analytics.countries.map((c) => {
+                    const pct = analytics.totalCustomers > 0 ? c.count / analytics.totalCustomers : 0;
+                    return (
+                      <View key={c.label} style={styles.analyticsBarRow}>
+                        <Text style={[styles.analyticsBarLabel, { color: colors.foreground }]}>{c.label}</Text>
+                        <View style={[styles.analyticsBarTrack, { backgroundColor: colors.muted }]}>
+                          <View style={[styles.analyticsBarFill, { width: `${Math.round(pct * 100)}%`, backgroundColor: "#7C3AED" }]} />
+                        </View>
+                        <Text style={[styles.analyticsBarCount, { color: colors.mutedForeground }]}>{c.count}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
+
+              {/* App version breakdown */}
+              {analytics.appVersions.length > 0 && (
+                <View style={styles.analyticsCard}>
+                  <View style={styles.analyticsCardHeader}>
+                    <Ionicons name="phone-portrait-outline" size={13} color="#0891B2" />
+                    <Text style={[styles.analyticsCardTitle, { color: colors.foreground }]}>App Version</Text>
+                  </View>
+                  {analytics.appVersions.map((v) => {
+                    const pct = analytics.totalCustomers > 0 ? v.count / analytics.totalCustomers : 0;
+                    return (
+                      <View key={v.label} style={styles.analyticsBarRow}>
+                        <Text style={[styles.analyticsBarLabel, { color: colors.foreground }]}>{v.label}</Text>
+                        <View style={[styles.analyticsBarTrack, { backgroundColor: colors.muted }]}>
+                          <View style={[styles.analyticsBarFill, { width: `${Math.round(pct * 100)}%`, backgroundColor: "#0891B2" }]} />
+                        </View>
+                        <Text style={[styles.analyticsBarCount, { color: colors.mutedForeground }]}>{v.count}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
+            </View>
+          )}
+
           {/* ── EXPERT INQUIRIES SECTION ── */}
           {inquiries.length > 0 && (
             <View style={styles.section}>
@@ -637,6 +735,28 @@ const styles = StyleSheet.create({
     textAlign: "center" as const,
     paddingVertical: 4,
   },
+
+  /* Subscriber analytics */
+  analyticsSubtitle: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  analyticsMetricsRow: {
+    flexDirection: "row" as const,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingVertical: 12,
+    marginBottom: 10,
+  },
+  analyticsStat: { flex: 1, alignItems: "center" as const, gap: 2 },
+  analyticsStatValue: { fontSize: 17, fontFamily: "Inter_700Bold", fontWeight: "700" as const },
+  analyticsStatLabel: { fontSize: 10, fontFamily: "Inter_400Regular", textAlign: "center" as const },
+  analyticsStatDivider: { width: 1, marginVertical: 4 },
+  analyticsCard: { borderRadius: 10, padding: 10, gap: 7, marginBottom: 8, backgroundColor: "#F9F9FB" },
+  analyticsCardHeader: { flexDirection: "row" as const, alignItems: "center" as const, gap: 5, marginBottom: 2 },
+  analyticsCardTitle: { fontSize: 11, fontFamily: "Inter_700Bold", fontWeight: "700" as const, textTransform: "uppercase" as const, letterSpacing: 0.8 },
+  analyticsBarRow: { flexDirection: "row" as const, alignItems: "center" as const, gap: 6 },
+  analyticsBarLabel: { width: 36, fontSize: 12, fontFamily: "Inter_600SemiBold" },
+  analyticsBarTrack: { flex: 1, height: 6, borderRadius: 3, overflow: "hidden" as const },
+  analyticsBarFill: { height: "100%" as unknown as number, borderRadius: 3 },
+  analyticsBarCount: { width: 20, fontSize: 12, fontFamily: "Inter_400Regular", textAlign: "right" as const },
 
   /* Download photo button */
   downloadBtn: {
