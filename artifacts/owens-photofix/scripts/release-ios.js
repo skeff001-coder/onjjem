@@ -19,9 +19,10 @@
  *               calling EAS. Useful for verifying the build setup without spending credits.
  *   --minor     Bump the minor version instead of the default patch bump.
  *   --major     Bump the major version instead of the default patch bump.
- *   --yes       Skip the interactive "Continue? [y/N]" confirmation prompt. Use in
- *               non-interactive / CI environments, or when you're confident the version
- *               preview looks correct.
+ *   --yes       Skip all interactive prompts (the "Press Enter to continue" pause after
+ *               the version preview AND the final "Continue? [y/N]" confirmation).
+ *               Alias: --no-confirm. Use in non-interactive / CI environments, or when
+ *               you're confident the version preview looks correct.
  *
  * Set NOTIFY_TOPIC in Replit Secrets (e.g. "onjjem-builds-skeff001").
  * Install the free ntfy app on your iPhone and subscribe to that topic.
@@ -60,8 +61,11 @@ const DRY_RUN = process.argv.includes("--dry-run");
 // When --preview is passed, nothing is written — only a release summary is printed.
 const PREVIEW = process.argv.includes("--preview");
 
-// When --yes is passed (or stdin is not a TTY), skip the confirmation prompt.
-const YES = process.argv.includes("--yes") || !process.stdin.isTTY;
+// When --yes / --no-confirm is passed (or stdin is not a TTY), skip all prompts.
+const YES =
+  process.argv.includes("--yes") ||
+  process.argv.includes("--no-confirm") ||
+  !process.stdin.isTTY;
 
 // ── Notification helper ──────────────────────────────────────────────────────
 
@@ -241,6 +245,32 @@ function askConfirm(question) {
   });
 }
 
+/**
+ * Pause and wait for the user to press Enter before proceeding.
+ * Pressing Ctrl+C will raise SIGINT, terminating the process cleanly
+ * without modifying any files.
+ * Skipped automatically when YES is true (--yes flag or non-interactive TTY).
+ */
+function askContinue() {
+  return new Promise((resolve) => {
+    const readline = require("readline");
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    // Restore normal Ctrl+C behaviour so the user can abort cleanly.
+    rl.on("SIGINT", () => {
+      rl.close();
+      console.log("\nAborted — no files were changed.");
+      process.exit(0);
+    });
+    rl.question("Press Enter to continue, or Ctrl+C to abort… ", () => {
+      rl.close();
+      resolve();
+    });
+  });
+}
+
 // ── Preview helpers ───────────────────────────────────────────────────────────
 
 /**
@@ -379,6 +409,13 @@ async function main() {
     console.log(  "║  Mode    : PREVIEW — read-only, no files changed  ║");
     }
     console.log(  "╚══════════════════════════════════════════════════╝\n");
+
+    // ── Early pause — let the user review the version before anything runs ──────
+    // Skipped for --preview (exits after the summary), --dry-run (already safe),
+    // and --yes / non-interactive environments.
+    if (!PREVIEW && !DRY_RUN && !YES) {
+      await askContinue();
+    }
 
     // ── Preview mode: read-only summary, then exit ─────────────────────────────
     if (PREVIEW) {
