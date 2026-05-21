@@ -15,9 +15,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { initializeRevenueCat, trackAppInstall, SubscriptionProvider } from "@/lib/revenuecat";
+import {
+  initializeRevenueCat,
+  trackAppInstall,
+  trackSubscriptionChurn,
+  planIdFromProductIdentifier,
+  REVENUECAT_ENTITLEMENT_IDENTIFIER,
+  SubscriptionProvider,
+} from "@/lib/revenuecat";
+import Purchases, { type CustomerInfo } from "react-native-purchases";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -216,6 +224,57 @@ const splash = StyleSheet.create({
   },
 });
 
+/**
+ * Listens to RevenueCat's customerInfoUpdated event and calls
+ * trackSubscriptionChurn whenever the pro entitlement transitions from
+ * active to inactive (cancelled or billing failure).
+ *
+ * Mounted once inside SubscriptionProvider so it has access to the same
+ * QueryClient context, though it uses the Purchases listener API directly
+ * to catch updates that may arrive before React Query re-fetches.
+ */
+function ChurnTracker() {
+  const prevCustomerInfo = useRef<CustomerInfo | null>(null);
+
+  useEffect(() => {
+    const handleUpdate = (customerInfo: CustomerInfo) => {
+      const prev = prevCustomerInfo.current;
+      prevCustomerInfo.current = customerInfo;
+
+      if (!prev) return;
+
+      const wasActive =
+        prev.entitlements.active[REVENUECAT_ENTITLEMENT_IDENTIFIER] !== undefined;
+      const isNowActive =
+        customerInfo.entitlements.active[REVENUECAT_ENTITLEMENT_IDENTIFIER] !== undefined;
+
+      if (wasActive && !isNowActive) {
+        // Subscription just lapsed — derive the plan from the previously active entitlement
+        const prevEntitlement = prev.entitlements.all[REVENUECAT_ENTITLEMENT_IDENTIFIER];
+        const planId = prevEntitlement?.productIdentifier
+          ? planIdFromProductIdentifier(prevEntitlement.productIdentifier)
+          : undefined;
+
+        // If willRenew was true when last seen but subscription is now gone,
+        // the renewal payment likely failed. If willRenew was false, the user
+        // had already cancelled and the period simply ran out.
+        const reason: "cancel" | "billing_error" =
+          prevEntitlement?.willRenew ? "billing_error" : "cancel";
+
+        void trackSubscriptionChurn(reason, planId);
+      }
+    };
+
+    Purchases.addCustomerInfoUpdateListener(handleUpdate);
+
+    return () => {
+      Purchases.removeCustomerInfoUpdateListener(handleUpdate);
+    };
+  }, []);
+
+  return null;
+}
+
 function RootLayoutNav() {
   return (
     <Stack>
@@ -257,6 +316,7 @@ export default function RootLayout() {
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <SubscriptionProvider>
+            <ChurnTracker />
             <GestureHandlerRootView style={{ flex: 1 }}>
               <KeyboardProvider>
                 <RootLayoutNav />

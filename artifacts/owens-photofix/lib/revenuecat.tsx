@@ -292,6 +292,59 @@ export async function trackPaywallPurchase(paywallName: string, planId?: string)
   }
 }
 
+/**
+ * Call this when a customer's subscription lapses — either because they
+ * cancelled voluntarily or because a renewal payment failed.
+ *
+ * Sets the RevenueCat subscriber attribute `last_churned_plan` to the plan
+ * identifier (e.g. "annual", "monthly", "perpic") that was active at the
+ * time of churn, enabling RevenueCat Charts and any connected downstream
+ * tool (Mixpanel, Amplitude, etc.) to compare the plan distribution of
+ * churned customers against active ones.
+ *
+ * @param reason   "cancel" — user cancelled; "billing_error" — renewal failed
+ * @param planId   Optional plan identifier derived from the expiring product
+ */
+export async function trackSubscriptionChurn(
+  reason: "cancel" | "billing_error",
+  planId?: string,
+): Promise<void> {
+  try {
+    const attrs: Record<string, string> = {
+      last_churned_reason: reason,
+      last_churned_at: new Date().toISOString(),
+    };
+
+    if (planId) {
+      attrs.last_churned_plan = planId;
+    }
+
+    await Purchases.setAttributes(attrs);
+    await Purchases.syncAttributesAndOfferingsIfNeeded();
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
+/**
+ * Derives a human-readable plan identifier from a RevenueCat product
+ * identifier string. Returns undefined if the product ID cannot be mapped.
+ *
+ * Examples:
+ *   "com.onjjem.photorestoration.monthly" → "monthly"
+ *   "com.onjjem.photorestoration.annual"  → "annual"
+ *   "one_photo"                           → "perpic"
+ *   "$rc_monthly"                         → "monthly"
+ *   "$rc_annual"                          → "annual"
+ */
+export function planIdFromProductIdentifier(productId: string): string | undefined {
+  const lower = productId.toLowerCase();
+  if (lower.includes("annual") || lower.includes("yearly")) return "annual";
+  if (lower.includes("monthly")) return "monthly";
+  if (lower === PACKAGE_IDENTIFIERS.perPhoto || lower.includes("one_photo") || lower.includes("perpic")) return "perpic";
+  return undefined;
+}
+
 export async function trackPaywallDismissal(paywallName: string, selectedPlan?: string): Promise<void> {
   try {
     const now = new Date().toISOString();
