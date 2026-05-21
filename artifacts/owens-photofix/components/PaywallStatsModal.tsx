@@ -25,15 +25,23 @@ import {
   INSTALL_FIRST_SEEN_KEY,
   PAYWALL_DISMISS_COUNT_KEY,
   PAYWALL_VIEW_COUNT_KEY,
+  localDayString,
   paywallDismissCountKey,
+  paywallDismissDayKey,
   paywallDismissPlanCountKey,
+  paywallDismissPlanDayKey,
   paywallDismissSurfacePlanCountKey,
+  paywallDismissSurfacePlanDayKey,
   paywallFirstSeenKey,
   paywallPurchasedAtKey,
   paywallPurchaseCountKey,
+  paywallPurchaseDayKey,
   paywallPurchaseGlobalPlanCountKey,
+  paywallPurchaseGlobalPlanDayKey,
   paywallPurchasePlanCountKey,
+  paywallPurchasePlanDayKey,
   paywallViewCountKey,
+  paywallViewDayKey,
 } from "@/lib/revenuecat";
 
 const KNOWN_SURFACES = ["pro_paywall", "subscribe_modal", "enhancement_paywall"] as const;
@@ -69,6 +77,30 @@ type PlanStat = {
   purchases: number;
 };
 
+type DateRange = "7d" | "30d" | "all";
+
+const DATE_RANGE_OPTIONS: { key: DateRange; label: string }[] = [
+  { key: "7d",  label: "Last 7 days" },
+  { key: "30d", label: "Last 30 days" },
+  { key: "all", label: "All time" },
+];
+
+function daysInRange(n: number): string[] {
+  return Array.from({ length: n }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    return localDayString(d);
+  });
+}
+
+function dateRangeLabel(range: DateRange): string {
+  switch (range) {
+    case "7d":  return "Last 7 days";
+    case "30d": return "Last 30 days";
+    case "all": return "All time";
+  }
+}
+
 const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] as const;
 
 function formatDateLabel(iso: string): string {
@@ -92,62 +124,119 @@ function formatTimeDiff(ms: number): string {
   return remHours === 0 ? `${days}d` : `${days}d ${remHours}h`;
 }
 
-async function loadStats(): Promise<{
+async function loadStats(dateRange: DateRange): Promise<{
   surfaces: SurfaceStat[];
   plans: PlanStat[];
   installFirstSeenAt: string | null;
   globalPaywallFirstSeenAt: string | null;
 }> {
-  const surfaceKeys = KNOWN_SURFACES.flatMap((name) => [
-    paywallViewCountKey(name),
-    paywallDismissCountKey(name),
-    paywallPurchaseCountKey(name),
-    paywallFirstSeenKey(name),
-    paywallPurchasedAtKey(name),
-    ...KNOWN_PLANS.map((p) => paywallPurchasePlanCountKey(name, p.id)),
-    ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanCountKey(name, p.id)),
-  ]);
-  const planDismissKeys = KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id));
-  const planPurchaseKeys = KNOWN_PLANS.map((p) => paywallPurchaseGlobalPlanCountKey(p.id));
+  if (dateRange === "all") {
+    const surfaceKeys = KNOWN_SURFACES.flatMap((name) => [
+      paywallViewCountKey(name),
+      paywallDismissCountKey(name),
+      paywallPurchaseCountKey(name),
+      paywallFirstSeenKey(name),
+      paywallPurchasedAtKey(name),
+      ...KNOWN_PLANS.map((p) => paywallPurchasePlanCountKey(name, p.id)),
+      ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanCountKey(name, p.id)),
+    ]);
+    const planDismissKeys = KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id));
+    const planPurchaseKeys = KNOWN_PLANS.map((p) => paywallPurchaseGlobalPlanCountKey(p.id));
 
-  const pairs = await AsyncStorage.multiGet([
-    ...surfaceKeys,
-    ...planDismissKeys,
-    ...planPurchaseKeys,
-    INSTALL_FIRST_SEEN_KEY,
-    FIRST_PAYWALL_SEEN_KEY,
-  ]);
+    const pairs = await AsyncStorage.multiGet([
+      ...surfaceKeys,
+      ...planDismissKeys,
+      ...planPurchaseKeys,
+      INSTALL_FIRST_SEEN_KEY,
+      FIRST_PAYWALL_SEEN_KEY,
+    ]);
+    const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
+
+    const surfaces = KNOWN_SURFACES.map((name) => {
+      const views = parseInt(map[paywallViewCountKey(name)] ?? "0", 10) || 0;
+      const dismissals = parseInt(map[paywallDismissCountKey(name)] ?? "0", 10) || 0;
+      const purchases = parseInt(map[paywallPurchaseCountKey(name)] ?? "0", 10) || 0;
+      const conversionRate = views > 0 ? (purchases / views) * 100 : 0;
+      const firstSeenAt = map[paywallFirstSeenKey(name)] ?? null;
+      const purchasedAt = map[paywallPurchasedAtKey(name)] ?? null;
+      const planPurchases: Record<string, number> = {};
+      const planDismissals: Record<string, number> = {};
+      for (const p of KNOWN_PLANS) {
+        planPurchases[p.id] = parseInt(map[paywallPurchasePlanCountKey(name, p.id)] ?? "0", 10) || 0;
+        planDismissals[p.id] = parseInt(map[paywallDismissSurfacePlanCountKey(name, p.id)] ?? "0", 10) || 0;
+      }
+      return { name, views, dismissals, purchases, conversionRate, firstSeenAt, purchasedAt, planPurchases, planDismissals };
+    });
+
+    const plans: PlanStat[] = KNOWN_PLANS.map((p) => ({
+      id: p.id,
+      label: p.label,
+      dismissals: parseInt(map[paywallDismissPlanCountKey(p.id)] ?? "0", 10) || 0,
+      purchases: parseInt(map[paywallPurchaseGlobalPlanCountKey(p.id)] ?? "0", 10) || 0,
+    }));
+
+    return {
+      surfaces,
+      plans,
+      installFirstSeenAt: map[INSTALL_FIRST_SEEN_KEY] ?? null,
+      globalPaywallFirstSeenAt: map[FIRST_PAYWALL_SEEN_KEY] ?? null,
+    };
+  }
+
+  // Date-range mode: sum per-day buckets for the selected window
+  const n = dateRange === "7d" ? 7 : 30;
+  const days = daysInRange(n);
+
+  const dayKeys = KNOWN_SURFACES.flatMap((name) =>
+    days.flatMap((day) => [
+      paywallViewDayKey(name, day),
+      paywallDismissDayKey(name, day),
+      paywallPurchaseDayKey(name, day),
+      ...KNOWN_PLANS.map((p) => paywallPurchasePlanDayKey(name, p.id, day)),
+      ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanDayKey(name, p.id, day)),
+    ])
+  );
+  const planDayKeys = KNOWN_PLANS.flatMap((p) =>
+    days.flatMap((day) => [
+      paywallDismissPlanDayKey(p.id, day),
+      paywallPurchaseGlobalPlanDayKey(p.id, day),
+    ])
+  );
+
+  const pairs = await AsyncStorage.multiGet([...dayKeys, ...planDayKeys]);
   const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
 
   const surfaces = KNOWN_SURFACES.map((name) => {
-    const views = parseInt(map[paywallViewCountKey(name)] ?? "0", 10) || 0;
-    const dismissals = parseInt(map[paywallDismissCountKey(name)] ?? "0", 10) || 0;
-    const purchases = parseInt(map[paywallPurchaseCountKey(name)] ?? "0", 10) || 0;
-    const conversionRate = views > 0 ? (purchases / views) * 100 : 0;
-    const firstSeenAt = map[paywallFirstSeenKey(name)] ?? null;
-    const purchasedAt = map[paywallPurchasedAtKey(name)] ?? null;
+    let views = 0, dismissals = 0, purchases = 0;
     const planPurchases: Record<string, number> = {};
     const planDismissals: Record<string, number> = {};
     for (const p of KNOWN_PLANS) {
-      planPurchases[p.id] = parseInt(map[paywallPurchasePlanCountKey(name, p.id)] ?? "0", 10) || 0;
-      planDismissals[p.id] = parseInt(map[paywallDismissSurfacePlanCountKey(name, p.id)] ?? "0", 10) || 0;
+      planPurchases[p.id] = 0;
+      planDismissals[p.id] = 0;
     }
-    return { name, views, dismissals, purchases, conversionRate, firstSeenAt, purchasedAt, planPurchases, planDismissals };
+    for (const day of days) {
+      views      += parseInt(map[paywallViewDayKey(name, day)]     ?? "0", 10) || 0;
+      dismissals += parseInt(map[paywallDismissDayKey(name, day)]  ?? "0", 10) || 0;
+      purchases  += parseInt(map[paywallPurchaseDayKey(name, day)] ?? "0", 10) || 0;
+      for (const p of KNOWN_PLANS) {
+        planPurchases[p.id]  += parseInt(map[paywallPurchasePlanDayKey(name, p.id, day)]      ?? "0", 10) || 0;
+        planDismissals[p.id] += parseInt(map[paywallDismissSurfacePlanDayKey(name, p.id, day)] ?? "0", 10) || 0;
+      }
+    }
+    const conversionRate = views > 0 ? (purchases / views) * 100 : 0;
+    return { name, views, dismissals, purchases, conversionRate, firstSeenAt: null, purchasedAt: null, planPurchases, planDismissals };
   });
 
-  const plans: PlanStat[] = KNOWN_PLANS.map((p) => ({
-    id: p.id,
-    label: p.label,
-    dismissals: parseInt(map[paywallDismissPlanCountKey(p.id)] ?? "0", 10) || 0,
-    purchases: parseInt(map[paywallPurchaseGlobalPlanCountKey(p.id)] ?? "0", 10) || 0,
-  }));
+  const plans: PlanStat[] = KNOWN_PLANS.map((p) => {
+    let dismissals = 0, purchases = 0;
+    for (const day of days) {
+      dismissals += parseInt(map[paywallDismissPlanDayKey(p.id, day)]       ?? "0", 10) || 0;
+      purchases  += parseInt(map[paywallPurchaseGlobalPlanDayKey(p.id, day)] ?? "0", 10) || 0;
+    }
+    return { id: p.id, label: p.label, dismissals, purchases };
+  });
 
-  return {
-    surfaces,
-    plans,
-    installFirstSeenAt: map[INSTALL_FIRST_SEEN_KEY] ?? null,
-    globalPaywallFirstSeenAt: map[FIRST_PAYWALL_SEEN_KEY] ?? null,
-  };
+  return { surfaces, plans, installFirstSeenAt: null, globalPaywallFirstSeenAt: null };
 }
 
 function surfaceLabel(name: string): string {
@@ -526,6 +615,7 @@ export function PaywallStatsModal({
   const [installFirstSeenAt, setInstallFirstSeenAt] = useState<string | null>(null);
   const [globalPaywallFirstSeenAt, setGlobalPaywallFirstSeenAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [dateRange, setDateRange] = useState<DateRange>("all");
   const [cardOffsets, setCardOffsets] = useState<Record<string, number>>({});
   const [highlightedSurface, setHighlightedSurface] = useState<string | null>(null);
   const toastOpacity = useRef(new Animated.Value(0)).current;
@@ -546,7 +636,7 @@ export function PaywallStatsModal({
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await loadStats();
+      const result = await loadStats(dateRange);
       setSurfaces(result.surfaces);
       setPlans(result.plans);
       setInstallFirstSeenAt(result.installFirstSeenAt);
@@ -554,7 +644,7 @@ export function PaywallStatsModal({
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [dateRange]);
 
   const buildStatsText = useCallback((): string => {
     const nowDate = new Date();
@@ -569,6 +659,7 @@ export function PaywallStatsModal({
 
     lines.push("=== Paywall Stats ===");
     lines.push(`Exported: ${exportedAt}`);
+    lines.push(`Date range: ${dateRangeLabel(dateRange)}`);
     lines.push("");
 
     if (installFirstSeenAt && globalPaywallFirstSeenAt) {
@@ -624,7 +715,7 @@ export function PaywallStatsModal({
     }
 
     return lines.join("\n");
-  }, [surfaces, plans, installFirstSeenAt, globalPaywallFirstSeenAt]);
+  }, [surfaces, plans, installFirstSeenAt, globalPaywallFirstSeenAt, dateRange]);
 
   const handleShare = useCallback(async () => {
     await Share.share({ message: buildStatsText() });
@@ -649,7 +740,10 @@ export function PaywallStatsModal({
           : str;
       };
 
+      const rangeTag = dateRange === "7d" ? "last7d" : dateRange === "30d" ? "last30d" : "alltime";
+
       const header = [
+        "date_range",
         "surface",
         "views",
         "dismissals",
@@ -666,6 +760,7 @@ export function PaywallStatsModal({
       ];
 
       const rows: string[][] = surfaces.map((s) => [
+        csvEscape(dateRangeLabel(dateRange)),
         csvEscape(s.name),
         csvEscape(s.views),
         csvEscape(s.dismissals),
@@ -684,7 +779,7 @@ export function PaywallStatsModal({
       const csvContent = [header.join(","), ...rows.map((r) => r.join(","))].join("\n");
 
       const dateTag = now.slice(0, 10).replace(/-/g, "");
-      const filename = `paywall_stats_${dateTag}.csv`;
+      const filename = `paywall_stats_${rangeTag}_${dateTag}.csv`;
       const path = `${FileSystem.cacheDirectory}${filename}`;
 
       await FileSystem.writeAsStringAsync(path, csvContent, {
@@ -705,7 +800,7 @@ export function PaywallStatsModal({
     } catch {
       Alert.alert("Export failed", "Could not generate the export file. Please try again.");
     }
-  }, [surfaces]);
+  }, [surfaces, dateRange]);
 
   const paywallStatKeys = [
     PAYWALL_VIEW_COUNT_KEY,
@@ -722,6 +817,22 @@ export function PaywallStatsModal({
     ]),
     ...KNOWN_PLANS.map((p) => paywallDismissPlanCountKey(p.id)),
     ...KNOWN_PLANS.map((p) => paywallPurchaseGlobalPlanCountKey(p.id)),
+    // Day-bucket keys — clear the last 30 days on reset
+    ...daysInRange(30).flatMap((day) =>
+      KNOWN_SURFACES.flatMap((name) => [
+        paywallViewDayKey(name, day),
+        paywallDismissDayKey(name, day),
+        paywallPurchaseDayKey(name, day),
+        ...KNOWN_PLANS.map((p) => paywallPurchasePlanDayKey(name, p.id, day)),
+        ...KNOWN_PLANS.map((p) => paywallDismissSurfacePlanDayKey(name, p.id, day)),
+      ])
+    ),
+    ...daysInRange(30).flatMap((day) =>
+      KNOWN_PLANS.flatMap((p) => [
+        paywallDismissPlanDayKey(p.id, day),
+        paywallPurchaseGlobalPlanDayKey(p.id, day),
+      ])
+    ),
   ];
 
   const handleReset = useCallback(() => {
@@ -1069,6 +1180,42 @@ export function PaywallStatsModal({
       minWidth: 34,
       textAlign: "right",
     },
+    rangeToggle: {
+      flexDirection: "row",
+      backgroundColor: "rgba(255,255,255,0.05)",
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.18)",
+      padding: 3,
+      gap: 3,
+    },
+    rangeBtn: {
+      flex: 1,
+      paddingVertical: 8,
+      borderRadius: 9,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    rangeBtnActive: {
+      backgroundColor: "rgba(201,150,12,0.22)",
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.45)",
+    },
+    rangeBtnText: {
+      fontSize: 12,
+      fontFamily: "Inter_600SemiBold",
+      color: "rgba(245,215,142,0.45)",
+    },
+    rangeBtnTextActive: {
+      color: "#F5D78E",
+    },
+    rangeHint: {
+      fontSize: 11,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(245,215,142,0.35)",
+      textAlign: "center",
+      paddingHorizontal: 4,
+    },
   });
 
   const allZero = surfaces.every((s) => s.views === 0);
@@ -1109,10 +1256,37 @@ export function PaywallStatsModal({
               contentContainerStyle={s.scroll}
               showsVerticalScrollIndicator={false}
             >
-              <InstallToPaywall
-                installFirstSeenAt={installFirstSeenAt}
-                globalPaywallFirstSeenAt={globalPaywallFirstSeenAt}
-              />
+              {/* Date range toggle */}
+              <View style={s.rangeToggle}>
+                {DATE_RANGE_OPTIONS.map((opt) => {
+                  const active = dateRange === opt.key;
+                  return (
+                    <TouchableOpacity
+                      key={opt.key}
+                      style={[s.rangeBtn, active && s.rangeBtnActive]}
+                      onPress={() => setDateRange(opt.key)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={[s.rangeBtnText, active && s.rangeBtnTextActive]}>
+                        {opt.label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              {dateRange !== "all" && (
+                <Text style={s.rangeHint}>
+                  Showing only events recorded since this feature was added. Events before the update will not appear in filtered views.
+                </Text>
+              )}
+
+              {dateRange === "all" && (
+                <InstallToPaywall
+                  installFirstSeenAt={installFirstSeenAt}
+                  globalPaywallFirstSeenAt={globalPaywallFirstSeenAt}
+                />
+              )}
 
               {allZero ? (
                 <Text style={s.emptyText}>

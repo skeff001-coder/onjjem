@@ -39,6 +39,46 @@ export function paywallPurchasedAtKey(name: string): string {
 }
 
 /**
+ * Returns a local-timezone YYYY-MM-DD string for the given date (defaults to today).
+ * Used as the day-bucket key suffix so date ranges match what the user sees.
+ */
+export function localDayString(date: Date = new Date()): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/** Per-surface per-day view count key */
+export function paywallViewDayKey(name: string, day: string): string {
+  return `onjjem_paywall_view_count_${name}_day_${day}`;
+}
+/** Per-surface per-day dismissal count key */
+export function paywallDismissDayKey(name: string, day: string): string {
+  return `onjjem_paywall_dismiss_count_${name}_day_${day}`;
+}
+/** Per-surface per-day purchase count key */
+export function paywallPurchaseDayKey(name: string, day: string): string {
+  return `onjjem_paywall_purchase_count_${name}_day_${day}`;
+}
+/** Per-surface per-plan per-day purchase count key */
+export function paywallPurchasePlanDayKey(name: string, planId: string, day: string): string {
+  return `onjjem_paywall_purchase_count_${name}_${planId}_day_${day}`;
+}
+/** Global per-plan per-day purchase count key */
+export function paywallPurchaseGlobalPlanDayKey(plan: string, day: string): string {
+  return `onjjem_paywall_purchase_plan_count_${plan}_day_${day}`;
+}
+/** Global per-plan per-day dismissal count key */
+export function paywallDismissPlanDayKey(plan: string, day: string): string {
+  return `onjjem_paywall_dismiss_plan_count_${plan}_day_${day}`;
+}
+/** Per-surface per-plan per-day dismissal count key */
+export function paywallDismissSurfacePlanDayKey(surface: string, plan: string, day: string): string {
+  return `onjjem_paywall_dismiss_count_${surface}_${plan}_day_${day}`;
+}
+
+/**
  * Global per-plan purchase count key — records how many times a purchase was
  * completed while a specific plan (e.g. "annual", "monthly", "perpic") was
  * selected, across all paywall surfaces. Used by the dev stats screen for plan
@@ -195,18 +235,24 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
     await AsyncStorage.setItem(PAYWALL_VIEW_COUNT_KEY, String(count));
     if (isFirstView) await AsyncStorage.setItem(FIRST_PAYWALL_SEEN_KEY, now);
 
-    // Also persist a per-surface view count and first-seen timestamp for the dev stats screen
+    // Also persist a per-surface view count, first-seen timestamp, and today's day bucket
     const surfaceKey = paywallViewCountKey(paywallName);
     const surfaceFirstKey = paywallFirstSeenKey(paywallName);
-    const [rawSurface, rawSurfaceFirst] = await Promise.all([
+    const today = localDayString();
+    const viewDayKey = paywallViewDayKey(paywallName, today);
+    const [rawSurface, rawSurfaceFirst, rawDayCount] = await Promise.all([
       AsyncStorage.getItem(surfaceKey),
       AsyncStorage.getItem(surfaceFirstKey),
+      AsyncStorage.getItem(viewDayKey),
     ]);
     const surfaceCount = rawSurface ? (parseInt(rawSurface, 10) || 0) + 1 : 1;
-    await AsyncStorage.setItem(surfaceKey, String(surfaceCount));
-    if (!rawSurfaceFirst) {
-      await AsyncStorage.setItem(surfaceFirstKey, now);
-    }
+    const dayCount = rawDayCount ? (parseInt(rawDayCount, 10) || 0) + 1 : 1;
+    const surfaceWrites: [string, string][] = [
+      [surfaceKey, String(surfaceCount)],
+      [viewDayKey, String(dayCount)],
+    ];
+    if (!rawSurfaceFirst) surfaceWrites.push([surfaceFirstKey, now]);
+    await AsyncStorage.multiSet(surfaceWrites);
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }
@@ -250,19 +296,27 @@ export async function trackPaywallImpression(paywallName: string): Promise<void>
  */
 export async function trackPaywallPurchase(paywallName: string, planId?: string): Promise<void> {
   try {
+    const today = localDayString();
     const surfaceKey = paywallPurchaseCountKey(paywallName);
     const purchasedAtKey = paywallPurchasedAtKey(paywallName);
-    const keysToRead: string[] = [surfaceKey, purchasedAtKey];
+    const purchaseDayKey = paywallPurchaseDayKey(paywallName, today);
+    const keysToRead: string[] = [surfaceKey, purchasedAtKey, purchaseDayKey];
     if (planId) {
       keysToRead.push(paywallPurchasePlanCountKey(paywallName, planId));
       keysToRead.push(paywallPurchaseGlobalPlanCountKey(planId));
+      keysToRead.push(paywallPurchasePlanDayKey(paywallName, planId, today));
+      keysToRead.push(paywallPurchaseGlobalPlanDayKey(planId, today));
     }
 
     const pairs = await AsyncStorage.multiGet(keysToRead);
     const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
 
     const count = map[surfaceKey] ? (parseInt(map[surfaceKey]!, 10) || 0) + 1 : 1;
-    const writes: [string, string][] = [[surfaceKey, String(count)]];
+    const dayCount = map[purchaseDayKey] ? (parseInt(map[purchaseDayKey]!, 10) || 0) + 1 : 1;
+    const writes: [string, string][] = [
+      [surfaceKey, String(count)],
+      [purchaseDayKey, String(dayCount)],
+    ];
 
     // Record the first purchase timestamp for time-to-convert display
     if (!map[purchasedAtKey]) {
@@ -275,10 +329,20 @@ export async function trackPaywallPurchase(paywallName: string, planId?: string)
       const surfacePlanCount = map[surfacePlanKey] ? (parseInt(map[surfacePlanKey]!, 10) || 0) + 1 : 1;
       writes.push([surfacePlanKey, String(surfacePlanCount)]);
 
+      // Per-surface-per-plan per-day purchase count
+      const surfacePlanDayKey = paywallPurchasePlanDayKey(paywallName, planId, today);
+      const surfacePlanDayCount = map[surfacePlanDayKey] ? (parseInt(map[surfacePlanDayKey]!, 10) || 0) + 1 : 1;
+      writes.push([surfacePlanDayKey, String(surfacePlanDayCount)]);
+
       // Global per-plan purchase count (onjjem_paywall_purchase_plan_count_<plan>)
       const globalPlanKey = paywallPurchaseGlobalPlanCountKey(planId);
       const globalPlanCount = map[globalPlanKey] ? (parseInt(map[globalPlanKey]!, 10) || 0) + 1 : 1;
       writes.push([globalPlanKey, String(globalPlanCount)]);
+
+      // Global per-plan per-day purchase count
+      const globalPlanDayKey = paywallPurchaseGlobalPlanDayKey(planId, today);
+      const globalPlanDayCount = map[globalPlanDayKey] ? (parseInt(map[globalPlanDayKey]!, 10) || 0) + 1 : 1;
+      writes.push([globalPlanDayKey, String(globalPlanDayCount)]);
 
       // Record which plan was highlighted at tap-time on the RevenueCat customer profile.
       // This may differ from the purchased product if the user switched plans mid-session.
@@ -370,26 +434,43 @@ export async function trackPaywallDismissal(paywallName: string, selectedPlan?: 
 
     await AsyncStorage.setItem(PAYWALL_DISMISS_COUNT_KEY, String(count));
 
-    // Also persist a per-surface dismiss count for the dev stats screen
+    // Persist a per-surface dismiss count and today's day bucket
+    const today = localDayString();
     const surfaceKey = paywallDismissCountKey(paywallName);
-    const rawSurface = await AsyncStorage.getItem(surfaceKey);
+    const dismissDayKey = paywallDismissDayKey(paywallName, today);
+    const [rawSurface, rawDismissDay] = await Promise.all([
+      AsyncStorage.getItem(surfaceKey),
+      AsyncStorage.getItem(dismissDayKey),
+    ]);
     const surfaceCount = rawSurface ? (parseInt(rawSurface, 10) || 0) + 1 : 1;
-    await AsyncStorage.setItem(surfaceKey, String(surfaceCount));
+    const dismissDayCount = rawDismissDay ? (parseInt(rawDismissDay, 10) || 0) + 1 : 1;
+    const surfaceWrites: [string, string][] = [
+      [surfaceKey, String(surfaceCount)],
+      [dismissDayKey, String(dismissDayCount)],
+    ];
 
-    // Persist a per-plan dismissal count so the dev stats screen can show
+    // Persist per-plan dismissal counts so the dev stats screen can show
     // which plan users had selected when they abandoned the paywall.
     if (selectedPlan) {
       const planKey = paywallDismissPlanCountKey(selectedPlan);
       const surfacePlanKey = paywallDismissSurfacePlanCountKey(paywallName, selectedPlan);
-      const pairs = await AsyncStorage.multiGet([planKey, surfacePlanKey]);
+      const planDayKey = paywallDismissPlanDayKey(selectedPlan, today);
+      const surfacePlanDayKey = paywallDismissSurfacePlanDayKey(paywallName, selectedPlan, today);
+      const pairs = await AsyncStorage.multiGet([planKey, surfacePlanKey, planDayKey, surfacePlanDayKey]);
       const pairMap = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
       const planCount = pairMap[planKey] ? (parseInt(pairMap[planKey]!, 10) || 0) + 1 : 1;
       const surfacePlanCount = pairMap[surfacePlanKey] ? (parseInt(pairMap[surfacePlanKey]!, 10) || 0) + 1 : 1;
-      await AsyncStorage.multiSet([
+      const planDayCount = pairMap[planDayKey] ? (parseInt(pairMap[planDayKey]!, 10) || 0) + 1 : 1;
+      const surfacePlanDayCount = pairMap[surfacePlanDayKey] ? (parseInt(pairMap[surfacePlanDayKey]!, 10) || 0) + 1 : 1;
+      surfaceWrites.push(
         [planKey, String(planCount)],
         [surfacePlanKey, String(surfacePlanCount)],
-      ]);
+        [planDayKey, String(planDayCount)],
+        [surfacePlanDayKey, String(surfacePlanDayCount)],
+      );
     }
+
+    await AsyncStorage.multiSet(surfaceWrites);
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }
