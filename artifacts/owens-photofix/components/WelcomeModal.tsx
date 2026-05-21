@@ -26,6 +26,8 @@ const { width: SCREEN_W } = Dimensions.get("window");
 interface Props {
   visible: boolean;
   onDismiss: () => void;
+  initialIndex?: number;
+  onIndexChange?: (index: number) => void;
 }
 
 const SLIDES: {
@@ -104,15 +106,16 @@ function AnimatedSlide({ item, isActive }: SlideProps) {
   );
 }
 
-export function WelcomeModal({ visible, onDismiss }: Props) {
+export function WelcomeModal({ visible, onDismiss, initialIndex, onIndexChange }: Props) {
   const insets = useSafeAreaInsets();
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     if (visible) {
-      setActiveIndex(0);
-      flatListRef.current?.scrollToIndex({ index: 0, animated: false });
+      const startIndex = initialIndex ?? 0;
+      setActiveIndex(startIndex);
+      flatListRef.current?.scrollToIndex({ index: startIndex, animated: false });
     }
   }, [visible]);
 
@@ -129,10 +132,15 @@ export function WelcomeModal({ visible, onDismiss }: Props) {
     }
   };
 
+  const onIndexChangeRef = useRef(onIndexChange);
+  useEffect(() => { onIndexChangeRef.current = onIndexChange; }, [onIndexChange]);
+
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (viewableItems.length > 0 && viewableItems[0].index != null) {
-        setActiveIndex(viewableItems[0].index);
+        const idx = viewableItems[0].index;
+        setActiveIndex(idx);
+        onIndexChangeRef.current?.(idx);
       }
     }
   ).current;

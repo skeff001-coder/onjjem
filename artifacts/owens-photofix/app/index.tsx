@@ -103,6 +103,8 @@ export default function HomeScreen() {
   const scrollRef = useRef<ScrollView>(null);
 
   const [welcomeVisible, setWelcomeVisible] = useState(false);
+  const [welcomeInitialIndex, setWelcomeInitialIndex] = useState(0);
+  const [lastWelcomeIndex, setLastWelcomeIndex] = useState(0);
   const [whatsNewVisible, setWhatsNewVisible] = useState(false);
   const [whatsNewVersion, setWhatsNewVersion] = useState("");
   const [tipSheetVisible, setTipSheetVisible] = useState(false);
@@ -908,7 +910,12 @@ export default function HomeScreen() {
 
   return (
     <View style={s.root}>
-      <WelcomeModal visible={welcomeVisible} onDismiss={handleWelcomeDismiss} />
+      <WelcomeModal
+        visible={welcomeVisible}
+        onDismiss={handleWelcomeDismiss}
+        initialIndex={welcomeInitialIndex}
+        onIndexChange={setLastWelcomeIndex}
+      />
       <WhatsNewModal visible={whatsNewVisible} version={whatsNewVersion} onDismiss={handleWhatsNewDismiss} />
       <EnhancementTipSheet visible={tipSheetVisible} onDismiss={handleTipSheetDismiss} />
       <ResultTipSheet visible={resultTipVisible} onDismiss={handleResultTipDismiss} />
@@ -954,7 +961,10 @@ export default function HomeScreen() {
             </TouchableOpacity>
           )}
           <TouchableOpacity
-            onPress={() => setWelcomeVisible(true)}
+            onPress={() => {
+              setWelcomeInitialIndex(lastWelcomeIndex);
+              setWelcomeVisible(true);
+            }}
             style={s.infoBtn}
             activeOpacity={0.7}
           >
