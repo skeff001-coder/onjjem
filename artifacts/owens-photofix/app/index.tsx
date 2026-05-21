@@ -13,6 +13,7 @@ import {
   Dimensions,
   Image,
   Linking,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -69,15 +70,16 @@ const ENHANCEMENTS: {
   id: EnhancementMode;
   title: string;
   subtitle: string;
+  description: string;
   icon: React.ComponentProps<typeof Ionicons>["name"];
   accent: string;
 }[] = [
-  { id: "sharpen",   title: "Sharpen",   subtitle: "Fix soft &\nblurry photos",    icon: "aperture-outline",       accent: "#4A90D9" },
-  { id: "brighten",  title: "Brighten",  subtitle: "Lift dark &\nunderexposed",     icon: "sunny-outline",          accent: "#F5A623" },
-  { id: "denoise",   title: "Denoise",   subtitle: "Remove grain\n& film noise",    icon: "water-outline",          accent: "#9B59B6" },
-  { id: "restore",   title: "Restore",   subtitle: "Full old photo\nrestoration",   icon: "time-outline",           accent: "#27AE60" },
-  { id: "vivid",     title: "Vivid",     subtitle: "Bold colours\n& contrast",      icon: "color-filter-outline",   accent: "#E74C3C" },
-  { id: "colourize", title: "Colourize", subtitle: "Add colour to\nold B&W photos", icon: "color-palette-outline",  accent: "#C9960C" },
+  { id: "sharpen",   title: "Sharpen",   subtitle: "Fix soft &\nblurry photos",    description: "Uses AI upscaling to recover lost detail in soft, out-of-focus, or low-resolution photos. Great for old prints that have gone fuzzy over time.",          icon: "aperture-outline",       accent: "#4A90D9" },
+  { id: "brighten",  title: "Brighten",  subtitle: "Lift dark &\nunderexposed",     description: "Intelligently lifts shadows and recovers detail in underexposed shots without blowing out bright areas. Perfect for indoor or poorly lit photos.",          icon: "sunny-outline",          accent: "#F5A623" },
+  { id: "denoise",   title: "Denoise",   subtitle: "Remove grain\n& film noise",    description: "Cleans up digital noise, grain, and ISO artefacts while preserving fine detail. Ideal for high-ISO shots or scanned film photographs.",                   icon: "water-outline",          accent: "#9B59B6" },
+  { id: "restore",   title: "Restore",   subtitle: "Full old photo\nrestoration",   description: "A full-strength treatment for damaged, faded, or scratched old photos. Repairs creases and marks, sharpens faces, and brings lost tones back to life.",    icon: "time-outline",           accent: "#27AE60" },
+  { id: "vivid",     title: "Vivid",     subtitle: "Bold colours\n& contrast",      description: "Boosts colour saturation and contrast to make flat or washed-out photos pop. Best used on colour prints that have faded or look lifeless.",                icon: "color-filter-outline",   accent: "#E74C3C" },
+  { id: "colourize", title: "Colourize", subtitle: "Add colour to\nold B&W photos", description: "Adds realistic, natural-looking colour to black-and-white photographs using AI trained on thousands of historical images. Bring the past to life.",        icon: "color-palette-outline",  accent: "#C9960C" },
 ];
 
 
@@ -114,6 +116,7 @@ export default function HomeScreen() {
   const [referralVisible, setReferralVisible] = useState(false);
   const [subscribeVisible, setSubscribeVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
+  const [descModalMode, setDescModalMode] = useState<EnhancementMode | null>(null);
   const [reviewNudgeCount, setReviewNudgeCount] = useState<number | null>(null);
   const { perPhotoPackage, purchase: purchaseSubscription } = useSubscription();
 
@@ -920,6 +923,36 @@ export default function HomeScreen() {
       <EnhancementTipSheet visible={tipSheetVisible} onDismiss={handleTipSheetDismiss} />
       <ResultTipSheet visible={resultTipVisible} onDismiss={handleResultTipDismiss} />
 
+      {/* Enhancement description bottom sheet */}
+      {(() => {
+        const activeEnh = ENHANCEMENTS.find((e) => e.id === descModalMode);
+        return (
+          <Modal
+            visible={descModalMode !== null}
+            transparent
+            animationType="slide"
+            onRequestClose={() => setDescModalMode(null)}
+          >
+            <Pressable style={s.descBackdrop} onPress={() => setDescModalMode(null)}>
+              <Pressable style={s.descSheet} onPress={() => {}}>
+                {activeEnh && (
+                  <>
+                    <View style={[s.descIconCircle, { backgroundColor: `${activeEnh.accent}26`, borderColor: `${activeEnh.accent}66` }]}>
+                      <Ionicons name={activeEnh.icon} size={34} color={activeEnh.accent} />
+                    </View>
+                    <Text style={[s.descTitle, { color: activeEnh.accent }]}>{activeEnh.title}</Text>
+                    <Text style={s.descBody}>{activeEnh.description}</Text>
+                    <TouchableOpacity style={[s.descDismissBtn, { borderColor: activeEnh.accent }]} onPress={() => setDescModalMode(null)} activeOpacity={0.8}>
+                      <Text style={[s.descDismissBtnText, { color: activeEnh.accent }]}>Got it</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </Pressable>
+            </Pressable>
+          </Modal>
+        );
+      })()}
+
       {/* Background photo mosaic */}
       <View style={s.bgMosaic}>
         {bgImages.map((src, i) => (
@@ -1388,6 +1421,11 @@ export default function HomeScreen() {
                         return next;
                       });
                     }}
+                    onLongPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setDescModalMode(enh.id);
+                    }}
+                    delayLongPress={350}
                     activeOpacity={0.8}
                   >
                     <LinearGradient
@@ -2538,6 +2576,60 @@ function makeStyles(
       fontFamily: "Inter_400Regular",
       textAlign: "center" as const,
       lineHeight: 15,
+    },
+    descBackdrop: {
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.6)",
+      justifyContent: "flex-end" as const,
+    },
+    descSheet: {
+      backgroundColor: "#1A1814",
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      paddingTop: 28,
+      paddingBottom: insets.bottom + 24,
+      paddingHorizontal: 28,
+      alignItems: "center" as const,
+      gap: 14,
+      borderTopWidth: 1,
+      borderLeftWidth: 1,
+      borderRightWidth: 1,
+      borderColor: "rgba(255,255,255,0.1)",
+    },
+    descIconCircle: {
+      width: 72,
+      height: 72,
+      borderRadius: 36,
+      borderWidth: 2,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      marginBottom: 4,
+    },
+    descTitle: {
+      fontSize: 22,
+      fontWeight: "800" as const,
+      fontFamily: "Inter_700Bold",
+      textAlign: "center" as const,
+      letterSpacing: 0.3,
+    },
+    descBody: {
+      fontSize: 15,
+      color: "rgba(250,247,242,0.8)",
+      fontFamily: "Inter_400Regular",
+      textAlign: "center" as const,
+      lineHeight: 22,
+    },
+    descDismissBtn: {
+      marginTop: 8,
+      borderWidth: 1.5,
+      borderRadius: 50,
+      paddingVertical: 12,
+      paddingHorizontal: 40,
+    },
+    descDismissBtnText: {
+      fontSize: 15,
+      fontWeight: "700" as const,
+      fontFamily: "Inter_700Bold",
     },
     comboLabel: {
       flexDirection: "row" as const,
