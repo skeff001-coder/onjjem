@@ -56,6 +56,8 @@ async function buildAll() {
       "protobufjs",
       "onnxruntime-node",
       "@tensorflow/*",
+      "stripe",
+      "stripe-replit-sync",
       "@prisma/client",
       "@mikro-orm/*",
       "@grpc/*",

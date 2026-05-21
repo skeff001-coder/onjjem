@@ -4,6 +4,7 @@ import pinoHttp from "pino-http";
 import path from "path";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import { WebhookHandlers } from "./webhookHandlers";
 
 const BRAND_CSS = `
   *{box-sizing:border-box;margin:0;padding:0}
@@ -104,6 +105,31 @@ const SUPPORT_HTML = `<!DOCTYPE html>
 </body></html>`;
 
 const app: Express = express();
+
+// ── Stripe webhook — must be registered BEFORE express.json() ─────────────────
+// Needs raw Buffer body, not parsed JSON.
+
+app.post(
+  "/api/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  async (req: Request, res: Response) => {
+    const signature = req.headers["stripe-signature"];
+    if (!signature) {
+      res.status(400).json({ error: "Missing stripe-signature header" });
+      return;
+    }
+    try {
+      const sig = Array.isArray(signature) ? signature[0] : signature;
+      await WebhookHandlers.processWebhook(req.body as Buffer, sig);
+      res.status(200).json({ received: true });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Webhook error";
+      res.status(400).json({ error: msg });
+    }
+  },
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 app.use(
   pinoHttp({

@@ -4,7 +4,7 @@ import sharp from "sharp";
 
 const router = Router();
 
-type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
+export type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
 
 // ── Individual processors ─────────────────────────────────────────────────────
 
@@ -96,7 +96,7 @@ async function applyColourize(buf: Buffer): Promise<Buffer> {
 
 // ── Compose all selected modes in order ───────────────────────────────────────
 
-async function applyEnhancements(
+export async function applyEnhancements(
   inputBuffer: Buffer,
   modes: EnhancementMode[],
 ): Promise<Buffer> {
