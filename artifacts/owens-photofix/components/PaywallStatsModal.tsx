@@ -620,6 +620,8 @@ export function PaywallStatsModal({
   const [highlightedSurface, setHighlightedSurface] = useState<string | null>(null);
   const toastOpacity = useRef(new Animated.Value(0)).current;
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const highlightedSurfaceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showResetToast = useCallback(() => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -726,7 +728,8 @@ export function PaywallStatsModal({
   const handleCopy = useCallback(async () => {
     await Clipboard.setStringAsync(buildStatsText());
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+    copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
   }, [buildStatsText]);
 
   const handleExport = useCallback(async () => {
@@ -922,12 +925,32 @@ export function PaywallStatsModal({
       scrollViewRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true });
     }
     setHighlightedSurface(surfaceName);
-    setTimeout(() => setHighlightedSurface(null), 1400);
+    if (highlightedSurfaceTimerRef.current) clearTimeout(highlightedSurfaceTimerRef.current);
+    highlightedSurfaceTimerRef.current = setTimeout(() => setHighlightedSurface(null), 1400);
   }, [cardOffsets]);
 
   useEffect(() => {
     if (visible) void refresh();
   }, [visible, refresh]);
+
+  useEffect(() => {
+    if (!visible) {
+      if (copiedTimerRef.current) {
+        clearTimeout(copiedTimerRef.current);
+        copiedTimerRef.current = null;
+        setCopied(false);
+      }
+      if (highlightedSurfaceTimerRef.current) {
+        clearTimeout(highlightedSurfaceTimerRef.current);
+        highlightedSurfaceTimerRef.current = null;
+        setHighlightedSurface(null);
+      }
+    }
+    return () => {
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      if (highlightedSurfaceTimerRef.current) clearTimeout(highlightedSurfaceTimerRef.current);
+    };
+  }, [visible]);
 
   const maxViews = Math.max(1, ...surfaces.map((s) => s.views));
 
