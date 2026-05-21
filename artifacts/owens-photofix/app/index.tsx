@@ -52,6 +52,7 @@ import { EnhancementTipSheet } from "@/components/EnhancementTipSheet";
 import { ResultTipSheet } from "@/components/ResultTipSheet";
 import { pruneHistory, saveToHistory } from "@/lib/photoHistory";
 import { PaywallStatsModal } from "@/components/PaywallStatsModal";
+import { ProWelcomeBanner } from "@/components/ProWelcomeBanner";
 
 type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
 type AppState = "idle" | "selected" | "processing" | "done" | "batch-selected" | "batch-processing" | "batch-done";
@@ -123,7 +124,9 @@ export default function HomeScreen() {
   const versionTapCountRef = useRef(0);
   const versionTapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [reviewNudgeCount, setReviewNudgeCount] = useState<number | null>(null);
-  const { perPhotoPackage, purchase: purchaseSubscription } = useSubscription();
+  const [proWelcomeVisible, setProWelcomeVisible] = useState(false);
+  const proWelcomeCheckedRef = useRef(false);
+  const { perPhotoPackage, purchase: purchaseSubscription, isSubscribed, isLoading: isSubscriptionLoading } = useSubscription();
 
   const buyOnePhoto = async () => {
     if (!perPhotoPackage) {
@@ -384,6 +387,10 @@ export default function HomeScreen() {
     }
   }, []);
 
+  const handleProWelcomeDismiss = () => {
+    setProWelcomeVisible(false);
+  };
+
   const handleResultTipDismiss = async () => {
     try {
       await AsyncStorage.setItem("hasSeenResultTip", "1");
@@ -401,6 +408,39 @@ export default function HomeScreen() {
     }
     setTipSheetVisible(false);
   };
+
+  // Show "Welcome to Pro" banner the first time the app opens after a subscription upgrade.
+  //
+  // Strategy:
+  //   1. Wait until RevenueCat has finished loading the subscription state.
+  //   2. Read the previously stored subscription state from AsyncStorage.
+  //   3. If the stored state was "not subscribed" (or absent for new installs that
+  //      never purchased) and the current state is subscribed → this is a fresh
+  //      upgrade; show the banner and record the new state.
+  //   4. Always update the stored state once we know the current state, so the
+  //      next launch starts from the correct baseline.
+  //   5. Use proWelcomeCheckedRef to ensure we only run this logic once per
+  //      session, even if isSubscriptionLoading briefly flickers.
+  useEffect(() => {
+    if (isSubscriptionLoading) return;
+    if (proWelcomeCheckedRef.current) return;
+    proWelcomeCheckedRef.current = true;
+
+    void (async () => {
+      try {
+        const stored = await AsyncStorage.getItem("onjjem_last_subscribed");
+        const wasSubscribed = stored === "1";
+
+        if (isSubscribed && !wasSubscribed) {
+          setProWelcomeVisible(true);
+        }
+
+        await AsyncStorage.setItem("onjjem_last_subscribed", isSubscribed ? "1" : "0");
+      } catch {
+        // Non-critical — skip silently
+      }
+    })();
+  }, [isSubscriptionLoading, isSubscribed]);
 
   // Prune old gallery entries on every launch
   useEffect(() => {
@@ -963,6 +1003,7 @@ export default function HomeScreen() {
       <WhatsNewModal visible={whatsNewManualVisible} version={whatsNewManualVersion} onDismiss={() => setWhatsNewManualVisible(false)} />
       <EnhancementTipSheet visible={tipSheetVisible} onDismiss={handleTipSheetDismiss} />
       <ResultTipSheet visible={resultTipVisible} onDismiss={handleResultTipDismiss} />
+      <ProWelcomeBanner visible={proWelcomeVisible} onDismiss={handleProWelcomeDismiss} />
 
       {/* Enhancement description bottom sheet */}
       {(() => {
