@@ -358,6 +358,47 @@ function checkChangelogEntry(version) {
   return { ok: versions.includes(version), versions, error };
 }
 
+/**
+ * Insert a generic CHANGELOG entry for `version` at the top of the
+ * CHANGELOG object in WhatsNewModal.tsx. Returns true on success, false if
+ * the file could not be parsed.
+ *
+ * The generic entry simply tells users we've shipped improvements and bug
+ * fixes — appropriate as a fallback when the release script is invoked
+ * without a hand-written entry.
+ */
+function insertGenericChangelogEntry(version) {
+  let src;
+  try {
+    src = fs.readFileSync(WHATS_NEW_PATH, "utf8");
+  } catch {
+    return false;
+  }
+
+  const entry =
+    `  "${version}": {\n` +
+    `    headline: "What's New in v${version}",\n` +
+    `    items: [\n` +
+    `      {\n` +
+    `        icon: "sparkles-outline",\n` +
+    `        accent: "#C9960C",\n` +
+    `        title: "Improvements & Bug Fixes",\n` +
+    `        body: "Behind-the-scenes improvements and small fixes to keep your photo restorations running smoothly.",\n` +
+    `      },\n` +
+    `    ],\n` +
+    `  },\n`;
+
+  // Insert right after the opening brace of the CHANGELOG object literal.
+  const anchorRe = /(export\s+const\s+CHANGELOG[^=]*=\s*\{\s*\n)/m;
+  if (!anchorRe.test(src)) {
+    return false;
+  }
+
+  const updated = src.replace(anchorRe, (match) => match + entry);
+  fs.writeFileSync(WHATS_NEW_PATH, updated, "utf8");
+  return true;
+}
+
 // ── Version preview ───────────────────────────────────────────────────────────
 
 /**
@@ -477,13 +518,20 @@ async function main() {
         console.warn(`\n⚠️  CHANGELOG check warning: ${clErr}`);
         console.warn("   Continuing anyway — could not read WhatsNewModal.tsx.\n");
       } else if (!clOk) {
-        const existing = clVersions.length > 0 ? clVersions.join(", ") : "(none)";
-        console.error(`\n❌  Missing What's New entry for v${nextVersion}`);
-        console.error(`    Existing entries: ${existing}`);
-        console.error(`    Add a "${nextVersion}" key to the CHANGELOG in:`);
-        console.error(`    components/WhatsNewModal.tsx`);
-        console.error(`    Then re-run the release.\n`);
-        process.exit(1);
+        console.log(`\n⚠️  No What's New entry for v${nextVersion} — adding a generic one.`);
+        const inserted = insertGenericChangelogEntry(nextVersion);
+        if (inserted) {
+          console.log(`✓  Inserted generic CHANGELOG entry for v${nextVersion} into components/WhatsNewModal.tsx`);
+          console.log(`   (Edit it before/after release if you'd like a more descriptive note.)`);
+        } else {
+          const existing = clVersions.length > 0 ? clVersions.join(", ") : "(none)";
+          console.error(`\n❌  Could not auto-insert CHANGELOG entry for v${nextVersion}`);
+          console.error(`    Existing entries: ${existing}`);
+          console.error(`    Add a "${nextVersion}" key to the CHANGELOG in:`);
+          console.error(`    components/WhatsNewModal.tsx`);
+          console.error(`    Then re-run the release.\n`);
+          process.exit(1);
+        }
       } else {
         console.log(`✓  CHANGELOG entry found for v${nextVersion}`);
       }
