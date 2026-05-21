@@ -290,6 +290,44 @@ function checkEnvVars() {
   return { missing, warnings };
 }
 
+// ── CHANGELOG guard ───────────────────────────────────────────────────────────
+
+const WHATS_NEW_PATH = path.join(ARTIFACT_DIR, "components", "WhatsNewModal.tsx");
+
+/**
+ * Parse the version keys present in the CHANGELOG object inside WhatsNewModal.tsx.
+ * Uses a regex so the TS file doesn't need to be executed.
+ * Returns an array of version strings like ["1.0.1", "1.0.2"].
+ */
+function readChangelogVersions() {
+  let src;
+  try {
+    src = fs.readFileSync(WHATS_NEW_PATH, "utf8");
+  } catch {
+    return { versions: [], error: `Cannot read ${WHATS_NEW_PATH}` };
+  }
+
+  // Find the CHANGELOG object body between the outer braces
+  const blockMatch = src.match(/export\s+const\s+CHANGELOG[^=]*=\s*\{([\s\S]*?)\};\s*$/m);
+  if (!blockMatch) {
+    // Fallback: scan for any quoted semver key at the start of a line
+    const keys = [...src.matchAll(/"(\d+\.\d+\.\d+)"\s*:/g)].map((m) => m[1]);
+    return { versions: keys, error: null };
+  }
+
+  const keys = [...blockMatch[1].matchAll(/"(\d+\.\d+\.\d+)"\s*:/g)].map((m) => m[1]);
+  return { versions: keys, error: null };
+}
+
+/**
+ * Check whether `version` has a CHANGELOG entry.
+ * Returns { ok: boolean, versions: string[], error: string | null }
+ */
+function checkChangelogEntry(version) {
+  const { versions, error } = readChangelogVersions();
+  return { ok: versions.includes(version), versions, error };
+}
+
 // ── Version preview ───────────────────────────────────────────────────────────
 
 /**
@@ -358,6 +396,19 @@ async function main() {
         console.log(`  ! ${w}`);
       }
 
+      console.log("\n=== What's New changelog ===");
+      const { ok: clOk, versions: clVersions, error: clErr } = checkChangelogEntry(nextVersion);
+      if (clErr) {
+        console.log(`  ! ${clErr}`);
+      } else if (clOk) {
+        console.log(`  ✓ CHANGELOG entry found for v${nextVersion}`);
+      } else {
+        const existing = clVersions.length > 0 ? clVersions.join(", ") : "(none)";
+        console.log(`  ✗ No CHANGELOG entry for v${nextVersion} — release will fail without this`);
+        console.log(`    Existing entries: ${existing}`);
+        console.log(`    Add a "${nextVersion}" key to the CHANGELOG in components/WhatsNewModal.tsx`);
+      }
+
       console.log("\n=== Files that would be synced to /tmp ===");
       const { files, error: syncError } = listFilesToSync();
       if (syncError) {
@@ -371,13 +422,34 @@ async function main() {
         console.log(`\n  Total: ${files.length} file(s)`);
       }
 
-      if (missing.length > 0) {
-        console.log("\n⚠️  Preview complete — fix missing env vars before running a real release.");
+      if (missing.length > 0 || !clOk) {
+        console.log("\n⚠️  Preview complete — fix the issues above before running a real release.");
         process.exit(1);
       } else {
         console.log("\n✅  Preview complete — everything looks good. Run without --preview to build.");
       }
       return;
+    }
+
+    // ── CHANGELOG guard ────────────────────────────────────────────────────────
+    // Check before touching any files so the developer gets a clear message
+    // without needing to roll back a version bump.
+    {
+      const { ok: clOk, versions: clVersions, error: clErr } = checkChangelogEntry(nextVersion);
+      if (clErr) {
+        console.warn(`\n⚠️  CHANGELOG check warning: ${clErr}`);
+        console.warn("   Continuing anyway — could not read WhatsNewModal.tsx.\n");
+      } else if (!clOk) {
+        const existing = clVersions.length > 0 ? clVersions.join(", ") : "(none)";
+        console.error(`\n❌  Missing What's New entry for v${nextVersion}`);
+        console.error(`    Existing entries: ${existing}`);
+        console.error(`    Add a "${nextVersion}" key to the CHANGELOG in:`);
+        console.error(`    components/WhatsNewModal.tsx`);
+        console.error(`    Then re-run the release.\n`);
+        process.exit(1);
+      } else {
+        console.log(`✓  CHANGELOG entry found for v${nextVersion}`);
+      }
     }
 
     // ── Confirmation ───────────────────────────────────────────────────────────
