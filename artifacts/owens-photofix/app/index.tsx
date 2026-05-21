@@ -112,6 +112,7 @@ export default function HomeScreen() {
   const [referralVisible, setReferralVisible] = useState(false);
   const [subscribeVisible, setSubscribeVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
+  const [reviewNudgeCount, setReviewNudgeCount] = useState<number | null>(null);
   const { perPhotoPackage, purchase: purchaseSubscription } = useSubscription();
 
   const buyOnePhoto = async () => {
@@ -184,9 +185,24 @@ export default function HomeScreen() {
       if (prev < 3 && next >= 3 && await StoreReview.hasAction()) {
         await StoreReview.requestReview();
       }
+      // Keep the nudge in sync — hide permanently once review triggers
+      setReviewNudgeCount(next < 3 ? 3 - next : null);
     } catch {
       // Non-critical — never block the happy path
     }
+  }, []);
+
+  // Initialise the review nudge count from persisted storage so the nudge
+  // shows correctly if the user had already done some enhancements before
+  // this session.
+  useEffect(() => {
+    AsyncStorage.getItem("enhancementCount")
+      .then((raw) => {
+        const count = parseInt(raw ?? "0", 10) || 0;
+        if (count < 3) setReviewNudgeCount(3 - count);
+        // count >= 3 means the review was already triggered — leave null (hidden)
+      })
+      .catch(() => {});
   }, []);
 
   // Show welcome screen on first launch
@@ -1459,6 +1475,16 @@ export default function HomeScreen() {
             >
               <Text style={s.ghostBtnText}>Fix Another Photo</Text>
             </TouchableOpacity>
+            {reviewNudgeCount !== null && reviewNudgeCount > 0 && (
+              <View style={s.reviewNudge}>
+                <Ionicons name="star-outline" size={13} color="rgba(255,214,0,0.45)" />
+                <Text style={s.reviewNudgeText}>
+                  {reviewNudgeCount === 1
+                    ? "One more restoration unlocks a surprise"
+                    : `${reviewNudgeCount} more restorations unlock something special`}
+                </Text>
+              </View>
+            )}
           </>
         )}
 
@@ -1551,6 +1577,16 @@ export default function HomeScreen() {
             >
               <Text style={s.ghostBtnText}>Fix More Photos</Text>
             </TouchableOpacity>
+            {reviewNudgeCount !== null && reviewNudgeCount > 0 && (
+              <View style={s.reviewNudge}>
+                <Ionicons name="star-outline" size={13} color="rgba(255,214,0,0.45)" />
+                <Text style={s.reviewNudgeText}>
+                  {reviewNudgeCount === 1
+                    ? "One more restoration unlocks a surprise"
+                    : `${reviewNudgeCount} more restorations unlock something special`}
+                </Text>
+              </View>
+            )}
           </>
         )}
 
@@ -2606,6 +2642,21 @@ function makeStyles(
       fontSize: 16,
       color: colors.mutedForeground,
       fontFamily: "Inter_500Medium",
+    },
+    reviewNudge: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      paddingTop: 6,
+      paddingBottom: 2,
+      opacity: 0.8,
+    },
+    reviewNudgeText: {
+      fontSize: 13,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(245,215,142,0.6)",
+      textAlign: "center",
     },
     giftBtnGlow: {
       borderRadius: colors.radius,
