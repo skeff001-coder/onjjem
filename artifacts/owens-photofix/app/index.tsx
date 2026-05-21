@@ -1513,6 +1513,15 @@ export default function HomeScreen() {
               onUpgradeUnlimited={() => setSubscribeVisible(true)}
             />
             <TouchableOpacity
+              onPress={() => setResultTipVisible(true)}
+              activeOpacity={0.7}
+              style={s.resultInfoBtn}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons name="information-circle-outline" size={16} color="rgba(201,150,12,0.75)" />
+              <Text style={s.resultInfoBtnText}>What can I do with this photo?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               style={s.myPhotosLinkBtn}
               onPress={() => router.push("/my-photos")}
               activeOpacity={0.82}
@@ -2720,6 +2729,20 @@ function makeStyles(
       fontWeight: "600" as const,
       color: colors.foreground,
       fontFamily: "Inter_600SemiBold",
+    },
+    resultInfoBtn: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      gap: 6,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      alignSelf: "center" as const,
+    },
+    resultInfoBtnText: {
+      fontSize: 13,
+      color: "rgba(201,150,12,0.75)",
+      fontWeight: "500" as const,
     },
     myPhotosLinkBtn: {
       flexDirection: "row" as const,
