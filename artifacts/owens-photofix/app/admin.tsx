@@ -42,7 +42,8 @@ type AnalyticsData = {
     active_users: number;
   };
   countries: { label: string; count: number }[];
-  appVersions: { label: string; count: number }[];
+  platforms: { label: string; count: number }[];
+  totalSubscribers: number;
   totalCustomers: number;
 };
 
@@ -76,7 +77,9 @@ export default function AdminScreen() {
     const [ordersData, inquiriesData, analyticsResp] = await Promise.all([
       loadOrders(),
       loadInquiries(),
-      fetch(`https://${domain}/api/analytics`).catch(() => null),
+      fetch(`https://${domain}/api/analytics`, {
+        headers: { "X-Admin-Token": process.env.EXPO_PUBLIC_ADMIN_ANALYTICS_TOKEN ?? "" },
+      }).catch(() => null),
     ]);
     setOrders(ordersData);
     setInquiries(inquiriesData);
@@ -193,6 +196,7 @@ export default function AdminScreen() {
                   { label: "MRR", value: `$${analytics.metrics.mrr.toFixed(2)}` },
                   { label: "Revenue", value: `$${analytics.metrics.revenue.toFixed(2)}` },
                   { label: "Customers", value: String(analytics.totalCustomers) },
+                  { label: "Subscribers", value: String(analytics.totalSubscribers) },
                 ].map((m, i, arr) => (
                   <React.Fragment key={m.label}>
                     <View style={styles.analyticsStat}>
@@ -204,15 +208,16 @@ export default function AdminScreen() {
                 ))}
               </View>
 
-              {/* Country breakdown */}
+              {/* Country breakdown — active subscribers only */}
               {analytics.countries.length > 0 && (
                 <View style={styles.analyticsCard}>
                   <View style={styles.analyticsCardHeader}>
                     <Ionicons name="globe-outline" size={13} color="#7C3AED" />
-                    <Text style={[styles.analyticsCardTitle, { color: colors.foreground }]}>Users by Country</Text>
+                    <Text style={[styles.analyticsCardTitle, { color: colors.foreground }]}>Subscribers by Country</Text>
                   </View>
                   {analytics.countries.map((c) => {
-                    const pct = analytics.totalCustomers > 0 ? c.count / analytics.totalCustomers : 0;
+                    const base = analytics.totalSubscribers > 0 ? analytics.totalSubscribers : 1;
+                    const pct = c.count / base;
                     return (
                       <View key={c.label} style={styles.analyticsBarRow}>
                         <Text style={[styles.analyticsBarLabel, { color: colors.foreground }]}>{c.label}</Text>
@@ -226,22 +231,23 @@ export default function AdminScreen() {
                 </View>
               )}
 
-              {/* App version breakdown */}
-              {analytics.appVersions.length > 0 && (
+              {/* Platform breakdown — active subscribers only */}
+              {analytics.platforms.length > 0 && (
                 <View style={styles.analyticsCard}>
                   <View style={styles.analyticsCardHeader}>
                     <Ionicons name="phone-portrait-outline" size={13} color="#0891B2" />
-                    <Text style={[styles.analyticsCardTitle, { color: colors.foreground }]}>App Version</Text>
+                    <Text style={[styles.analyticsCardTitle, { color: colors.foreground }]}>Subscribers by Platform</Text>
                   </View>
-                  {analytics.appVersions.map((v) => {
-                    const pct = analytics.totalCustomers > 0 ? v.count / analytics.totalCustomers : 0;
+                  {analytics.platforms.map((p) => {
+                    const base = analytics.totalSubscribers > 0 ? analytics.totalSubscribers : 1;
+                    const pct = p.count / base;
                     return (
-                      <View key={v.label} style={styles.analyticsBarRow}>
-                        <Text style={[styles.analyticsBarLabel, { color: colors.foreground }]}>{v.label}</Text>
+                      <View key={p.label} style={styles.analyticsBarRow}>
+                        <Text style={[styles.analyticsBarLabel, { color: colors.foreground }]}>{p.label}</Text>
                         <View style={[styles.analyticsBarTrack, { backgroundColor: colors.muted }]}>
                           <View style={[styles.analyticsBarFill, { width: `${Math.round(pct * 100)}%`, backgroundColor: "#0891B2" }]} />
                         </View>
-                        <Text style={[styles.analyticsBarCount, { color: colors.mutedForeground }]}>{v.count}</Text>
+                        <Text style={[styles.analyticsBarCount, { color: colors.mutedForeground }]}>{p.count}</Text>
                       </View>
                     );
                   })}

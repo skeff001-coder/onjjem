@@ -6,8 +6,17 @@ const router = Router();
 const RC_BASE = "https://api.revenuecat.com/v2";
 const RC_PROJECT_ID = process.env.REVENUECAT_PROJECT_ID;
 const RC_SECRET_KEY = process.env.REVENUECAT_SECRET_API_KEY;
+const ADMIN_TOKEN = process.env.ADMIN_ANALYTICS_TOKEN;
 
 router.get("/analytics", async (req: Request, res: Response) => {
+  if (ADMIN_TOKEN) {
+    const provided = req.headers["x-admin-token"];
+    if (!provided || provided !== ADMIN_TOKEN) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+  }
+
   if (!RC_SECRET_KEY || !RC_PROJECT_ID) {
     res.status(503).json({ error: "Analytics not configured" });
     return;
@@ -34,14 +43,23 @@ router.get("/analytics", async (req: Request, res: Response) => {
       }>;
     };
 
-    const countryMap: Record<string, number> = {};
-    const appVersionMap: Record<string, number> = {};
+    const allCustomers = customers.items ?? [];
 
-    for (const c of customers.items ?? []) {
+    const activeSubscribers = allCustomers.filter(
+      (c) => c.active_entitlements && Object.keys(c.active_entitlements).length > 0,
+    );
+
+    const countryMap: Record<string, number> = {};
+    const platformMap: Record<string, number> = {};
+
+    for (const c of activeSubscribers) {
       const country = c.last_seen_country || "Unknown";
       countryMap[country] = (countryMap[country] ?? 0) + 1;
-      const v = c.last_seen_app_version || "Unknown";
-      appVersionMap[v] = (appVersionMap[v] ?? 0) + 1;
+
+      const platform = c.last_seen_platform
+        ? c.last_seen_platform.charAt(0).toUpperCase() + c.last_seen_platform.slice(1)
+        : "Unknown";
+      platformMap[platform] = (platformMap[platform] ?? 0) + 1;
     }
 
     const toSorted = (m: Record<string, number>) =>
@@ -63,8 +81,9 @@ router.get("/analytics", async (req: Request, res: Response) => {
         active_users: metricMap["active_users"] ?? 0,
       },
       countries: toSorted(countryMap),
-      appVersions: toSorted(appVersionMap),
-      totalCustomers: customers.items?.length ?? 0,
+      platforms: toSorted(platformMap),
+      totalSubscribers: activeSubscribers.length,
+      totalCustomers: allCustomers.length,
     });
   } catch (err) {
     req.log.error({ err }, "analytics fetch failed");
