@@ -6,6 +6,7 @@ export const ONBOARDING_HINT_KEYS = [
   "hasSeenResultTip",
   "hasSeenPickerTip",
   "hasSeenGalleryHint",
+  "hasSeenSliderDrag",
 ] as const;
 
 export type OnboardingHintKey = (typeof ONBOARDING_HINT_KEYS)[number];
@@ -16,6 +17,7 @@ export const ONBOARDING_HINT_LABELS: Record<OnboardingHintKey, string> = {
   hasSeenResultTip: "Result tip",
   hasSeenPickerTip: "Picker tip",
   hasSeenGalleryHint: "Gallery hint",
+  hasSeenSliderDrag: "Slider drag hint",
 };
 
 /**

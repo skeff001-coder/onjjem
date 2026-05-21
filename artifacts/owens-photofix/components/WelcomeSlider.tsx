@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -31,9 +32,22 @@ export function WelcomeSlider({ before, after, accent, animate, loop = true }: P
   const hasAnimatedRef = useRef(false);
   const prevAnimateRef = useRef(false);
 
-  // Drag-hint opacity — fades to 0 on first user interaction.
-  const hintOpacity = useRef(new Animated.Value(1)).current;
+  // Drag-hint opacity — starts hidden; revealed only for first-time users.
+  const hintOpacity = useRef(new Animated.Value(0)).current;
   const hintHiddenRef = useRef(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem("hasSeenSliderDrag").then((val) => {
+      if (val === null) {
+        hintOpacity.setValue(1);
+      } else {
+        hintHiddenRef.current = true;
+      }
+    }).catch(() => {
+      hintOpacity.setValue(1);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Keep sliderPos state in sync with the Animated.Value so existing
   // clip-width rendering works without converting to Animated.View.
@@ -148,6 +162,7 @@ export function WelcomeSlider({ before, after, accent, animate, loop = true }: P
             duration: 180,
             useNativeDriver: true,
           }).start();
+          AsyncStorage.setItem("hasSeenSliderDrag", "1").catch(() => {});
         }
         const newPos = Math.max(
           0.03,

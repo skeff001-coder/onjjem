@@ -73,8 +73,25 @@ function DualUriSlider({ beforeUri, afterUri }: { beforeUri: string; afterUri: s
   const positionRef = useRef(0.5);
   const [sliderPos, setSliderPos] = useState(0.5);
 
-  const hintOpacity = useRef(new Animated.Value(1)).current;
+  // Start hidden; reveal only if the user has never dragged before.
+  const hintOpacity = useRef(new Animated.Value(0)).current;
   const hintHiddenRef = useRef(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem("hasSeenSliderDrag").then((val) => {
+      if (val === null) {
+        // First-time user — show the hint.
+        hintOpacity.setValue(1);
+      } else {
+        // Already dragged before — keep hint hidden.
+        hintHiddenRef.current = true;
+      }
+    }).catch(() => {
+      // AsyncStorage unavailable — show the hint as a safe fallback.
+      hintOpacity.setValue(1);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -93,6 +110,7 @@ function DualUriSlider({ beforeUri, afterUri }: { beforeUri: string; afterUri: s
             duration: 180,
             useNativeDriver: true,
           }).start();
+          AsyncStorage.setItem("hasSeenSliderDrag", "1").catch(() => {});
         }
         const newPos = Math.max(
           0.03,
