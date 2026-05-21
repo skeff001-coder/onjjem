@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -41,6 +41,12 @@ const KNOWN_PLANS = [
   { id: "monthly", label: "Monthly" },
   { id: "perpic",  label: "One Photo" },
 ] as const;
+
+const SURFACE_COLORS: Record<string, string> = {
+  pro_paywall:          "#4A90D9",
+  subscribe_modal:      "#A764DC",
+  enhancement_paywall:  "#C9960C",
+};
 
 type SurfaceStat = {
   name: string;
@@ -512,11 +518,14 @@ export function PaywallStatsModal({
 }) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const scrollViewRef = useRef<ScrollView>(null);
   const [surfaces, setSurfaces] = useState<SurfaceStat[]>([]);
   const [plans, setPlans] = useState<PlanStat[]>([]);
   const [installFirstSeenAt, setInstallFirstSeenAt] = useState<string | null>(null);
   const [globalPaywallFirstSeenAt, setGlobalPaywallFirstSeenAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [cardOffsets, setCardOffsets] = useState<Record<string, number>>({});
+  const [highlightedSurface, setHighlightedSurface] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -736,6 +745,15 @@ export function PaywallStatsModal({
       ],
     );
   }, [refresh, paywallStatKeys]);
+
+  const handleSegmentTap = useCallback((surfaceName: string) => {
+    const y = cardOffsets[surfaceName];
+    if (y !== undefined) {
+      scrollViewRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true });
+    }
+    setHighlightedSurface(surfaceName);
+    setTimeout(() => setHighlightedSurface(null), 1400);
+  }, [cardOffsets]);
 
   useEffect(() => {
     if (visible) void refresh();
@@ -1018,6 +1036,7 @@ export function PaywallStatsModal({
             <ActivityIndicator color="#C9960C" style={{ paddingVertical: 40 }} />
           ) : (
             <ScrollView
+              ref={scrollViewRef}
               contentContainerStyle={s.scroll}
               showsVerticalScrollIndicator={false}
             >
@@ -1094,12 +1113,70 @@ export function PaywallStatsModal({
                         })}
                       </View>
                     )}
+
+                    {totalPurchases > 0 && (
+                      <View style={{ gap: 8, paddingTop: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(74,144,217,0.15)" }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                          <Ionicons name="pie-chart-outline" size={11} color="rgba(74,144,217,0.6)" />
+                          <Text style={{ fontSize: 10, fontWeight: "700", fontFamily: "Inter_700Bold", color: "rgba(74,144,217,0.6)", letterSpacing: 1.2, textTransform: "uppercase" }}>
+                            Purchases by surface
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: "row", gap: 3, height: 22 }}>
+                          {surfaces.filter((s) => s.purchases > 0).map((s, idx, arr) => (
+                            <TouchableOpacity
+                              key={s.name}
+                              style={{
+                                flex: s.purchases,
+                                backgroundColor: SURFACE_COLORS[s.name] ?? "#666",
+                                borderRadius: 5,
+                                borderTopLeftRadius: idx === 0 ? 7 : 5,
+                                borderBottomLeftRadius: idx === 0 ? 7 : 5,
+                                borderTopRightRadius: idx === arr.length - 1 ? 7 : 5,
+                                borderBottomRightRadius: idx === arr.length - 1 ? 7 : 5,
+                              }}
+                              onPress={() => handleSegmentTap(s.name)}
+                              activeOpacity={0.7}
+                            />
+                          ))}
+                        </View>
+
+                        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+                          {surfaces.filter((s) => s.purchases > 0).map((s) => {
+                            const pct = Math.round((s.purchases / totalPurchases) * 100);
+                            return (
+                              <TouchableOpacity
+                                key={s.name}
+                                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+                                onPress={() => handleSegmentTap(s.name)}
+                                activeOpacity={0.7}
+                              >
+                                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: SURFACE_COLORS[s.name] ?? "#666" }} />
+                                <Text style={{ fontSize: 11, fontFamily: "Inter_600SemiBold", color: "rgba(245,215,142,0.7)" }}>
+                                  {surfaceLabel(s.name)}
+                                </Text>
+                                <Text style={{ fontSize: 11, fontFamily: "Inter_700Bold", color: SURFACE_COLORS[s.name] ?? "#666" }}>
+                                  {pct}%
+                                </Text>
+                              </TouchableOpacity>
+                            );
+                          })}
+                        </View>
+                      </View>
+                    )}
                   </View>
 
                   {surfaces.map((stat) => {
                     const convColor = rateColour(stat.conversionRate);
+                    const isHighlighted = highlightedSurface === stat.name;
+                    const surfColor = SURFACE_COLORS[stat.name] ?? "#C9960C";
                     return (
-                      <View key={stat.name} style={s.card}>
+                      <View
+                        key={stat.name}
+                        style={[s.card, isHighlighted && { borderColor: surfColor + "99", borderWidth: 1.5 }]}
+                        onLayout={(e) => setCardOffsets((prev) => ({ ...prev, [stat.name]: e.nativeEvent.layout.y }))}
+                      >
                         <View style={s.cardTop}>
                           <Text style={s.surfaceName}>{surfaceLabel(stat.name)}</Text>
                           <View style={[s.convBadge, { borderWidth: 1, borderColor: convColor + "55" }]}>
