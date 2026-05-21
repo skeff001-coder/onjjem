@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
+import * as MediaLibrary from "expo-media-library";
 import * as Sharing from "expo-sharing";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -221,6 +222,27 @@ function DetailModal({
     }
   };
 
+  const handleSaveToPhotos = async () => {
+    if (!entry) return;
+    try {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      if (Platform.OS === "web") {
+        Alert.alert("Save to Photos", "Saving to the Camera Roll is only available on iPhone.");
+        return;
+      }
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission Denied", "Please allow access to Photos in Settings to save images to your Camera Roll.");
+        return;
+      }
+      await MediaLibrary.saveToLibraryAsync(entry.resultLocalUri);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert("Saved!", "Your restored photo has been saved to your Camera Roll.");
+    } catch {
+      Alert.alert("Error", "Could not save the image. Please try again.");
+    }
+  };
+
   const handleDelete = () => {
     if (!entry) return;
     Alert.alert(
@@ -311,6 +333,11 @@ function DetailModal({
             </LinearGradient>
           </TouchableOpacity>
 
+          <TouchableOpacity style={dm.savePhotosBtn} onPress={handleSaveToPhotos} activeOpacity={0.87}>
+            <Ionicons name="download-outline" size={18} color={DARK} />
+            <Text style={dm.savePhotosBtnText}>Save to Photos</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity style={dm.shareAnyBtn} onPress={handleShare} activeOpacity={0.87}>
             <Ionicons name="share-outline" size={18} color={DARK} />
             <Text style={dm.shareAnyBtnText}>Share via…</Text>
@@ -393,6 +420,18 @@ const dm = StyleSheet.create({
     gap: 10,
   },
   shareBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" as const, fontFamily: "Inter_700Bold" },
+  savePhotosBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "#EBF5FB",
+    borderWidth: 1,
+    borderColor: "#AED6F1",
+    borderRadius: 14,
+    paddingVertical: 14,
+  },
+  savePhotosBtnText: { fontSize: 14, fontWeight: "600" as const, fontFamily: "Inter_600SemiBold", color: "#1A5276" },
   shareAnyBtn: {
     flexDirection: "row",
     alignItems: "center",
