@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   Modal,
   Pressable,
   ScrollView,
@@ -527,6 +528,20 @@ export function PaywallStatsModal({
   const [loading, setLoading] = useState(false);
   const [cardOffsets, setCardOffsets] = useState<Record<string, number>>({});
   const [highlightedSurface, setHighlightedSurface] = useState<string | null>(null);
+  const toastOpacity = useRef(new Animated.Value(0)).current;
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showResetToast = useCallback(() => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastOpacity.setValue(1);
+    toastTimer.current = setTimeout(() => {
+      Animated.timing(toastOpacity, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    }, 1800);
+  }, [toastOpacity]);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -731,11 +746,12 @@ export function PaywallStatsModal({
               // Non-critical — proceed even if the RC call fails
             }
             await refresh();
+            showResetToast();
           },
         },
       ],
     );
-  }, [refresh, paywallStatKeys]);
+  }, [refresh, showResetToast, paywallStatKeys]);
 
   const handleFullReset = useCallback(() => {
     Alert.alert(
@@ -760,11 +776,12 @@ export function PaywallStatsModal({
               // Non-critical — proceed even if the RC call fails
             }
             await refresh();
+            showResetToast();
           },
         },
       ],
     );
-  }, [refresh, paywallStatKeys]);
+  }, [refresh, showResetToast, paywallStatKeys]);
 
   const handleSegmentTap = useCallback((surfaceName: string) => {
     const y = cardOffsets[surfaceName];
@@ -999,6 +1016,25 @@ export function PaywallStatsModal({
       fontSize: 12,
       fontFamily: "Inter_400Regular",
       color: "rgba(255,59,48,0.45)",
+    },
+    toast: {
+      position: "absolute",
+      bottom: insets.bottom + 28,
+      alignSelf: "center",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 7,
+      backgroundColor: "rgba(20,28,20,0.94)",
+      borderWidth: 1,
+      borderColor: "rgba(52,199,89,0.35)",
+      borderRadius: 20,
+      paddingHorizontal: 16,
+      paddingVertical: 9,
+    },
+    toastText: {
+      fontSize: 13,
+      fontFamily: "Inter_600SemiBold",
+      color: "#34C759",
     },
     emptyText: {
       fontSize: 13,
@@ -1383,6 +1419,11 @@ export function PaywallStatsModal({
               </TouchableOpacity>
             </ScrollView>
           )}
+
+          <Animated.View style={[s.toast, { opacity: toastOpacity }]} pointerEvents="none">
+            <Ionicons name="checkmark-circle" size={15} color="#34C759" />
+            <Text style={s.toastText}>Stats cleared</Text>
+          </Animated.View>
         </Pressable>
       </Pressable>
     </Modal>
