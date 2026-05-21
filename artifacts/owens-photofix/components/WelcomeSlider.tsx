@@ -27,6 +27,7 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
 
   const sliderPosAnim = useRef(new Animated.Value(0.5)).current;
   const hasAnimatedRef = useRef(false);
+  const prevAnimateRef = useRef(false);
 
   // Drag-hint opacity — fades to 0 on first user interaction.
   const hintOpacity = useRef(new Animated.Value(1)).current;
@@ -42,12 +43,24 @@ export function WelcomeSlider({ before, after, accent, animate }: Props) {
     return () => sliderPosAnim.removeListener(listenerId);
   }, [sliderPosAnim]);
 
-  // Hint animation: runs once per WelcomeSlider instance (once per session
-  // per slide) the first time the slide becomes active.
+  // Sweep animation: re-plays each time the slide becomes active
+  // (animate transitions false → true).
   const hintSequenceRef = useRef<Animated.CompositeAnimation | null>(null);
 
   useEffect(() => {
-    if (!animate || hasAnimatedRef.current) return;
+    // Reset the guard when the slide goes inactive so the animation re-plays
+    // the next time this slide becomes active (animate: false → true).
+    if (!animate) {
+      if (prevAnimateRef.current) {
+        hasAnimatedRef.current = false;
+      }
+      prevAnimateRef.current = false;
+      return;
+    }
+
+    prevAnimateRef.current = true;
+
+    if (hasAnimatedRef.current) return;
     hasAnimatedRef.current = true;
 
     // Wait for the slide's fade-in animation (300 ms) to finish first.
