@@ -1581,10 +1581,10 @@ export default function HomeScreen() {
                   )}
                 </View>
                 {item.resultBase64 ? (
-                  <Image
-                    source={{ uri: `data:image/jpeg;base64,${item.resultBase64}` }}
+                  <BeforeAfterSlider
+                    beforeUri={item.uri}
+                    afterBase64={item.resultBase64}
                     style={s.batchCardImage}
-                    resizeMode="cover"
                   />
                 ) : (
                   <View style={s.batchCardPlaceholder}>

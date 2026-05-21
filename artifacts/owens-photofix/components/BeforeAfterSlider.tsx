@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ViewStyle,
 } from "react-native";
 import { useColors } from "@/hooks/useColors";
 
@@ -14,9 +15,10 @@ interface Props {
   beforeUri: string;
   afterBase64: string;
   modeName?: string;
+  style?: ViewStyle;
 }
 
-export function BeforeAfterSlider({ beforeUri, afterBase64, modeName }: Props) {
+export function BeforeAfterSlider({ beforeUri, afterBase64, modeName, style }: Props) {
   const colors = useColors();
   const containerWidthRef = useRef(300);
   const [containerWidth, setContainerWidth] = useState(300);
@@ -65,7 +67,7 @@ export function BeforeAfterSlider({ beforeUri, afterBase64, modeName }: Props) {
 
   return (
     <View
-      style={[s.container, { borderRadius: colors.radius }]}
+      style={[s.container, { borderRadius: colors.radius }, style]}
       onLayout={(e) => {
         containerWidthRef.current = e.nativeEvent.layout.width;
         setContainerWidth(e.nativeEvent.layout.width);
