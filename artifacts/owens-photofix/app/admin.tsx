@@ -30,6 +30,11 @@ import {
   loadInquiries,
   markInquiryRead,
 } from "@/lib/inquiries";
+import {
+  CHURN_TOTAL_COUNT_KEY,
+  churnPlanCountKey,
+  churnReasonCountKey,
+} from "@/lib/revenuecat";
 
 const ADMIN_PIN = "1234";
 
@@ -59,6 +64,11 @@ export default function AdminScreen() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(false);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [churn, setChurn] = useState<{
+    total: number;
+    plans: { label: string; key: string; count: number }[];
+    reasons: { label: string; key: "cancel" | "billing_error"; count: number }[];
+  } | null>(null);
 
   const tryUnlock = () => {
     if (pin === ADMIN_PIN) {
@@ -74,12 +84,21 @@ export default function AdminScreen() {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
-    const [ordersData, inquiriesData, analyticsResp] = await Promise.all([
+    const planKeys = ["annual", "monthly", "perpic"] as const;
+    const reasonKeys = ["cancel", "billing_error"] as const;
+    const churnKeys = [
+      CHURN_TOTAL_COUNT_KEY,
+      ...planKeys.map((p) => churnPlanCountKey(p)),
+      ...reasonKeys.map((r) => churnReasonCountKey(r)),
+    ];
+
+    const [ordersData, inquiriesData, analyticsResp, churnPairs] = await Promise.all([
       loadOrders(),
       loadInquiries(),
       fetch(`https://${domain}/api/analytics`, {
         headers: { "X-Admin-Token": process.env.EXPO_PUBLIC_ADMIN_ANALYTICS_TOKEN ?? "" },
       }).catch(() => null),
+      AsyncStorage.multiGet(churnKeys),
     ]);
     setOrders(ordersData);
     setInquiries(inquiriesData);
@@ -87,6 +106,20 @@ export default function AdminScreen() {
       const data = await analyticsResp.json() as AnalyticsData;
       setAnalytics(data);
     }
+
+    const churnMap = Object.fromEntries(churnPairs.map(([k, v]) => [k, v]));
+    const parse = (k: string) => parseInt(churnMap[k] ?? "0", 10) || 0;
+    const planLabels: Record<string, string> = { annual: "Annual", monthly: "Monthly", perpic: "Per-photo" };
+    const reasonLabels: Record<"cancel" | "billing_error", string> = {
+      cancel: "Cancelled",
+      billing_error: "Billing error",
+    };
+    setChurn({
+      total: parse(CHURN_TOTAL_COUNT_KEY),
+      plans: planKeys.map((p) => ({ label: planLabels[p], key: p, count: parse(churnPlanCountKey(p)) })),
+      reasons: reasonKeys.map((r) => ({ label: reasonLabels[r], key: r, count: parse(churnReasonCountKey(r)) })),
+    });
+
     setLoading(false);
   }, []);
 
@@ -253,6 +286,63 @@ export default function AdminScreen() {
                   })}
                 </View>
               )}
+            </View>
+          )}
+
+          {/* ── CHURN BREAKDOWN SECTION ── */}
+          {churn && churn.total > 0 && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeaderRow}>
+                <View style={styles.sectionHeaderLeft}>
+                  <Ionicons name="trending-down-outline" size={16} color="#DC2626" />
+                  <Text style={[styles.sectionTitle, { color: "#DC2626" }]}>Churned Subscribers</Text>
+                </View>
+                <Text style={[styles.analyticsSubtitle, { color: colors.mutedForeground }]}>
+                  {churn.total} total
+                </Text>
+              </View>
+
+              <View style={styles.analyticsCard}>
+                <View style={styles.analyticsCardHeader}>
+                  <Ionicons name="pricetag-outline" size={13} color="#DC2626" />
+                  <Text style={[styles.analyticsCardTitle, { color: colors.foreground }]}>By Plan</Text>
+                </View>
+                {churn.plans.map((p) => {
+                  const pct = p.count / churn.total;
+                  return (
+                    <View key={p.key} style={styles.analyticsBarRow}>
+                      <Text style={[styles.analyticsBarLabel, { color: colors.foreground }]}>{p.label}</Text>
+                      <View style={[styles.analyticsBarTrack, { backgroundColor: colors.muted }]}>
+                        <View style={[styles.analyticsBarFill, { width: `${Math.round(pct * 100)}%`, backgroundColor: "#DC2626" }]} />
+                      </View>
+                      <Text style={[styles.analyticsBarCount, { color: colors.mutedForeground }]}>
+                        {p.count} ({Math.round(pct * 100)}%)
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+
+              <View style={styles.analyticsCard}>
+                <View style={styles.analyticsCardHeader}>
+                  <Ionicons name="information-circle-outline" size={13} color="#F59E0B" />
+                  <Text style={[styles.analyticsCardTitle, { color: colors.foreground }]}>By Reason</Text>
+                </View>
+                {churn.reasons.map((r) => {
+                  const pct = r.count / churn.total;
+                  return (
+                    <View key={r.key} style={styles.analyticsBarRow}>
+                      <Text style={[styles.analyticsBarLabel, { color: colors.foreground }]}>{r.label}</Text>
+                      <View style={[styles.analyticsBarTrack, { backgroundColor: colors.muted }]}>
+                        <View style={[styles.analyticsBarFill, { width: `${Math.round(pct * 100)}%`, backgroundColor: "#F59E0B" }]} />
+                      </View>
+                      <Text style={[styles.analyticsBarCount, { color: colors.mutedForeground }]}>
+                        {r.count} ({Math.round(pct * 100)}%)
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
             </View>
           )}
 

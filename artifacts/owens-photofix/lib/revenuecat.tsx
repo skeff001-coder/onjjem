@@ -369,6 +369,14 @@ export async function trackPaywallPurchase(paywallName: string, planId?: string)
  * @param reason   "cancel" — user cancelled; "billing_error" — renewal failed
  * @param planId   Optional plan identifier derived from the expiring product
  */
+export function churnPlanCountKey(plan: string): string {
+  return `onjjem_churn_plan_count_${plan}`;
+}
+export function churnReasonCountKey(reason: "cancel" | "billing_error"): string {
+  return `onjjem_churn_reason_count_${reason}`;
+}
+export const CHURN_TOTAL_COUNT_KEY = "onjjem_churn_total_count";
+
 export async function trackSubscriptionChurn(
   reason: "cancel" | "billing_error",
   planId?: string,
@@ -385,6 +393,34 @@ export async function trackSubscriptionChurn(
 
     await Purchases.setAttributes(attrs);
     await Purchases.syncAttributesAndOfferingsIfNeeded();
+
+    // Persist local counters so the dev stats screen can show a churn
+    // breakdown by plan and reason without relying on a server round-trip.
+    const reasonKey = churnReasonCountKey(reason);
+    const keysToRead: string[] = [CHURN_TOTAL_COUNT_KEY, reasonKey];
+    if (planId) keysToRead.push(churnPlanCountKey(planId));
+
+    const pairs = await AsyncStorage.multiGet(keysToRead);
+    const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
+
+    const total = map[CHURN_TOTAL_COUNT_KEY]
+      ? (parseInt(map[CHURN_TOTAL_COUNT_KEY]!, 10) || 0) + 1
+      : 1;
+    const reasonCount = map[reasonKey]
+      ? (parseInt(map[reasonKey]!, 10) || 0) + 1
+      : 1;
+    const writes: [string, string][] = [
+      [CHURN_TOTAL_COUNT_KEY, String(total)],
+      [reasonKey, String(reasonCount)],
+    ];
+
+    if (planId) {
+      const planKey = churnPlanCountKey(planId);
+      const planCount = map[planKey] ? (parseInt(map[planKey]!, 10) || 0) + 1 : 1;
+      writes.push([planKey, String(planCount)]);
+    }
+
+    await AsyncStorage.multiSet(writes);
   } catch {
     // Non-critical — analytics failures must never affect the user experience
   }
