@@ -980,10 +980,14 @@ async function proceedToCheckout() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Loading…';
   try {
+    // Include the restored photo so it goes straight to Bags of Love after payment
+    const payload = { sku: currentProdSku };
+    if (hdResultBase64) payload.photoBase64 = hdResultBase64;
+
     const r = await fetch('/api/stripe/checkout', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ sku: currentProdSku })
+      body: JSON.stringify(payload)
     });
     const { url, error } = await r.json();
     if (error || !url) throw new Error(error || 'Could not start checkout');
@@ -997,6 +1001,19 @@ async function proceedToCheckout() {
     window.location.href = 'mailto:orders@onjjem.co.uk?subject=Order%20Enquiry%3A%20' + encodeURIComponent(name) + '&body=Hi%20ONJJEM%2C%0A%0AI%27d%20like%20to%20order%3A%20' + encodeURIComponent(name) + '%20(' + encodeURIComponent(price) + ')%0A%0APlease%20send%20me%20payment%20details.%0A%0AThank%20you';
   }
 }
+
+// ── Order success banner (Stripe redirects back to /?order=success) ───────────
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('order') === 'success') {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#1A3A24;border-bottom:2px solid #27AE60;padding:18px 24px;text-align:center;font-family:Georgia,serif;';
+    banner.innerHTML = '<span style="color:#5DE391;font-size:1.1rem;font-weight:700">✓ Order Confirmed!</span> <span style="color:#E8E2D6;font-size:.95rem;margin-left:12px">Your photo is being printed and will be dispatched within 3–5 working days. Check your email for confirmation.</span> <button onclick="this.parentElement.remove()" style="margin-left:16px;background:none;border:1px solid #5DE39144;color:#5DE391;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:.8rem">✕</button>';
+    document.body.prepend(banner);
+    // Clean the URL so a refresh doesn't re-show the banner
+    history.replaceState({}, '', '/');
+  }
+})();
 
 // Close modals on backdrop click
 document.getElementById('payModal').addEventListener('click', e => { if (e.target === document.getElementById('payModal')) closePayModal(); });

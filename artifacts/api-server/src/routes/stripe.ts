@@ -1,11 +1,13 @@
 import { Router } from "express";
 import type { Request, Response } from "express";
+import crypto from "node:crypto";
 import {
   getUncachableStripeClient,
   getPublishableKey,
 } from "../stripeClient";
 import { applyEnhancements } from "./process";
 import type { EnhancementMode } from "./process";
+import { storePhoto } from "../webhookHandlers";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 
@@ -86,7 +88,7 @@ router.post("/stripe/verify-process", async (req: Request, res: Response) => {
 // Accepts `sku` (product metadata.sku value) — looks up the real Stripe price ID.
 
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
-  const body = req.body as { sku?: string };
+  const body = req.body as { sku?: string; photoBase64?: string };
 
   if (!body.sku) {
     res.status(400).json({ error: "sku is required" });
@@ -112,6 +114,13 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       return;
     }
 
+    // Store the customer's photo so the webhook can retrieve it after payment
+    let photoToken: string | null = null;
+    if (body.photoBase64) {
+      photoToken = crypto.randomUUID();
+      await storePhoto(photoToken, body.photoBase64);
+    }
+
     const stripe = await getUncachableStripeClient();
     const origin = `${req.protocol}://${req.get("host")}`;
 
@@ -119,13 +128,16 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
       mode: "payment",
-      success_url: `${origin}/#order-success`,
+      success_url: `${origin}/?order=success`,
       cancel_url: `${origin}/#shop`,
-      shipping_address_collection: { allowed_countries: ["GB"] },
+      shipping_address_collection: { allowed_countries: ["GB", "IE", "US", "CA", "AU"] },
+      metadata: {
+        sku: body.sku,
+        ...(photoToken ? { photo_token: photoToken } : {}),
+      },
       custom_text: {
         submit: {
-          message:
-            "After paying, reply to your confirmation email with your restored photo to begin production.",
+          message: "Your restored photo will be printed and dispatched within 3–5 working days.",
         },
       },
     });
