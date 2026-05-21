@@ -371,6 +371,11 @@ async function main() {
       );
       if (!confirmed) {
         console.log("Aborted — no files were changed.");
+        await notify(
+          `${APP_NAME} — Release aborted ⛔`,
+          `Release aborted at confirmation prompt — no build started.\n\nVersion that would have shipped: ${nextVersion} (build ${nextBuild})`,
+          { priority: "default", tags: ["no_entry"] },
+        );
         process.exit(0);
       }
     }
