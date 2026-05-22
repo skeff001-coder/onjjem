@@ -437,7 +437,7 @@
   <div class="tool-inner">
     <p class="section-eyebrow" style="text-align:center;">✦ Try It Right Now</p>
     <h2 class="section-title" style="margin-bottom:8px;">Restore Your Photo</h2>
-    <p class="section-sub">Upload any photo and see the difference instantly — free preview, HD quality for just £1.99.</p>
+    <p class="section-sub">Upload any photo and see the difference instantly — free preview, HD quality for just £1.49.</p>
 
     <div class="tool-box">
 
@@ -473,7 +473,7 @@
             <img id="resultImg" src="" alt="Restored photo" style="display:none" />
             <span class="preview-label after" id="resultLabel">Preview</span>
             <div class="preview-blur-overlay" id="blurOverlay" style="display:none">
-              <p>🎉 <strong style="color:var(--cream)">Preview ready!</strong><br>Get full HD quality for just £1.99</p>
+              <p>🎉 <strong style="color:var(--cream)">Preview ready!</strong><br>Get full HD quality for just £1.49</p>
             </div>
           </div>
         </div>
@@ -484,7 +484,7 @@
         <!-- Action buttons -->
         <div class="tool-action">
           <button class="btn-restore btn-restore-free" id="btnPreview">✦ See Free Preview</button>
-          <button class="btn-restore btn-restore-paid" id="btnPay" style="display:none">⭐ Get Full Quality — £1.99</button>
+          <button class="btn-restore btn-restore-paid" id="btnPay" style="display:none">⭐ Get Full Quality — £1.49</button>
           <button class="btn-restore btn-restore btn-download" id="btnDownload" style="display:none">⬇ Download HD Photo</button>
           <button class="btn-reset" id="btnReset">← Try a different photo</button>
         </div>
@@ -793,29 +793,37 @@
 <section class="pricing-section" id="pricing">
   <p class="section-eyebrow">✦ Simple Pricing</p>
   <h2 class="section-title">Pay Only for What You Need</h2>
-  <p class="section-sub">Free preview always included. Pay £1.99 for a single HD photo, or get unlimited with the app.</p>
-  <div class="pricing-grid">
+  <p class="section-sub">Start free, pay only when you need more. No account required.</p>
+  <div class="pricing-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
     <div class="price-card">
-      <div class="price-icon" style="background:rgba(232,160,32,0.1)">📷</div>
+      <div class="price-icon" style="background:rgba(232,160,32,0.1)">🎁</div>
+      <div class="price-label">Free</div>
+      <div class="price-desc">Upload any photo and get a free preview restoration — see the result before you pay anything.</div>
+      <div class="price-amount">£0</div>
+      <div class="price-period">always free</div>
+      <button class="price-cta" style="background:rgba(232,160,32,0.15);color:#E8A020;" onclick="document.getElementById('tool').scrollIntoView({behavior:'smooth'})">Try Free Now</button>
+    </div>
+    <div class="price-card">
+      <div class="price-icon" style="background:rgba(201,150,12,0.1)">📷</div>
       <div class="price-label">One Photo</div>
-      <div class="price-desc">Pay once, get one full HD restoration right here on the website. No account needed.</div>
-      <div class="price-amount">£1.99</div>
+      <div class="price-desc">Pay once, get one full HD restoration. No subscription, no account needed.</div>
+      <div class="price-amount">£1.49</div>
       <div class="price-period">per photo</div>
-      <button class="price-cta" style="background:rgba(232,160,32,0.15);color:#E8A020;" onclick="document.getElementById('tool').scrollIntoView({behavior:'smooth'})">Try It Now — Free Preview</button>
+      <button class="price-cta" style="background:rgba(201,150,12,0.15);color:#C9960C;border:1px solid rgba(201,150,12,0.4);" onclick="startSinglePhoto()">Buy One Photo</button>
     </div>
     <div class="price-card">
       <div class="price-icon" style="background:rgba(74,144,217,0.1)">∞</div>
-      <div class="price-label">Monthly</div>
-      <div class="price-desc">Unlimited full-quality restorations in the iPhone app. Cancel anytime.</div>
-      <div class="price-amount">£12.99</div>
+      <div class="price-label">Monthly Unlimited</div>
+      <div class="price-desc">Unlimited full-quality restorations every month. Cancel anytime.</div>
+      <div class="price-amount">£11.99</div>
       <div class="price-period">per month</div>
       <button class="price-cta" style="background:rgba(74,144,217,0.15);color:#4A90D9;border:1px solid rgba(74,144,217,0.4);" onclick="startSubscribe('monthly')" id="btnMonthly">Subscribe Monthly</button>
     </div>
     <div class="price-card featured">
-      <div class="price-badge">Best Value — Save 84%</div>
+      <div class="price-badge">Best Value</div>
       <div class="price-icon" style="background:rgba(39,174,96,0.1)">★</div>
-      <div class="price-label">Annual</div>
-      <div class="price-desc">Everything in monthly, all year long. Unlimited restorations at the best price.</div>
+      <div class="price-label">Annual Unlimited</div>
+      <div class="price-desc">Unlimited restorations all year long. The best price — less than £2.09 a month.</div>
       <div class="price-amount">£24.99</div>
       <div class="price-period">per year</div>
       <button class="price-cta" style="background:rgba(39,174,96,0.15);color:#27AE60;border:1px solid rgba(39,174,96,0.4);" onclick="startSubscribe('annual')" id="btnAnnual">Subscribe Annually</button>
@@ -852,11 +860,11 @@
     <button class="modal-close" onclick="closePayModal()">✕</button>
     <div class="modal-title">Full HD Restoration</div>
     <p class="modal-sub">One payment, one beautiful full-quality photo. No subscription.</p>
-    <div class="modal-price">£1.99 <small>one-time</small></div>
+    <div class="modal-price">£1.49 <small>one-time</small></div>
     <div class="payment-error" id="payError"></div>
     <div id="payment-element"></div>
     <button class="btn-restore btn-restore-paid" id="btnSubmitPay" style="width:100%;margin-top:4px;" onclick="submitPayment()">
-      Pay £1.99 &amp; Get HD Photo
+      Pay £1.49 &amp; Get HD Photo
     </button>
     <p style="font-size:11px;color:rgba(250,247,242,0.25);text-align:center;margin-top:12px;">🔒 Secured by Stripe · Photos never stored</p>
   </div>
@@ -1208,6 +1216,27 @@ async function startSubscribe(plan) {
     btn.disabled = false;
     btn.textContent = originalText;
     alert('Sorry, something went wrong. Please email hello@onjjem.com to subscribe.');
+  }
+}
+
+// ── Single photo checkout (£1.49) ─────────────────────────────────────────────
+async function startSinglePhoto() {
+  const btn = document.querySelector('[onclick="startSinglePhoto()"]');
+  const originalText = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Loading…'; }
+  try {
+    const r = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sku: 'single' })
+    });
+    const { url, error } = await r.json();
+    if (error || !url) throw new Error(error || 'Could not start checkout');
+    window.location.href = url;
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = originalText; }
+    // Fall back to opening the inline payment modal
+    openPayModal();
   }
 }
 

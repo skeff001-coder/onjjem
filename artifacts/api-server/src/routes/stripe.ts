@@ -31,7 +31,7 @@ router.post("/stripe/create-intent", async (req: Request, res: Response) => {
   try {
     const stripe = await getUncachableStripeClient();
     const intent = await stripe.paymentIntents.create({
-      amount: 199,
+      amount: 149,
       currency: "gbp",
       description: "ONJJEM Photo Restoration — HD result",
       metadata: { product: "photo_restoration" },
