@@ -28,25 +28,34 @@ const PRIVACY_HTML = `<!DOCTYPE html>
 <body>
 <p class="eyebrow">ONJJEM · London</p>
 <h1>Privacy Policy</h1>
-<p>Last updated: May 2025</p>
+<p>Last updated: May 2026</p>
 <hr class="divider">
 <h2>Who We Are</h2>
-<p>ONJJEM Photo Restoration ("we", "us", "our") is a London-based photo restoration and gift-printing studio. Our iOS application ("the App") allows you to restore and enhance your personal photographs using AI, and to order personalised printed gifts.</p>
-<h2>What We Collect</h2>
+<p>ONJJEM Photo Restoration ("we", "us", "our") is a London-based photo restoration and gift-printing studio. Our iOS application ("the App") allows you to restore and enhance your personal photographs, and to order personalised printed gifts.</p>
+
+<h2>How Photo Processing Works — No Third-Party AI</h2>
+<p><strong>Your photos are processed entirely on ONJJEM's own server (onjjem.com) using open-source image processing software (Sharp). We do not use any third-party AI service.</strong> Your photo is never sent to OpenAI, Replicate, Google, Apple, or any other external company. Processing happens entirely within ONJJEM's own infrastructure, which is operated by ONJJEM in the United Kingdom.</p>
+<p>The enhancements applied (sharpening, colour restoration, denoising) are performed by algorithms running directly on ONJJEM's server. No machine-learning model hosted by a third party is involved at any stage.</p>
+
+<h2>What Data We Collect</h2>
 <ul>
-  <li><strong>Photos you upload:</strong> Images you choose to restore are sent to our secure server solely for the purpose of applying AI enhancement. We do not store your photos after processing is complete.</li>
+  <li><strong>Photos you upload:</strong> The photo you select is transmitted over an encrypted HTTPS connection to ONJJEM's own server for the sole purpose of applying the enhancement you requested. It is processed and immediately deleted. It is never stored, shared, sold, or used for AI training.</li>
   <li><strong>Order information:</strong> When you place a print order, your name, delivery address, and payment details are collected by our fulfilment partner (Bags of Love Ltd, bagsoflove.co.uk) under their own privacy policy.</li>
   <li><strong>Support communications:</strong> If you contact us by email, we retain your message and email address to respond to your enquiry.</li>
   <li><strong>App analytics:</strong> We may collect anonymised, aggregated usage data (e.g. number of restorations performed) to improve the App. No personally identifiable information is included.</li>
 </ul>
-<h2>What We Do Not Do</h2>
+
+<h2>Third Parties — What We Share and With Whom</h2>
 <ul>
-  <li>We do not sell, rent, or trade your personal data to any third party.</li>
-  <li>We do not use your photos for training AI models.</li>
-  <li>We do not store processed photos on our servers after the restoration result has been returned to your device.</li>
+  <li><strong>No third-party AI service receives your photo.</strong> Processing is done entirely on ONJJEM's own infrastructure.</li>
+  <li><strong>Bags of Love Ltd</strong> (bagsoflove.co.uk) — receives your order details and the restored photo only when you choose to place a print order. They are subject to their own privacy policy.</li>
+  <li><strong>Stripe</strong> — handles payment card processing. Card details are entered directly on Stripe's secure hosted page and are never transmitted to ONJJEM's servers.</li>
+  <li>We do not sell, rent, or trade your personal data to any other third party.</li>
+  <li>We do not use your photos for training any AI or machine-learning model.</li>
 </ul>
+
 <h2>Data Retention</h2>
-<p>Photo data is held in memory during processing only and is not written to disk. Order records are retained by Bags of Love Ltd in accordance with their privacy policy. Support emails are retained for up to 2 years.</p>
+<p>Photo data is held in memory during processing only and is not written to disk or retained after the result is returned to your device. Order records are retained by Bags of Love Ltd in accordance with their privacy policy. Support emails are retained for up to 2 years.</p>
 <h2>Your Rights</h2>
 <p>Under UK GDPR and the Data Protection Act 2018, you have the right to access, correct, or request deletion of any personal data we hold about you. To exercise these rights, please contact us at <a href="mailto:privacy@onjjem.co.uk">privacy@onjjem.co.uk</a>.</p>
 <h2>Children</h2>
