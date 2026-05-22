@@ -6,348 +6,531 @@
   <meta name="description" content="ONJJEM — Restore your family memories with Cinema-Grade AI. Sharpen blurry photos, colourize black-and-white images. Order as luxury canvas prints, jigsaws, cushions and more." />
   <title>ONJJEM — Cinema-Grade AI Photo Restoration</title>
   <script src="https://js.stripe.com/v3/"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
-
     :root {
-      --cream: #FAF7F2;
-      --gold: #C9960C;
-      --gold-light: #F5D78E;
-      --dark: #1C1A14;
-      --dark2: #0E0C08;
-      --dark3: #12100B;
+      --bg:        #0E0C08;
+      --bg2:       #1C1A14;
+      --bg3:       #12100B;
+      --card:      #1A1610;
+      --card2:     #16140F;
+      --gold:      #C9960C;
+      --gold-lt:   #F5D78E;
+      --gold-dk:   #A67C00;
+      --cream:     #FAF7F2;
+      --cream55:   rgba(250,247,242,0.55);
+      --cream35:   rgba(250,247,242,0.35);
+      --cream20:   rgba(250,247,242,0.20);
+      --gold-b:    rgba(201,150,12,0.28);
+      --gold-b2:   rgba(201,150,12,0.45);
+      --gold-bg:   rgba(201,150,12,0.10);
+      --gold-bg2:  rgba(201,150,12,0.18);
+      --r:         16px;
+      --r-lg:      20px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', -apple-system, sans-serif; background: var(--dark2); color: var(--cream); overflow-x: hidden; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--cream); overflow-x: hidden; }
+
+    /* ── GOLD UTILS ── */
+    .gold-rule { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,150,12,0.4), transparent); width: 100%; }
+    .gold-bar   { height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold)); border-radius: 2px; }
+    .gold-bar-w { height: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-lt), #A8E6FF, var(--gold-lt), var(--gold)); }
+    .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); font-family: 'Inter', sans-serif; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(26px, 3.5vw, 42px); font-weight: 700; color: var(--cream); line-height: 1.2; }
+    .section-sub { font-size: 14px; color: var(--cream55); line-height: 1.7; }
 
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 40px;
-      background: rgba(14,12,8,0.92); backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(201,150,12,0.22);
+      padding: 12px 40px;
+      background: rgba(14,12,8,0.94); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--gold-b);
     }
     .nav-brand {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(40px, 5vw, 64px);
-      font-weight: 900;
-      letter-spacing: clamp(8px, 1.2vw, 16px);
-      background: linear-gradient(135deg, #7A5500 0%, #C9960C 25%, #F5D78E 50%, #E8B84B 72%, #C9960C 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-decoration: none;
-      filter: drop-shadow(0 2px 18px rgba(201,150,12,0.45));
-      line-height: 1;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      letter-spacing: clamp(6px, 1vw, 12px);
+      background: linear-gradient(135deg, #7A5500 0%, var(--gold) 25%, var(--gold-lt) 50%, #E8B84B 72%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      text-decoration: none; filter: drop-shadow(0 2px 16px rgba(201,150,12,0.45)); line-height: 1;
     }
-    .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
-    .nav-links a { font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(250,247,242,0.5); text-decoration: none; transition: color 0.2s; }
+    .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(250,247,242,0.45); text-decoration: none; transition: color 0.2s; }
     .nav-links a:hover { color: var(--gold); }
-    .nav-cta { background: var(--gold) !important; color: var(--dark2) !important; padding: 9px 20px; border-radius: 40px; font-weight: 700 !important; letter-spacing: 0.5px !important; transition: background 0.2s !important; }
-    .nav-cta:hover { background: var(--gold-light) !important; color: var(--dark2) !important; }
-    .nav-try { border: 1px solid rgba(201,150,12,0.4) !important; color: var(--gold) !important; padding: 9px 20px; border-radius: 40px; font-weight: 600 !important; transition: background 0.2s, border-color 0.2s !important; }
-    .nav-try:hover { background: rgba(201,150,12,0.1) !important; }
+    .nav-cta { background: var(--gold) !important; color: var(--bg) !important; padding: 8px 18px; border-radius: 40px; font-weight: 700 !important; transition: background 0.2s !important; }
+    .nav-cta:hover { background: var(--gold-lt) !important; color: var(--bg) !important; }
+    @media (max-width: 640px) { nav { padding: 14px 20px; } .nav-links { display: none; } }
 
     /* ── HERO ── */
-    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 110px 24px 60px; position: relative; overflow: hidden; }
-    .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,150,12,0.09) 0%, transparent 70%), radial-gradient(ellipse 60% 40% at 80% 80%, rgba(201,150,12,0.05) 0%, transparent 60%); }
-    .hero-layout { display: grid; grid-template-columns: 1fr minmax(0, 580px) 1fr; gap: 36px; align-items: center; width: 100%; max-width: 1380px; position: relative; }
-    .hero-center { display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .hero-panel { border-radius: 18px; overflow: hidden; border: 1px solid rgba(201,150,12,0.28); box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,150,12,0.08); position: relative; }
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 110px 24px 64px; position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 55% at 50% 0%, rgba(201,150,12,0.08) 0%, transparent 68%),
+        radial-gradient(ellipse 40% 30% at 85% 85%, rgba(201,150,12,0.05) 0%, transparent 60%);
+    }
+    .hero-layout {
+      display: grid; grid-template-columns: 1fr minmax(0,560px) 1fr;
+      gap: 32px; align-items: center; width: 100%; max-width: 1340px; position: relative;
+    }
+    @media (max-width: 960px) { .hero-panel { display: none !important; } .hero-layout { grid-template-columns: 1fr; } }
+
+    .hero-panel {
+      border-radius: 18px; overflow: hidden;
+      border: 1px solid var(--gold-b);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,150,12,0.06);
+      background: var(--card);
+    }
     .hero-panel-slot { position: relative; overflow: hidden; }
-    .hero-panel-slot img { width: 100%; height: 210px; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .hero-panel-slot img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform 0.4s; }
     .hero-panel:hover .hero-panel-slot img { transform: scale(1.03); }
-    .hero-panel-lbl { position: absolute; top: 10px; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; }
+    .hero-panel-lbl {
+      position: absolute; top: 10px; font-size: 9px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px;
+    }
     .hero-panel-lbl.before { left: 10px; background: rgba(0,0,0,0.72); color: rgba(255,255,255,0.85); }
-    .hero-panel-lbl.after  { right: 10px; background: rgba(201,150,12,0.9); color: #0E0C08; }
-    .hero-panel-rule { height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
-    .hero-panel-foot { padding: 11px 16px; background: #1A1610; display: flex; align-items: center; justify-content: space-between; }
-    .hero-panel-foot-name { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: var(--cream); }
-    .hero-panel-foot-tag { font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); background: rgba(201,150,12,0.12); padding: 3px 9px; border-radius: 20px; }
-    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(201,150,12,0.1); border: 1px solid rgba(201,150,12,0.3); color: var(--gold); font-size: 10px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; padding: 8px 18px; border-radius: 40px; margin-bottom: 28px; position: relative; }
-    @media (max-width: 960px) { .hero-panel { display: none; } .hero-layout { grid-template-columns: 1fr; } }
-    @media (max-width: 640px) { .hero-layout { grid-template-columns: 1fr; } }
-    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(42px, 7vw, 86px); font-weight: 900; line-height: 1.08; color: var(--cream); max-width: 760px; margin-bottom: 24px; position: relative; }
-    .hero-title em { font-style: normal; background: linear-gradient(90deg, #C9960C, #F5D78E, #C9960C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .hero-sub { font-size: clamp(15px, 2vw, 18px); line-height: 1.7; color: rgba(250,247,242,0.55); max-width: 520px; margin-bottom: 44px; position: relative; }
-    .hero-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; margin-bottom: 64px; }
-    .btn-primary { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #8B6200, #C9960C, #F5D78E, #C9960C); color: var(--dark2); font-size: 15px; font-weight: 700; padding: 16px 32px; border-radius: 50px; text-decoration: none; letter-spacing: 0.3px; box-shadow: 0 8px 32px rgba(201,150,12,0.35); transition: transform 0.2s, box-shadow 0.2s; border: none; cursor: pointer; }
+    .hero-panel-lbl.after  { right: 10px; background: rgba(201,150,12,0.9); color: var(--bg); }
+    .hero-panel-foot {
+      padding: 12px 16px; background: #1A1610;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .hero-panel-foot-name { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600; color: var(--cream); }
+    .hero-panel-foot-tag {
+      font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--gold); background: var(--gold-bg); padding: 3px 9px; border-radius: 20px;
+      border: 1px solid var(--gold-b);
+    }
+
+    /* Hero centre */
+    .hero-center { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .hero-eyebrow-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--gold-bg); border: 1px solid rgba(201,150,12,0.35);
+      color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; padding: 7px 16px; border-radius: 40px; margin-bottom: 22px;
+    }
+    .hero-onjjem {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 12vw, 140px);
+      letter-spacing: clamp(10px, 2vw, 24px);
+      background: linear-gradient(135deg, #7A5500 0%, var(--gold) 20%, var(--gold-lt) 50%, #E8B84B 78%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 4px 24px rgba(201,150,12,0.5));
+      line-height: 0.9; margin-bottom: 10px;
+    }
+    .hero-tagline {
+      font-family: 'Cinzel', serif; font-size: clamp(13px, 1.8vw, 17px);
+      font-style: italic; color: var(--gold-lt); letter-spacing: 1px; margin-bottom: 6px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+    }
+    .hero-gems { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 20px; }
+    .hero-gems span { font-size: 9px; color: rgba(201,150,12,0.7); }
+    .hero-sub {
+      font-size: clamp(14px, 1.8vw, 16px); line-height: 1.7; color: var(--cream55);
+      max-width: 480px; margin-bottom: 36px;
+    }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 32px; }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(0,0,0,0.4); border: 1px solid rgba(245,215,142,0.4);
+      border-radius: 20px; padding: 5px 12px;
+      font-size: 11px; font-weight: 600; color: var(--gold-lt); letter-spacing: 0.3px;
+    }
+    .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold));
+      color: var(--bg); font-size: 14px; font-weight: 700; padding: 15px 30px;
+      border-radius: 50px; text-decoration: none; letter-spacing: 0.3px;
+      box-shadow: 0 8px 28px rgba(201,150,12,0.35); transition: transform 0.2s, box-shadow 0.2s;
+      border: none; cursor: pointer;
+    }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,150,12,0.45); }
-    .btn-secondary { display: inline-flex; align-items: center; gap: 10px; background: rgba(250,247,242,0.06); border: 1px solid rgba(250,247,242,0.15); color: var(--cream); font-size: 15px; font-weight: 500; padding: 16px 32px; border-radius: 50px; text-decoration: none; transition: background 0.2s; cursor: pointer; }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(250,247,242,0.05); border: 1px solid rgba(250,247,242,0.14);
+      color: var(--cream); font-size: 14px; font-weight: 500; padding: 15px 30px;
+      border-radius: 50px; text-decoration: none; transition: background 0.2s; cursor: pointer;
+    }
     .btn-secondary:hover { background: rgba(250,247,242,0.1); }
-    .store-badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(250,247,242,0.06); border: 1px solid rgba(250,247,242,0.12); color: var(--cream); font-size: 13px; font-weight: 500; padding: 12px 24px; border-radius: 12px; text-decoration: none; transition: background 0.2s; }
-    .store-badge:hover { background: rgba(250,247,242,0.1); }
-    .store-icon { font-size: 22px; }
-    .scroll-hint { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; color: rgba(250,247,242,0.25); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
-    .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(201,150,12,0.5), transparent); }
+    .scroll-hint { display: flex; flex-direction: column; align-items: center; gap: 7px; color: rgba(250,247,242,0.22); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; position: relative; }
+    .scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom, rgba(201,150,12,0.45), transparent); }
 
     /* ── TRUST BAR ── */
-    .trust-bar { background: rgba(201,150,12,0.05); border-top: 1px solid rgba(201,150,12,0.1); border-bottom: 1px solid rgba(201,150,12,0.1); padding: 20px 40px; }
-    .trust-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
-    .trust-item { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 500; color: rgba(250,247,242,0.5); white-space: nowrap; }
-    .trust-item span:first-child { color: var(--gold); font-size: 16px; }
+    .trust-bar {
+      background: rgba(201,150,12,0.04);
+      border-top: 1px solid rgba(201,150,12,0.12);
+      border-bottom: 1px solid rgba(201,150,12,0.12);
+      padding: 16px 40px;
+    }
+    .trust-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(0,0,0,0.35); border: 1px solid rgba(245,215,142,0.25);
+      border-radius: 20px; padding: 5px 14px;
+      font-size: 11px; font-weight: 600; color: rgba(250,247,242,0.55); white-space: nowrap;
+    }
+    .trust-item .ti-icon { color: var(--gold); font-size: 13px; }
 
-    /* ── SECTIONS ── */
-    .section { padding: 100px 24px; max-width: 1100px; margin: 0 auto; }
-    .section-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; text-align: center; }
-    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(30px, 4vw, 48px); font-weight: 700; color: var(--cream); text-align: center; margin-bottom: 14px; line-height: 1.2; }
-    .section-sub { font-size: 15px; color: rgba(250,247,242,0.45); text-align: center; max-width: 480px; margin: 0 auto 56px; line-height: 1.7; }
+    /* ── SHARED SECTION WRAPPER ── */
+    .section { padding: 88px 24px; max-width: 1100px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-header .eyebrow { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px; }
+    .section-header .section-sub { max-width: 480px; margin: 12px auto 0; }
+
+    /* ── ENHANCEMENT MODES GRID ── */
+    .enhancements-section { background: var(--bg3); padding: 80px 24px; }
+    .enhancements-inner { max-width: 1100px; margin: 0 auto; }
+    .enh-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 40px; }
+    @media (max-width: 760px) { .enh-card-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .enh-card-grid { grid-template-columns: 1fr 1fr; } }
+
+    .enh-card {
+      background: var(--card2); border: 1px solid rgba(201,150,12,0.2);
+      border-radius: var(--r); overflow: hidden; padding: 20px 16px 18px;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      gap: 10px; transition: border-color 0.2s, transform 0.2s;
+    }
+    .enh-card:hover { border-color: var(--accent-color, rgba(201,150,12,0.5)); transform: translateY(-2px); }
+    .enh-icon-ring {
+      width: 52px; height: 52px; border-radius: 26px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--accent-bg); border: 1px solid var(--accent-ring);
+      font-size: 22px;
+    }
+    .enh-label { font-size: 15px; font-weight: 700; font-family: 'Inter', sans-serif; }
+    .enh-sub { font-size: 11px; color: var(--cream55); line-height: 1.5; }
 
     /* ── LIVE TOOL ── */
-    .tool-section { padding: 100px 24px; background: var(--dark3); }
-    .tool-inner { max-width: 820px; margin: 0 auto; }
-    .tool-box { background: #1A1610; border: 1px solid rgba(201,150,12,0.15); border-radius: 24px; padding: 40px; }
+    .tool-section { background: var(--bg2); padding: 80px 24px; }
+    .tool-inner { max-width: 800px; margin: 0 auto; }
+    .tool-card {
+      background: var(--card); border: 1px solid var(--gold-b);
+      border-radius: 22px; overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    }
+    .tool-card-bar { height: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold)); }
+    .tool-card-inner { padding: 36px; }
+    @media (max-width: 640px) { .tool-card-inner { padding: 22px 16px; } }
 
     .upload-zone {
-      border: 2px dashed rgba(201,150,12,0.3); border-radius: 16px; padding: 56px 24px;
+      border: 2px dashed rgba(201,150,12,0.3); border-radius: 14px; padding: 52px 24px;
       text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
       position: relative; overflow: hidden;
     }
     .upload-zone:hover, .upload-zone.dragover { border-color: var(--gold); background: rgba(201,150,12,0.04); }
     .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .upload-icon { font-size: 44px; margin-bottom: 16px; display: block; }
-    .upload-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); margin-bottom: 8px; }
-    .upload-hint { font-size: 13px; color: rgba(250,247,242,0.35); }
+    .upload-icon { font-size: 40px; margin-bottom: 14px; display: block; }
+    .upload-title { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
+    .upload-hint { font-size: 12px; color: rgba(250,247,242,0.3); }
 
     .preview-area { display: none; }
     .preview-area.active { display: block; }
-    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-    .preview-slot { border-radius: 12px; overflow: hidden; background: #0E0C08; aspect-ratio: 1; position: relative; }
+    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+    @media (max-width: 640px) { .preview-grid { grid-template-columns: 1fr; } }
+    .preview-slot { border-radius: 12px; overflow: hidden; background: var(--bg); aspect-ratio: 1; position: relative; border: 1px solid rgba(201,150,12,0.18); }
     .preview-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .preview-label { position: absolute; top: 10px; left: 10px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: rgba(0,0,0,0.65); color: rgba(255,255,255,0.8); padding: 4px 10px; border-radius: 4px; }
-    .preview-label.after { left: auto; right: 10px; color: var(--gold-light); }
+    .preview-label.after { left: auto; right: 10px; color: var(--gold-lt); background: rgba(201,150,12,0.2); }
     .preview-blur-overlay { position: absolute; inset: 0; background: rgba(14,12,8,0.55); backdrop-filter: blur(3px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px; text-align: center; }
     .preview-blur-overlay p { font-size: 13px; color: rgba(250,247,242,0.7); line-height: 1.5; }
 
-    .mode-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
-    .mode-btn { padding: 8px 16px; border-radius: 40px; border: 1px solid rgba(201,150,12,0.3); background: transparent; color: rgba(250,247,242,0.6); font-size: 12px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; }
+    .mode-picker { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 22px; }
+    .mode-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cream35); margin-bottom: 10px; }
+    .mode-btn {
+      padding: 7px 15px; border-radius: 40px;
+      border: 1px solid rgba(201,150,12,0.28); background: transparent;
+      color: rgba(250,247,242,0.55); font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+      cursor: pointer; transition: all 0.2s;
+    }
     .mode-btn:hover { border-color: var(--gold); color: var(--gold); }
-    .mode-btn.active { background: rgba(201,150,12,0.15); border-color: var(--gold); color: var(--gold); }
+    .mode-btn.active { background: var(--gold-bg2); border-color: var(--gold); color: var(--gold); }
 
-    .tool-action { display: flex; flex-direction: column; gap: 12px; }
-    .btn-restore { width: 100%; padding: 18px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
-    .btn-restore-free { background: rgba(201,150,12,0.15); border: 1px solid rgba(201,150,12,0.4); color: var(--gold); }
-    .btn-restore-free:hover { background: rgba(201,150,12,0.22); }
-    .btn-restore-paid { background: linear-gradient(135deg, #8B6200, #C9960C, #F5D78E, #C9960C); color: var(--dark2); box-shadow: 0 6px 24px rgba(201,150,12,0.3); }
+    .tool-action { display: flex; flex-direction: column; gap: 10px; }
+    .btn-restore { width: 100%; padding: 17px; border-radius: 13px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-restore-free { background: var(--gold-bg); border: 1px solid rgba(201,150,12,0.4); color: var(--gold); }
+    .btn-restore-free:hover { background: var(--gold-bg2); }
+    .btn-restore-paid { background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold)); color: var(--bg); box-shadow: 0 6px 24px rgba(201,150,12,0.28); }
     .btn-restore-paid:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(201,150,12,0.4); }
-    .btn-download { background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.4); color: #5DE391; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .btn-download { background: rgba(39,174,96,0.14); border: 1px solid rgba(39,174,96,0.4); color: #5DE391; font-size: 14px; font-weight: 700; cursor: pointer; }
     .btn-download:hover { background: rgba(39,174,96,0.22); }
-    .btn-reset { background: transparent; border: 1px solid rgba(250,247,242,0.1); color: rgba(250,247,242,0.4); font-size: 13px; cursor: pointer; padding: 12px; border-radius: 10px; }
-    .btn-reset:hover { border-color: rgba(250,247,242,0.25); color: rgba(250,247,242,0.6); }
+    .btn-reset { background: transparent; border: 1px solid rgba(250,247,242,0.1); color: rgba(250,247,242,0.35); font-size: 13px; cursor: pointer; padding: 11px; border-radius: 10px; }
+    .btn-reset:hover { border-color: rgba(250,247,242,0.22); color: rgba(250,247,242,0.55); }
+    .tool-note { font-size: 11px; color: rgba(250,247,242,0.22); text-align: center; margin-top: 14px; line-height: 1.6; }
 
-    /* Payment modal */
-    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-    .modal-backdrop.open { display: flex; }
-    .modal { background: #1A1610; border: 1px solid rgba(201,150,12,0.2); border-radius: 20px; padding: 36px; max-width: 460px; width: 100%; }
-    .modal-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--cream); margin-bottom: 8px; }
-    .modal-sub { font-size: 14px; color: rgba(250,247,242,0.45); margin-bottom: 28px; line-height: 1.5; }
-    .modal-price { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 900; color: var(--cream); display: flex; align-items: baseline; gap: 6px; margin-bottom: 24px; }
-    .modal-price small { font-size: 16px; color: rgba(250,247,242,0.4); font-family: 'Inter', sans-serif; font-weight: 400; }
-    #payment-element { margin-bottom: 20px; }
-    .payment-error { background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3); color: #FF8080; font-size: 13px; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: none; }
-    .modal-close { float: right; background: none; border: none; color: rgba(250,247,242,0.4); font-size: 20px; cursor: pointer; padding: 4px 8px; margin: -8px -8px 0 0; }
-    .modal-close:hover { color: var(--cream); }
-    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: currentColor; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    /* Status messages */
+    .status-msg { font-size: 13px; color: rgba(250,247,242,0.5); text-align: center; padding: 12px; background: rgba(255,255,255,0.04); border-radius: 8px; margin-bottom: 12px; display: none; }
+    .status-msg.visible { display: block; }
+    .status-msg.error { background: rgba(255,82,82,0.08); color: #FF8080; border: 1px solid rgba(255,82,82,0.2); }
+    .status-msg.success { background: rgba(39,174,96,0.08); color: #5DE391; border: 1px solid rgba(39,174,96,0.2); }
 
-    .tool-note { font-size: 12px; color: rgba(250,247,242,0.25); text-align: center; margin-top: 16px; line-height: 1.6; }
-
-    /* ── BEFORE / AFTER ── */
-    .ba-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-    .ba-card { border-radius: 16px; overflow: hidden; background: #1A1610; border: 1px solid rgba(201,150,12,0.1); }
+    /* ── BEFORE / AFTER GALLERY ── */
+    .ba-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .ba-card { border-radius: 18px; overflow: hidden; background: var(--card); border: 1px solid var(--gold-b); transition: border-color 0.2s; }
+    .ba-card:hover { border-color: var(--gold-b2); }
     .ba-images { display: grid; grid-template-columns: 1fr 1fr; position: relative; }
     .ba-images img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
     .ba-label { position: absolute; top: 10px; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: rgba(0,0,0,0.65); color: rgba(255,255,255,0.8); padding: 4px 10px; border-radius: 4px; }
     .ba-label.left { left: 10px; }
-    .ba-label.right { right: 10px; left: auto; color: var(--gold-light); }
-    .ba-divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: rgba(255,255,255,0.6); transform: translateX(-50%); }
-    .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 32px; height: 32px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+    .ba-label.right { right: 10px; left: auto; color: var(--gold-lt); }
+    .ba-divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: rgba(255,255,255,0.55); transform: translateX(-50%); }
+    .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 30px; height: 30px; border-radius: 50%; background: rgba(201,150,12,0.9); display: flex; align-items: center; justify-content: center; font-size: 11px; box-shadow: 0 2px 12px rgba(0,0,0,0.4); color: var(--bg); font-weight: 700; }
     .ba-caption { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
-    .ba-caption-label { font-size: 12px; font-weight: 600; color: var(--cream); }
-    .ba-caption-mode { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); background: rgba(201,150,12,0.1); padding: 3px 10px; border-radius: 20px; }
+    .ba-caption-label { font-size: 12px; font-weight: 600; color: var(--cream); font-family: 'Cinzel', serif; }
+    .ba-caption-mode { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); background: var(--gold-bg); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--gold-b); }
+
+    /* ── PRINT YOUR MEMORIES ── */
+    .print-section { background: var(--bg3); padding: 80px 24px; }
+    .print-inner { max-width: 860px; margin: 0 auto; }
+    .print-card {
+      background: var(--card); border: 1px solid var(--gold-b);
+      border-radius: 22px; overflow: hidden;
+    }
+    .print-card-inner { padding: 36px 32px 28px; }
+    .print-head { margin-bottom: 28px; }
+    .print-head .eyebrow { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+    .print-card-title { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 32px); font-weight: 700; color: var(--cream); margin-bottom: 8px; }
+    .print-card-sub { font-size: 13px; color: var(--cream55); line-height: 1.7; max-width: 540px; }
+
+    .print-row { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; }
+    .print-row + .print-row { border-top: 1px solid rgba(201,150,12,0.1); }
+    .print-row-icon {
+      width: 46px; height: 46px; border-radius: 23px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .print-row-body { flex: 1; }
+    .print-row-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .print-row-title { font-size: 14px; font-weight: 700; color: var(--cream); font-family: 'Inter', sans-serif; }
+    .print-row-badge {
+      font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 20px; border: 1px solid;
+    }
+    .print-row-desc { font-size: 12px; color: var(--cream55); line-height: 1.65; }
+    .print-row-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--gold);
+      background: var(--gold-bg); border: 1px solid var(--gold-b); border-radius: 40px;
+      padding: 6px 16px; text-decoration: none; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .print-row-cta:hover { background: var(--gold-bg2); }
+
+    /* ── COLLECTIONS DIRECTORY ── */
+    .collections-section { padding: 80px 24px; max-width: 860px; margin: 0 auto; }
+    .collections-card {
+      background: var(--card); border: 1px solid var(--gold-b);
+      border-radius: 22px; overflow: hidden; margin-top: 28px;
+    }
+    .coll-row {
+      display: flex; align-items: center; gap: 14px; padding: 18px 24px;
+      transition: background 0.2s; text-decoration: none;
+    }
+    .coll-row + .coll-row { border-top: 1px solid rgba(201,150,12,0.12); }
+    .coll-row:hover { background: rgba(201,150,12,0.05); }
+    .coll-icon {
+      width: 40px; height: 40px; border-radius: 20px; flex-shrink: 0;
+      background: var(--gold-bg); border: 1px solid var(--gold-b);
+      display: flex; align-items: center; justify-content: center; font-size: 16px;
+    }
+    .coll-text { flex: 1; }
+    .coll-label { font-size: 14px; font-weight: 700; color: var(--cream); font-family: 'Inter', sans-serif; margin-bottom: 2px; }
+    .coll-sub { font-size: 11px; color: var(--cream55); }
+    .coll-arrow { color: rgba(201,150,12,0.5); font-size: 14px; flex-shrink: 0; }
+    .coll-cta-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      margin-top: 20px; width: 100%; padding: 16px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-dk));
+      border-radius: 14px; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 700; color: #fff; letter-spacing: 0.3px;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .coll-cta-btn:hover { opacity: 0.88; }
 
     /* ── SHOP ── */
-    .shop-section { background: var(--dark3); padding: 100px 24px; }
+    .shop-section { background: var(--bg3); padding: 88px 24px; }
     .shop-inner { max-width: 1100px; margin: 0 auto; }
-    .shop-category { margin-bottom: 64px; }
-    .shop-cat-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--cream); margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
-    .shop-cat-sub { font-size: 14px; color: rgba(250,247,242,0.4); margin-bottom: 28px; line-height: 1.6; max-width: 520px; }
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-    .product-card { background: #1A1610; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
-    .product-card:hover { border-color: rgba(201,150,12,0.3); transform: translateY(-3px); }
-    .product-image { aspect-ratio: 1; background: #0E0C08; display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; overflow: hidden; }
-    .product-image svg { width: 64px; height: 64px; opacity: 0.25; }
-    .product-image .prod-emoji { font-size: 52px; }
-    .product-img-art {
-      width: 100%; height: 100%; object-fit: cover; opacity: 0.85;
+    .shop-category { margin-bottom: 60px; }
+    .shop-cat-header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; flex-wrap: wrap; }
+    .shop-cat-icon {
+      width: 40px; height: 40px; border-radius: 20px;
+      background: var(--gold-bg); border: 1px solid var(--gold-b);
+      display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
     }
-    .product-body { padding: 16px; }
-    .product-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--cream); margin-bottom: 6px; line-height: 1.3; }
-    .product-desc { font-size: 12px; color: rgba(250,247,242,0.35); line-height: 1.6; margin-bottom: 14px; }
-    .product-footer { display: flex; justify-content: space-between; align-items: center; }
-    .product-price { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 900; color: var(--cream); }
-    .product-price small { font-size: 11px; color: rgba(250,247,242,0.35); font-family: 'Inter', sans-serif; font-weight: 400; display: block; line-height: 1.2; }
-    .btn-order { padding: 8px 18px; border-radius: 40px; border: 1px solid rgba(201,150,12,0.4); background: rgba(201,150,12,0.08); color: var(--gold); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; }
-    .btn-order:hover { background: rgba(201,150,12,0.18); border-color: var(--gold); }
-    .shop-enquiry-note { font-size: 12px; color: rgba(250,247,242,0.25); margin-top: 20px; text-align: center; }
-    .shop-enquiry-note a { color: rgba(201,150,12,0.6); text-decoration: none; }
-    .shop-enquiry-note a:hover { color: var(--gold); }
+    .shop-cat-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 600; color: var(--cream); }
+    .shop-cat-sub { font-size: 13px; color: var(--cream55); margin-bottom: 24px; line-height: 1.65; max-width: 540px; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    @media (max-width: 640px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } }
 
-    /* Product checkout modal */
-    .prod-modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-    .prod-modal-backdrop.open { display: flex; }
-    .prod-modal { background: #1A1610; border: 1px solid rgba(201,150,12,0.2); border-radius: 20px; padding: 36px; max-width: 440px; width: 100%; }
-    .prod-modal-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--cream); margin-bottom: 8px; }
-    .prod-modal-price { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: var(--cream); margin-bottom: 16px; }
-    .prod-modal-info { font-size: 13px; color: rgba(250,247,242,0.45); line-height: 1.7; margin-bottom: 24px; padding: 16px; background: rgba(201,150,12,0.05); border: 1px solid rgba(201,150,12,0.1); border-radius: 10px; }
-    .prod-modal-info strong { color: rgba(250,247,242,0.7); }
-    .prod-modal-btns { display: flex; flex-direction: column; gap: 10px; }
+    .product-card {
+      background: var(--card2); border: 1px solid rgba(201,150,12,0.18);
+      border-radius: 18px; overflow: hidden;
+      transition: border-color 0.22s, transform 0.22s;
+    }
+    .product-card:hover { border-color: var(--gold-b2); transform: translateY(-3px); }
+    .product-image {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .prod-emoji-ring {
+      width: 64px; height: 64px; border-radius: 32px;
+      background: var(--gold-bg); border: 1.5px solid var(--gold-b);
+      display: flex; align-items: center; justify-content: center; font-size: 28px;
+    }
+    .product-body { padding: 14px 16px 16px; }
+    .product-cat { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+    .product-name { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: var(--cream); margin-bottom: 5px; line-height: 1.3; }
+    .product-desc { font-size: 11px; color: rgba(250,247,242,0.35); line-height: 1.6; margin-bottom: 12px; }
+    .product-footer { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .product-price { font-size: 18px; font-weight: 900; color: var(--cream); font-family: 'Inter', sans-serif; }
+    .product-price small { font-size: 10px; color: var(--cream35); font-weight: 400; display: block; line-height: 1.2; }
+    .btn-order {
+      padding: 7px 16px; border-radius: 40px;
+      border: 1px solid var(--gold-b2); background: var(--gold-bg);
+      color: var(--gold); font-size: 11px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .btn-order:hover { background: var(--gold-bg2); border-color: var(--gold); }
+    .shop-note { font-size: 12px; color: rgba(250,247,242,0.22); margin-top: 20px; text-align: center; line-height: 1.7; }
+    .shop-note a { color: rgba(201,150,12,0.55); text-decoration: none; }
+    .shop-note a:hover { color: var(--gold); }
 
     /* ── HOW IT WORKS ── */
-    .how-section { padding: 80px 24px; background: var(--dark2); }
+    .how-section { padding: 80px 24px; }
     .how-inner { max-width: 1100px; margin: 0 auto; }
-    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; margin-top: 56px; }
-    .step { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
-    .step-icon { width: 64px; height: 64px; border-radius: 20px; background: rgba(201,150,12,0.1); border: 1px solid rgba(201,150,12,0.25); display: flex; align-items: center; justify-content: center; font-size: 26px; }
-    .step-num { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--gold); }
-    .step-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--cream); }
-    .step-desc { font-size: 13px; color: rgba(250,247,242,0.45); line-height: 1.7; max-width: 200px; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 28px; margin-top: 48px; }
+    .step { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+    .step-icon {
+      width: 64px; height: 64px; border-radius: 22px;
+      background: var(--gold-bg); border: 1px solid var(--gold-b);
+      display: flex; align-items: center; justify-content: center; font-size: 24px;
+    }
+    .step-num { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+    .step-title { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600; color: var(--cream); }
+    .step-desc { font-size: 12px; color: var(--cream55); line-height: 1.7; max-width: 200px; }
 
     /* ── PRICING ── */
-    .pricing-section { padding: 100px 24px; max-width: 900px; margin: 0 auto; }
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 56px; }
-    .price-card { background: #1A1610; border: 2px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 28px 24px; display: flex; flex-direction: column; gap: 12px; position: relative; transition: border-color 0.2s, transform 0.2s; }
+    .pricing-section { background: var(--bg2); padding: 88px 24px; }
+    .pricing-inner { max-width: 940px; margin: 0 auto; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 48px; }
+    .price-card {
+      background: var(--card); border: 2px solid rgba(255,255,255,0.07);
+      border-radius: var(--r-lg); padding: 26px 22px;
+      display: flex; flex-direction: column; gap: 10px;
+      position: relative; transition: border-color 0.2s, transform 0.2s;
+    }
     .price-card:hover { transform: translateY(-4px); }
-    .price-card.featured { border-color: #27AE60; background: rgba(39,174,96,0.06); }
-    .price-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #27AE60; color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
-    .price-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    .price-label { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); }
-    .price-desc { font-size: 12px; color: rgba(250,247,242,0.45); line-height: 1.6; flex: 1; }
-    .price-amount { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: var(--cream); }
-    .price-period { font-size: 11px; color: rgba(250,247,242,0.35); margin-top: -8px; }
-    .price-cta { display: block; text-align: center; padding: 14px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; margin-top: 8px; transition: opacity 0.2s; cursor: pointer; border: none; }
+    .price-card.featured { border-color: #27AE60; background: rgba(39,174,96,0.05); }
+    .price-badge {
+      position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+      background: #27AE60; color: #fff; font-size: 9px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; white-space: nowrap;
+    }
+    .price-icon {
+      width: 42px; height: 42px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .price-label { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 600; color: var(--cream); }
+    .price-desc { font-size: 12px; color: var(--cream55); line-height: 1.6; flex: 1; }
+    .price-amount { font-family: 'Inter', sans-serif; font-size: 34px; font-weight: 900; color: var(--cream); }
+    .price-period { font-size: 10px; color: var(--cream35); margin-top: -6px; }
+    .price-cta {
+      display: block; text-align: center; padding: 13px; border-radius: 12px;
+      font-size: 12px; font-weight: 700; text-decoration: none; margin-top: 8px;
+      transition: opacity 0.2s; cursor: pointer; border: none;
+    }
     .price-cta:hover { opacity: 0.85; }
 
-    /* ── FOOTER ── */
-    footer { background: var(--dark2); border-top: 1px solid rgba(201,150,12,0.1); padding: 48px 40px 32px; }
-    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
-    .footer-brand { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; letter-spacing: 6px; color: var(--cream); }
-    .footer-tagline { font-size: 12px; color: rgba(250,247,242,0.3); letter-spacing: 1px; }
-    .footer-links { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
-    .footer-links a { font-size: 12px; color: rgba(250,247,242,0.35); text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--gold); }
-    .footer-copy { font-size: 11px; color: rgba(250,247,242,0.2); }
-    .gold-rule { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,150,12,0.4), transparent); width: 100%; }
+    /* ── PAYMENT MODALS ── */
+    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.78); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    .modal-backdrop.open { display: flex; }
+    .modal { background: var(--card); border: 1px solid var(--gold-b); border-radius: var(--r-lg); padding: 36px; max-width: 460px; width: 100%; }
+    .modal-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--cream55); margin-bottom: 24px; line-height: 1.5; }
+    .modal-price { font-size: 38px; font-weight: 900; color: var(--cream); display: flex; align-items: baseline; gap: 6px; margin-bottom: 22px; font-family: 'Inter', sans-serif; }
+    .modal-price small { font-size: 14px; color: var(--cream35); font-weight: 400; }
+    #payment-element { margin-bottom: 18px; }
+    .payment-error { background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3); color: #FF8080; font-size: 13px; padding: 12px 16px; border-radius: 8px; margin-bottom: 14px; display: none; }
+    .modal-close { float: right; background: none; border: none; color: rgba(250,247,242,0.35); font-size: 18px; cursor: pointer; padding: 4px 8px; margin: -8px -8px 0 0; }
+    .modal-close:hover { color: var(--cream); }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.25); border-top-color: currentColor; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── STATUS MESSAGES ── */
-    .status-msg { font-size: 13px; color: rgba(250,247,242,0.5); text-align: center; padding: 12px; background: rgba(255,255,255,0.04); border-radius: 8px; margin-bottom: 12px; display: none; }
-    .status-msg.visible { display: block; }
-    .status-msg.error { background: rgba(255,82,82,0.08); color: #FF8080; }
-    .status-msg.success { background: rgba(39,174,96,0.08); color: #5DE391; }
+    /* Product order modal */
+    .prod-modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.78); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    .prod-modal-backdrop.open { display: flex; }
+    .prod-modal { background: var(--card); border: 1px solid var(--gold-b); border-radius: var(--r-lg); padding: 36px; max-width: 440px; width: 100%; }
+    .prod-modal-name { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
+    .prod-modal-price { font-size: 34px; font-weight: 900; color: var(--cream); margin-bottom: 14px; font-family: 'Inter', sans-serif; }
+    .prod-modal-info { font-size: 13px; color: var(--cream55); line-height: 1.7; margin-bottom: 22px; padding: 16px; background: var(--gold-bg); border: 1px solid rgba(201,150,12,0.12); border-radius: 12px; }
+    .prod-modal-info strong { color: rgba(250,247,242,0.75); }
+    .prod-modal-btns { display: flex; flex-direction: column; gap: 10px; }
+    @media (max-width: 640px) { .modal, .prod-modal { padding: 24px 18px; } }
 
     /* ── EMAIL SIGNUP POPUP ── */
-    .signup-backdrop {
-      display: none; position: fixed; inset: 0; z-index: 400;
-      background: rgba(0,0,0,0.72); backdrop-filter: blur(6px);
-      align-items: center; justify-content: center; padding: 20px;
-    }
+    .signup-backdrop { display: none; position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 20px; }
     .signup-backdrop.open { display: flex; }
-    .signup-modal {
-      background: #1A1610;
-      border: 1px solid rgba(201,150,12,0.3);
-      border-radius: 24px;
-      max-width: 520px; width: 100%;
-      overflow: hidden;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.7);
-      position: relative;
-    }
-    .signup-hero-strip {
-      background: linear-gradient(135deg, #0E0C08 0%, #1C1608 50%, #0E0C08 100%);
-      border-bottom: 1px solid rgba(201,150,12,0.2);
-      padding: 36px 40px 28px;
-      text-align: center;
-    }
-    .signup-badge {
-      display: inline-block;
-      background: rgba(201,150,12,0.12);
-      border: 1px solid rgba(201,150,12,0.35);
-      color: var(--gold);
-      font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
-      text-transform: uppercase; padding: 6px 16px; border-radius: 40px;
-      margin-bottom: 18px;
-    }
-    .signup-headline {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(26px, 5vw, 34px);
-      font-weight: 900; color: var(--cream); line-height: 1.15;
-      margin: 0 0 10px;
-    }
-    .signup-headline em {
-      font-style: normal;
-      background: linear-gradient(90deg, #C9960C, #F5D78E, #C9960C);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .signup-sub {
-      font-size: 14px; color: rgba(250,247,242,0.5); line-height: 1.6; margin: 0;
-    }
+    .signup-modal { background: var(--card); border: 1px solid var(--gold-b); border-radius: 24px; max-width: 520px; width: 100%; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.7); position: relative; }
+    .signup-hero-strip { background: linear-gradient(135deg, var(--bg) 0%, #1C1608 50%, var(--bg) 100%); border-bottom: 1px solid var(--gold-b); padding: 36px 40px 28px; text-align: center; }
+    .signup-badge { display: inline-block; background: var(--gold-bg); border: 1px solid rgba(201,150,12,0.35); color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 40px; margin-bottom: 18px; }
+    .signup-headline { font-family: 'Playfair Display', serif; font-size: clamp(26px, 5vw, 34px); font-weight: 900; color: var(--cream); line-height: 1.15; margin: 0 0 10px; }
+    .signup-headline em { font-style: normal; background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .signup-sub { font-size: 14px; color: var(--cream55); line-height: 1.6; margin: 0; }
     .signup-body { padding: 28px 40px 32px; }
     .signup-form { display: flex; gap: 10px; }
-    .signup-input {
-      flex: 1; background: rgba(250,247,242,0.06);
-      border: 1px solid rgba(201,150,12,0.25); border-radius: 12px;
-      padding: 14px 18px; color: var(--cream); font-size: 14px;
-      font-family: 'Inter', sans-serif; outline: none;
-      transition: border-color 0.2s;
-    }
+    .signup-input { flex: 1; background: rgba(250,247,242,0.06); border: 1px solid rgba(201,150,12,0.25); border-radius: 12px; padding: 13px 18px; color: var(--cream); font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
     .signup-input:focus { border-color: var(--gold); }
     .signup-input::placeholder { color: rgba(250,247,242,0.3); }
-    .signup-btn {
-      background: linear-gradient(135deg, #8B6200, #C9960C, #F5D78E, #C9960C);
-      color: #0E0C08; font-size: 13px; font-weight: 700; padding: 14px 22px;
-      border-radius: 12px; border: none; cursor: pointer; white-space: nowrap;
-      transition: opacity 0.2s; letter-spacing: 0.2px;
-    }
+    .signup-btn { background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold)); color: var(--bg); font-size: 13px; font-weight: 700; padding: 13px 20px; border-radius: 12px; border: none; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
     .signup-btn:hover { opacity: 0.88; }
     .signup-btn:disabled { opacity: 0.5; cursor: default; }
-    .signup-note { font-size: 11px; color: rgba(250,247,242,0.25); text-align: center; margin-top: 12px; line-height: 1.5; }
-    .signup-close {
-      position: absolute; top: 14px; right: 16px;
-      background: none; border: none; color: rgba(250,247,242,0.3);
-      font-size: 20px; cursor: pointer; padding: 4px 8px; line-height: 1;
-      transition: color 0.2s;
-    }
+    .signup-note { font-size: 11px; color: rgba(250,247,242,0.22); text-align: center; margin-top: 10px; line-height: 1.5; }
+    .signup-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: rgba(250,247,242,0.28); font-size: 18px; cursor: pointer; padding: 4px 8px; line-height: 1; transition: color 0.2s; }
     .signup-close:hover { color: var(--cream); }
     .signup-success { text-align: center; padding: 8px 0 4px; }
-    .signup-success-icon { font-size: 40px; margin-bottom: 12px; }
+    .signup-success-icon { font-size: 36px; margin-bottom: 12px; }
     .signup-success h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--cream); margin-bottom: 8px; }
-    .signup-success p { font-size: 14px; color: rgba(250,247,242,0.5); line-height: 1.6; margin-bottom: 16px; }
-    .signup-code-box {
-      background: rgba(201,150,12,0.1); border: 2px dashed rgba(201,150,12,0.4);
-      border-radius: 10px; padding: 14px 20px; margin: 0 auto 16px;
-      display: inline-block;
-    }
+    .signup-success p { font-size: 14px; color: var(--cream55); line-height: 1.6; margin-bottom: 16px; }
+    .signup-code-box { background: var(--gold-bg); border: 2px dashed rgba(201,150,12,0.4); border-radius: 10px; padding: 14px 20px; margin: 0 auto 16px; display: inline-block; }
     .signup-code-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
     .signup-code-value { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; color: var(--cream); letter-spacing: 4px; }
 
-    /* ── ORDER SUCCESS ── */
-    #order-success-banner { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.4); color: #5DE391; padding: 16px 28px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 300; text-align: center; max-width: 480px; width: 90%; }
+    /* ── ORDER SUCCESS BANNER ── */
+    #order-success-banner { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(39,174,96,0.14); border: 1px solid rgba(39,174,96,0.4); color: #5DE391; padding: 16px 28px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 300; text-align: center; max-width: 480px; width: 90%; }
 
-    /* ── MOBILE ── */
-    @media (max-width: 640px) {
-      nav { padding: 16px 20px; }
-      .nav-links { display: none; }
-      .section { padding: 72px 20px; }
-      .ba-grid { grid-template-columns: 1fr; }
-      .trust-inner { gap: 20px; }
-      footer { padding: 40px 20px 24px; }
-      .tool-box { padding: 24px 16px; }
-      .preview-grid { grid-template-columns: 1fr; }
-      .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-      .modal, .prod-modal { padding: 24px 20px; }
+    /* ── FOOTER ── */
+    footer { background: var(--bg); border-top: 1px solid rgba(201,150,12,0.12); padding: 48px 40px 32px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 10px; background: linear-gradient(135deg, var(--gold-dk), var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-tagline { font-size: 11px; color: rgba(250,247,242,0.28); letter-spacing: 1.5px; font-family: 'Cinzel', serif; }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+    .footer-links a { font-size: 11px; color: rgba(250,247,242,0.3); text-decoration: none; transition: color 0.2s; letter-spacing: 0.3px; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { font-size: 10px; color: rgba(250,247,242,0.18); }
+    @media (max-width: 640px) { footer { padding: 36px 20px 24px; } }
+
+    /* ── Anniversary/Jubilee banner ── */
+    .jubilee-banner {
+      margin: 0 24px;
+      border-radius: 18px; overflow: hidden;
+      border: 1px solid var(--gold-b);
+      background: linear-gradient(135deg, #080808, #0E0E0E, #050505);
     }
+    .jubilee-inner { padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
+    .jubilee-icon { width: 44px; height: 44px; border-radius: 22px; background: var(--gold-bg); border: 1px solid var(--gold-b); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .jubilee-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
+    .jubilee-title { font-family: 'Cinzel', serif; font-size: 16px; color: var(--cream); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -357,10 +540,11 @@
   <a class="nav-brand" href="#">ONJJEM</a>
   <ul class="nav-links">
     <li><a href="#tool">Try Free</a></li>
-    <li><a href="#restorations">Gallery</a></li>
+    <li><a href="#gallery">Gallery</a></li>
     <li><a href="#shop">Shop</a></li>
     <li><a href="#how">How It Works</a></li>
     <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#tool" class="nav-cta">Restore Now</a></li>
   </ul>
 </nav>
 
@@ -371,11 +555,12 @@
 
     <!-- Left panel: Wedding -->
     <div class="hero-panel">
+      <div class="gold-bar"></div>
       <div class="hero-panel-slot">
         <img src="/api/gallery/wedding_before.png" alt="Wedding photo before restoration" loading="eager" />
         <span class="hero-panel-lbl before">Before</span>
       </div>
-      <div class="hero-panel-rule"></div>
+      <div style="height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
       <div class="hero-panel-slot">
         <img src="/api/gallery/wedding_after.png" alt="Wedding photo after restoration" loading="eager" />
         <span class="hero-panel-lbl after">After</span>
@@ -388,22 +573,41 @@
 
     <!-- Centre text -->
     <div class="hero-center">
-      <div class="hero-eyebrow">✦ &nbsp;Cinema-Grade AI · London</div>
-      <h1 class="hero-title">Your Family's Memories,<br><em>Beautifully Restored</em></h1>
+      <div class="hero-eyebrow-pill">✦ &nbsp;Cinema-Grade AI · London</div>
+      <div class="hero-onjjem">ONJJEM</div>
+      <div class="hero-tagline">Restore. Remember. Treasure.</div>
+      <div class="hero-gems">
+        <span>💎</span><span style="font-size:7px;opacity:0.5">◆</span>
+        <span>✦</span><span style="font-size:7px;opacity:0.5">◆</span>
+        <span>💎</span>
+      </div>
+      <div class="hero-chips">
+        <span class="hero-chip" style="color:#4A90D9;border-color:rgba(74,144,217,0.4);">⬡ Sharpen</span>
+        <span class="hero-chip" style="color:#F5A623;border-color:rgba(245,166,35,0.4);">☀ Brighten</span>
+        <span class="hero-chip" style="color:#9B59B6;border-color:rgba(155,89,182,0.4);">✧ Denoise</span>
+        <span class="hero-chip" style="color:#27AE60;border-color:rgba(39,174,96,0.4);">⟳ Restore</span>
+        <span class="hero-chip" style="color:#E74C3C;border-color:rgba(231,76,60,0.4);">🌈 Vivid</span>
+        <span class="hero-chip" style="color:#C9960C;border-color:rgba(201,150,12,0.4);">🎨 Colourize</span>
+      </div>
       <p class="hero-sub">Upload any old, blurry, or black-and-white photograph. Our AI restores it to museum quality in seconds — then order it as a luxury print delivered to your door.</p>
       <div class="hero-buttons">
         <a href="#tool" class="btn-primary"><span>✦</span> Restore a Photo Free</a>
         <a href="#shop" class="btn-secondary"><span>🖼</span> Browse the Shop</a>
       </div>
+      <div class="scroll-hint">
+        <div class="scroll-line"></div>
+        <span>Scroll</span>
+      </div>
     </div>
 
     <!-- Right panel: Victorian portrait -->
     <div class="hero-panel">
+      <div class="gold-bar"></div>
       <div class="hero-panel-slot">
         <img src="/api/gallery/victorian_before.png" alt="Victorian portrait before restoration" loading="eager" />
         <span class="hero-panel-lbl before">Before</span>
       </div>
-      <div class="hero-panel-rule"></div>
+      <div style="height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
       <div class="hero-panel-slot">
         <img src="/api/gallery/victorian_after.png" alt="Victorian portrait after restoration" loading="eager" />
         <span class="hero-panel-lbl after">After</span>
@@ -415,95 +619,137 @@
     </div>
 
   </div>
-  <div class="scroll-hint" style="margin-top:48px;position:relative;">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
-  </div>
 </section>
 
 <!-- TRUST BAR -->
 <div class="trust-bar">
   <div class="trust-inner">
-    <div class="trust-item"><span>🇬🇧</span><span>Expertly Restored in London</span></div>
-    <div class="trust-item"><span>✓</span><span>Verified Apple Developer</span></div>
-    <div class="trust-item"><span>✦</span><span>Cinema-Grade AI</span></div>
-    <div class="trust-item"><span>🖼</span><span>Luxury Prints Delivered</span></div>
-    <div class="trust-item"><span>🔒</span><span>Photos Never Stored</span></div>
+    <div class="trust-item"><span class="ti-icon">🇬🇧</span><span>Expertly Restored in London</span></div>
+    <div class="trust-item"><span class="ti-icon">✓</span><span>Verified Apple Developer</span></div>
+    <div class="trust-item"><span class="ti-icon">✦</span><span>Cinema-Grade AI</span></div>
+    <div class="trust-item"><span class="ti-icon">🖼</span><span>Luxury Prints Delivered</span></div>
+    <div class="trust-item"><span class="ti-icon">🔒</span><span>Photos Never Stored</span></div>
   </div>
 </div>
+
+<!-- ENHANCEMENT MODES -->
+<section class="enhancements-section">
+  <div class="enhancements-inner">
+    <div class="section-header">
+      <div class="eyebrow"><span>✦</span> Six Ways to Restore Your Photos</div>
+      <h2 class="section-title">Choose Your Enhancement</h2>
+      <p class="section-sub">Select one or combine up to three — our Cinema-Grade AI handles the rest.</p>
+    </div>
+    <div class="enh-card-grid">
+      <div class="enh-card" style="--accent-color:rgba(74,144,217,0.5);">
+        <div class="enh-icon-ring" style="--accent-bg:rgba(74,144,217,0.14);--accent-ring:rgba(74,144,217,0.4);">⬡</div>
+        <div class="enh-label" style="color:#4A90D9">Sharpen</div>
+        <div class="enh-sub">Fix soft &amp; blurry photos with AI upscaling</div>
+      </div>
+      <div class="enh-card" style="--accent-color:rgba(245,166,35,0.5);">
+        <div class="enh-icon-ring" style="--accent-bg:rgba(245,166,35,0.14);--accent-ring:rgba(245,166,35,0.4);">☀</div>
+        <div class="enh-label" style="color:#F5A623">Brighten</div>
+        <div class="enh-sub">Lift dark &amp; underexposed photos intelligently</div>
+      </div>
+      <div class="enh-card" style="--accent-color:rgba(155,89,182,0.5);">
+        <div class="enh-icon-ring" style="--accent-bg:rgba(155,89,182,0.14);--accent-ring:rgba(155,89,182,0.4);">✧</div>
+        <div class="enh-label" style="color:#9B59B6">Denoise</div>
+        <div class="enh-sub">Remove grain &amp; film noise while preserving detail</div>
+      </div>
+      <div class="enh-card" style="--accent-color:rgba(39,174,96,0.5);">
+        <div class="enh-icon-ring" style="--accent-bg:rgba(39,174,96,0.14);--accent-ring:rgba(39,174,96,0.4);">⟳</div>
+        <div class="enh-label" style="color:#27AE60">Restore</div>
+        <div class="enh-sub">Full old photo restoration — faded, scratched, torn</div>
+      </div>
+      <div class="enh-card" style="--accent-color:rgba(231,76,60,0.5);">
+        <div class="enh-icon-ring" style="--accent-bg:rgba(231,76,60,0.14);--accent-ring:rgba(231,76,60,0.4);">🌈</div>
+        <div class="enh-label" style="color:#E74C3C">Vivid</div>
+        <div class="enh-sub">Bold colours &amp; contrast for washed-out prints</div>
+      </div>
+      <div class="enh-card" style="--accent-color:rgba(201,150,12,0.5);">
+        <div class="enh-icon-ring" style="--accent-bg:rgba(201,150,12,0.14);--accent-ring:rgba(201,150,12,0.4);">🎨</div>
+        <div class="enh-label" style="color:#C9960C">Colourize</div>
+        <div class="enh-sub">Add natural colour to black-and-white photos</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- LIVE TOOL -->
 <section class="tool-section" id="tool">
   <div class="tool-inner">
-    <p class="section-eyebrow" style="text-align:center;">✦ Try It Right Now</p>
-    <h2 class="section-title" style="margin-bottom:8px;">Restore Your Photo</h2>
-    <p class="section-sub">Upload any photo and see the difference instantly — free preview, HD quality for just £1.49.</p>
+    <div class="section-header">
+      <div class="eyebrow"><span>✦</span> Try It Right Now</div>
+      <h2 class="section-title">Restore Your Photo</h2>
+      <p class="section-sub">Upload any photo and see the difference instantly — free preview, HD quality for just £1.49.</p>
+    </div>
 
-    <div class="tool-box">
+    <div class="tool-card">
+      <div class="tool-card-bar"></div>
+      <div class="tool-card-inner">
 
-      <!-- Upload zone -->
-      <div class="upload-zone" id="uploadZone">
-        <input type="file" id="fileInput" accept="image/*" />
-        <span class="upload-icon">📷</span>
-        <div class="upload-title">Drop your photo here</div>
-        <p class="upload-hint">or tap to choose from your library &nbsp;·&nbsp; JPEG, PNG, WebP</p>
-      </div>
-
-      <!-- Preview area (hidden until photo uploaded) -->
-      <div class="preview-area" id="previewArea">
-
-        <!-- Mode picker -->
-        <p style="font-size:12px;color:rgba(250,247,242,0.4);margin-bottom:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">Choose Enhancement</p>
-        <div class="mode-picker" id="modePicker">
-          <button class="mode-btn active" data-mode="sharpen">✦ Sharpen</button>
-          <button class="mode-btn" data-mode="colourize">🎨 Colourize</button>
-          <button class="mode-btn" data-mode="restore">♻ Restore</button>
-          <button class="mode-btn" data-mode="brighten">☀ Brighten</button>
-          <button class="mode-btn" data-mode="denoise">✧ Denoise</button>
-          <button class="mode-btn" data-mode="vivid">🌈 Vivid</button>
+        <!-- Upload zone -->
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="fileInput" accept="image/*" />
+          <span class="upload-icon">📷</span>
+          <div class="upload-title">Drop your photo here</div>
+          <p class="upload-hint">or tap to choose from your library &nbsp;·&nbsp; JPEG, PNG, WebP</p>
         </div>
 
-        <!-- Image comparison -->
-        <div class="preview-grid">
-          <div class="preview-slot">
-            <img id="originalImg" src="" alt="Original photo" />
-            <span class="preview-label">Original</span>
+        <!-- Preview area (hidden until photo uploaded) -->
+        <div class="preview-area" id="previewArea">
+
+          <p class="mode-label">Choose Enhancement</p>
+          <div class="mode-picker" id="modePicker">
+            <button class="mode-btn active" data-mode="sharpen">⬡ Sharpen</button>
+            <button class="mode-btn" data-mode="colourize">🎨 Colourize</button>
+            <button class="mode-btn" data-mode="restore">⟳ Restore</button>
+            <button class="mode-btn" data-mode="brighten">☀ Brighten</button>
+            <button class="mode-btn" data-mode="denoise">✧ Denoise</button>
+            <button class="mode-btn" data-mode="vivid">🌈 Vivid</button>
           </div>
-          <div class="preview-slot" id="resultSlot">
-            <img id="resultImg" src="" alt="Restored photo" style="display:none" />
-            <span class="preview-label after" id="resultLabel">Preview</span>
-            <div class="preview-blur-overlay" id="blurOverlay" style="display:none">
-              <p>🎉 <strong style="color:var(--cream)">Preview ready!</strong><br>Get full HD quality for just £1.49</p>
+
+          <div class="preview-grid">
+            <div class="preview-slot">
+              <img id="originalImg" src="" alt="Original photo" />
+              <span class="preview-label">Original</span>
+            </div>
+            <div class="preview-slot" id="resultSlot">
+              <img id="resultImg" src="" alt="Restored photo" style="display:none" />
+              <span class="preview-label after" id="resultLabel">Preview</span>
+              <div class="preview-blur-overlay" id="blurOverlay" style="display:none">
+                <p>🎉 <strong style="color:var(--cream)">Preview ready!</strong><br>Get full HD quality for just £1.49</p>
+              </div>
             </div>
           </div>
+
+          <div class="status-msg" id="statusMsg"></div>
+
+          <div class="tool-action">
+            <button class="btn-restore btn-restore-free" id="btnPreview">✦ See Free Preview</button>
+            <button class="btn-restore btn-restore-paid" id="btnPay" style="display:none">⭐ Get Full Quality — £1.49</button>
+            <button class="btn-restore btn-restore btn-download" id="btnDownload" style="display:none">⬇ Download HD Photo</button>
+            <button class="btn-reset" id="btnReset">← Try a different photo</button>
+          </div>
+
+          <p class="tool-note">Free preview is a reduced-quality sample. HD result is full resolution with Cinema-Grade enhancement.<br>Payment processed securely by Stripe. Your photos are never stored.</p>
         </div>
 
-        <!-- Status message -->
-        <div class="status-msg" id="statusMsg"></div>
-
-        <!-- Action buttons -->
-        <div class="tool-action">
-          <button class="btn-restore btn-restore-free" id="btnPreview">✦ See Free Preview</button>
-          <button class="btn-restore btn-restore-paid" id="btnPay" style="display:none">⭐ Get Full Quality — £1.49</button>
-          <button class="btn-restore btn-restore btn-download" id="btnDownload" style="display:none">⬇ Download HD Photo</button>
-          <button class="btn-reset" id="btnReset">← Try a different photo</button>
-        </div>
-
-        <p class="tool-note">Free preview is a reduced-quality sample. HD result is full resolution with Cinema-Grade enhancement.<br>Payment processed securely by Stripe. Your photos are never stored.</p>
       </div>
-
     </div>
   </div>
 </section>
 
 <!-- BEFORE / AFTER GALLERY -->
-<section class="section" id="restorations">
-  <p class="section-eyebrow">✦ Real Restorations</p>
-  <h2 class="section-title">See the Transformation</h2>
-  <p class="section-sub">Every image below was restored using ONJJEM's Cinema-Grade AI — no manual editing, no Photoshop.</p>
-
+<section class="section" id="gallery">
+  <div class="section-header">
+    <div class="eyebrow"><span>✦</span> Real Restorations</div>
+    <h2 class="section-title">See the Transformation</h2>
+    <p class="section-sub">Every image below was restored using ONJJEM's Cinema-Grade AI — no manual editing, no Photoshop.</p>
+  </div>
   <div class="ba-grid">
     <div class="ba-card">
+      <div class="gold-bar"></div>
       <div class="ba-images">
         <img src="/api/gallery/grandma_before.png" alt="Before" loading="lazy" />
         <img src="/api/gallery/grandma_after.png" alt="After" loading="lazy" />
@@ -513,6 +759,7 @@
       <div class="ba-caption"><span class="ba-caption-label">Family Portrait</span><span class="ba-caption-mode">Colourised + Sharpened</span></div>
     </div>
     <div class="ba-card">
+      <div class="gold-bar"></div>
       <div class="ba-images">
         <img src="/api/gallery/childhood_before.png" alt="Before" loading="lazy" />
         <img src="/api/gallery/childhood_after.png" alt="After" loading="lazy" />
@@ -522,6 +769,7 @@
       <div class="ba-caption"><span class="ba-caption-label">Childhood Memory</span><span class="ba-caption-mode">Colourised</span></div>
     </div>
     <div class="ba-card">
+      <div class="gold-bar"></div>
       <div class="ba-images">
         <img src="/api/gallery/portrait_before.png" alt="Before" loading="lazy" />
         <img src="/api/gallery/portrait_after.png" alt="After" loading="lazy" />
@@ -531,6 +779,7 @@
       <div class="ba-caption"><span class="ba-caption-label">Vintage Portrait</span><span class="ba-caption-mode">Sharpened</span></div>
     </div>
     <div class="ba-card">
+      <div class="gold-bar"></div>
       <div class="ba-images">
         <img src="/api/gallery/wedding_before.png" alt="Before" loading="lazy" />
         <img src="/api/gallery/wedding_after.png" alt="After" loading="lazy" />
@@ -540,6 +789,7 @@
       <div class="ba-caption"><span class="ba-caption-label">Wedding Day</span><span class="ba-caption-mode">Colourised + Sharpened</span></div>
     </div>
     <div class="ba-card">
+      <div class="gold-bar"></div>
       <div class="ba-images">
         <img src="/api/gallery/victorian_before.png" alt="Before" loading="lazy" />
         <img src="/api/gallery/victorian_after.png" alt="After" loading="lazy" />
@@ -551,24 +801,153 @@
   </div>
 </section>
 
+<!-- PRINT YOUR MEMORIES -->
+<section class="print-section">
+  <div class="print-inner">
+    <div class="section-header" style="margin-bottom:28px;">
+      <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;"><span>🖨</span> Bring Your Photos to Life</div>
+      <h2 class="section-title" style="margin-top:10px;">Print Your Memories</h2>
+    </div>
+    <div class="print-card">
+      <div class="gold-bar-w"></div>
+      <div class="print-card-inner">
+        <div class="print-head">
+          <p class="print-card-sub">Three ways to turn your restored photos into something you can hold, display, and treasure.</p>
+        </div>
+
+        <div class="print-row">
+          <div class="print-row-icon" style="background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.3);">∞</div>
+          <div class="print-row-body">
+            <div class="print-row-head">
+              <span class="print-row-title">Monthly Plan — £12.99/month</span>
+              <span class="print-row-badge" style="color:#4A90D9;background:rgba(74,144,217,0.12);border-color:rgba(74,144,217,0.35);">UNLIMITED</span>
+            </div>
+            <p class="print-row-desc">Full studio-quality restoration every month — same high-end results as the annual plan. No limits, no per-photo charges. Cancel anytime.</p>
+          </div>
+        </div>
+
+        <div class="print-row">
+          <div class="print-row-icon" style="background:rgba(39,174,96,0.14);border:1px solid rgba(39,174,96,0.3);">∞</div>
+          <div class="print-row-body">
+            <div class="print-row-head">
+              <span class="print-row-title">Annual Plan — £24.99/year</span>
+              <span class="print-row-badge" style="color:#27AE60;background:rgba(39,174,96,0.12);border-color:rgba(39,174,96,0.35);">BEST VALUE</span>
+            </div>
+            <p class="print-row-desc">Everything in the monthly plan, all year — save 83% versus paying monthly. Download studio-quality HD files anytime, as many photos as you like.</p>
+          </div>
+        </div>
+
+        <div class="print-row">
+          <div class="print-row-icon" style="background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.3);">✦</div>
+          <div class="print-row-body">
+            <div class="print-row-head">
+              <span class="print-row-title">We Do It For You</span>
+              <span class="print-row-badge" style="color:#C9960C;background:rgba(201,150,12,0.12);border-color:rgba(201,150,12,0.35);">CONCIERGE</span>
+            </div>
+            <p class="print-row-desc">Want it made really special? Just send us your pictures and we will do it all for you — beautifully printed on whatever you need. Canvas, cushions, mugs, jigsaws, throws, silk keepsakes, and more.</p>
+            <a href="#shop" class="print-row-cta">Browse our Gift Shop →</a>
+          </div>
+        </div>
+
+        <div class="print-row">
+          <div class="print-row-icon" style="background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.3);">⌂</div>
+          <div class="print-row-body">
+            <div class="print-row-head">
+              <span class="print-row-title">Do It Yourself</span>
+              <span class="print-row-badge" style="color:#4A90D9;background:rgba(74,144,217,0.12);border-color:rgba(74,144,217,0.35);">YOUR PRINTER</span>
+            </div>
+            <p class="print-row-desc">Already have a printer at home? Download your fully restored, studio-quality HD photo and print it yourself — exactly how you want it, exactly when you want it.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANNIVERSARY & JUBILEE BANNER -->
+<div style="background:var(--bg2);padding:24px 0 0;">
+  <div class="jubilee-banner" style="max-width:860px;margin:0 auto;">
+    <div class="gold-bar-w"></div>
+    <div class="jubilee-inner">
+      <div class="jubilee-icon">💎</div>
+      <div>
+        <div class="jubilee-eyebrow">Anniversary &amp; Jubilee Collection</div>
+        <div class="jubilee-title">Celebrate a Lifetime of Love</div>
+        <div style="font-size:11px;color:rgba(250,247,242,0.45);margin-top:3px;">Silver · Ruby · Golden · Diamond · Platinum jubilee gifts, crafted around your restored family photographs.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COLLECTIONS DIRECTORY -->
+<section class="collections-section">
+  <div class="section-header" style="margin-bottom:0;">
+    <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;"><span style="color:var(--gold)">✦</span> ONJJEM Collections</div>
+    <h2 class="section-title" style="margin-top:10px;">Explore Our Gift Range</h2>
+  </div>
+  <div class="collections-card">
+    <div class="gold-bar"></div>
+    <a class="coll-row" href="#shop">
+      <div class="coll-icon">💎</div>
+      <div class="coll-text">
+        <div class="coll-label">Jubilees &amp; Anniversaries</div>
+        <div class="coll-sub">Silver · Ruby · Golden · Diamond · Platinum</div>
+      </div>
+      <span class="coll-arrow">›</span>
+    </a>
+    <a class="coll-row" href="#shop">
+      <div class="coll-icon">🖼</div>
+      <div class="coll-text">
+        <div class="coll-label">Canvas &amp; Fine Art Prints</div>
+        <div class="coll-sub">Gallery-stretched · A4 to A0 · Ready to hang</div>
+      </div>
+      <span class="coll-arrow">›</span>
+    </a>
+    <a class="coll-row" href="#shop">
+      <div class="coll-icon">🏠</div>
+      <div class="coll-text">
+        <div class="coll-label">Lounge &amp; Home Gifts</div>
+        <div class="coll-sub">Cushions · Luxury throws · Silk keepsakes</div>
+      </div>
+      <span class="coll-arrow">›</span>
+    </a>
+    <a class="coll-row" href="#shop">
+      <div class="coll-icon">🧩</div>
+      <div class="coll-text">
+        <div class="coll-label">Heritage Jigsaws</div>
+        <div class="coll-sub">Heart · Collage · Cardboard · Premium wood</div>
+      </div>
+      <span class="coll-arrow">›</span>
+    </a>
+  </div>
+  <a href="#shop" class="coll-cta-btn" style="margin-top:20px;">🎁 &nbsp;Browse the Full Gift Shop</a>
+</section>
+
 <!-- SHOP -->
 <section class="shop-section" id="shop">
   <div class="shop-inner">
-    <p class="section-eyebrow" style="text-align:center;">✦ Luxury Gifts</p>
-    <h2 class="section-title" style="margin-bottom:14px;">Turn Memories Into Masterpieces</h2>
-    <p class="section-sub">Restore your photo, then order it beautifully printed. Every product is produced by our UK print studio partner and delivered to your door.</p>
+    <div class="section-header" style="margin-bottom:52px;">
+      <div class="eyebrow"><span>✦</span> Luxury Gifts</div>
+      <h2 class="section-title" style="margin-top:12px;">Turn Memories Into Masterpieces</h2>
+      <p class="section-sub" style="margin-top:12px;">Restore your photo, then order it beautifully printed. Every product is made by our UK print studio and delivered to your door.</p>
+    </div>
 
     <!-- Canvas Prints -->
     <div class="shop-category">
-      <div class="shop-cat-title">🖼 Canvas Prints</div>
+      <div class="shop-cat-header">
+        <div class="shop-cat-icon">🖼</div>
+        <div class="shop-cat-title">Canvas Prints</div>
+      </div>
       <p class="shop-cat-sub">Hand-stretched on solid wood frames, printed on premium artist canvas. Ready to hang — no frame required.</p>
       <div class="products-grid">
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#1A1610,#2A2218)">
-            <span class="prod-emoji">🖼</span>
+            <div class="prod-emoji-ring">🖼</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Classic Canvas<br>30×20cm</div>
+            <div class="product-cat">Canvas Print</div>
+            <div class="product-name">Classic Canvas 30×20cm</div>
             <div class="product-desc">Perfect for a mantelpiece or shelf. Premium stretched canvas on solid pine frame.</div>
             <div class="product-footer">
               <div class="product-price">£29.99</div>
@@ -578,10 +957,11 @@
         </div>
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#1A1610,#2A2218)">
-            <span class="prod-emoji">🖼</span>
+            <div class="prod-emoji-ring">🖼</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Large Canvas<br>60×40cm</div>
+            <div class="product-cat">Canvas Print</div>
+            <div class="product-name">Large Canvas 60×40cm</div>
             <div class="product-desc">A statement piece. Gallery-grade canvas for a living room or hallway feature wall.</div>
             <div class="product-footer">
               <div class="product-price">£59.99</div>
@@ -591,10 +971,11 @@
         </div>
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#1A1610,#2A2218)">
-            <span class="prod-emoji">🖼</span>
+            <div class="prod-emoji-ring">🖼</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Extra Large Canvas<br>90×60cm</div>
+            <div class="product-cat">Canvas Print</div>
+            <div class="product-name">Extra Large Canvas 90×60cm</div>
             <div class="product-desc">Museum-scale. Breathtaking as a centrepiece. Arrives ready to hang.</div>
             <div class="product-footer">
               <div class="product-price">£89.99</div>
@@ -607,15 +988,19 @@
 
     <!-- Heritage Jigsaws -->
     <div class="shop-category">
-      <div class="shop-cat-title">🧩 Heritage Jigsaws</div>
+      <div class="shop-cat-header">
+        <div class="shop-cat-icon">🧩</div>
+        <div class="shop-cat-title">Heritage Jigsaws</div>
+      </div>
       <p class="shop-cat-sub">Your restored family photograph as a premium jigsaw puzzle — a cherished gift that brings the whole family together.</p>
       <div class="products-grid">
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#1A1205,#2A2010)">
-            <span class="prod-emoji">🧩</span>
+            <div class="prod-emoji-ring">🧩</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Heritage Jigsaw<br>252 Pieces</div>
+            <div class="product-cat">Heritage Jigsaw</div>
+            <div class="product-name">Heritage Jigsaw 252 Pieces</div>
             <div class="product-desc">Perfect for young families. Full-colour print on sturdy puzzle board.</div>
             <div class="product-footer">
               <div class="product-price">£24.99</div>
@@ -625,10 +1010,11 @@
         </div>
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#1A1205,#2A2010)">
-            <span class="prod-emoji">🧩</span>
+            <div class="prod-emoji-ring">🧩</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Heritage Jigsaw<br>500 Pieces</div>
+            <div class="product-cat">Heritage Jigsaw</div>
+            <div class="product-name">Heritage Jigsaw 500 Pieces</div>
             <div class="product-desc">A classic challenge. Premium cut, beautiful box — a keepsake in itself.</div>
             <div class="product-footer">
               <div class="product-price">£34.99</div>
@@ -638,10 +1024,11 @@
         </div>
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#1A1205,#2A2010)">
-            <span class="prod-emoji">🧩</span>
+            <div class="prod-emoji-ring">🧩</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Heritage Jigsaw<br>1000 Pieces</div>
+            <div class="product-cat">Heritage Jigsaw</div>
+            <div class="product-name">Heritage Jigsaw 1000 Pieces</div>
             <div class="product-desc">The heirloom jigsaw. A truly thoughtful gift for any occasion.</div>
             <div class="product-footer">
               <div class="product-price">£49.99</div>
@@ -654,15 +1041,19 @@
 
     <!-- Home & Textiles -->
     <div class="shop-category">
-      <div class="shop-cat-title">🛋 Home &amp; Textiles</div>
+      <div class="shop-cat-header">
+        <div class="shop-cat-icon">🛋</div>
+        <div class="shop-cat-title">Lounge &amp; Home Gifts</div>
+      </div>
       <p class="shop-cat-sub">Wrap your favourite restored photo around everyday luxury. Machine washable, made to last.</p>
       <div class="products-grid">
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#0A1020,#15202A)">
-            <span class="prod-emoji">🛋</span>
+            <div class="prod-emoji-ring">🛋</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Personalised Cushion<br>45×45cm</div>
+            <div class="product-cat">Home Gift</div>
+            <div class="product-name">Personalised Cushion 45×45cm</div>
             <div class="product-desc">Plump, high-quality cushion with concealed zip. Machine washable cover.</div>
             <div class="product-footer">
               <div class="product-price">£34.99</div>
@@ -672,10 +1063,11 @@
         </div>
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#0A1020,#15202A)">
-            <span class="prod-emoji">🧣</span>
+            <div class="prod-emoji-ring">🧣</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Personalised Blanket<br>120×150cm</div>
+            <div class="product-cat">Home Gift</div>
+            <div class="product-name">Personalised Blanket 120×150cm</div>
             <div class="product-desc">Super-soft fleece blanket, full-colour print. The perfect gift for a loved one.</div>
             <div class="product-footer">
               <div class="product-price">£49.99</div>
@@ -686,18 +1078,22 @@
       </div>
     </div>
 
-    <!-- Gifts -->
+    <!-- Personal Gifts -->
     <div class="shop-category">
-      <div class="shop-cat-title">🎁 Personal Gifts</div>
+      <div class="shop-cat-header">
+        <div class="shop-cat-icon">🎁</div>
+        <div class="shop-cat-title">Personal Gifts</div>
+      </div>
       <p class="shop-cat-sub">Small items, big memories. Thoughtful gifts for birthdays, anniversaries, and special occasions.</p>
       <div class="products-grid">
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#150A05,#250F0A)">
-            <span class="prod-emoji">☕</span>
+            <div class="prod-emoji-ring">☕</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Personalised Mug<br>11oz Ceramic</div>
-            <div class="product-desc">Dishwasher-safe ceramic mug with your restored photo. Full-colour lasting print.</div>
+            <div class="product-cat">Personal Gift</div>
+            <div class="product-name">Personalised Mug 11oz Ceramic</div>
+            <div class="product-desc">Dishwasher-safe ceramic mug. Full-colour lasting print.</div>
             <div class="product-footer">
               <div class="product-price">£14.99</div>
               <button class="btn-order" onclick="openProdModal('Personalised Mug','£14.99','mug-11oz')">Order</button>
@@ -706,10 +1102,11 @@
         </div>
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#150A05,#250F0A)">
-            <span class="prod-emoji">🔑</span>
+            <div class="prod-emoji-ring">🔑</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Personalised Keyring<br>Premium Metal</div>
+            <div class="product-cat">Personal Gift</div>
+            <div class="product-name">Personalised Keyring Premium Metal</div>
             <div class="product-desc">A beautiful everyday reminder of a special memory. Durable metal with photo charm.</div>
             <div class="product-footer">
               <div class="product-price">£9.99</div>
@@ -719,10 +1116,11 @@
         </div>
         <div class="product-card">
           <div class="product-image" style="background:linear-gradient(135deg,#150A05,#250F0A)">
-            <span class="prod-emoji">💎</span>
+            <div class="prod-emoji-ring">💎</div>
           </div>
           <div class="product-body">
-            <div class="product-name">Acrylic Memory Block<br>10×10cm</div>
+            <div class="product-cat">Personal Gift</div>
+            <div class="product-name">Acrylic Memory Block 10×10cm</div>
             <div class="product-desc">Striking, modern, freestanding. Your photo embedded in premium clear acrylic.</div>
             <div class="product-footer">
               <div class="product-price">£39.99</div>
@@ -733,18 +1131,22 @@
       </div>
     </div>
 
-    <!-- Murals -->
+    <!-- Bespoke Feature Walls -->
     <div class="shop-category">
-      <div class="shop-cat-title">🏠 Bespoke Feature Walls</div>
+      <div class="shop-cat-header">
+        <div class="shop-cat-icon">🏠</div>
+        <div class="shop-cat-title">Bespoke Feature Walls</div>
+      </div>
       <p class="shop-cat-sub">Transform a wall in your home into a stunning tribute to your family's history. Custom-sized murals designed and printed to your specification.</p>
-      <div class="products-grid">
-        <div class="product-card" style="grid-column: span 2;">
-          <div class="product-image" style="aspect-ratio:2/1; background:linear-gradient(135deg,#1A0A08,#2A1510); font-size:64px; justify-content:flex-start; gap:12px; padding: 0 32px;">
-            <span>🏠</span>
+      <div class="products-grid" style="grid-template-columns:1fr;">
+        <div class="product-card" style="display:flex;flex-direction:row;align-items:center;">
+          <div class="product-image" style="width:140px;flex-shrink:0;aspect-ratio:1;background:linear-gradient(135deg,#1A0A08,#2A1510);border-radius:0;">
+            <div class="prod-emoji-ring" style="width:56px;height:56px;font-size:24px;">🏠</div>
           </div>
-          <div class="product-body">
+          <div class="product-body" style="flex:1;">
+            <div class="product-cat">Bespoke Service</div>
             <div class="product-name">Bespoke Feature Wall Mural</div>
-            <div class="product-desc">Full-wall restoration murals for living rooms, hallways, bedrooms, and commercial spaces. Custom sizing, premium material options, and professional installation guidance included. Contact us with your wall dimensions and chosen photo for a bespoke quote.</div>
+            <div class="product-desc">Full-wall restoration murals for living rooms, hallways, bedrooms, and commercial spaces. Custom sizing, premium materials, professional installation guidance included.</div>
             <div class="product-footer">
               <div class="product-price">From £199 <small>custom quote</small></div>
               <a href="mailto:orders@onjjem.co.uk?subject=Mural%20Enquiry" class="btn-order" style="text-decoration:none;">Enquire</a>
@@ -754,7 +1156,7 @@
       </div>
     </div>
 
-    <p class="shop-enquiry-note">All physical products are printed and dispatched by our UK studio partner within 3–5 working days.<br>
+    <p class="shop-note">All physical products are printed and dispatched by our UK studio partner within 3–5 working days.<br>
     After payment you'll receive an email — simply reply with your restored photo to begin your order.<br>
     Questions? Email <a href="mailto:orders@onjjem.co.uk">orders@onjjem.co.uk</a></p>
   </div>
@@ -763,9 +1165,11 @@
 <!-- HOW IT WORKS -->
 <section class="how-section" id="how">
   <div class="how-inner">
-    <p class="section-eyebrow">✦ Simple &amp; Fast</p>
-    <h2 class="section-title">How It Works</h2>
-    <p class="section-sub">From upload to a beautiful restored image in under a minute.</p>
+    <div class="section-header">
+      <div class="eyebrow"><span>✦</span> Simple &amp; Fast</div>
+      <h2 class="section-title" style="margin-top:12px;">How It Works</h2>
+      <p class="section-sub" style="margin-top:12px;">From upload to a beautiful restored image in under a minute.</p>
+    </div>
     <div class="steps">
       <div class="step">
         <div class="step-icon">📷</div>
@@ -791,57 +1195,60 @@
 
 <!-- PRICING -->
 <section class="pricing-section" id="pricing">
-  <p class="section-eyebrow">✦ Simple Pricing</p>
-  <h2 class="section-title">Pay Only for What You Need</h2>
-  <p class="section-sub">Start free, pay only when you need more. No account required.</p>
-  <div class="pricing-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
-    <div class="price-card">
-      <div class="price-icon" style="background:rgba(232,160,32,0.1)">🎁</div>
-      <div class="price-label">Free</div>
-      <div class="price-desc">Upload any photo and get a free preview restoration — see the result before you pay anything.</div>
-      <div class="price-amount">£0</div>
-      <div class="price-period">always free</div>
-      <button class="price-cta" style="background:rgba(232,160,32,0.15);color:#E8A020;" onclick="document.getElementById('tool').scrollIntoView({behavior:'smooth'})">Try Free Now</button>
+  <div class="pricing-inner">
+    <div class="section-header">
+      <div class="eyebrow"><span>✦</span> Simple Pricing</div>
+      <h2 class="section-title" style="margin-top:12px;">Pay Only for What You Need</h2>
+      <p class="section-sub" style="margin-top:12px;">Start free, pay only when you need more. No account required.</p>
     </div>
-    <div class="price-card">
-      <div class="price-icon" style="background:rgba(201,150,12,0.1)">📷</div>
-      <div class="price-label">One Photo</div>
-      <div class="price-desc">Pay once, get one full HD restoration. No subscription, no account needed.</div>
-      <div class="price-amount">£1.49</div>
-      <div class="price-period">per photo</div>
-      <button class="price-cta" style="background:rgba(201,150,12,0.15);color:#C9960C;border:1px solid rgba(201,150,12,0.4);" onclick="startSinglePhoto()">Buy One Photo</button>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-icon" style="background:rgba(232,160,32,0.1)">🎁</div>
+        <div class="price-label">Free</div>
+        <div class="price-desc">Upload any photo and get a free preview restoration — see the result before you pay anything.</div>
+        <div class="price-amount">£0</div>
+        <div class="price-period">always free</div>
+        <button class="price-cta" style="background:rgba(232,160,32,0.14);color:#E8A020;border:1px solid rgba(232,160,32,0.3);" onclick="document.getElementById('tool').scrollIntoView({behavior:'smooth'})">Try Free Now</button>
+      </div>
+      <div class="price-card">
+        <div class="price-icon" style="background:rgba(201,150,12,0.1)">📷</div>
+        <div class="price-label">One Photo</div>
+        <div class="price-desc">Pay once, get one full HD restoration. No subscription, no account needed.</div>
+        <div class="price-amount">£1.49</div>
+        <div class="price-period">per photo</div>
+        <button class="price-cta" style="background:rgba(201,150,12,0.14);color:#C9960C;border:1px solid rgba(201,150,12,0.4);" onclick="startSinglePhoto()">Buy One Photo</button>
+      </div>
+      <div class="price-card">
+        <div class="price-icon" style="background:rgba(74,144,217,0.1)">∞</div>
+        <div class="price-label">Monthly Unlimited</div>
+        <div class="price-desc">Unlimited full-quality restorations every month. Cancel anytime.</div>
+        <div class="price-amount">£11.99</div>
+        <div class="price-period">per month</div>
+        <button class="price-cta" style="background:rgba(74,144,217,0.14);color:#4A90D9;border:1px solid rgba(74,144,217,0.4);" onclick="startSubscribe('monthly')" id="btnMonthly">Subscribe Monthly</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">Best Value</div>
+        <div class="price-icon" style="background:rgba(39,174,96,0.1)">★</div>
+        <div class="price-label">Annual Unlimited</div>
+        <div class="price-desc">Unlimited restorations all year long. The best price — less than £2.09 a month.</div>
+        <div class="price-amount">£24.99</div>
+        <div class="price-period">per year</div>
+        <button class="price-cta" style="background:rgba(39,174,96,0.14);color:#27AE60;border:1px solid rgba(39,174,96,0.4);" onclick="startSubscribe('annual')" id="btnAnnual">Subscribe Annually</button>
+      </div>
     </div>
-    <div class="price-card">
-      <div class="price-icon" style="background:rgba(74,144,217,0.1)">∞</div>
-      <div class="price-label">Monthly Unlimited</div>
-      <div class="price-desc">Unlimited full-quality restorations every month. Cancel anytime.</div>
-      <div class="price-amount">£11.99</div>
-      <div class="price-period">per month</div>
-      <button class="price-cta" style="background:rgba(74,144,217,0.15);color:#4A90D9;border:1px solid rgba(74,144,217,0.4);" onclick="startSubscribe('monthly')" id="btnMonthly">Subscribe Monthly</button>
-    </div>
-    <div class="price-card featured">
-      <div class="price-badge">Best Value</div>
-      <div class="price-icon" style="background:rgba(39,174,96,0.1)">★</div>
-      <div class="price-label">Annual Unlimited</div>
-      <div class="price-desc">Unlimited restorations all year long. The best price — less than £2.09 a month.</div>
-      <div class="price-amount">£24.99</div>
-      <div class="price-period">per year</div>
-      <button class="price-cta" style="background:rgba(39,174,96,0.15);color:#27AE60;border:1px solid rgba(39,174,96,0.4);" onclick="startSubscribe('annual')" id="btnAnnual">Subscribe Annually</button>
-    </div>
+    <p style="text-align:center;font-size:12px;color:rgba(250,247,242,0.28);margin-top:22px;line-height:1.7;">Subscriptions renew automatically. Cancel anytime — email <a href="mailto:hello@onjjem.com" style="color:rgba(201,150,12,0.55);">hello@onjjem.com</a> or manage via your Stripe billing portal.</p>
   </div>
-  <p style="text-align:center;font-size:13px;color:rgba(250,247,242,0.35);margin-top:24px;">Subscriptions renew automatically. Cancel anytime — email <a href="mailto:hello@onjjem.com" style="color:rgba(201,150,12,0.6);">hello@onjjem.com</a> or manage via your Stripe billing portal.</p>
 </section>
-
 
 <!-- FOOTER -->
 <footer>
   <div class="gold-rule"></div>
-  <div class="footer-inner" style="margin-top:40px;">
+  <div class="footer-inner" style="margin-top:36px;">
     <div class="footer-brand">ONJJEM</div>
     <div class="footer-tagline">Cinema-Grade AI Photo Restoration · London</div>
     <div class="footer-links">
       <a href="#tool">Try Free</a>
-      <a href="#restorations">Gallery</a>
+      <a href="#gallery">Gallery</a>
       <a href="#shop">Shop</a>
       <a href="#how">How It Works</a>
       <a href="#pricing">Pricing</a>
@@ -858,6 +1265,7 @@
 <div class="modal-backdrop" id="payModal">
   <div class="modal">
     <button class="modal-close" onclick="closePayModal()">✕</button>
+    <div class="gold-bar" style="margin:-36px -36px 24px;"></div>
     <div class="modal-title">Full HD Restoration</div>
     <p class="modal-sub">One payment, one beautiful full-quality photo. No subscription.</p>
     <div class="modal-price">£1.49 <small>one-time</small></div>
@@ -866,7 +1274,7 @@
     <button class="btn-restore btn-restore-paid" id="btnSubmitPay" style="width:100%;margin-top:4px;" onclick="submitPayment()">
       Pay £1.49 &amp; Get HD Photo
     </button>
-    <p style="font-size:11px;color:rgba(250,247,242,0.25);text-align:center;margin-top:12px;">🔒 Secured by Stripe · Photos never stored</p>
+    <p style="font-size:11px;color:rgba(250,247,242,0.22);text-align:center;margin-top:12px;">🔒 Secured by Stripe · Photos never stored</p>
   </div>
 </div>
 
@@ -874,6 +1282,7 @@
 <div class="prod-modal-backdrop" id="prodModal">
   <div class="prod-modal">
     <button class="modal-close" onclick="closeProdModal()">✕</button>
+    <div class="gold-bar" style="margin:-36px -36px 22px;"></div>
     <div class="prod-modal-name" id="prodModalName"></div>
     <div class="prod-modal-price" id="prodModalPrice"></div>
     <div class="prod-modal-info">
@@ -887,7 +1296,7 @@
       <button class="btn-restore btn-restore-paid" id="btnProceedOrder" onclick="proceedToCheckout()" style="width:100%">Proceed to Payment →</button>
       <button class="btn-reset" onclick="closeProdModal()">Cancel</button>
     </div>
-    <p style="font-size:11px;color:rgba(250,247,242,0.25);text-align:center;margin-top:12px;">🔒 Secured by Stripe &nbsp;·&nbsp; UK print studio &nbsp;·&nbsp; 3–5 day dispatch</p>
+    <p style="font-size:11px;color:rgba(250,247,242,0.22);text-align:center;margin-top:12px;">🔒 Secured by Stripe &nbsp;·&nbsp; UK print studio &nbsp;·&nbsp; 3–5 day dispatch</p>
   </div>
 </div>
 
