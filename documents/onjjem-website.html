@@ -808,8 +808,8 @@
       <div class="price-label">Monthly</div>
       <div class="price-desc">Unlimited full-quality restorations in the iPhone app. Cancel anytime.</div>
       <div class="price-amount">£12.99</div>
-      <div class="price-period">per month · iPhone app</div>
-      <span class="price-cta" style="background:rgba(74,144,217,0.07);color:rgba(74,144,217,0.45);cursor:default;pointer-events:none;">Coming Soon to App Store</span>
+      <div class="price-period">per month</div>
+      <button class="price-cta" style="background:rgba(74,144,217,0.15);color:#4A90D9;border:1px solid rgba(74,144,217,0.4);" onclick="startSubscribe('monthly')" id="btnMonthly">Subscribe Monthly</button>
     </div>
     <div class="price-card featured">
       <div class="price-badge">Best Value — Save 84%</div>
@@ -817,11 +817,11 @@
       <div class="price-label">Annual</div>
       <div class="price-desc">Everything in monthly, all year long. Unlimited restorations at the best price.</div>
       <div class="price-amount">£24.99</div>
-      <div class="price-period">per year · iPhone app</div>
-      <span class="price-cta" style="background:rgba(39,174,96,0.07);color:rgba(39,174,96,0.45);cursor:default;pointer-events:none;">Coming Soon to App Store</span>
+      <div class="price-period">per year</div>
+      <button class="price-cta" style="background:rgba(39,174,96,0.15);color:#27AE60;border:1px solid rgba(39,174,96,0.4);" onclick="startSubscribe('annual')" id="btnAnnual">Subscribe Annually</button>
     </div>
   </div>
-  <p style="text-align:center;font-size:13px;color:rgba(250,247,242,0.35);margin-top:24px;">Monthly and Annual plans are purchased within the ONJJEM iPhone app via Apple In-App Purchase.<br>Subscriptions renew automatically. Cancel anytime in iPhone Settings → Apple ID → Subscriptions.</p>
+  <p style="text-align:center;font-size:13px;color:rgba(250,247,242,0.35);margin-top:24px;">Subscriptions renew automatically. Cancel anytime — email <a href="mailto:hello@onjjem.com" style="color:rgba(201,150,12,0.6);">hello@onjjem.com</a> or manage via your Stripe billing portal.</p>
 </section>
 
 
@@ -1188,9 +1188,39 @@ async function proceedToCheckout() {
   }
 }
 
+// ── Subscription checkout ─────────────────────────────────────────────────────
+async function startSubscribe(plan) {
+  const btnId = plan === 'monthly' ? 'btnMonthly' : 'btnAnnual';
+  const btn = document.getElementById(btnId);
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Loading…';
+  try {
+    const r = await fetch('/api/stripe/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan })
+    });
+    const { url, error } = await r.json();
+    if (error || !url) throw new Error(error || 'Could not start checkout');
+    window.location.href = url;
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = originalText;
+    alert('Sorry, something went wrong. Please email hello@onjjem.com to subscribe.');
+  }
+}
+
 // ── Order success banner (Stripe redirects back to /?order=success) ───────────
 (function() {
   const params = new URLSearchParams(window.location.search);
+  if (params.get('subscribed') === 'success') {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#1A3A24;border-bottom:2px solid #27AE60;padding:18px 24px;text-align:center;font-family:Georgia,serif;';
+    banner.innerHTML = '<span style="color:#5DE391;font-size:1.1rem;font-weight:700">✓ Subscription Active!</span> <span style="color:#E8E2D6;font-size:.95rem;margin-left:12px">Welcome to ONJJEM — your subscription is now live. Download the iPhone app to start restoring photos.</span> <button onclick="this.parentElement.remove()" style="margin-left:16px;background:none;border:1px solid #5DE39144;color:#5DE391;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:.8rem">✕</button>';
+    document.body.prepend(banner);
+    history.replaceState({}, '', '/');
+  }
   if (params.get('order') === 'success') {
     const banner = document.createElement('div');
     banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#1A3A24;border-bottom:2px solid #27AE60;padding:18px 24px;text-align:center;font-family:Georgia,serif;';

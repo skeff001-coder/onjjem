@@ -150,6 +150,62 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
   }
 });
 
+// ── Create Stripe checkout for web subscriptions (monthly / annual) ───────────
+
+router.post("/stripe/subscribe", async (req: Request, res: Response) => {
+  const body = req.body as { plan?: "monthly" | "annual" };
+
+  if (!body.plan || !["monthly", "annual"].includes(body.plan)) {
+    res.status(400).json({ error: "plan must be 'monthly' or 'annual'" });
+    return;
+  }
+
+  const interval = body.plan === "monthly" ? "month" : "year";
+
+  try {
+    const rows = await db.execute(sql`
+      SELECT pr.id AS price_id
+      FROM stripe.prices pr
+      JOIN stripe.products p ON pr.product = p.id
+      WHERE pr.active = true
+        AND p.active = true
+        AND pr.recurring IS NOT NULL
+        AND pr.recurring->>'interval' = ${interval}
+      ORDER BY pr.unit_amount ASC
+      LIMIT 1
+    `);
+
+    const priceId = rows.rows[0]?.price_id as string | undefined;
+
+    if (!priceId) {
+      res.status(404).json({ error: `No active ${body.plan} subscription price found.` });
+      return;
+    }
+
+    const stripe = await getUncachableStripeClient();
+    const origin = `${req.protocol}://${req.get("host")}`;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [{ price: priceId, quantity: 1 }],
+      mode: "subscription",
+      success_url: `${origin}/?subscribed=success`,
+      cancel_url: `${origin}/#pricing`,
+      custom_text: {
+        submit: {
+          message: "Your subscription starts immediately. Cancel anytime from your account.",
+        },
+      },
+    });
+
+    res.json({ url: session.url });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    req.log.error({ msg }, "stripe/subscribe error");
+    res.status(500).json({ error: msg });
+  }
+});
+
 // ── List active products with prices ─────────────────────────────────────────
 
 router.get("/stripe/products", async (_req: Request, res: Response) => {
