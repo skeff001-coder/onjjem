@@ -613,7 +613,7 @@ export default function HomeScreen() {
 
   const handleProcessWithConsent = async (type: "single" | "batch") => {
     try {
-      const consent = await AsyncStorage.getItem("ai_processing_consent_v1");
+      const consent = await AsyncStorage.getItem("ai_processing_consent_v2");
       if (consent === "accepted") {
         if (type === "batch") {
           void processBatch();
@@ -631,7 +631,7 @@ export default function HomeScreen() {
 
   const handleConsentAccept = async () => {
     try {
-      await AsyncStorage.setItem("ai_processing_consent_v1", "accepted");
+      await AsyncStorage.setItem("ai_processing_consent_v2", "accepted");
     } catch {
       // Non-critical
     }

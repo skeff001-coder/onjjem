@@ -46,57 +46,70 @@ export function AIConsentModal({ visible, onAccept, onDecline }: Props) {
             <Ionicons name="shield-checkmark" size={38} color="#C9960C" />
           </View>
 
-          <Text style={s.heading}>Before We Enhance Your Photo</Text>
+          <Text style={s.heading}>Your Privacy &amp; Data Use</Text>
           <Text style={s.sub}>
-            We need your permission to process your photo. Please read the following before continuing.
+            Before we process your photo, please read how your data is handled. Your permission is required to continue.
           </Text>
 
           <View style={s.card}>
+
+            {/* What is sent */}
             <View style={s.cardRow}>
               <Ionicons name="image-outline" size={18} color="#C9960C" style={s.rowIcon} />
               <View style={s.rowText}>
-                <Text style={s.rowTitle}>What is sent</Text>
+                <Text style={s.rowTitle}>What data is sent</Text>
                 <Text style={s.rowBody}>
-                  The photo you selected is sent to our processing server as an encrypted image. No other files, contacts, or data from your device are accessed or transmitted.
+                  Only the photo you selected is transmitted. No other files, contacts, location, or personal information from your device is accessed or sent.
                 </Text>
               </View>
             </View>
 
             <View style={s.divider} />
 
+            {/* Who receives it */}
             <View style={s.cardRow}>
               <Ionicons name="server-outline" size={18} color="#C9960C" style={s.rowIcon} />
               <View style={s.rowText}>
                 <Text style={s.rowTitle}>Who receives it</Text>
                 <Text style={s.rowBody}>
-                  Your photo is sent to ONJJEM's secure AI processing server (photo-fix-ai.replit.app), operated by ONJJEM, based in the United Kingdom. No third-party AI companies receive your photo.
+                  Your photo is sent to and processed entirely on ONJJEM's own server (onjjem.com), operated by ONJJEM, United Kingdom. It is processed using computer vision algorithms running on that server.
                 </Text>
+                <View style={s.highlightBox}>
+                  <Ionicons name="checkmark-circle" size={14} color="#27AE60" style={{ marginTop: 1 }} />
+                  <Text style={s.highlightText}>
+                    <Text style={s.highlightBold}>No third-party AI service is used.</Text>{" "}
+                    Your photo is never sent to OpenAI, Replicate, Google, or any other external company. Processing happens entirely within ONJJEM's own infrastructure.
+                  </Text>
+                </View>
               </View>
             </View>
 
             <View style={s.divider} />
 
+            {/* How it is used */}
             <View style={s.cardRow}>
               <Ionicons name="trash-outline" size={18} color="#C9960C" style={s.rowIcon} />
               <View style={s.rowText}>
-                <Text style={s.rowTitle}>How it is used</Text>
+                <Text style={s.rowTitle}>How it is used &amp; deleted</Text>
                 <Text style={s.rowBody}>
-                  Your photo is used solely to perform the AI enhancement you requested. It is processed and immediately deleted from our server. It is never stored, shared, or used for any other purpose including advertising or AI training.
+                  Your photo is used only to apply the enhancement you selected. It is processed and immediately deleted from the server. It is never stored, shared, sold, or used for advertising or AI training.
                 </Text>
               </View>
             </View>
 
             <View style={s.divider} />
 
+            {/* Protection */}
             <View style={s.cardRow}>
               <Ionicons name="lock-closed-outline" size={18} color="#C9960C" style={s.rowIcon} />
               <View style={s.rowText}>
                 <Text style={s.rowTitle}>How it is protected</Text>
                 <Text style={s.rowBody}>
-                  All data is transmitted over an encrypted HTTPS connection. Our server is hosted on infrastructure that meets industry-standard security requirements.
+                  All data is transmitted over an encrypted HTTPS connection. The server meets industry-standard security requirements.
                 </Text>
               </View>
             </View>
+
           </View>
 
           <TouchableOpacity
@@ -192,7 +205,7 @@ const s = StyleSheet.create({
   },
   rowText: {
     flex: 1,
-    gap: 4,
+    gap: 6,
   },
   rowTitle: {
     fontSize: 13,
@@ -205,6 +218,28 @@ const s = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     color: "rgba(250,247,242,0.65)",
     lineHeight: 19,
+  },
+  highlightBox: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 7,
+    backgroundColor: "rgba(39,174,96,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(39,174,96,0.25)",
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 4,
+  },
+  highlightText: {
+    flex: 1,
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(250,247,242,0.75)",
+    lineHeight: 18,
+  },
+  highlightBold: {
+    fontFamily: "Inter_700Bold",
+    color: "#5DE391",
   },
   divider: {
     height: 1,
