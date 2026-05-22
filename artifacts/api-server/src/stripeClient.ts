@@ -9,11 +9,14 @@ interface StripeCredentials {
 
 async function getCredentials(): Promise<StripeCredentials> {
   // Primary: use env var secrets (works in both dev and production deployment)
-  if (process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PUBLISHABLE_KEY) {
-    return {
-      secretKey: process.env.STRIPE_SECRET_KEY,
-      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
-    };
+  // STRIPE_PK is an alternative name for the publishable key to avoid
+  // conflicts with connector-linked STRIPE_PUBLISHABLE_KEY secrets.
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const publishableKey =
+    process.env.STRIPE_PK ?? process.env.STRIPE_PUBLISHABLE_KEY;
+
+  if (secretKey && publishableKey && publishableKey.startsWith("pk_")) {
+    return { secretKey, publishableKey };
   }
 
   // Fallback: Replit Connectors proxy (dev container only)
