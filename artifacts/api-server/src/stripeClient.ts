@@ -8,6 +8,15 @@ interface StripeCredentials {
 }
 
 async function getCredentials(): Promise<StripeCredentials> {
+  // Primary: use env var secrets (works in both dev and production deployment)
+  if (process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PUBLISHABLE_KEY) {
+    return {
+      secretKey: process.env.STRIPE_SECRET_KEY,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+    };
+  }
+
+  // Fallback: Replit Connectors proxy (dev container only)
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
     ? "repl " + process.env.REPL_IDENTITY
@@ -17,8 +26,7 @@ async function getCredentials(): Promise<StripeCredentials> {
 
   if (!hostname || !xReplitToken) {
     throw new Error(
-      "Missing Replit environment variables. " +
-        "Ensure the Stripe integration is connected via the Integrations tab.",
+      "Stripe keys not configured. Set STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY in Secrets.",
     );
   }
 
