@@ -38,16 +38,18 @@ Bags of Love trade cost. The admin screen shows the per-order margin
 | Large Format Print (A1)     | £39.99   | £8.00  | £31.99   |
 | Photo Keyring (Set of 3)    | £38.97   | £9.00  | £29.97   |
 
-### Feature walls (already confirmed)
+### Feature walls (updated May 2026)
 
-`app/feature-walls.tsx` uses a fixed 2.0× markup on Bags of Love trade cost
-per square metre:
+`app/feature-walls.tsx` uses fixed retail prices per square metre (AI restoration included):
 
-| Paper          | Trade £/m² | Retail £/m² | Margin |
-| -------------- | ---------- | ----------- | ------ |
-| Standard       | £20        | £40         | 2.0×   |
-| Premium        | £35        | £70         | 2.0×   |
-| Self-Adhesive  | £45        | £90         | 2.0×   |
+| Paper          | Trade £/m² | Retail £/m² | Margin  |
+| -------------- | ---------- | ----------- | ------- |
+| Standard       | £20        | £85         | £65/m²  |
+| Premium        | £35        | £99         | £64/m²  |
+| Self-Adhesive  | £45        | £119        | £74/m²  |
+
+Previous prices (£40/£70/£90) were based on a mechanical 2× trade markup
+and dramatically underpriced a bespoke London-made mural with AI restoration included.
 
 ### Gift shop catalogue
 

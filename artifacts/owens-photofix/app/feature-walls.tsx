@@ -100,7 +100,6 @@ const ROOM_STYLES = [
 ];
 
 const PANEL_CM = 62.5;
-const MARKUP = 2.0;
 const MAX_HEIGHT_CM = 1000;
 
 const PAPER_TYPES = [
@@ -108,8 +107,7 @@ const PAPER_TYPES = [
     id: "standard",
     name: "Standard",
     spec: "Paste-the-wall · matte textured finish",
-    baseCost: 20,
-    retailPerSqm: 40,
+    retailPerSqm: 85,
     badge: "MOST POPULAR" as const,
     badgeColor: "#34D399",
     desc: "Matte, textured finish. Apply paste directly to the wall, then hang — traditional method, permanent result. Long-lasting, non-fade print. Greenguard Gold-certified eco-friendly, solvent-free inks.",
@@ -118,8 +116,7 @@ const PAPER_TYPES = [
     id: "premium",
     name: "Premium",
     spec: "Water-activated · lightly textured · 10-yr guarantee",
-    baseCost: 35,
-    retailPerSqm: 70,
+    retailPerSqm: 99,
     badge: "HERITAGE CHOICE" as const,
     badgeColor: GOLD,
     desc: "Water-activated adhesive — simply spray the wall, then slide into place. Matte, lightly textured finish. Scratch and abrasion resistant. 10-year non-fade guarantee. Greenguard Gold-certified eco-friendly inks.",
@@ -128,8 +125,7 @@ const PAPER_TYPES = [
     id: "selfadhesive",
     name: "Self-Adhesive",
     spec: "Peel-and-stick · repositionable · 10-yr guarantee",
-    baseCost: 45,
-    retailPerSqm: 90,
+    retailPerSqm: 119,
     badge: "PREMIUM" as const,
     badgeColor: "#93C5FD",
     desc: "Peel-and-stick — no paste or water needed. Fully repositionable: can be removed and reapplied countless times. Perfect for renters and temporary displays. 10-year non-fade guarantee. Greenguard Gold-certified inks.",
@@ -138,8 +134,8 @@ const PAPER_TYPES = [
 
 type PaperTypeId = typeof PAPER_TYPES[number]["id"];
 
-function calcPrice(w: number, h: number, baseCost: number) {
-  return Math.round(((w * h) / 10000) * baseCost * MARKUP * 100) / 100;
+function calcPrice(w: number, h: number, retailPerSqm: number) {
+  return Math.round(((w * h) / 10000) * retailPerSqm * 100) / 100;
 }
 
 export default function FeatureWallsScreen() {
@@ -156,7 +152,7 @@ export default function FeatureWallsScreen() {
   const wNum = Math.max(1, parseFloat(calcW) || 0);
   const hNum = Math.max(1, parseFloat(calcH) || 0);
   const panelCount = wNum > 0 ? Math.ceil(wNum / PANEL_CM) : 0;
-  const price = calcPrice(wNum, hNum, selectedPaper.baseCost);
+  const price = calcPrice(wNum, hNum, selectedPaper.retailPerSqm);
   const heightWarning = hNum > MAX_HEIGHT_CM;
 
   return (
@@ -359,7 +355,7 @@ export default function FeatureWallsScreen() {
               </View>
 
               <Text style={s.calcNote}>
-                £{selectedPaper.retailPerSqm}/m² · {selectedPaper.name} · 8 cm bleed (4 cm each side) added automatically · panel width 62.5 cm
+                £{selectedPaper.retailPerSqm}/m² · {selectedPaper.name} · AI restoration included · 8 cm bleed (4 cm each side) added automatically · panel width 62.5 cm
               </Text>
             </View>
 
