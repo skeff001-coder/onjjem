@@ -1986,7 +1986,7 @@ export default function HomeScreen() {
         {/* Collections Directory */}
         <View style={s.collectionsDir}>
           <View style={s.collectionsDirHeader}>
-            <Text style={s.collectionsDirEyebrow}>ONJJEM COLLECTIONS</Text>
+            <Text style={s.collectionsDirEyebrow}>GIFT SHOP</Text>
             <Text style={s.collectionsDirTitle}>Explore Our Gift Range</Text>
           </View>
           <View style={s.collectionsDirCard}>
