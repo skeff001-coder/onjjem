@@ -570,7 +570,7 @@ const CATEGORIES: Category[] = [
         title: "Standard Photo Print",
         size: "7×5 inch · premium gloss photo paper",
         desc: "Printed on premium gloss photo paper — vibrant, true-to-life colour. A timeless print of your restored memory, ready to frame or display.",
-        price: "£24.99",
+        price: "£14.99",
         emoji: "📸",
         iconBg: "#EEF4FF",
         wide: true,
@@ -594,7 +594,7 @@ const CATEGORIES: Category[] = [
         title: "A3 Photo Poster",
         size: "A3 · 29.7×42 cm · 160gsm satin paper · white border",
         desc: "Printed on 160gsm semi-gloss satin paper with a smart white border — crisp, gallery-quality print ready to frame and hang in minutes.",
-        price: "£29.99",
+        price: "£34.99",
         emoji: "🖼️",
         iconBg: "#E5EEFF",
         wide: true,
@@ -608,7 +608,7 @@ const CATEGORIES: Category[] = [
         title: "A2 Boutique Poster",
         size: "A2 · 42×59.4 cm · 189gsm smooth matte fine art paper",
         desc: "Printed on 189gsm smooth matte fine art paper — rich, true-to-life colour with no glare. A refined gallery print that commands any wall, perfect for framing.",
-        price: "£34.99",
+        price: "£49.99",
         emoji: "🎨",
         iconBg: "#E0EBFF",
         wide: true,
@@ -621,7 +621,7 @@ const CATEGORIES: Category[] = [
         title: "A1 Statement Poster",
         size: "A1 · 59.4×84.1 cm · 189gsm smooth matte fine art paper",
         desc: "Printed on 189gsm smooth matte fine art paper — a high-impact gallery print that fills the room. Your restored memory at its most powerful.",
-        price: "£54.99",
+        price: "£69.99",
         emoji: "🖼️",
         iconBg: "#DCE8FF",
         wide: true,
@@ -633,7 +633,7 @@ const CATEGORIES: Category[] = [
         title: "A0 Giant Poster",
         size: "A0 · 84.1×118.9 cm · 189gsm smooth matte fine art paper",
         desc: "Printed on 189gsm smooth matte fine art paper — our largest print, truly commanding at A0 scale. A statement centrepiece for any room.",
-        price: "£89.99",
+        price: "£99.99",
         emoji: "🏛️",
         iconBg: "#D8E5FF",
         wide: true,
@@ -1488,7 +1488,7 @@ const CATEGORIES: Category[] = [
         title: "Platinum Jubilee Feature Wall Mural",
         size: "70th Anniversary · Made to measure · incl. UK delivery",
         desc: "Fill an entire wall with your restored wedding photo. Printed in 62.5 cm wide panels — simply butt-join them flush for a seamless result. Large walls arrive as a numbered panel set with a hanging guide.",
-        price: "from £40 / m²",
+        price: "from £59 / m²",
         emoji: "🪩",
         iconBg: "#F0F0F0",
         wide: true,
@@ -3204,7 +3204,7 @@ function ProductCard({ product, onPress, compact }: { product: Product; compact?
               {product.quoteType === "wall" && quoteWidth.trim() && quoteHeight.trim() && (() => {
                 const w = parseFloat(quoteWidth) || 0;
                 const h = parseFloat(quoteHeight) || 0;
-                const livePrice = Math.round(((w * h) / 10000) * 28 * 100) / 100;
+                const livePrice = Math.round(((w * h) / 10000) * 59 * 100) / 100;
                 const livePanels = w > 0 ? Math.ceil(w / 62.5) : 0;
                 const overHeight = h > 1000;
                 return (
@@ -3231,7 +3231,7 @@ function ProductCard({ product, onPress, compact }: { product: Product; compact?
                         <Text style={s.quoteLiveWarningText}>Heights over 10 m — contact us for a bespoke quote.</Text>
                       </View>
                     )}
-                    <Text style={s.quoteLiveNote}>£28/m² · 8 cm bleed added automatically · no extra charge</Text>
+                    <Text style={s.quoteLiveNote}>£59/m² · 8 cm bleed added automatically · no extra charge</Text>
                   </View>
                 );
               })()}
