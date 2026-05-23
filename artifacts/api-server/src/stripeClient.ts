@@ -15,7 +15,7 @@ async function getCredentials(): Promise<StripeCredentials> {
   const publishableKey =
     process.env.STRIPE_PK ?? process.env.STRIPE_PUBLISHABLE_KEY;
 
-  if (secretKey && publishableKey && publishableKey.startsWith("pk_")) {
+  if (secretKey && publishableKey && (publishableKey.startsWith("pk_") || publishableKey.startsWith("rk_"))) {
     return { secretKey, publishableKey };
   }
 
