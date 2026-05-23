@@ -33,8 +33,11 @@ async function getCredentials(): Promise<StripeCredentials> {
     );
   }
 
-  const isProduction = process.env.REPLIT_DEPLOYMENT === "1";
-  const targetEnv = isProduction ? "production" : "development";
+  // Always request "development" credentials from the connectors proxy.
+  // The Stripe integration is only connected under the development environment
+  // in Replit Integrations, so requesting "production" returns nothing and
+  // causes a 500 on the live site.
+  const targetEnv = "development";
 
   const url = new URL(`https://${hostname}/api/v2/connection`);
   url.searchParams.set("include_secrets", "true");

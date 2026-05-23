@@ -8,8 +8,6 @@ import {
 import { applyEnhancements } from "./process";
 import type { EnhancementMode } from "./process";
 import { storePhoto } from "../webhookHandlers";
-import { db } from "@workspace/db";
-import { sql } from "drizzle-orm";
 
 const router = Router();
 
@@ -96,21 +94,32 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
   }
 
   try {
-    // Look up active price for this SKU from the synced stripe schema
-    const rows = await db.execute(sql`
-      SELECT pr.id AS price_id
-      FROM stripe.prices pr
-      JOIN stripe.products p ON pr.product = p.id
-      WHERE p.metadata->>'sku' = ${body.sku}
-        AND pr.active = true
-        AND p.active = true
-      LIMIT 1
-    `);
+    const stripe = await getUncachableStripeClient();
 
-    const priceId = rows.rows[0]?.price_id as string | undefined;
+    // Look up the product directly via the Stripe API by SKU metadata.
+    // This avoids any dependency on the stripe-sync database schema.
+    const results = await stripe.products.search({
+      query: `active:"true" AND metadata["sku"]:"${body.sku}"`,
+      limit: 1,
+    });
 
-    if (!priceId) {
+    const product = results.data[0];
+
+    if (!product) {
       res.status(404).json({ error: "Product not found. Please contact orders@onjjem.co.uk." });
+      return;
+    }
+
+    const priceList = await stripe.prices.list({
+      product: product.id,
+      active: true,
+      limit: 1,
+    });
+
+    const price = priceList.data[0];
+
+    if (!price) {
+      res.status(404).json({ error: "No active price for this product. Please contact orders@onjjem.co.uk." });
       return;
     }
 
@@ -121,12 +130,11 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       await storePhoto(photoToken, body.photoBase64);
     }
 
-    const stripe = await getUncachableStripeClient();
     const origin = `${req.protocol}://${req.get("host")}`;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: [{ price: priceId, quantity: 1 }],
+      line_items: [{ price: price.id, quantity: 1 }],
       mode: "payment",
       success_url: `${origin}/?order=success`,
       cancel_url: `${origin}/#shop`,
@@ -162,26 +170,26 @@ router.post("/stripe/subscribe", async (req: Request, res: Response) => {
   const interval = body.plan === "monthly" ? "month" : "year";
 
   try {
-    const rows = await db.execute(sql`
-      SELECT pr.id AS price_id
-      FROM stripe.prices pr
-      JOIN stripe.products p ON pr.product = p.id
-      WHERE pr.active = true
-        AND p.active = true
-        AND pr.recurring IS NOT NULL
-        AND pr.recurring->>'interval' = ${interval}
-      ORDER BY pr.unit_amount ASC
-      LIMIT 1
-    `);
+    const stripe = await getUncachableStripeClient();
 
-    const priceId = rows.rows[0]?.price_id as string | undefined;
+    // Look up the subscription price directly via the Stripe API.
+    // This avoids any dependency on the stripe-sync database schema.
+    const priceList = await stripe.prices.list({
+      active: true,
+      type: "recurring",
+      limit: 100,
+    });
 
-    if (!priceId) {
+    const price = priceList.data.find(
+      (p) => p.recurring?.interval === interval,
+    );
+
+    if (!price) {
       res.status(404).json({ error: `No active ${body.plan} subscription price found.` });
       return;
     }
 
-    const stripe = await getUncachableStripeClient();
+    const priceId = price.id;
     const origin = `${req.protocol}://${req.get("host")}`;
 
     const session = await stripe.checkout.sessions.create({
