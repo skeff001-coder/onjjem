@@ -42,11 +42,11 @@ Bags of Love trade cost. The admin screen shows the per-order margin
 
 `app/feature-walls.tsx` uses fixed retail prices per square metre (AI restoration included):
 
-| Paper          | Trade £/m² | Retail £/m² | Margin  |
-| -------------- | ---------- | ----------- | ------- |
-| Standard       | £20        | £85         | £65/m²  |
-| Premium        | £35        | £99         | £64/m²  |
-| Self-Adhesive  | £45        | £119        | £74/m²  |
+| Paper          | Trade £/m² | Retail £/m² | Margin  | Notes |
+| -------------- | ---------- | ----------- | ------- | ----- |
+| Standard       | £18        | £85         | £67/m²  | Confirmed: BoL portal shows £288 for 4×4m (16m²) = £18/m² trade. BoL suggested RRP is £25/m² — our £85/m² reflects AI restoration premium. |
+| Premium        | ~£35       | £99         | ~£64/m² | Estimate — confirm in BoL portal |
+| Self-Adhesive  | ~£45       | £119        | ~£74/m² | Estimate — confirm in BoL portal |
 
 Previous prices (£40/£70/£90) were based on a mechanical 2× trade markup
 and dramatically underpriced a bespoke London-made mural with AI restoration included.
