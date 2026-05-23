@@ -165,6 +165,9 @@ app.use(express.urlencoded({ extended: true, limit: "30mb" }));
 
 // Marketing website — served at root so onjjem.com points here
 app.get(["/", "/home"], (_req: Request, res: Response) => {
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   res.sendFile(
     path.resolve(__dirname, "../../../documents/onjjem-website.html")
   );
@@ -172,6 +175,9 @@ app.get(["/", "/home"], (_req: Request, res: Response) => {
 
 // Gift shop — separate page
 app.get("/shop", (_req: Request, res: Response) => {
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   res.sendFile(
     path.resolve(__dirname, "../../../documents/onjjem-shop.html")
   );
