@@ -1136,23 +1136,6 @@ export default function HomeScreen() {
 
         {appState === "idle" && (
           <>
-            {/* ONJJEM MasterLab feature strip */}
-            <View style={s.masterLabStrip}>
-              {(
-                [
-                  { icon: "sparkles" as const,          text: "Cinema-Grade AI" },
-                  { icon: "ribbon" as const,             text: "UK Master Print Lab" },
-                  { icon: "shield-checkmark" as const,   text: "10-Yr Guarantee" },
-                  { icon: "people" as const,             text: "Expert Artisans" },
-                ] as const
-              ).map((f) => (
-                <View key={f.text} style={s.masterLabChip}>
-                  <Ionicons name={f.icon} size={11} color="#F5D78E" />
-                  <Text style={s.masterLabChipText}>{f.text}</Text>
-                </View>
-              ))}
-            </View>
-
             {/* Masterpiece Gallery button — dark emerald mystical */}
             <TouchableOpacity
               style={s.galleryBtn}
