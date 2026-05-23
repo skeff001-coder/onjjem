@@ -92,23 +92,46 @@
     .prod-btn:hover { opacity: 0.85; }
     .prod-btn.enquire { background: var(--gbg2); border: 1px solid var(--gb); color: var(--gold); }
 
-    /* JUBILEE CARDS */
-    .jubilee-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-    @media (max-width: 520px) { .jubilee-grid { grid-template-columns: 1fr 1fr; gap: 10px; } }
-    .jubilee-card { background: var(--card); border: 1px solid rgba(201,150,12,0.2); border-radius: 18px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s; display: flex; flex-direction: column; }
-    .jubilee-card:hover { border-color: rgba(201,150,12,0.55); transform: translateY(-3px); }
-    .jubilee-top { padding: 22px 18px 14px; text-align: center; }
-    .jubilee-medal { font-size: 40px; display: block; margin-bottom: 8px; }
-    .jubilee-name { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600; color: var(--cream); margin-bottom: 4px; }
-    .jubilee-years { font-size: 11px; color: var(--gold); font-weight: 600; letter-spacing: 0.5px; }
-    .jubilee-items { padding: 10px 18px 4px; border-top: 1px solid rgba(201,150,12,0.1); flex: 1; }
-    .jubilee-item-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(250,247,242,0.05); }
-    .jubilee-item-row:last-child { border-bottom: none; }
-    .jubilee-item-name { font-size: 12px; color: var(--c55); }
-    .jubilee-footer { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-top: 1px solid rgba(201,150,12,0.1); margin-top: auto; }
-    .jubilee-price { font-size: 18px; font-weight: 800; color: var(--cream); }
-    .jubilee-btn { background: linear-gradient(135deg, #8B6200, var(--gold)); color: var(--bg); font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 40px; border: none; cursor: pointer; transition: opacity 0.2s; }
-    .jubilee-btn:hover { opacity: 0.85; }
+    /* ANNIVERSARY COLLECTION CARDS */
+    .anniv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 20px; margin-top: 32px; }
+    @media (max-width: 680px) { .anniv-grid { grid-template-columns: 1fr; } }
+    .anniv-card { background: var(--card); border: 1px solid rgba(201,150,12,0.22); border-radius: 20px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+    .anniv-card:hover { border-color: rgba(201,150,12,0.6); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.5); }
+    .anniv-header { padding: 26px 22px 18px; text-align: center; border-bottom: 1px solid rgba(201,150,12,0.1); }
+    .anniv-medal { font-size: 56px; display: block; margin-bottom: 10px; }
+    .anniv-milestone { font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold); font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 4px; }
+    .anniv-name { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 600; color: var(--cream); }
+    .anniv-years { font-size: 12px; color: var(--c55); margin-top: 5px; }
+    .anniv-items { padding: 18px 22px 8px; flex: 1; }
+    .anniv-item { display: flex; align-items: flex-start; gap: 9px; padding: 7px 0; border-bottom: 1px solid rgba(250,247,242,0.04); font-size: 12px; color: var(--c55); line-height: 1.4; }
+    .anniv-item:last-child { border-bottom: none; }
+    .anniv-tick { color: var(--gold); font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+    .anniv-footer { padding: 18px 22px; border-top: 1px solid rgba(201,150,12,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .anniv-price-block { display: flex; flex-direction: column; }
+    .anniv-price { font-size: 30px; font-weight: 900; color: var(--cream); line-height: 1; }
+    .anniv-price sup { font-size: 14px; font-weight: 600; vertical-align: super; color: var(--c55); }
+    .anniv-saving { font-size: 10px; color: #86EFAC; font-weight: 700; margin-top: 3px; letter-spacing: 0.3px; }
+    .anniv-btn { background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold)); color: var(--bg); font-size: 12px; font-weight: 700; padding: 12px 22px; border-radius: 40px; border: none; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; }
+    .anniv-btn:hover { opacity: 0.85; }
+    /* PLATINUM HERO */
+    .anniv-card.platinum { grid-column: 1 / -1; border: 1px solid rgba(200,180,255,0.35); background: linear-gradient(135deg, #0D0B13 0%, #181425 50%, #0D0B13 100%); }
+    .anniv-card.platinum:hover { border-color: rgba(200,180,255,0.75); box-shadow: 0 24px 72px rgba(160,130,255,0.18); }
+    .anniv-card.platinum .anniv-header { border-bottom-color: rgba(200,180,255,0.12); display: flex; align-items: center; gap: 28px; text-align: left; flex-wrap: wrap; background: linear-gradient(135deg, rgba(160,130,255,0.07), transparent); padding: 32px 28px 24px; }
+    .anniv-card.platinum .anniv-medal { font-size: 80px; flex-shrink: 0; margin-bottom: 0; filter: drop-shadow(0 0 18px rgba(200,180,255,0.5)); }
+    .anniv-card.platinum .anniv-milestone { color: #C8A8FF; font-size: 11px; }
+    .anniv-card.platinum .anniv-name { font-size: 36px; background: linear-gradient(135deg, #A890E8 0%, #E8DEFF 40%, #C8A8FF 70%, #F2EEFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; }
+    .anniv-card.platinum .anniv-years { font-size: 14px; color: rgba(200,180,255,0.6); }
+    .anniv-card.platinum .anniv-items { display: grid; grid-template-columns: 1fr 1fr; padding: 24px 28px 12px; }
+    @media (max-width: 640px) { .anniv-card.platinum .anniv-items { grid-template-columns: 1fr; } }
+    .anniv-card.platinum .anniv-item { border-bottom-color: rgba(200,180,255,0.06); font-size: 12.5px; }
+    .anniv-card.platinum .anniv-tick { color: #C8A8FF; }
+    .anniv-card.platinum .anniv-footer { padding: 22px 28px; border-top-color: rgba(200,180,255,0.12); }
+    .anniv-card.platinum .anniv-price { font-size: 52px; background: linear-gradient(135deg, #A890E8, #E8DEFF, #C8A8FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .anniv-card.platinum .anniv-saving { color: #C8BBFF; font-size: 11px; }
+    .anniv-card.platinum .anniv-btn { background: linear-gradient(135deg, #4A3878, #8B70D4, #C8A8FF, #8B70D4); font-size: 14px; padding: 16px 32px; box-shadow: 0 8px 28px rgba(160,130,255,0.3); }
+    .platinum-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(160,130,255,0.12); border: 1px solid rgba(200,180,255,0.3); color: #C8A8FF; font-size: 9px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 8px; }
+    .anniv-gift-box { margin: 0 22px 16px; padding: 12px 16px; background: rgba(201,150,12,0.07); border: 1px solid rgba(201,150,12,0.18); border-radius: 10px; font-size: 11px; color: var(--c55); line-height: 1.5; }
+    .anniv-card.platinum .anniv-gift-box { margin: 0 28px 16px; background: rgba(160,130,255,0.07); border-color: rgba(200,180,255,0.18); color: rgba(220,210,255,0.7); }
 
     /* MODAL */
     .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
@@ -196,161 +219,172 @@
       <div class="section-label-icon">💎</div>
       <div class="section-label-text">
         <h2>Jubilees &amp; Anniversaries</h2>
-        <p>Silver · Ruby · Golden · Diamond · Platinum — every precious milestone</p>
+        <p>Silver · Pearl · Ruby · Golden · Diamond · Platinum — every precious milestone</p>
       </div>
     </div>
-    <div class="section-subtitle">Individual anniversary gifts made from your restored photograph</div>
+    <div class="section-subtitle">Complete keepsake collections · Everything made from your restored photograph · Order now, pay securely</div>
 
-    <!-- Individual Anniversary Products -->
-    <div class="prod-grid" style="margin-bottom:40px">
+    <div class="anniv-grid">
 
-      <div class="prod-card" onclick="openProdModal('jubilee-diamond-portrait','Diamond Jubilee Heritage Portrait','💎','Your most treasured wedding photo expertly restored and printed on 300gsm museum-grade archival paper. Double-mounted in cream board, ready to frame — and guaranteed never to fade. A2 size.','89.99')">
-        <div class="prod-img-placeholder">💎</div>
-        <div class="prod-body">
-          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-premium">Premium</span></div>
-          <div class="prod-name">Diamond Jubilee Heritage Portrait</div>
-          <div class="prod-size">60th Anniversary · A2 · 300gsm archival · double-mounted</div>
-          <div class="prod-desc">Museum-grade archival paper, double-mounted in cream board — guaranteed never to fade.</div>
-          <div class="prod-footer"><div class="prod-price"><sup>£</sup>89.99</div><button class="prod-btn">Order →</button></div>
+      <!-- SILVER — 25th -->
+      <div class="anniv-card" onclick="openProdModal('jubilee-collection-silver','Silver Jubilee Collection — 25 Years','🥈','Everything in this collection is made from your restored photograph and delivered in a luxury ONJJEM gift box. Includes: A2 Heritage Portrait Print (300gsm archival, double-mounted) · Square Photo Cushion (velvet-touch, 40cm, choice of fill) · Classic Photo Mug (11oz ceramic, dishwasher safe) · Heritage Fridge Magnets (set of 5 premium acrylic). A curated 25th anniversary collection with a combined individual value of over £230.','189.00')">
+        <div class="anniv-header">
+          <span class="anniv-medal">🥈</span>
+          <div class="anniv-milestone">25th Anniversary</div>
+          <div class="anniv-name">Silver Jubilee</div>
+          <div class="anniv-years">Twenty-Five Years Together</div>
+        </div>
+        <div class="anniv-items">
+          <div class="anniv-item"><span class="anniv-tick">✦</span>A2 Heritage Portrait Print — 300gsm archival, double-mounted in cream board</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Square Photo Cushion — soft velvet-touch front, 40cm, choice of fill</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Classic Photo Mug — 11oz ceramic, dishwasher safe</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Heritage Fridge Magnets — set of 5 premium acrylic</div>
+        </div>
+        <div class="anniv-gift-box">🎁 &nbsp;Presented in a luxury ONJJEM gift box · Free UK delivery</div>
+        <div class="anniv-footer">
+          <div class="anniv-price-block">
+            <div class="anniv-price"><sup>£</sup>189</div>
+            <div class="anniv-saving">Save over £40 vs individual items</div>
+          </div>
+          <button class="anniv-btn">Order Now →</button>
         </div>
       </div>
 
-      <div class="prod-card" onclick="openProdModal('jubilee-golden-canvas','Golden Jubilee Gallery Canvas','🟡','Your restored wedding photo hand-stretched onto a solid pine frame, printed with fade-proof inks on 400gsm artist canvas. Arrives ready to hang with a gold-cord hanging system. 40×30cm.','74.99')">
-        <div class="prod-img-placeholder">🟡</div>
-        <div class="prod-body">
-          <div class="prod-badges"><span class="badge badge-best">Best Seller</span></div>
-          <div class="prod-name">Golden Jubilee Gallery Canvas</div>
-          <div class="prod-size">50th Anniversary · 40×30 cm · gallery-stretched · ready to hang</div>
-          <div class="prod-desc">Hand-stretched on solid pine, 400gsm artist canvas with fade-proof inks and gold-cord hanging system.</div>
-          <div class="prod-footer"><div class="prod-price"><sup>£</sup>74.99</div><button class="prod-btn">Order →</button></div>
+      <!-- PEARL — 30th -->
+      <div class="anniv-card" onclick="openProdModal('jubilee-collection-pearl','Pearl Jubilee Collection — 30 Years','🤍','Everything in this collection is made from your restored photograph and delivered in a luxury ONJJEM gift box. Includes: A1 Gallery Canvas (hand-stretched on solid pine, 400gsm artist canvas, 4cm deep edge, ready to hang) · Pearl Jubilee Luxury Velvet Throw (150×100cm, satin edge binding) · 500 Piece Heritage Jigsaw (satin-gloss finish, luxury printed metal tin) · Fine Bone China Mug (300ml, hand wash). A curated 30th anniversary collection with a combined individual value of over £300.','249.00')">
+        <div class="anniv-header">
+          <span class="anniv-medal">🤍</span>
+          <div class="anniv-milestone">30th Anniversary</div>
+          <div class="anniv-name">Pearl Jubilee</div>
+          <div class="anniv-years">Thirty Years Together</div>
+        </div>
+        <div class="anniv-items">
+          <div class="anniv-item"><span class="anniv-tick">✦</span>A1 Gallery Canvas — solid pine frame, 400gsm artist canvas, deep edge, ready to hang</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Luxury Velvet Throw — 150×100cm, plush velvet front, satin edge binding</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>500 Piece Heritage Jigsaw — satin-gloss finish, luxury printed metal tin</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Fine Bone China Mug — 300ml, lighter than ceramic, hand wash</div>
+        </div>
+        <div class="anniv-gift-box">🎁 &nbsp;Presented in a luxury ONJJEM gift box · Free UK delivery</div>
+        <div class="anniv-footer">
+          <div class="anniv-price-block">
+            <div class="anniv-price"><sup>£</sup>249</div>
+            <div class="anniv-saving">Save over £55 vs individual items</div>
+          </div>
+          <button class="anniv-btn">Order Now →</button>
         </div>
       </div>
 
-      <div class="prod-card" onclick="openProdModal('jubilee-ruby-silk-cushion','Ruby Jubilee Silk Heirloom Cushion','🔴','Your restored photo hand-sewn into 100% natural silk — the most sumptuously soft material we offer. Hand-finished in London, delivered in a luxury gift box with a 5-year print guarantee. 50cm.','54.99')">
-        <div class="prod-img-placeholder">🔴</div>
-        <div class="prod-body">
-          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
-          <div class="prod-name">Ruby Jubilee Silk Heirloom Cushion</div>
-          <div class="prod-size">40th Anniversary · 50 cm · 100% Natural Silk · luxury gift box</div>
-          <div class="prod-desc">Sumptuously soft 100% natural silk, hand-finished in London. 5-year print guarantee.</div>
-          <div class="prod-footer"><div class="prod-price"><sup>£</sup>54.99</div><button class="prod-btn">Order →</button></div>
+      <!-- RUBY — 40th -->
+      <div class="anniv-card" onclick="openProdModal('jubilee-collection-ruby','Ruby Jubilee Collection — 40 Years','♦️','Everything in this collection is made from your restored photograph and delivered in a luxury ONJJEM gift box. Includes: A1 Gallery Canvas (hand-stretched, solid pine, 400gsm artist canvas, ready to hang) · Luxury Silk Portrait Cushion (50cm, 100% natural silk, hand-sewn in London, 5-year print guarantee) · Photo Fleece Blanket Queen (198×145cm, 570gsm anti-pilling polar fleece, handstitched in London) · Heritage Photo Calendar (A3, 12 months, wire binding) · Fine Bone China Mug — Pair. A curated 40th anniversary collection with a combined individual value of over £430.','339.00')">
+        <div class="anniv-header">
+          <span class="anniv-medal">♦️</span>
+          <div class="anniv-milestone">40th Anniversary</div>
+          <div class="anniv-name">Ruby Jubilee</div>
+          <div class="anniv-years">Forty Years Together</div>
+        </div>
+        <div class="anniv-items">
+          <div class="anniv-item"><span class="anniv-tick">✦</span>A1 Gallery Canvas — solid pine, 400gsm artist canvas, deep-edge gallery wrap, ready to hang</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Luxury Silk Portrait Cushion — 50cm, 100% natural silk, hand-sewn in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Queen Fleece Blanket — 198×145cm, 570gsm anti-pilling polar fleece, handstitched in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Heritage Photo Calendar — A3, full 12 months, white wire binding with hanging hook</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Fine Bone China Mug — Pair (2 mugs, 300ml each, hand wash)</div>
+        </div>
+        <div class="anniv-gift-box">🎁 &nbsp;Presented in a luxury ONJJEM gift box · Free UK delivery</div>
+        <div class="anniv-footer">
+          <div class="anniv-price-block">
+            <div class="anniv-price"><sup>£</sup>339</div>
+            <div class="anniv-saving">Save over £90 vs individual items</div>
+          </div>
+          <button class="anniv-btn">Order Now →</button>
         </div>
       </div>
 
-      <div class="prod-card" onclick="openProdModal('jubilee-silver-print','Silver Jubilee Heritage Framed Print','💍','Your restored wedding photo on 300gsm archival paper, double-mounted in cream board to fit a standard A2 frame. A timeless gift that will never fade.','39.99')">
-        <div class="prod-img-placeholder">💍</div>
-        <div class="prod-body">
-          <div class="prod-name">Silver Jubilee Heritage Framed Print</div>
-          <div class="prod-size">25th Anniversary · A2 · double-mounted · ready to frame</div>
-          <div class="prod-desc">300gsm archival paper, double-mounted in cream board. Fits a standard A2 frame. Never fades.</div>
-          <div class="prod-footer"><div class="prod-price"><sup>£</sup>39.99</div><button class="prod-btn">Order →</button></div>
+      <!-- GOLDEN — 50th -->
+      <div class="anniv-card" onclick="openProdModal('jubilee-collection-golden','Golden Jubilee Collection — 50 Years','🥇','Everything in this collection is made from your restored photograph and delivered in a luxury ONJJEM Heritage Gift Box. Includes: A0 Giant Canvas (84×119cm, solid pine, 400gsm artist canvas, 4cm deep edge, ready to hang) · Luxury Sherpa Throw (127×152cm, plush velvet front, Sherpa fleece reverse, handstitched in London) · 2 × Luxury Silk Portrait Cushions (50cm each, 100% natural silk, hand-sewn in London) · 1000 Piece Giant Jigsaw (66×40.6cm, 2mm reinforced cardboard, satin-gloss, luxury tin) · Heritage Photo Book (60-page A4 hardback, silk-coated 200gsm, linen cover, hand-bound in London) · Fine Bone China Mug — Pair. A curated 50th anniversary collection with a combined individual value of over £580.','449.00')">
+        <div class="anniv-header">
+          <span class="anniv-medal">🥇</span>
+          <div class="anniv-milestone">50th Anniversary</div>
+          <div class="anniv-name">Golden Jubilee</div>
+          <div class="anniv-years">Fifty Years Together</div>
+        </div>
+        <div class="anniv-items">
+          <div class="anniv-item"><span class="anniv-tick">✦</span>A0 Giant Canvas — 84×119cm, solid pine, 400gsm artist canvas, deep-edge gallery wrap, ready to hang</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Luxury Sherpa Throw — 127×152cm, plush velvet print front, Sherpa fleece reverse, handstitched in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>2 × Luxury Silk Portrait Cushions — 50cm each, 100% natural silk, hand-sewn in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>1000 Piece Giant Jigsaw — 66×40.6cm, 2mm reinforced cardboard, satin-gloss, luxury tin included</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Heritage Photo Book — 60-page A4 hardback, silk-coated 200gsm, linen cover, hand-bound in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Fine Bone China Mug — Pair (2 mugs, 300ml each)</div>
+        </div>
+        <div class="anniv-gift-box">🎁 &nbsp;Presented in a luxury ONJJEM Heritage Gift Box · Free UK delivery</div>
+        <div class="anniv-footer">
+          <div class="anniv-price-block">
+            <div class="anniv-price"><sup>£</sup>449</div>
+            <div class="anniv-saving">Save over £130 vs individual items</div>
+          </div>
+          <button class="anniv-btn">Order Now →</button>
         </div>
       </div>
 
-      <div class="prod-card" onclick="openProdModal('jubilee-pearl-throw','Pearl Jubilee Luxury Velvet Throw','🤍','Your restored photo printed across a generous plush velvet throw, hand-finished in London with a satin edge binding. The perfect gift to wrap around their favourite chair. 150×100cm.','49.99')">
-        <div class="prod-img-placeholder">🤍</div>
-        <div class="prod-body">
-          <div class="prod-badges"><span class="badge badge-london">London</span></div>
-          <div class="prod-name">Pearl Jubilee Luxury Velvet Throw</div>
-          <div class="prod-size">30th Anniversary · 150×100 cm · plush velvet · satin edge binding</div>
-          <div class="prod-desc">Plush velvet throw with satin edge binding, hand-finished in London. Your photo in full HD colour.</div>
-          <div class="prod-footer"><div class="prod-price"><sup>£</sup>49.99</div><button class="prod-btn">Order →</button></div>
+      <!-- DIAMOND — 60th -->
+      <div class="anniv-card" onclick="openProdModal('jubilee-collection-diamond','Diamond Jubilee Collection — 60 Years','💎','Everything in this collection is made from your restored photograph and delivered in a luxury ONJJEM Heritage Gift Box. Includes: A0 Giant Canvas (84×119cm, gallery-stretch) · Pure Silk Duvet Cover (King, 100% natural silk satin, hand-sewn in London, 10-Year Master Guarantee) · 2 × Luxury Silk Portrait Cushions (50cm, 100% natural silk) · 1000 Piece Giant Jigsaw (luxury tin) · 96 Piece Classic Wooden Jigsaw (2.5mm chunky wood, luxury tin) · Heritage Photo Book (60-page A4 hardback, hand-bound in London) · Fine Bone China Tea Set for 4 (teapot, 4 cups, 4 saucers). A curated 60th anniversary collection with a combined individual value of over £870.','649.00')">
+        <div class="anniv-header">
+          <span class="anniv-medal">💎</span>
+          <div class="anniv-milestone">60th Anniversary</div>
+          <div class="anniv-name">Diamond Jubilee</div>
+          <div class="anniv-years">Sixty Years Together</div>
+        </div>
+        <div class="anniv-items">
+          <div class="anniv-item"><span class="anniv-tick">✦</span>A0 Giant Canvas — 84×119cm, solid pine, 400gsm artist canvas, deep-edge gallery wrap, ready to hang</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Pure Silk Duvet Cover — King, 100% natural silk satin, hand-sewn in London, 10-Year Master Guarantee</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>2 × Luxury Silk Portrait Cushions — 50cm each, 100% natural silk, hand-sewn in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>1000 Piece Giant Jigsaw — 66×40.6cm, reinforced cardboard, satin-gloss, luxury printed tin</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>96 Piece Classic Wooden Jigsaw — 36×25cm, 2.5mm chunky wood, gloss top, luxury tin</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Heritage Photo Book — 60-page A4 hardback, silk-coated 200gsm, linen cover, hand-bound in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Fine Bone China Tea Set for 4 — teapot, 4 cups &amp; 4 saucers</div>
+        </div>
+        <div class="anniv-gift-box">🎁 &nbsp;Presented in a luxury ONJJEM Heritage Gift Box with Certificate of Authenticity · Free UK delivery</div>
+        <div class="anniv-footer">
+          <div class="anniv-price-block">
+            <div class="anniv-price"><sup>£</sup>649</div>
+            <div class="anniv-saving">Save over £220 vs individual items</div>
+          </div>
+          <button class="anniv-btn">Order Now →</button>
         </div>
       </div>
 
-      <div class="prod-card wide" onclick="openProdModal('jubilee-emerald-photobook','Emerald Jubilee Heritage Photo Book','💚','Your restored photos curated into a 60-page A4 hardback, printed on silk-coated 200gsm paper and bound in a rich forest-green linen cover. Printed and bound by hand in London.','59.99')">
-        <div class="prod-img-placeholder">💚</div>
-        <div class="prod-body">
-          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
-          <div class="prod-name">Emerald Jubilee Heritage Photo Book</div>
-          <div class="prod-size">55th Anniversary · A4 hardback · 60 pages · silk-coated 200gsm · forest-green linen cover</div>
-          <div class="prod-desc">Your restored photos curated into a 60-page A4 hardback, printed on silk-coated paper and bound by hand in London in a rich forest-green linen cover.</div>
-          <div class="prod-footer"><div class="prod-price"><sup>£</sup>59.99</div><button class="prod-btn">Order →</button></div>
+      <!-- ═══════ PLATINUM HERO — 70th ═══════ -->
+      <div class="anniv-card platinum" onclick="openProdModal('jubilee-collection-platinum','Platinum Jubilee Collection — 70 Years','✨','The most extraordinary anniversary gift we have ever created. Every single piece is made from your restored photograph and presented in a Platinum ONJJEM Heritage Gift Box with a hand-calligraphed Certificate of Authenticity. The complete collection includes: Massive Panoramic Canvas (150cm wide, premium fine art paper) · Pure Silk Duvet Cover (Super King, 100% natural silk satin, 10-Year Master Guarantee) · 4 × Luxury Silk Portrait Cushions (50cm each, 100% natural silk, hand-sewn in London) · Luxury Sherpa Throw (127×152cm, plush velvet front, Sherpa reverse) · Queen Fleece Blanket (198×145cm, 570gsm, handstitched in London) · 1000 Piece Giant Jigsaw — Heritage Edition (66×40.6cm, luxury tin) · 96 Piece Wooden Jigsaw — Heritage Gift Box Edition (36×25cm, Certificate of Authenticity) · Heritage Photo Book (60-page A3 hardback, silk-coated 200gsm, linen cover, hand-bound in London) · Fine Bone China Tea Set for 4 (teapot, 4 cups, 4 saucers) · Bespoke Photo Ribbon (3 metres, satin-finish, hand-finished in London) · Heritage Gift Tags (pack of 20, double-sided premium card, luxury hanging chains) · Luxury Gift Wrap Full Roll (A0, 140gsm satin-gloss, hand-printed in London). Combined individual value: over £1,450.','999.00')">
+        <div class="anniv-header">
+          <span class="anniv-medal">👑</span>
+          <div>
+            <div class="platinum-badge">✦ &nbsp;The Ultimate Collection</div>
+            <div class="anniv-milestone">70th Anniversary</div>
+            <div class="anniv-name">Platinum Jubilee</div>
+            <div class="anniv-years">Seventy Years Together — the rarest, most precious milestone of all</div>
+          </div>
         </div>
-      </div>
-
-    </div>
-
-    <!-- Jubilee Collections (bespoke, via email) -->
-    <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--gold-lt);margin-bottom:18px;letter-spacing:0.5px;">Bespoke Jubilee Collections</div>
-    <div class="jubilee-grid">
-
-      <div class="jubilee-card" onclick="openJubileeModal('Silver Jubilee','🥈','25 Years Together','silver-jubilee','A canvas print of your restored wedding or family photograph, beautifully produced to mark 25 years together.')">
-        <div class="gold-bar"></div>
-        <div class="jubilee-top">
-          <span class="jubilee-medal">🥈</span>
-          <div class="jubilee-name">Silver Jubilee</div>
-          <div class="jubilee-years">25 Years Together</div>
+        <div class="anniv-items">
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Massive Panoramic Canvas — 150cm wide, premium fine art paper, shipped in archival tube</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Pure Silk Duvet Cover — Super King, 100% natural silk satin, hand-sewn in London, 10-Year Master Guarantee</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>4 × Luxury Silk Portrait Cushions — 50cm each, 100% natural silk, hand-sewn in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Luxury Sherpa Throw — 127×152cm, plush velvet print front, Sherpa fleece reverse, handstitched in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Queen Fleece Blanket — 198×145cm, 570gsm anti-pilling polar fleece, handstitched in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>1000 Piece Giant Jigsaw — Heritage Edition, 66×40.6cm, reinforced cardboard, satin-gloss, luxury tin</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>96 Piece Wooden Jigsaw — Heritage Gift Box Edition, 36×25cm, 2.5mm chunky wood, Certificate of Authenticity</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Heritage Photo Book — 60-page A3 hardback, silk-coated 200gsm, linen cover, hand-bound in London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Fine Bone China Tea Set for 4 — teapot, 4 cups &amp; 4 saucers, all with your restored photograph</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Bespoke Photo Ribbon — 3 metres, satin-finish, hand-finished at ONJJEM London</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Heritage Gift Tags — pack of 20, double-sided premium card, satin-gloss, luxury hanging chains</div>
+          <div class="anniv-item"><span class="anniv-tick">✦</span>Luxury Gift Wrap Full Roll — A0, 140gsm satin-gloss, hand-printed in London</div>
         </div>
-        <div class="jubilee-items">
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Canvas Print</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Cushion</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Mug</span><span style="color:var(--gold);font-size:12px">✓</span></div>
+        <div class="anniv-gift-box">👑 &nbsp;Presented in a Platinum ONJJEM Heritage Gift Box with a hand-calligraphed Certificate of Authenticity · Free priority UK delivery · Combined individual value over £1,450</div>
+        <div class="anniv-footer">
+          <div class="anniv-price-block">
+            <div class="anniv-price"><sup>£</sup>999</div>
+            <div class="anniv-saving">Save over £450 · Everything from your one restored photograph</div>
+          </div>
+          <button class="anniv-btn">Order the Platinum Collection →</button>
         </div>
-        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
-      </div>
-
-      <div class="jubilee-card" onclick="openJubileeModal('Ruby Jubilee','♦️','40 Years Together','ruby-jubilee','A canvas print of your restored photograph and an acrylic memory block — the perfect ruby anniversary keepsake.')">
-        <div class="gold-bar"></div>
-        <div class="jubilee-top">
-          <span class="jubilee-medal">♦️</span>
-          <div class="jubilee-name">Ruby Jubilee</div>
-          <div class="jubilee-years">40 Years Together</div>
-        </div>
-        <div class="jubilee-items">
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Canvas Print</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Cushion</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Acrylic Memory Block</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-        </div>
-        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
-      </div>
-
-      <div class="jubilee-card" onclick="openJubileeModal('Golden Jubilee','🥇','50 Years Together','golden-jubilee','The ultimate 50-year anniversary gift — a large canvas print, cushion, jigsaw, and blanket, all made from your restored photograph.')">
-        <div class="gold-bar"></div>
-        <div class="jubilee-top">
-          <span class="jubilee-medal">🥇</span>
-          <div class="jubilee-name">Golden Jubilee</div>
-          <div class="jubilee-years">50 Years Together</div>
-        </div>
-        <div class="jubilee-items">
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Large Canvas Print</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Cushion</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Heritage Jigsaw</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Blanket</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-        </div>
-        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
-      </div>
-
-      <div class="jubilee-card" onclick="openJubileeModal('Diamond Jubilee','💎','60 Years Together','diamond-jubilee','60 years — the rarest milestone. The complete ONJJEM keepsake set made from your restored family photograph.')">
-        <div class="gold-bar"></div>
-        <div class="jubilee-top">
-          <span class="jubilee-medal">💎</span>
-          <div class="jubilee-name">Diamond Jubilee</div>
-          <div class="jubilee-years">60 Years Together</div>
-        </div>
-        <div class="jubilee-items">
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Extra Large Canvas</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Cushion</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Heritage Jigsaw 1000pc</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Blanket</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-        </div>
-        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
-      </div>
-
-      <div class="jubilee-card" onclick="openJubileeModal('Platinum Jubilee','🤍','70 Years Together','platinum-jubilee','70 years of love — the most precious anniversary of all. The full ONJJEM collection crafted from your restored photographs.')">
-        <div class="gold-bar"></div>
-        <div class="jubilee-top">
-          <span class="jubilee-medal">🤍</span>
-          <div class="jubilee-name">Platinum Jubilee</div>
-          <div class="jubilee-years">70 Years Together</div>
-        </div>
-        <div class="jubilee-items">
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Extra Large Canvas</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Cushion</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Heritage Jigsaw 1000pc</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-          <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Blanket</span><span style="color:var(--gold);font-size:12px">✓</span></div>
-        </div>
-        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
       </div>
 
     </div>
