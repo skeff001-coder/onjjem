@@ -163,6 +163,19 @@
 
     #order-success-banner { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(39,174,96,0.14); border: 1px solid rgba(39,174,96,0.4); color: #5DE391; padding: 16px 28px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 300; text-align: center; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 
+    /* GIFT WRAPPING BANNER */
+    .giftwrap-banner { display: flex; align-items: flex-start; gap: 14px; max-width: 640px; margin: 22px auto 0; padding: 16px 22px; background: linear-gradient(135deg, rgba(201,150,12,0.08), rgba(201,150,12,0.04)); border: 1px solid rgba(201,150,12,0.3); border-radius: 14px; }
+    .giftwrap-banner-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+    .giftwrap-banner-text { font-size: 13px; color: var(--c55); line-height: 1.6; }
+    .giftwrap-banner-text strong { color: var(--gold-lt); }
+
+    /* JIGSAW TIN CALLOUT */
+    .tin-callout { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: linear-gradient(135deg, rgba(46,125,50,0.15), rgba(46,125,50,0.07)); border: 1px solid rgba(46,125,50,0.35); border-radius: 12px; margin-bottom: 24px; font-size: 13px; color: rgba(134,239,172,0.9); line-height: 1.5; }
+    .tin-callout strong { color: #A7F3D0; }
+
+    /* PROD GIFT WRAP NOTE */
+    .prod-giftwrap { font-size: 10px; color: rgba(201,150,12,0.7); margin-top: 8px; display: flex; align-items: center; gap: 5px; border-top: 1px solid rgba(201,150,12,0.1); padding-top: 8px; }
+
     footer { background: var(--bg); border-top: 1px solid rgba(201,150,12,0.12); padding: 48px 40px 32px; }
     .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
     .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 10px; background: linear-gradient(135deg, var(--gold-dk), var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -187,6 +200,10 @@
   <div class="shop-title">Gift Shop</div>
   <div class="shop-sub">Restore. Print. Treasure.</div>
   <p class="shop-desc">Turn your restored family photographs into luxury gifts — canvas prints, heritage jigsaws, personalised cushions, blankets, rugs, wearables, and more. All made to order and delivered to your door.</p>
+  <div class="giftwrap-banner">
+    <div class="giftwrap-banner-icon">🎁</div>
+    <div class="giftwrap-banner-text"><strong>Deluxe Gift Wrapping Available on Every Order</strong> — Luxury tissue paper, satin ribbon and a beautiful gift box. The perfect finishing touch. Just mention it when you reply with your photo — <strong>only £5.99</strong> per order.</div>
+  </div>
 </div>
 
 <!-- CATEGORY TABS -->
@@ -642,7 +659,8 @@
         <p>Every puzzle includes a Luxury Printed Metal Tin · Cinema-Grade AI Restoration included</p>
       </div>
     </div>
-    <div class="section-subtitle">ONJJEM Master Print Lab · Luxury Printed Metal Tin included</div>
+    <div class="section-subtitle">ONJJEM Master Print Lab · Luxury Printed Metal Tin included with every puzzle</div>
+    <div class="tin-callout">🏆 &nbsp;<strong>LIMITED TIME: Luxury Printed Metal Tin included FREE with every puzzle</strong> — Your restored photo printed on a beautiful keepsake storage tin. A £15 value, included at no extra charge with every single jigsaw order.</div>
     <div class="prod-grid">
 
       <div class="prod-card wide" onclick="openProdModal('jigsaw-heart-500','Anniversary Heart Jigsaw','❤️','A beautiful heart-shaped puzzle crafted for your most treasured wedding or anniversary memories. 500 precision-cut pieces, satin-gloss finish — a truly romantic keepsake.','64.99')">
@@ -760,13 +778,13 @@
     <div class="section-subtitle">ONJJEM Master Print Lab · UK Master Printers</div>
     <div class="prod-grid">
 
-      <div class="prod-card wide" onclick="openProdModal('print-7x5-standard','Standard Photo Print','📸','Printed on premium gloss photo paper — vibrant, true-to-life colour. A timeless print of your restored memory, ready to frame or display. 7×5 inch.','24.99')">
+      <div class="prod-card wide" onclick="openProdModal('print-7x5-standard','Standard Photo Print','📸','Printed on premium gloss photo paper — vibrant, true-to-life colour. A timeless print of your restored memory, ready to frame or display. 7×5 inch (12.7×17.8 cm). The perfect everyday print to slip into any frame.','9.99')">
         <div class="prod-img-placeholder">📸</div>
         <div class="prod-body">
           <div class="prod-name">Standard Photo Print</div>
-          <div class="prod-size">7×5 inch · premium gloss photo paper</div>
-          <div class="prod-desc">Printed on premium gloss photo paper — vibrant, true-to-life colour. Ready to frame or display.</div>
-          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+          <div class="prod-size">7×5 inch · 12.7×17.8 cm · premium gloss photo paper · fits any standard 7×5 frame</div>
+          <div class="prod-desc">Printed on premium gloss photo paper — vibrant, true-to-life colour. Ready to pop into any standard 7×5 frame. The ideal everyday print.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>9.99</div><button class="prod-btn">Order →</button></div>
         </div>
       </div>
 
@@ -960,25 +978,25 @@
     <div class="section-subtitle">ONJJEM Master Print Lab · Architectural Tube Shipping</div>
     <div class="prod-grid">
 
-      <div class="prod-card wide" onclick="openJubileeModal('The Masterpiece Wall Mural','🖼️','From £40 per m²','wall-mural','Turn your entire wall into a stunning, life-sized heritage portrait or landscape. Choose Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Greenguard Gold-certified inks, 10-year non-fade guarantee. Enter your wall dimensions for an instant price.')">
+      <div class="prod-card wide" onclick="openJubileeModal('The Masterpiece Wall Mural','🖼️','From £85 per m²','wall-mural','Turn your entire wall into a stunning, life-sized heritage portrait or landscape. Printed on museum-grade Greenguard Gold-certified wallpaper with 10-year non-fade inks. Choose Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Supplied as numbered 62.5cm drops. 8cm bleed added at no charge. Email us your wall width and height for an exact price — we respond within 24 hours.')">
         <div class="prod-img-placeholder">🖼️</div>
         <div class="prod-body">
           <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-premium">Premium</span></div>
           <div class="prod-name">The Masterpiece Wall Mural</div>
-          <div class="prod-size">Any size — no limits · panel width 62.5 cm · Greenguard Gold-certified inks · 10-year non-fade guarantee</div>
-          <div class="prod-desc">Turn your entire wall into a life-sized heritage portrait. Standard, Premium or Self-Adhesive. 8cm bleed added at no charge.</div>
-          <div class="prod-footer"><div class="prod-price" style="font-size:16px">from £40/m²</div><button class="prod-btn enquire">Get a Quote →</button></div>
+          <div class="prod-size">Any size — no limits · museum-grade Greenguard Gold-certified wallpaper · 62.5 cm numbered panel drops · 10-year non-fade guarantee · 8cm bleed added at no charge</div>
+          <div class="prod-desc">Turn your entire wall into a life-sized heritage portrait or landscape — printed on museum-grade wallpaper with Greenguard Gold-certified inks. Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Supplied as numbered drops for easy hanging. Email us your wall dimensions for an exact price — we respond within 24 hours.</div>
+          <div class="prod-footer"><div class="prod-price" style="font-size:16px">from £85/m²</div><button class="prod-btn enquire">Get a Quote →</button></div>
         </div>
       </div>
 
-      <div class="prod-card wide" onclick="openJubileeModal('Bespoke Wall Mural — Full Room','🏛️','From £40 per m²','bespoke-mural','The ultimate statement wall. Your restored photo reproduced at life-sized scale. Choose Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Supplied as 62.5cm drops, printed to fit your exact wall — any width, any height.')">
+      <div class="prod-card wide" onclick="openJubileeModal('Bespoke Wall Mural — Full Room','🏛️','From £99 per m²','bespoke-mural','The ultimate statement wall — your restored photo reproduced at life-sized scale on museum-grade wallpaper. Printed to your exact room dimensions with Greenguard Gold-certified inks, 10-year non-fade guarantee. Choose Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Supplied as numbered 62.5cm drops. A truly bespoke installation — no other home will have one like it. Email us your wall measurements for an exact price — we respond within 24 hours.')">
         <div class="prod-img-placeholder">🏛️</div>
         <div class="prod-body">
           <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
           <div class="prod-name">Bespoke Wall Mural — Full Room</div>
-          <div class="prod-size">Any size — no limits · 62.5 cm panel drops · made to your exact measurements</div>
-          <div class="prod-desc">The ultimate statement wall. Your photo at life-sized scale, supplied as numbered panel drops to fit your exact room.</div>
-          <div class="prod-footer"><div class="prod-price" style="font-size:16px">from £40/m²</div><button class="prod-btn enquire">Get a Quote →</button></div>
+          <div class="prod-size">Any size — no limits · museum-grade Greenguard Gold-certified wallpaper · made to your exact room measurements · 10-year non-fade guarantee</div>
+          <div class="prod-desc">The ultimate statement — your photo at life-sized scale on museum-grade wallpaper. Printed to fit your exact room: any width, any height. Supplied as numbered panel drops for easy self-installation. 10-year non-fade guarantee. The only mural of its kind.</div>
+          <div class="prod-footer"><div class="prod-price" style="font-size:16px">from £99/m²</div><button class="prod-btn enquire">Get a Quote →</button></div>
         </div>
       </div>
 
@@ -1574,6 +1592,12 @@
       <span class="modal-info-icon">📧</span>
       <div class="modal-info-text">
         <strong>How it works:</strong> After payment you'll receive a confirmation email. Simply reply with your restored photo and we'll print and dispatch your order within 3–5 working days. <strong>No upload required at checkout.</strong>
+      </div>
+    </div>
+    <div class="modal-info" style="background:rgba(201,150,12,0.06);border-color:rgba(201,150,12,0.2)">
+      <span class="modal-info-icon">🎁</span>
+      <div class="modal-info-text">
+        <strong>Deluxe Gift Wrapping — £5.99:</strong> Luxury tissue paper, satin ribbon &amp; gift box. Just mention it when you reply with your photo and we'll add it to your order.
       </div>
     </div>
     <button class="modal-btn" id="modalOrderBtn" onclick="proceedToCheckout()">🔒 &nbsp;Proceed to Secure Checkout</button>
