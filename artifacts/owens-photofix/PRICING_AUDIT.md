@@ -44,12 +44,13 @@ Bags of Love trade cost. The admin screen shows the per-order margin
 
 | Paper          | Trade £/m² | Retail £/m² | Margin  | Notes |
 | -------------- | ---------- | ----------- | ------- | ----- |
-| Standard       | £18        | £85         | £67/m²  | Confirmed: BoL portal shows £288 for 4×4m (16m²) = £18/m² trade. BoL suggested RRP is £25/m² — our £85/m² reflects AI restoration premium. |
-| Premium        | ~£35       | £99         | ~£64/m² | Estimate — confirm in BoL portal |
-| Self-Adhesive  | ~£45       | £119        | ~£74/m² | Estimate — confirm in BoL portal |
+| Standard       | £18        | £59         | £41/m²  | Confirmed: BoL portal shows £288 for 4×4m (16m²) = £18/m² trade. BoL public retail starts from £14/m² — our £59/m² reflects AI restoration premium at a competitive market rate. |
+| Premium        | ~£35       | £75         | ~£40/m² | Estimate — confirm in BoL portal |
+| Self-Adhesive  | ~£45       | £89         | ~£44/m² | Estimate — confirm in BoL portal |
 
-Previous prices (£40/£70/£90) were based on a mechanical 2× trade markup
-and dramatically underpriced a bespoke London-made mural with AI restoration included.
+Pricing rationale: BoL's public retail is from £14/m² (repeat patterns) to ~£25/m² (large Photo/Montage).
+ONJJEM adds AI restoration + bespoke London service, justifying ~2.4–3.3× the BoL public price.
+Previous prices (£85/£99/£119) were reduced after reviewing BoL's own public retail pricing.
 
 ### Gift shop catalogue
 
