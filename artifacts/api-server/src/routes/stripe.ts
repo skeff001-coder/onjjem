@@ -136,6 +136,9 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       payment_method_types: ["card"],
       line_items: [{ price: price.id, quantity: 1 }],
       mode: "payment",
+      shipping_address_collection: {
+        allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK"],
+      },
       success_url: `${origin}/?order=success`,
       cancel_url: `${origin}/#shop`,
       metadata: {
