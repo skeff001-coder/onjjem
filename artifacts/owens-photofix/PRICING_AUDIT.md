@@ -45,7 +45,7 @@ Bags of Love trade cost. The admin screen shows the per-order margin
 | Paper          | Trade £/m² | Retail £/m² | Margin  | Notes |
 | -------------- | ---------- | ----------- | ------- | ----- |
 | Standard       | £18        | £59         | £41/m²  | Confirmed: BoL portal shows £288 for 4×4m (16m²) = £18/m² trade. BoL public retail starts from £14/m² — our £59/m² reflects AI restoration premium at a competitive market rate. |
-| Premium        | ~£35       | £75         | ~£40/m² | Estimate — confirm in BoL portal |
+| Premium        | £27        | £75         | £48/m²  | Confirmed: BoL portal shows £302.58 for 408×274cm (11.18m²) Silk Vista 350gsm = £27/m² trade. BoL RRP is £49/m² — our £75/m² is 1.5× their own suggested retail. |
 | Self-Adhesive  | ~£45       | £89         | ~£44/m² | Estimate — confirm in BoL portal |
 
 Pricing rationale: BoL's public retail is from £14/m² (repeat patterns) to ~£25/m² (large Photo/Montage).
