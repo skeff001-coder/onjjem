@@ -161,6 +161,39 @@
     .ba-caption { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
     .ba-caption-label { font-size: 12px; font-weight: 600; color: var(--cream); font-family: 'Cinzel', serif; }
     .ba-caption-mode { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); background: var(--gbg); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--gb); }
+    /* ── MASTERPIECE GALLERY ── */
+    .mg-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 28px 0 8px; gap: 14px; }
+    .mg-crown { width: 60px; height: 60px; border-radius: 30px; background: var(--gbg); border: 1.5px solid var(--gb); display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .mg-gold-bar { width: 52px; height: 2.5px; border-radius: 2px; background: var(--gold); margin-bottom: 2px; }
+    .mg-hero-body { font-size: 14px; line-height: 1.8; color: var(--c55); max-width: 640px; }
+    .mg-guide { background: var(--bg3); border: 1px solid var(--gb); border-radius: 16px; padding: 18px 22px; margin: 16px 0 24px; }
+    .mg-guide-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .mg-guide-title { font-size: 13px; font-weight: 700; color: var(--gold); letter-spacing: 0.3px; }
+    .mg-guide-body { font-size: 13px; color: var(--c55); line-height: 1.7; }
+    .mg-card-header { display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px 12px; }
+    .mg-card-num { width: 34px; height: 34px; border-radius: 10px; background: var(--gbg); border: 1px solid var(--gb); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--gold); flex-shrink: 0; letter-spacing: 0.5px; }
+    .mg-card-label { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600; color: var(--cream); line-height: 1.3; margin-bottom: 5px; }
+    .mg-card-tag { font-size: 9px; font-weight: 700; letter-spacing: 1.2px; color: var(--gold); text-transform: uppercase; }
+    .mg-card-desc { font-size: 13px; color: var(--c55); line-height: 1.7; padding: 8px 18px 16px; margin: 0; }
+    .mg-process { padding: 36px 0 8px; text-align: center; }
+    .mg-process-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    .mg-process-title { font-family: 'Cinzel', serif; font-size: clamp(18px,2.5vw,24px); font-weight: 600; color: var(--cream); margin-bottom: 12px; }
+    .mg-process-steps { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 20px; margin-top: 24px; text-align: left; }
+    .mg-process-step { display: flex; align-items: flex-start; gap: 14px; }
+    .mg-process-icon { width: 44px; height: 44px; border-radius: 14px; background: var(--gbg); border: 1px solid var(--gb); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .mg-process-text h4 { font-size: 14px; font-weight: 700; color: var(--cream); margin-bottom: 5px; line-height: 1.3; }
+    .mg-process-text p { font-size: 13px; color: var(--c55); line-height: 1.65; margin: 0; }
+    .mg-why { background: linear-gradient(135deg,var(--bg2),var(--bg3)); border: 1px solid var(--gb); border-radius: 20px; padding: 26px 28px; margin: 28px 0 8px; }
+    .mg-why-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    .mg-why-title { font-family: 'Cinzel', serif; font-size: clamp(16px,2.2vw,22px); font-weight: 600; color: var(--cream); margin-bottom: 10px; line-height: 1.35; }
+    .mg-why-body { font-size: 13px; color: var(--c55); line-height: 1.7; margin-bottom: 4px; }
+    .mg-why-features { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 10px; margin-top: 16px; }
+    .mg-why-feature { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #E8DBC0; line-height: 1.5; }
+    .mg-why-tick { color: var(--gold); }
+    .mg-cta { text-align: center; padding: 28px 0 12px; }
+    .mg-cta-btn { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg,var(--gold),#A67C00); color: #fff; font-size: 15px; font-weight: 700; padding: 16px 36px; border-radius: 50px; text-decoration: none; letter-spacing: 0.3px; box-shadow: 0 8px 28px rgba(201,150,12,0.35); transition: transform 0.15s, box-shadow 0.15s; }
+    .mg-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(201,150,12,0.45); }
+    .mg-cta-note { font-size: 11px; color: var(--c55); margin-top: 10px; letter-spacing: 0.2px; }
 
     /* PRINT YOUR MEMORIES */
     .print-section { background: var(--bg3); padding: 80px 24px; }
@@ -476,62 +509,174 @@
 <!-- BEFORE / AFTER GALLERY -->
 <section class="section" id="gallery">
   <div class="section-header">
-    <div class="eyebrow"><span>✦</span> Real Restorations</div>
-    <h2 class="section-title">See the Transformation</h2>
-    <p class="section-sub">Every image below was restored using ONJJEM's Cinema-Grade AI — no manual editing, no Photoshop.</p>
+    <div class="eyebrow"><span>👑</span> Masterpiece Gallery</div>
+    <h2 class="section-title">The Art of Restoration</h2>
+    <p class="section-sub">Every image below is a real restoration — no composites, no stock photography. The transformation you see is precisely what we can do for your treasured memories.</p>
   </div>
+
+  <!-- Hero intro -->
+  <div class="mg-hero">
+    <div class="mg-crown">👑</div>
+    <div class="mg-gold-bar"></div>
+    <p class="mg-hero-body">At ONJJEM, we believe every photograph deserves to be seen at its very best — not locked away in a drawer, faded beyond recognition. Our Master Restorers combine Cinema-Grade AI with years of hand-finishing expertise to return your photographs to a standard no darkroom could ever achieve. We do not simply "fix" photos. We resurrect them.</p>
+  </div>
+
+  <!-- Guide note -->
+  <div class="mg-guide">
+    <div class="mg-guide-head">
+      <span style="font-size:15px">ℹ️</span>
+      <span class="mg-guide-title">How to Read This Gallery</span>
+    </div>
+    <p class="mg-guide-body">Each card below describes the specific challenge we faced and the technique used to overcome it — from colour science to structural repair. Every restoration shown is real: no composites, no stock photography, no tricks.</p>
+  </div>
+
+  <!-- Five restoration cards -->
   <div class="ba-grid">
+
     <div class="ba-card">
+      <div class="mg-card-header">
+        <div class="mg-card-num">01</div>
+        <div>
+          <div class="mg-card-label">1920s Family Portrait</div>
+          <div class="mg-card-tag">✦ &nbsp;Damage Restored</div>
+        </div>
+      </div>
       <div class="gold-bar"></div>
       <div class="ba-images">
-        <img src="/api/gallery/grandma_before.png" alt="Before" loading="lazy" />
-        <img src="/api/gallery/grandma_after.png" alt="After" loading="lazy" />
+        <img src="/api/gallery/portrait_before.png" alt="1920s family portrait before restoration" loading="lazy" />
+        <img src="/api/gallery/portrait_after.png" alt="1920s family portrait after restoration" loading="lazy" />
         <span class="ba-label left">Before</span><span class="ba-label right">After</span>
         <div class="ba-divider"></div><div class="ba-handle">⟷</div>
       </div>
-      <div class="ba-caption"><span class="ba-caption-label">Family Portrait</span><span class="ba-caption-mode">Colourised + Sharpened</span></div>
+      <p class="mg-card-desc">Heavy scratches, water stains and torn edges erased. Every face brought back with remarkable clarity — as sharp and vivid as the day it was taken.</p>
     </div>
+
     <div class="ba-card">
+      <div class="mg-card-header">
+        <div class="mg-card-num">02</div>
+        <div>
+          <div class="mg-card-label">Faded Wedding Photo</div>
+          <div class="mg-card-tag">✦ &nbsp;Colourised</div>
+        </div>
+      </div>
       <div class="gold-bar"></div>
       <div class="ba-images">
-        <img src="/api/gallery/childhood_before.png" alt="Before" loading="lazy" />
-        <img src="/api/gallery/childhood_after.png" alt="After" loading="lazy" />
+        <img src="/api/gallery/wedding_before.png" alt="Wedding photo before restoration" loading="lazy" />
+        <img src="/api/gallery/wedding_after.png" alt="Wedding photo after restoration" loading="lazy" />
         <span class="ba-label left">Before</span><span class="ba-label right">After</span>
         <div class="ba-divider"></div><div class="ba-handle">⟷</div>
       </div>
-      <div class="ba-caption"><span class="ba-caption-label">Childhood Memory</span><span class="ba-caption-mode">Colourised</span></div>
+      <p class="mg-card-desc">A black-and-white 1960s ceremony brought to life with warm, natural colour — exactly as it looked on the day. Every shade chosen with meticulous care.</p>
     </div>
+
     <div class="ba-card">
+      <div class="mg-card-header">
+        <div class="mg-card-num">03</div>
+        <div>
+          <div class="mg-card-label">Torn Childhood Memory</div>
+          <div class="mg-card-tag">✦ &nbsp;Tears Repaired</div>
+        </div>
+      </div>
       <div class="gold-bar"></div>
       <div class="ba-images">
-        <img src="/api/gallery/portrait_before.png" alt="Before" loading="lazy" />
-        <img src="/api/gallery/portrait_after.png" alt="After" loading="lazy" />
+        <img src="/api/gallery/childhood_before.png" alt="Torn childhood photo before restoration" loading="lazy" />
+        <img src="/api/gallery/childhood_after.png" alt="Torn childhood photo after restoration" loading="lazy" />
         <span class="ba-label left">Before</span><span class="ba-label right">After</span>
         <div class="ba-divider"></div><div class="ba-handle">⟷</div>
       </div>
-      <div class="ba-caption"><span class="ba-caption-label">Vintage Portrait</span><span class="ba-caption-mode">Sharpened</span></div>
+      <p class="mg-card-desc">Torn in two and held together with tape for decades — now seamlessly restored as if it never happened. Not a trace of damage remains.</p>
     </div>
+
     <div class="ba-card">
+      <div class="mg-card-header">
+        <div class="mg-card-num">04</div>
+        <div>
+          <div class="mg-card-label">Blurry Grandmother Portrait</div>
+          <div class="mg-card-tag">✦ &nbsp;AI Sharpened</div>
+        </div>
+      </div>
       <div class="gold-bar"></div>
       <div class="ba-images">
-        <img src="/api/gallery/wedding_before.png" alt="Before" loading="lazy" />
-        <img src="/api/gallery/wedding_after.png" alt="After" loading="lazy" />
+        <img src="/api/gallery/grandma_before.png" alt="Grandmother portrait before sharpening" loading="lazy" />
+        <img src="/api/gallery/grandma_after.png" alt="Grandmother portrait after sharpening" loading="lazy" />
         <span class="ba-label left">Before</span><span class="ba-label right">After</span>
         <div class="ba-divider"></div><div class="ba-handle">⟷</div>
       </div>
-      <div class="ba-caption"><span class="ba-caption-label">Wedding Day</span><span class="ba-caption-mode">Colourised + Sharpened</span></div>
+      <p class="mg-card-desc">A cherished but out-of-focus portrait made razor sharp — preserving every gentle detail of her expression for the generations that follow.</p>
     </div>
+
     <div class="ba-card">
+      <div class="mg-card-header">
+        <div class="mg-card-num">05</div>
+        <div>
+          <div class="mg-card-label">Victorian Era Daguerreotype</div>
+          <div class="mg-card-tag">✦ &nbsp;Colourised &amp; Restored</div>
+        </div>
+      </div>
       <div class="gold-bar"></div>
       <div class="ba-images">
-        <img src="/api/gallery/victorian_before.png" alt="Before" loading="lazy" />
-        <img src="/api/gallery/victorian_after.png" alt="After" loading="lazy" />
+        <img src="/api/gallery/victorian_before.png" alt="Victorian portrait before restoration" loading="lazy" />
+        <img src="/api/gallery/victorian_after.png" alt="Victorian portrait after restoration" loading="lazy" />
         <span class="ba-label left">Before</span><span class="ba-label right">After</span>
         <div class="ba-divider"></div><div class="ba-handle">⟷</div>
       </div>
-      <div class="ba-caption"><span class="ba-caption-label">Victorian Era</span><span class="ba-caption-mode">Colourised</span></div>
+      <p class="mg-card-desc">An 1890s family portrait rescued from near-total decay and colourised to show them as the world once saw them — proud, vivid, and timeless.</p>
+    </div>
+
+  </div>
+
+  <!-- How it's made -->
+  <div class="mg-process">
+    <p class="mg-process-eyebrow">Our Craft</p>
+    <h3 class="mg-process-title">How Every Restoration Is Made</h3>
+    <div class="mg-gold-bar" style="margin:0 auto;"></div>
+    <div class="mg-process-steps">
+      <div class="mg-process-step">
+        <div class="mg-process-icon">📤</div>
+        <div class="mg-process-text">
+          <h4>You send us your photo</h4>
+          <p>Any format, any condition. A cracked print, a faded scan, a blurry snapshot — we have seen it all.</p>
+        </div>
+      </div>
+      <div class="mg-process-step">
+        <div class="mg-process-icon">✨</div>
+        <div class="mg-process-text">
+          <h4>Our masters go to work</h4>
+          <p>Cinema-Grade AI restoration guided by our expert team — colour, detail, and emotion restored with human judgement at every step.</p>
+        </div>
+      </div>
+      <div class="mg-process-step">
+        <div class="mg-process-icon">🎁</div>
+        <div class="mg-process-text">
+          <h4>You receive a masterpiece</h4>
+          <p>A full-resolution digital file and, if you wish, a museum-quality print delivered straight to your door.</p>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Why ONJJEM -->
+  <div class="mg-why">
+    <p class="mg-why-eyebrow">For Personal &amp; Business Clients</p>
+    <h3 class="mg-why-title">Why Organisations Choose ONJJEM</h3>
+    <div class="mg-gold-bar"></div>
+    <p class="mg-why-body">Our work does not stop at family memories. Funeral homes, heritage societies, museums, publishers, and luxury brands commission us for projects ranging from single portraits to entire historical archives. We offer dedicated account management, volume pricing, NDA agreements, and delivery guaranteed to your timeline. Every restoration carries our Certificate of Authenticity.</p>
+    <div class="mg-why-features">
+      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> 10-Year Quality Guarantee on every print</div>
+      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> Rush 24-hour turnaround available</div>
+      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> Business accounts with volume pricing</div>
+      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> Certificate of Authenticity included</div>
+      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> NDA &amp; confidentiality agreements available</div>
+      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> Dedicated account manager for commissions</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="mg-cta">
+    <a href="onjjem-shop.html" class="mg-cta-btn">✨ &nbsp;Browse the Collection</a>
+    <p class="mg-cta-note">No account required &nbsp;·&nbsp; Every restoration is private and confidential</p>
+  </div>
+
 </section>
 
 <!-- PRINT YOUR MEMORIES -->
