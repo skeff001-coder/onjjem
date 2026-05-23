@@ -194,7 +194,7 @@ const CATEGORIES: Category[] = [
         title: "Plush Bedside Rug",
         size: "90×63 cm · plush velour print surface · non-slip rubber base",
         desc: "Wake up to your most treasured memory every morning. Your restored photo reproduced in vivid, deep colour on a plush velour surface with a non-slip rubber base — soft underfoot and beautiful to look at. Wipe-clean.",
-        price: "£99",
+        price: "£139",
         emoji: "🏡",
         iconBg: "#EDE0FF",
         wide: true,
@@ -885,7 +885,7 @@ const CATEGORIES: Category[] = [
         title: "The Hallway Runner",
         size: "180×63cm · plush velour print surface · non-slip rubber base",
         desc: "Your restored photo printed on a plush velour surface with a non-slip rubber base. 180×63cm — the ideal runner for hallways and high-traffic areas. Wipe-clean surface. 10-year print guarantee.",
-        price: "£145.00",
+        price: "£185.00",
         emoji: "🏡",
         iconBg: "#FDF5EC",
         wide: true,
@@ -898,7 +898,7 @@ const CATEGORIES: Category[] = [
         title: "Large Square Rug",
         size: "128×128cm · plush velour print surface · non-slip rubber base",
         desc: "Your restored photo printed on a plush velour surface with a non-slip rubber base. 128×128cm square — a striking centrepiece for any living room. Wipe-clean surface. 10-year print guarantee.",
-        price: "£155.00",
+        price: "£195.00",
         emoji: "🏡",
         iconBg: "#F7EDE2",
         wide: true,
@@ -911,7 +911,7 @@ const CATEGORIES: Category[] = [
         title: "Classic Area Rug",
         size: "135×105cm · plush velour print surface · non-slip rubber base",
         desc: "Your restored photo printed on a plush velour surface with a non-slip rubber base. A beautiful area rug for any room — vivid print with a rich, textured feel underfoot. Wipe-clean surface. 10-year print guarantee.",
-        price: "£165.00",
+        price: "£205.00",
         emoji: "🏡",
         iconBg: "#FBF2E8",
         wide: true,
@@ -925,7 +925,7 @@ const CATEGORIES: Category[] = [
         title: "The Statement Rug",
         size: "128×200cm · plush velour print surface · non-slip rubber base",
         desc: "Your restored photo printed on a plush velour surface with a non-slip rubber base. Our largest rug at 128×200cm — a true statement piece for any room. Wipe-clean surface. 10-year print guarantee.",
-        price: "£195.00",
+        price: "£235.00",
         emoji: "🏡",
         iconBg: "#F9EFE4",
         wide: true,
@@ -1362,8 +1362,6 @@ export default function GiftShopScreen() {
   const [basketItems, setBasketItems] = useState<{ title: string; price: number }[]>([]);
   const [promoCode, setPromoCode] = useState("");
   const [promoStatus, setPromoStatus] = useState<"idle" | "valid" | "min_spend" | "invalid">("idle");
-  const [shipping, setShipping] = useState<"small" | "standard" | "flat">("standard");
-
   const scrollRef = useRef<ScrollView>(null);
   const [basketConfirm, setBasketConfirm] = useState<{ title: string } | null>(null);
 
@@ -1372,9 +1370,7 @@ export default function GiftShopScreen() {
   const basketSubtotal = basketItems.reduce((sum, i) => sum + i.price, 0);
   const giftWrapCost = giftWrap && basketItems.length > 0 ? 4.99 : 0;
   const promoDiscount = promoStatus === "valid" ? 10 : 0;
-  const shippingCost = basketItems.length > 0
-    ? shipping === "small" ? 4.50 : shipping === "standard" ? 6.99 : 9.50
-    : 0;
+  const shippingCost = basketItems.length > 0 ? 6.99 : 0;
   const basketTotal = basketSubtotal + giftWrapCost + shippingCost - promoDiscount;
 
   const handleDesign = (title: string, price: string, scent?: string) => {
@@ -1962,7 +1958,7 @@ export default function GiftShopScreen() {
           </View>
         </View>
 
-        {/* Shipping selector */}
+        {/* Delivery line */}
         <View style={s.shippingCard}>
           <LinearGradient
             colors={["#0A2040", "#1A3A6B"]}
@@ -1973,88 +1969,14 @@ export default function GiftShopScreen() {
             <Ionicons name="airplane" size={15} color="#93C5FD" />
             <Text style={s.shippingCardHeaderText}>Delivery & Shipping</Text>
           </LinearGradient>
-
           <View style={s.shippingCardBody}>
-            {/* Small Item Tracked */}
-            <TouchableOpacity
-              style={[s.shippingOption, shipping === "small" && s.shippingOptionActive]}
-              onPress={() => setShipping("small")}
-              activeOpacity={0.8}
-            >
-              <View style={[s.shippingRadio, shipping === "small" && s.shippingRadioActive]}>
-                {shipping === "small" && <View style={s.shippingRadioDot} />}
-              </View>
-              <View style={s.shippingOptionBody}>
-                <View style={s.shippingOptionRow}>
-                  <Text style={s.shippingOptionFlag}>📦</Text>
-                  <Text style={[s.shippingOptionLabel, shipping === "small" && s.shippingOptionLabelActive]}>
-                    Small Item Tracked
-                  </Text>
-                  <Text style={[s.shippingOptionPrice, shipping === "small" && s.shippingOptionPriceActive]}>
-                    £4.50
-                  </Text>
-                </View>
-                <Text style={s.shippingOptionMeta}>Stickers & labels only · 3–5 working days</Text>
-              </View>
-            </TouchableOpacity>
-
-            <View style={s.shippingDivider} />
-
-            {/* Standard UK Tracked */}
-            <TouchableOpacity
-              style={[s.shippingOption, shipping === "standard" && s.shippingOptionActive]}
-              onPress={() => setShipping("standard")}
-              activeOpacity={0.8}
-            >
-              <View style={[s.shippingRadio, shipping === "standard" && s.shippingRadioActive]}>
-                {shipping === "standard" && <View style={s.shippingRadioDot} />}
-              </View>
-              <View style={s.shippingOptionBody}>
-                <View style={s.shippingOptionRow}>
-                  <Text style={s.shippingOptionFlag}>🇬🇧</Text>
-                  <Text style={[s.shippingOptionLabel, shipping === "standard" && s.shippingOptionLabelActive]}>
-                    Standard UK Tracked
-                  </Text>
-                  <Text style={[s.shippingOptionPrice, shipping === "standard" && s.shippingOptionPriceActive]}>
-                    £6.99
-                  </Text>
-                </View>
-                <Text style={s.shippingOptionMeta}>Air fresheners, keyrings & mugs · 5–7 working days</Text>
-              </View>
-            </TouchableOpacity>
-
-            <View style={s.shippingDivider} />
-
-            {/* Master Lab Flat Rate */}
-            <TouchableOpacity
-              style={[s.shippingOption, shipping === "flat" && s.shippingOptionActive]}
-              onPress={() => setShipping("flat")}
-              activeOpacity={0.8}
-            >
-              <View style={[s.shippingRadio, shipping === "flat" && s.shippingRadioActive]}>
-                {shipping === "flat" && <View style={s.shippingRadioDot} />}
-              </View>
-              <View style={s.shippingOptionBody}>
-                <View style={s.shippingOptionRow}>
-                  <Text style={s.shippingOptionFlag}>🇬🇧</Text>
-                  <Text style={[s.shippingOptionLabel, shipping === "flat" && s.shippingOptionLabelActive]}>
-                    Master Lab Flat Rate
-                  </Text>
-                  <Text style={[s.shippingOptionPrice, shipping === "flat" && s.shippingOptionPriceActive]}>
-                    £9.50
-                  </Text>
-                </View>
-                <View style={s.shippingFlatRow}>
-                  <View style={s.shippingBestValueBadge}>
-                    <Text style={s.shippingBestValueText}>BEST VALUE</Text>
-                  </View>
-                  <Text style={s.shippingOptionMeta}>Any number of items incl. Quilts & Rugs</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            {/* Packaging note */}
-            <View style={s.shippingNote}>
+            <View style={s.shippingOptionRow}>
+              <Text style={s.shippingOptionFlag}>🇬🇧</Text>
+              <Text style={[s.shippingOptionLabel, { color: "#fff" }]}>UK Tracked Delivery</Text>
+              <Text style={[s.shippingOptionPrice, { color: BLUE }]}>£6.99</Text>
+            </View>
+            <Text style={[s.shippingOptionMeta, { marginTop: 6 }]}>Note: rugs include delivery in their price — no extra charge at checkout.</Text>
+            <View style={[s.shippingNote, { marginTop: 10 }]}>
               <Ionicons name="cube-outline" size={13} color="#3B82F6" />
               <Text style={s.shippingNoteText}>
                 Every order is dispatched in premium protective packaging — safe, secure and beautifully presented.
@@ -2220,7 +2142,7 @@ function BadgeRow({ product }: { product: Product }) {
       {product.heavyItem && (
         <View style={s.productHeavyBadge}>
           <Ionicons name="cube-outline" size={10} color="#6B3A00" />
-          <Text style={s.productHeavyBadgeText}>Heavy Item · UK Tracked £9.50</Text>
+          <Text style={s.productHeavyBadgeText}>🚚 UK Delivery Included</Text>
         </View>
       )}
     </View>
