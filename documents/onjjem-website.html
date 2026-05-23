@@ -76,8 +76,10 @@
     .hero-gems { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 20px; }
     .hero-gems span { font-size: 9px; color: rgba(201,150,12,0.7); }
     .hero-sub { font-size: clamp(14px,1.8vw,16px); line-height: 1.7; color: var(--c55); max-width: 480px; margin-bottom: 36px; }
-    .hero-chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 32px; }
-    .hero-chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.4); border: 1px solid rgba(245,215,142,0.4); border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: 600; color: var(--gold-lt); letter-spacing: 0.3px; }
+    .hero-gallery-btn { display: inline-flex; align-items: center; gap: 9px; background: linear-gradient(135deg,#060F08,#0C1E10,#060F08); border: 1px solid rgba(76,175,88,0.45); border-radius: 40px; padding: 10px 22px; font-size: 12px; font-weight: 700; color: #7EE89A; letter-spacing: 1.2px; text-decoration: none; text-transform: uppercase; margin-bottom: 28px; box-shadow: 0 0 18px rgba(76,175,88,0.18); transition: box-shadow 0.2s, border-color 0.2s; }
+    .hero-gallery-btn:hover { border-color: rgba(76,175,88,0.75); box-shadow: 0 0 28px rgba(76,175,88,0.32); }
+    .hero-gallery-gem { font-size: 9px; color: #4CAF58; }
+    .hero-gallery-arrow { font-size: 16px; color: rgba(126,232,154,0.6); }
     .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
     .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold)); color: var(--bg); font-size: 14px; font-weight: 700; padding: 15px 30px; border-radius: 50px; text-decoration: none; box-shadow: 0 8px 28px rgba(201,150,12,0.35); transition: transform 0.2s,box-shadow 0.2s; border: none; cursor: pointer; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,150,12,0.45); }
@@ -361,14 +363,11 @@
         <span>✦</span><span style="font-size:7px;opacity:0.5">◆</span>
         <span>💎</span>
       </div>
-      <div class="hero-chips">
-        <span class="hero-chip" style="color:#4A90D9;border-color:rgba(74,144,217,0.4);">⬡ Sharpen</span>
-        <span class="hero-chip" style="color:#F5A623;border-color:rgba(245,166,35,0.4);">☀ Brighten</span>
-        <span class="hero-chip" style="color:#9B59B6;border-color:rgba(155,89,182,0.4);">✧ Denoise</span>
-        <span class="hero-chip" style="color:#27AE60;border-color:rgba(39,174,96,0.4);">⟳ Restore</span>
-        <span class="hero-chip" style="color:#E74C3C;border-color:rgba(231,76,60,0.4);">🌈 Vivid</span>
-        <span class="hero-chip" style="color:#C9960C;border-color:rgba(201,150,12,0.4);">🎨 Colourize</span>
-      </div>
+      <a href="#gallery" class="hero-gallery-btn">
+        <span class="hero-gallery-gem">◆</span>
+        <span>The Art of Restoration &nbsp;·&nbsp; Masterpiece Gallery</span>
+        <span class="hero-gallery-arrow">›</span>
+      </a>
       <p class="hero-sub">Your faded, blurry, or black-and-white photographs restored to cinematic perfection — then crafted into museum-quality prints, canvases and heirloom keepsakes by our London master artisans.</p>
       <div class="hero-buttons">
         <a href="#tool" class="btn-primary"><span>✦</span> Restore a Photo Free</a>
