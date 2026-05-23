@@ -130,7 +130,6 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       mode: "payment",
       success_url: `${origin}/?order=success`,
       cancel_url: `${origin}/#shop`,
-      shipping_address_collection: { allowed_countries: ["GB", "IE", "US", "CA", "AU"] },
       metadata: {
         sku: body.sku,
         ...(photoToken ? { photo_token: photoToken } : {}),

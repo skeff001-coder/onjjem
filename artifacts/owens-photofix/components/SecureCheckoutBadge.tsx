@@ -17,7 +17,7 @@ export function SecureCheckoutBadge() {
       <View style={s.cardsRow}>
         <CardPill label="VISA" bg="#1A1F71" color="#fff" />
         <CardPill label="MC" bg="#EB001B" color="#fff" />
-        <CardPill label="PayPal" bg="#003087" color="#fff" />
+        <CardPill label="AMEX" bg="#2E77BC" color="#fff" />
       </View>
 
       {/* Divider */}
