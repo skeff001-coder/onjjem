@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ONJJEM Gift Shop — Luxury prints, canvas, jigsaws, cushions, throws and personal gifts made from your restored family photographs." />
+  <title>Gift Shop — ONJJEM Photo Restoration</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #0E0C08;
+      --bg2:      #1C1A14;
+      --bg3:      #12100B;
+      --card:     #1A1610;
+      --card2:    #16140F;
+      --gold:     #C9960C;
+      --gold-lt:  #F5D78E;
+      --gold-dk:  #A67C00;
+      --cream:    #FAF7F2;
+      --c55:      rgba(250,247,242,0.55);
+      --c35:      rgba(250,247,242,0.35);
+      --c20:      rgba(250,247,242,0.20);
+      --gb:       rgba(201,150,12,0.28);
+      --gb2:      rgba(201,150,12,0.45);
+      --gbg:      rgba(201,150,12,0.10);
+      --gbg2:     rgba(201,150,12,0.18);
+      --r:        16px;
+      --r-lg:     20px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--cream); overflow-x: hidden; }
+
+    .gold-bar { height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold)); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 14px 40px; background: rgba(14,12,8,0.96); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(201,150,12,0.18); }
+    .nav-brand { font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px,3.5vw,44px); letter-spacing: clamp(5px,0.8vw,10px); background: linear-gradient(135deg,#7A5500,var(--gold) 25%,var(--gold-lt) 50%,#E8B84B 72%,var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none; filter: drop-shadow(0 2px 12px rgba(201,150,12,0.4)); line-height: 1; }
+    .nav-back { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: rgba(250,247,242,0.45); text-decoration: none; transition: color 0.2s; letter-spacing: 0.5px; }
+    .nav-back:hover { color: var(--gold); }
+    @media (max-width: 640px) { nav { padding: 12px 18px; } }
+
+    /* SHOP HEADER */
+    .shop-header { background: var(--bg3); border-bottom: 1px solid rgba(201,150,12,0.14); padding: 52px 24px 40px; text-align: center; }
+    .shop-eyebrow { display: inline-flex; align-items: center; gap: 7px; background: rgba(201,150,12,0.1); border: 1px solid rgba(201,150,12,0.3); color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 40px; margin-bottom: 18px; }
+    .shop-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px,8vw,90px); letter-spacing: clamp(6px,1.5vw,16px); background: linear-gradient(135deg,#7A5500 0%,var(--gold) 20%,var(--gold-lt) 50%,#E8B84B 78%,var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 2px 20px rgba(201,150,12,0.4)); line-height: 0.92; margin-bottom: 12px; }
+    .shop-sub { font-family: 'Cinzel', serif; font-size: clamp(13px,1.6vw,16px); color: var(--gold-lt); font-style: italic; letter-spacing: 0.8px; margin-bottom: 20px; }
+    .shop-desc { font-size: 14px; color: var(--c55); max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+    /* CATEGORY TABS */
+    .cat-tabs { background: var(--bg2); border-bottom: 1px solid rgba(201,150,12,0.12); padding: 0 24px; overflow-x: auto; }
+    .cat-tabs-inner { display: flex; gap: 2px; max-width: 1100px; margin: 0 auto; }
+    .cat-tab { padding: 14px 18px; font-size: 12px; font-weight: 600; color: rgba(250,247,242,0.4); white-space: nowrap; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s,border-color 0.2s; letter-spacing: 0.4px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .cat-tab:hover { color: var(--gold-lt); }
+    .cat-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* SECTION */
+    .shop-section { padding: 64px 24px; border-bottom: 1px solid rgba(201,150,12,0.08); }
+    .shop-section:last-of-type { border-bottom: none; }
+    .shop-section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
+    .section-label-icon { width: 40px; height: 40px; border-radius: 20px; background: rgba(201,150,12,0.1); border: 1px solid rgba(201,150,12,0.3); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .section-label-text h2 { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 600; color: var(--cream); }
+    .section-label-text p { font-size: 12px; color: var(--c55); margin-top: 3px; }
+
+    /* PRODUCT GRID */
+    .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+    @media (max-width: 520px) { .prod-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+
+    /* PRODUCT CARD */
+    .prod-card { background: var(--card); border: 1px solid rgba(201,150,12,0.18); border-radius: 18px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+    .prod-card:hover { border-color: rgba(201,150,12,0.55); transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.45); }
+    .prod-img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--bg2); display: block; }
+    .prod-img-placeholder { width: 100%; aspect-ratio: 1; background: linear-gradient(135deg,var(--bg2),var(--card2)); display: flex; align-items: center; justify-content: center; font-size: 44px; }
+    .prod-body { padding: 14px 16px 16px; flex: 1; display: flex; flex-direction: column; }
+    .prod-name { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600; color: var(--cream); margin-bottom: 6px; line-height: 1.3; }
+    .prod-desc { font-size: 11px; color: var(--c55); line-height: 1.6; flex: 1; margin-bottom: 12px; }
+    .prod-footer { display: flex; align-items: center; justify-content: space-between; }
+    .prod-price { font-size: 18px; font-weight: 800; color: var(--cream); }
+    .prod-price sup { font-size: 11px; font-weight: 600; vertical-align: super; color: var(--c55); }
+    .prod-btn { background: linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold)); color: var(--bg); font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 40px; border: none; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
+    .prod-btn:hover { opacity: 0.85; }
+    .prod-badge { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; border: 1px solid; margin-bottom: 8px; display: inline-block; }
+
+    /* JUBILEE GRID */
+    .jubilee-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+    @media (max-width: 520px) { .jubilee-grid { grid-template-columns: 1fr 1fr; gap: 12px; } }
+    .jubilee-card { background: var(--card); border: 1px solid rgba(201,150,12,0.2); border-radius: 18px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s; }
+    .jubilee-card:hover { border-color: rgba(201,150,12,0.55); transform: translateY(-3px); }
+    .jubilee-top { padding: 20px 18px 14px; text-align: center; }
+    .jubilee-medal { font-size: 38px; display: block; margin-bottom: 8px; }
+    .jubilee-name { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600; color: var(--cream); margin-bottom: 4px; }
+    .jubilee-years { font-size: 11px; color: var(--gold); font-weight: 600; letter-spacing: 0.5px; }
+    .jubilee-items { padding: 10px 18px 8px; border-top: 1px solid rgba(201,150,12,0.1); }
+    .jubilee-item-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(250,247,242,0.05); }
+    .jubilee-item-row:last-child { border-bottom: none; }
+    .jubilee-item-name { font-size: 12px; color: var(--c55); }
+    .jubilee-item-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid rgba(201,150,12,0.1); }
+    .jubilee-item-price { font-size: 17px; font-weight: 800; color: var(--cream); }
+    .jubilee-item-btn { background: linear-gradient(135deg,#8B6200,var(--gold)); color: var(--bg); font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 40px; border: none; cursor: pointer; transition: opacity 0.2s; }
+    .jubilee-item-btn:hover { opacity: 0.85; }
+
+    /* FEATURE WALL */
+    .wall-card { background: var(--card); border: 1px solid var(--gb); border-radius: 22px; overflow: hidden; }
+    .wall-inner { padding: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+    @media (max-width: 640px) { .wall-inner { grid-template-columns: 1fr; } }
+    .wall-img-area { border-radius: 14px; overflow: hidden; border: 1px solid rgba(201,150,12,0.2); background: var(--bg2); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 64px; }
+    .wall-body h3 { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 600; color: var(--cream); margin-bottom: 10px; }
+    .wall-body p { font-size: 13px; color: var(--c55); line-height: 1.7; margin-bottom: 16px; }
+    .wall-sizes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .wall-size-btn { padding: 7px 14px; border-radius: 40px; border: 1px solid rgba(201,150,12,0.28); background: transparent; color: rgba(250,247,242,0.55); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .wall-size-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .wall-size-btn.selected { background: var(--gbg2); border-color: var(--gold); color: var(--gold); }
+    .wall-price { font-size: 32px; font-weight: 800; color: var(--cream); margin-bottom: 14px; }
+    .wall-btn { background: linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold)); color: var(--bg); font-size: 14px; font-weight: 700; padding: 14px 28px; border-radius: 50px; border: none; cursor: pointer; box-shadow: 0 6px 24px rgba(201,150,12,0.28); transition: opacity 0.2s; }
+    .wall-btn:hover { opacity: 0.88; }
+
+    /* ORDER MODAL */
+    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    .modal-backdrop.open { display: flex; }
+    .modal { background: var(--card); border: 1px solid var(--gb); border-radius: var(--r-lg); padding: 36px; max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto; }
+    .modal-close { float: right; background: none; border: none; color: rgba(250,247,242,0.35); font-size: 18px; cursor: pointer; padding: 4px 8px; margin: -8px -8px 0 0; }
+    .modal-close:hover { color: var(--cream); }
+    .modal-icon { font-size: 36px; display: block; margin-bottom: 10px; }
+    .modal-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--c55); margin-bottom: 20px; line-height: 1.6; }
+    .modal-price { font-size: 38px; font-weight: 900; color: var(--cream); display: flex; align-items: baseline; gap: 8px; margin-bottom: 22px; }
+    .modal-price small { font-size: 14px; color: var(--c35); font-weight: 400; }
+    .modal-info-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px; background: rgba(201,150,12,0.06); border: 1px solid rgba(201,150,12,0.18); border-radius: 10px; margin-bottom: 20px; }
+    .modal-info-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .modal-info-text { font-size: 12px; color: var(--c55); line-height: 1.6; }
+    .modal-info-text strong { color: var(--cream); }
+    .modal-btn { width: 100%; padding: 15px; border-radius: 13px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; background: linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold)); color: var(--bg); box-shadow: 0 6px 24px rgba(201,150,12,0.28); transition: all 0.2s; }
+    .modal-btn:hover { transform: translateY(-1px); }
+    .modal-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+    .modal-cancel { display: block; text-align: center; margin-top: 12px; font-size: 12px; color: rgba(250,247,242,0.28); cursor: pointer; }
+    .modal-cancel:hover { color: var(--c55); }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.25); border-top-color: currentColor; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #order-success-banner { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(39,174,96,0.14); border: 1px solid rgba(39,174,96,0.4); color: #5DE391; padding: 16px 28px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 300; text-align: center; max-width: 500px; width: 90%; }
+
+    /* FOOTER */
+    footer { background: var(--bg); border-top: 1px solid rgba(201,150,12,0.12); padding: 48px 40px 32px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 10px; background: linear-gradient(135deg,var(--gold-dk),var(--gold),var(--gold-lt),var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-tagline { font-size: 11px; color: rgba(250,247,242,0.28); letter-spacing: 1.5px; font-family: 'Cinzel', serif; }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+    .footer-links a { font-size: 11px; color: rgba(250,247,242,0.3); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { font-size: 10px; color: rgba(250,247,242,0.18); }
+    @media (max-width: 640px) { footer { padding: 36px 20px 24px; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/">ONJJEM</a>
+  <a class="nav-back" href="/">← Back to Home</a>
+</nav>
+
+<!-- SHOP HEADER -->
+<div class="shop-header">
+  <div class="shop-eyebrow">🎁 &nbsp;Gift Shop</div>
+  <div class="shop-title">Gift Shop</div>
+  <div class="shop-sub">Restore. Print. Treasure.</div>
+  <p class="shop-desc">Turn your restored family photographs into luxury gifts — canvas prints, heritage jigsaws, silk keepsakes, cushions, throws, and much more. All made to order and delivered to your door.</p>
+</div>
+
+<!-- CATEGORY TABS -->
+<div class="cat-tabs">
+  <div class="cat-tabs-inner">
+    <a class="cat-tab active" href="#anniversaries">💎 Jubilees &amp; Anniversaries</a>
+    <a class="cat-tab" href="#canvas">🖼 Canvas Prints</a>
+    <a class="cat-tab" href="#lounge">🏠 Lounge &amp; Home</a>
+    <a class="cat-tab" href="#jigsaws">🧩 Jigsaws</a>
+    <a class="cat-tab" href="#gifts">🎁 Personal Gifts</a>
+  </div>
+</div>
+
+<!-- SECTION: JUBILEES & ANNIVERSARIES -->
+<div class="shop-section" id="anniversaries">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">💎</div>
+      <div class="section-label-text">
+        <h2>Jubilees &amp; Anniversaries</h2>
+        <p>Milestone celebrations made from your restored family memories</p>
+      </div>
+    </div>
+    <div class="jubilee-grid">
+      <div class="jubilee-card" onclick="openProdModal('silver-jubilee','Silver Jubilee Collection','🥈','For 25 years of love — beautifully printed on your choice of canvas, cushion, or keepsake box.','49.99','silver-jubilee')">
+        <div class="gold-bar"></div>
+        <div class="jubilee-top">
+          <span class="jubilee-medal">🥈</span>
+          <div class="jubilee-name">Silver Jubilee</div>
+          <div class="jubilee-years">25 Years Together</div>
+        </div>
+        <div class="jubilee-items">
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Canvas Print (A3)</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Luxury Cushion</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Silk Keepsake</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+        </div>
+        <div class="jubilee-item-footer">
+          <div class="jubilee-item-price">from £49.99</div>
+          <button class="jubilee-item-btn">Order →</button>
+        </div>
+      </div>
+      <div class="jubilee-card" onclick="openProdModal('ruby-jubilee','Ruby Jubilee Collection','♦️','For 40 years of marriage — timeless restoration gifts in ruby red packaging.','54.99','ruby-jubilee')">
+        <div class="gold-bar"></div>
+        <div class="jubilee-top">
+          <span class="jubilee-medal">♦️</span>
+          <div class="jubilee-name">Ruby Jubilee</div>
+          <div class="jubilee-years">40 Years Together</div>
+        </div>
+        <div class="jubilee-items">
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Canvas Print (A3)</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Luxury Cushion</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Acrylic Memory Block</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+        </div>
+        <div class="jubilee-item-footer">
+          <div class="jubilee-item-price">from £54.99</div>
+          <button class="jubilee-item-btn">Order →</button>
+        </div>
+      </div>
+      <div class="jubilee-card" onclick="openProdModal('golden-jubilee','Golden Jubilee Collection','🥇','The ultimate 50-year anniversary gift — your restored photo printed on gallery canvas and presented in a luxury gold gift box.','64.99','golden-jubilee')">
+        <div class="gold-bar"></div>
+        <div class="jubilee-top">
+          <span class="jubilee-medal">🥇</span>
+          <div class="jubilee-name">Golden Jubilee</div>
+          <div class="jubilee-years">50 Years Together</div>
+        </div>
+        <div class="jubilee-items">
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Gallery Canvas (A2)</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Luxury Cushion</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Heritage Jigsaw</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Silk Keepsake</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+        </div>
+        <div class="jubilee-item-footer">
+          <div class="jubilee-item-price">from £64.99</div>
+          <button class="jubilee-item-btn">Order →</button>
+        </div>
+      </div>
+      <div class="jubilee-card" onclick="openProdModal('diamond-jubilee','Diamond Jubilee Collection','💎','60 years — the rarest milestone. An extraordinary keepsake set worthy of a lifetime of memories.','74.99','diamond-jubilee')">
+        <div class="gold-bar"></div>
+        <div class="jubilee-top">
+          <span class="jubilee-medal">💎</span>
+          <div class="jubilee-name">Diamond Jubilee</div>
+          <div class="jubilee-years">60 Years Together</div>
+        </div>
+        <div class="jubilee-items">
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Gallery Canvas (A1)</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Luxury Cushion</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Heritage Jigsaw</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Acrylic Memory Block</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+        </div>
+        <div class="jubilee-item-footer">
+          <div class="jubilee-item-price">from £74.99</div>
+          <button class="jubilee-item-btn">Order →</button>
+        </div>
+      </div>
+      <div class="jubilee-card" onclick="openProdModal('platinum-jubilee','Platinum Jubilee Collection','🤍','70 years of love — the most precious anniversary of all. The complete ONJJEM keepsake collection.','89.99','platinum-jubilee')">
+        <div class="gold-bar"></div>
+        <div class="jubilee-top">
+          <span class="jubilee-medal">🤍</span>
+          <div class="jubilee-name">Platinum Jubilee</div>
+          <div class="jubilee-years">70 Years Together</div>
+        </div>
+        <div class="jubilee-items">
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Gallery Canvas (A0)</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Luxury Cushion</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Heritage Jigsaw (1000pc)</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+          <div class="jubilee-item-row"><span class="jubilee-item-name">Silk Keepsake</span><span style="font-size:12px;color:var(--gold)">✓</span></div>
+        </div>
+        <div class="jubilee-item-footer">
+          <div class="jubilee-item-price">from £89.99</div>
+          <button class="jubilee-item-btn">Order →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: CANVAS PRINTS -->
+<div class="shop-section" id="canvas" style="background:var(--bg2);">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🖼</div>
+      <div class="section-label-text">
+        <h2>Canvas &amp; Fine Art Prints</h2>
+        <p>Gallery-stretched, ready to hang — from A4 to A0</p>
+      </div>
+    </div>
+    <div class="prod-grid">
+      <div class="prod-card" onclick="openProdModal('canvas-a4','Canvas Print A4','🖼','Premium gallery-wrapped canvas, ready to hang. Your restored photograph printed at A4 (210 × 297 mm) on archival-quality canvas with a solid wood stretcher.','24.99','canvas-a4')">
+        <div class="prod-img-placeholder">🖼</div>
+        <div class="prod-body">
+          <div class="prod-name">Canvas Print A4</div>
+          <div class="prod-desc">210 × 297 mm · Gallery stretched · Ready to hang</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>24.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('canvas-a3','Canvas Print A3','🖼','A statement A3 canvas for your living room wall. Your restored photograph on archival canvas with solid oak stretcher bars.','34.99','canvas-a3')">
+        <div class="prod-img-placeholder">🖼</div>
+        <div class="prod-body">
+          <div class="prod-name">Canvas Print A3</div>
+          <div class="prod-desc">297 × 420 mm · Gallery stretched · Ready to hang</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>34.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('canvas-a2','Canvas Print A2','🖼','Make a real statement. A2 gallery canvas — your restored photograph, printed in stunning detail on archival canvas with hardwood stretcher bars.','49.99','canvas-a2')">
+        <div class="prod-img-placeholder">🖼</div>
+        <div class="prod-body">
+          <div class="prod-name">Canvas Print A2</div>
+          <div class="prod-desc">420 × 594 mm · Gallery stretched · Ready to hang</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>49.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('canvas-a1','Canvas Print A1','🖼','A truly commanding canvas. A1 size — your restored photograph printed on premium archival canvas at near-life-size scale.','69.99','canvas-a1')">
+        <div class="prod-img-placeholder">🖼</div>
+        <div class="prod-body">
+          <div class="prod-name">Canvas Print A1</div>
+          <div class="prod-desc">594 × 841 mm · Gallery stretched · Ready to hang</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>69.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('canvas-a0','Canvas Print A0','🖼','The ultimate canvas. A0 size — a breathtaking exhibition-scale print of your restored family photograph, stretched on premium hardwood bars.','99.99','canvas-a0')">
+        <div class="prod-img-placeholder">🖼</div>
+        <div class="prod-body">
+          <div class="prod-name">Canvas Print A0</div>
+          <div class="prod-desc">841 × 1189 mm · Gallery stretched · Exhibition quality</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>99.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: LOUNGE & HOME -->
+<div class="shop-section" id="lounge">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🏠</div>
+      <div class="section-label-text">
+        <h2>Lounge &amp; Home Gifts</h2>
+        <p>Cushions, throws, silk keepsakes — your memories woven into daily life</p>
+      </div>
+    </div>
+    <div class="prod-grid">
+      <div class="prod-card" onclick="openProdModal('cushion-sm','Photo Cushion (Small)','🛋️','45 × 45 cm luxury cushion printed with your restored photograph. Velvet cover, full feather inner, zip closure.','39.99','cushion-sm')">
+        <div class="prod-img-placeholder">🛋️</div>
+        <div class="prod-body">
+          <div class="prod-name">Photo Cushion</div>
+          <div class="prod-desc">45 × 45 cm · Velvet cover · Feather inner · Zip closure</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>39.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('cushion-lg','Large Luxury Cushion','🛋️','55 × 55 cm extra-large luxury cushion — the full photo, beautifully printed, impossible to miss.','59.99','cushion-lg')">
+        <div class="prod-img-placeholder">🛋️</div>
+        <div class="prod-body">
+          <div class="prod-name">Large Luxury Cushion</div>
+          <div class="prod-desc">55 × 55 cm · Premium velvet · Feather inner · XL format</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>59.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('throw','Luxury Photo Throw','🧣','Warm, soft photo throw — 150 × 200 cm fleece with your restored photograph printed edge-to-edge. Perfect for the sofa or as a gift.','69.99','throw')">
+        <div class="prod-img-placeholder">🧣</div>
+        <div class="prod-body">
+          <div class="prod-name">Luxury Photo Throw</div>
+          <div class="prod-desc">150 × 200 cm · Fleece · Edge-to-edge print · Gift-boxed</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>69.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('silk-keepsake','Silk Photo Keepsake','🧵','A 30 × 30 cm silk-effect print of your restored photograph, presented in a luxury gift box. An heirloom quality keepsake.','44.99','silk-keepsake')">
+        <div class="prod-img-placeholder">🧵</div>
+        <div class="prod-body">
+          <div class="prod-name">Silk Photo Keepsake</div>
+          <div class="prod-desc">30 × 30 cm · Silk-effect · Luxury gift box included</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>44.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: JIGSAWS -->
+<div class="shop-section" id="jigsaws" style="background:var(--bg2);">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🧩</div>
+      <div class="section-label-text">
+        <h2>Heritage Jigsaws</h2>
+        <p>Heirloom-quality puzzles made from your restored photos</p>
+      </div>
+    </div>
+    <div class="prod-grid">
+      <div class="prod-card" onclick="openProdModal('jigsaw-252','Heritage Jigsaw 252pc','🧩','252-piece premium jigsaw featuring your restored photograph. Thick cardboard pieces, smooth finish, presented in a keepsake tin.','29.99','jigsaw-252')">
+        <div class="prod-img-placeholder">🧩</div>
+        <div class="prod-body">
+          <div class="prod-name">Heritage Jigsaw 252pc</div>
+          <div class="prod-desc">252 pieces · 38 × 28 cm · Premium cardboard · Keepsake tin</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>29.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('jigsaw-500','Heritage Jigsaw 500pc','🧩','500 pieces of your restored family memory. A satisfying challenge with a beautiful result. Thick smooth-finish pieces in a premium box.','39.99','jigsaw-500')">
+        <div class="prod-img-placeholder">🧩</div>
+        <div class="prod-body">
+          <div class="prod-name">Heritage Jigsaw 500pc</div>
+          <div class="prod-desc">500 pieces · 50 × 38 cm · Premium cardboard · Presentation box</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>39.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('jigsaw-1000','Heritage Jigsaw 1000pc','🧩','The ultimate family jigsaw — 1000 precision-cut pieces of your restored photograph. A gift that becomes a family tradition.','54.99','jigsaw-1000')">
+        <div class="prod-img-placeholder">🧩</div>
+        <div class="prod-body">
+          <div class="prod-name">Heritage Jigsaw 1000pc</div>
+          <div class="prod-desc">1000 pieces · 70 × 50 cm · Premium cardboard · Luxury box</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>54.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: PERSONAL GIFTS -->
+<div class="shop-section" id="gifts">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🎁</div>
+      <div class="section-label-text">
+        <h2>Personal Gifts</h2>
+        <p>Mugs, keyrings, and memory blocks — thoughtful daily keepsakes</p>
+      </div>
+    </div>
+    <div class="prod-grid">
+      <div class="prod-card" onclick="openProdModal('mug','Photo Memory Mug','☕','A ceramic mug with your restored photograph printed in full colour. Dishwasher safe, 11oz, presented in a gift box.','19.99','mug')">
+        <div class="prod-img-placeholder">☕</div>
+        <div class="prod-body">
+          <div class="prod-name">Photo Memory Mug</div>
+          <div class="prod-desc">11oz ceramic · Dishwasher safe · Full colour · Gift box</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>19.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('keyring','Photo Keyring','🔑','Carry your restored family photo everywhere. Durable metal keyring with a glossy 4 × 3 cm photo panel, gift-wrapped.','14.99','keyring')">
+        <div class="prod-img-placeholder">🔑</div>
+        <div class="prod-body">
+          <div class="prod-name">Photo Keyring</div>
+          <div class="prod-desc">Metal · 4 × 3 cm panel · Glossy finish · Gift-wrapped</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>14.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('acrylic-block','Acrylic Memory Block','🔲','A stunning 15 × 15 cm acrylic block with your restored photograph embedded inside — a modern, elegant desk ornament.','34.99','acrylic-block')">
+        <div class="prod-img-placeholder">🔲</div>
+        <div class="prod-body">
+          <div class="prod-name">Acrylic Memory Block</div>
+          <div class="prod-desc">15 × 15 cm · Deep acrylic · Desk ornament · Gift-boxed</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>34.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card" onclick="openProdModal('phone-case','Photo Phone Case','📱','Custom phone case featuring your restored photograph — available for iPhone and Samsung Galaxy. Tough hybrid shell, precise cutouts.','24.99','phone-case')">
+        <div class="prod-img-placeholder">📱</div>
+        <div class="prod-body">
+          <div class="prod-name">Photo Phone Case</div>
+          <div class="prod-desc">iPhone &amp; Samsung · Tough hybrid · Precise cutouts</div>
+          <div class="prod-footer">
+            <div class="prod-price"><sup>£</sup>24.99</div>
+            <button class="prod-btn">Order →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">ONJJEM</div>
+    <div class="footer-tagline">Cinema-Grade AI Photo Restoration · London</div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/#tool">Restore a Photo</a>
+      <a href="/#gallery">Gallery</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/terms">Terms of Use</a>
+      <a href="/support">Support</a>
+      <a href="mailto:hello@onjjem.com">hello@onjjem.com</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 ONJJEM, London. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- ORDER MODAL -->
+<div class="modal-backdrop" id="prodModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeProdModal()">✕</button>
+    <div class="gold-bar" style="margin:-36px -36px 24px;"></div>
+    <span class="modal-icon" id="modalIcon">🖼</span>
+    <div class="modal-title" id="modalTitle">Product Name</div>
+    <p class="modal-sub" id="modalDesc">Description</p>
+    <div class="modal-price" id="modalPrice">£0.00 <small>one-time</small></div>
+    <div class="modal-info-row">
+      <span class="modal-info-icon">📧</span>
+      <div class="modal-info-text">
+        <strong>How it works:</strong> After payment you'll receive a confirmation email. Simply reply with your restored photo and we'll print and dispatch your order within 3–5 working days. <strong>No photo upload required at checkout.</strong>
+      </div>
+    </div>
+    <button class="modal-btn" id="modalOrderBtn" onclick="proceedToCheckout()">Order Now &amp; Pay Securely</button>
+    <span class="modal-cancel" onclick="closeProdModal()">Cancel</span>
+  </div>
+</div>
+
+<div id="order-success-banner">
+  ✅ Order placed! Check your email for next steps — just reply with your photo and we'll handle the rest.
+</div>
+
+<script>
+let currentSku = null;
+
+async function initStripe() {
+  try {
+    const r = await fetch('/api/stripe/config');
+    if (!r.ok) return;
+  } catch(e) {}
+}
+initStripe();
+
+function openProdModal(sku, name, icon, desc, price, skuCode) {
+  currentSku = skuCode || sku;
+  document.getElementById('modalTitle').textContent = name;
+  document.getElementById('modalIcon').textContent = icon;
+  document.getElementById('modalDesc').textContent = desc;
+  document.getElementById('modalPrice').innerHTML = '£' + price + ' <small>one-time</small>';
+  const btn = document.getElementById('modalOrderBtn');
+  btn.disabled = false;
+  btn.textContent = 'Order Now & Pay Securely';
+  document.getElementById('prodModal').classList.add('open');
+}
+
+function closeProdModal() {
+  document.getElementById('prodModal').classList.remove('open');
+  currentSku = null;
+}
+
+async function proceedToCheckout() {
+  if (!currentSku) return;
+  const btn = document.getElementById('modalOrderBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Loading secure checkout…';
+  try {
+    const r = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sku: currentSku })
+    });
+    const { url, error } = await r.json();
+    if (error || !url) throw new Error(error || 'Could not start checkout');
+    window.location.href = url;
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Order Now & Pay Securely';
+    alert('Sorry, something went wrong starting the checkout. Please email hello@onjjem.com and we\'ll sort it.');
+  }
+}
+
+document.getElementById('prodModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('prodModal')) closeProdModal();
+});
+
+if (location.search.includes('order=success') || location.hash === '#order-success') {
+  const banner = document.getElementById('order-success-banner');
+  banner.style.display = 'block';
+  setTimeout(() => { banner.style.display = 'none'; history.replaceState(null, '', location.pathname); }, 9000);
+}
+
+document.querySelectorAll('.cat-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+const sections = document.querySelectorAll('.shop-section[id]');
+const tabs = document.querySelectorAll('.cat-tab');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tabs.forEach(t => {
+        t.classList.toggle('active', t.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, { threshold: 0.35 });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

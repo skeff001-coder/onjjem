@@ -170,6 +170,13 @@ app.get(["/", "/home"], (_req: Request, res: Response) => {
   );
 });
 
+// Gift shop — separate page
+app.get("/shop", (_req: Request, res: Response) => {
+  res.sendFile(
+    path.resolve(__dirname, "../../../documents/onjjem-shop.html")
+  );
+});
+
 // Gallery images for the website
 app.get("/api/gallery/:filename", (req: Request, res: Response) => {
   const safe = path.basename(String(req.params["filename"] ?? ""));

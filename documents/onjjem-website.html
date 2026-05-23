@@ -11,54 +11,42 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:        #0E0C08;
-      --bg2:       #1C1A14;
-      --bg3:       #12100B;
-      --card:      #1A1610;
-      --card2:     #16140F;
-      --gold:      #C9960C;
-      --gold-lt:   #F5D78E;
-      --gold-dk:   #A67C00;
-      --cream:     #FAF7F2;
-      --cream55:   rgba(250,247,242,0.55);
-      --cream35:   rgba(250,247,242,0.35);
-      --cream20:   rgba(250,247,242,0.20);
-      --gold-b:    rgba(201,150,12,0.28);
-      --gold-b2:   rgba(201,150,12,0.45);
-      --gold-bg:   rgba(201,150,12,0.10);
-      --gold-bg2:  rgba(201,150,12,0.18);
-      --r:         16px;
-      --r-lg:      20px;
+      --bg:       #0E0C08;
+      --bg2:      #1C1A14;
+      --bg3:      #12100B;
+      --card:     #1A1610;
+      --card2:    #16140F;
+      --gold:     #C9960C;
+      --gold-lt:  #F5D78E;
+      --gold-dk:  #A67C00;
+      --cream:    #FAF7F2;
+      --c55:      rgba(250,247,242,0.55);
+      --c35:      rgba(250,247,242,0.35);
+      --c20:      rgba(250,247,242,0.20);
+      --gb:       rgba(201,150,12,0.28);
+      --gb2:      rgba(201,150,12,0.45);
+      --gbg:      rgba(201,150,12,0.10);
+      --gbg2:     rgba(201,150,12,0.18);
+      --r:        16px;
+      --r-lg:     20px;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--cream); overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--cream); overflow-x: hidden; }
 
-    /* ── GOLD UTILS ── */
     .gold-rule { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,150,12,0.4), transparent); width: 100%; }
     .gold-bar   { height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold)); border-radius: 2px; }
     .gold-bar-w { height: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-lt), #A8E6FF, var(--gold-lt), var(--gold)); }
-    .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); font-family: 'Inter', sans-serif; }
-    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(26px, 3.5vw, 42px); font-weight: 700; color: var(--cream); line-height: 1.2; }
-    .section-sub { font-size: 14px; color: var(--cream55); line-height: 1.7; }
+    .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(26px,3.5vw,42px); font-weight: 700; color: var(--cream); line-height: 1.2; }
+    .section-sub { font-size: 14px; color: var(--c55); line-height: 1.7; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-header .eyebrow { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px; }
+    .section-header .section-sub { max-width: 480px; margin: 12px auto 0; }
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 40px;
-      background: rgba(14,12,8,0.94); backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--gold-b);
-    }
-    .nav-brand {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(32px, 4vw, 52px);
-      letter-spacing: clamp(6px, 1vw, 12px);
-      background: linear-gradient(135deg, #7A5500 0%, var(--gold) 25%, var(--gold-lt) 50%, #E8B84B 72%, var(--gold) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      text-decoration: none; filter: drop-shadow(0 2px 16px rgba(201,150,12,0.45)); line-height: 1;
-    }
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 40px; background: rgba(14,12,8,0.94); backdrop-filter: blur(20px); border-bottom: 1px solid var(--gb); }
+    .nav-brand { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px,4vw,52px); letter-spacing: clamp(6px,1vw,12px); background: linear-gradient(135deg,#7A5500,var(--gold) 25%,var(--gold-lt) 50%,#E8B84B 72%,var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none; filter: drop-shadow(0 2px 16px rgba(201,150,12,0.45)); line-height: 1; }
     .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
     .nav-links a { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(250,247,242,0.45); text-decoration: none; transition: color 0.2s; }
     .nav-links a:hover { color: var(--gold); }
@@ -66,176 +54,68 @@
     .nav-cta:hover { background: var(--gold-lt) !important; color: var(--bg) !important; }
     @media (max-width: 640px) { nav { padding: 14px 20px; } .nav-links { display: none; } }
 
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 110px 24px 64px; position: relative; overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 80% 55% at 50% 0%, rgba(201,150,12,0.08) 0%, transparent 68%),
-        radial-gradient(ellipse 40% 30% at 85% 85%, rgba(201,150,12,0.05) 0%, transparent 60%);
-    }
-    .hero-layout {
-      display: grid; grid-template-columns: 1fr minmax(0,560px) 1fr;
-      gap: 32px; align-items: center; width: 100%; max-width: 1340px; position: relative;
-    }
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 110px 24px 64px; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 55% at 50% 0%,rgba(201,150,12,0.08) 0%,transparent 68%), radial-gradient(ellipse 40% 30% at 85% 85%,rgba(201,150,12,0.05) 0%,transparent 60%); }
+    .hero-layout { display: grid; grid-template-columns: 1fr minmax(0,560px) 1fr; gap: 32px; align-items: center; width: 100%; max-width: 1340px; position: relative; }
     @media (max-width: 960px) { .hero-panel { display: none !important; } .hero-layout { grid-template-columns: 1fr; } }
-
-    .hero-panel {
-      border-radius: 18px; overflow: hidden;
-      border: 1px solid var(--gold-b);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,150,12,0.06);
-      background: var(--card);
-    }
+    .hero-panel { border-radius: 18px; overflow: hidden; border: 1px solid var(--gb); box-shadow: 0 20px 60px rgba(0,0,0,0.6); background: var(--card); }
     .hero-panel-slot { position: relative; overflow: hidden; }
     .hero-panel-slot img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform 0.4s; }
     .hero-panel:hover .hero-panel-slot img { transform: scale(1.03); }
-    .hero-panel-lbl {
-      position: absolute; top: 10px; font-size: 9px; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px;
-    }
+    .hero-panel-lbl { position: absolute; top: 10px; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; }
     .hero-panel-lbl.before { left: 10px; background: rgba(0,0,0,0.72); color: rgba(255,255,255,0.85); }
     .hero-panel-lbl.after  { right: 10px; background: rgba(201,150,12,0.9); color: var(--bg); }
-    .hero-panel-foot {
-      padding: 12px 16px; background: #1A1610;
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .hero-panel-foot { padding: 12px 16px; background: #1A1610; display: flex; align-items: center; justify-content: space-between; }
     .hero-panel-foot-name { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600; color: var(--cream); }
-    .hero-panel-foot-tag {
-      font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
-      color: var(--gold); background: var(--gold-bg); padding: 3px 9px; border-radius: 20px;
-      border: 1px solid var(--gold-b);
-    }
-
-    /* Hero centre */
+    .hero-panel-foot-tag { font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); background: var(--gbg); padding: 3px 9px; border-radius: 20px; border: 1px solid var(--gb); }
     .hero-center { display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .hero-eyebrow-pill {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: var(--gold-bg); border: 1px solid rgba(201,150,12,0.35);
-      color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; padding: 7px 16px; border-radius: 40px; margin-bottom: 22px;
-    }
-    .hero-onjjem {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(72px, 12vw, 140px);
-      letter-spacing: clamp(10px, 2vw, 24px);
-      background: linear-gradient(135deg, #7A5500 0%, var(--gold) 20%, var(--gold-lt) 50%, #E8B84B 78%, var(--gold) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      filter: drop-shadow(0 4px 24px rgba(201,150,12,0.5));
-      line-height: 0.9; margin-bottom: 10px;
-    }
-    .hero-tagline {
-      font-family: 'Cinzel', serif; font-size: clamp(13px, 1.8vw, 17px);
-      font-style: italic; color: var(--gold-lt); letter-spacing: 1px; margin-bottom: 6px;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.7);
-    }
+    .hero-eyebrow-pill { display: inline-flex; align-items: center; gap: 7px; background: var(--gbg); border: 1px solid rgba(201,150,12,0.35); color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 7px 16px; border-radius: 40px; margin-bottom: 22px; }
+    .hero-onjjem { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px,12vw,140px); letter-spacing: clamp(10px,2vw,24px); background: linear-gradient(135deg,#7A5500 0%,var(--gold) 20%,var(--gold-lt) 50%,#E8B84B 78%,var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 4px 24px rgba(201,150,12,0.5)); line-height: 0.9; margin-bottom: 10px; }
+    .hero-tagline { font-family: 'Cinzel', serif; font-size: clamp(13px,1.8vw,17px); font-style: italic; color: var(--gold-lt); letter-spacing: 1px; margin-bottom: 6px; text-shadow: 0 1px 4px rgba(0,0,0,0.7); }
     .hero-gems { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 20px; }
     .hero-gems span { font-size: 9px; color: rgba(201,150,12,0.7); }
-    .hero-sub {
-      font-size: clamp(14px, 1.8vw, 16px); line-height: 1.7; color: var(--cream55);
-      max-width: 480px; margin-bottom: 36px;
-    }
+    .hero-sub { font-size: clamp(14px,1.8vw,16px); line-height: 1.7; color: var(--c55); max-width: 480px; margin-bottom: 36px; }
     .hero-chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 32px; }
-    .hero-chip {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(0,0,0,0.4); border: 1px solid rgba(245,215,142,0.4);
-      border-radius: 20px; padding: 5px 12px;
-      font-size: 11px; font-weight: 600; color: var(--gold-lt); letter-spacing: 0.3px;
-    }
+    .hero-chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.4); border: 1px solid rgba(245,215,142,0.4); border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: 600; color: var(--gold-lt); letter-spacing: 0.3px; }
     .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold));
-      color: var(--bg); font-size: 14px; font-weight: 700; padding: 15px 30px;
-      border-radius: 50px; text-decoration: none; letter-spacing: 0.3px;
-      box-shadow: 0 8px 28px rgba(201,150,12,0.35); transition: transform 0.2s, box-shadow 0.2s;
-      border: none; cursor: pointer;
-    }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold)); color: var(--bg); font-size: 14px; font-weight: 700; padding: 15px 30px; border-radius: 50px; text-decoration: none; box-shadow: 0 8px 28px rgba(201,150,12,0.35); transition: transform 0.2s,box-shadow 0.2s; border: none; cursor: pointer; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,150,12,0.45); }
-    .btn-secondary {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(250,247,242,0.05); border: 1px solid rgba(250,247,242,0.14);
-      color: var(--cream); font-size: 14px; font-weight: 500; padding: 15px 30px;
-      border-radius: 50px; text-decoration: none; transition: background 0.2s; cursor: pointer;
-    }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: rgba(250,247,242,0.05); border: 1px solid rgba(250,247,242,0.14); color: var(--cream); font-size: 14px; font-weight: 500; padding: 15px 30px; border-radius: 50px; text-decoration: none; transition: background 0.2s; cursor: pointer; }
     .btn-secondary:hover { background: rgba(250,247,242,0.1); }
-    .scroll-hint { display: flex; flex-direction: column; align-items: center; gap: 7px; color: rgba(250,247,242,0.22); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; position: relative; }
-    .scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom, rgba(201,150,12,0.45), transparent); }
+    .scroll-hint { display: flex; flex-direction: column; align-items: center; gap: 7px; color: rgba(250,247,242,0.22); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; }
+    .scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom,rgba(201,150,12,0.45),transparent); }
 
-    /* ── TRUST BAR ── */
-    .trust-bar {
-      background: rgba(201,150,12,0.04);
-      border-top: 1px solid rgba(201,150,12,0.12);
-      border-bottom: 1px solid rgba(201,150,12,0.12);
-      padding: 16px 40px;
-    }
-    .trust-inner {
-      max-width: 960px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap;
-    }
-    .trust-item {
-      display: flex; align-items: center; gap: 8px;
-      background: rgba(0,0,0,0.35); border: 1px solid rgba(245,215,142,0.25);
-      border-radius: 20px; padding: 5px 14px;
-      font-size: 11px; font-weight: 600; color: rgba(250,247,242,0.55); white-space: nowrap;
-    }
+    /* TRUST BAR */
+    .trust-bar { background: rgba(201,150,12,0.04); border-top: 1px solid rgba(201,150,12,0.12); border-bottom: 1px solid rgba(201,150,12,0.12); padding: 16px 40px; }
+    .trust-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap; }
+    .trust-item { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.35); border: 1px solid rgba(245,215,142,0.25); border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 600; color: var(--c55); white-space: nowrap; }
     .trust-item .ti-icon { color: var(--gold); font-size: 13px; }
 
-    /* ── SHARED SECTION WRAPPER ── */
-    .section { padding: 88px 24px; max-width: 1100px; margin: 0 auto; }
-    .section-header { text-align: center; margin-bottom: 48px; }
-    .section-header .eyebrow { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px; }
-    .section-header .section-sub { max-width: 480px; margin: 12px auto 0; }
-
-    /* ── ENHANCEMENT MODES GRID ── */
+    /* ENHANCEMENT MODES */
     .enhancements-section { background: var(--bg3); padding: 80px 24px; }
     .enhancements-inner { max-width: 1100px; margin: 0 auto; }
-    .enh-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 40px; }
-    @media (max-width: 760px) { .enh-card-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 460px) { .enh-card-grid { grid-template-columns: 1fr 1fr; } }
+    .enh-card-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 40px; }
+    @media (max-width: 760px) { .enh-card-grid { grid-template-columns: repeat(2,1fr); } }
+    .enh-card { background: var(--card2); border: 1px solid rgba(201,150,12,0.2); border-radius: var(--r); overflow: hidden; padding: 20px 16px 18px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; transition: border-color 0.2s,transform 0.2s; }
+    .enh-card:hover { border-color: rgba(201,150,12,0.5); transform: translateY(-2px); }
+    .enh-icon-ring { width: 52px; height: 52px; border-radius: 26px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .enh-label { font-size: 15px; font-weight: 700; }
+    .enh-sub { font-size: 11px; color: var(--c55); line-height: 1.5; }
 
-    .enh-card {
-      background: var(--card2); border: 1px solid rgba(201,150,12,0.2);
-      border-radius: var(--r); overflow: hidden; padding: 20px 16px 18px;
-      display: flex; flex-direction: column; align-items: center; text-align: center;
-      gap: 10px; transition: border-color 0.2s, transform 0.2s;
-    }
-    .enh-card:hover { border-color: var(--accent-color, rgba(201,150,12,0.5)); transform: translateY(-2px); }
-    .enh-icon-ring {
-      width: 52px; height: 52px; border-radius: 26px;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--accent-bg); border: 1px solid var(--accent-ring);
-      font-size: 22px;
-    }
-    .enh-label { font-size: 15px; font-weight: 700; font-family: 'Inter', sans-serif; }
-    .enh-sub { font-size: 11px; color: var(--cream55); line-height: 1.5; }
-
-    /* ── LIVE TOOL ── */
+    /* LIVE TOOL */
     .tool-section { background: var(--bg2); padding: 80px 24px; }
     .tool-inner { max-width: 800px; margin: 0 auto; }
-    .tool-card {
-      background: var(--card); border: 1px solid var(--gold-b);
-      border-radius: 22px; overflow: hidden;
-      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
-    }
-    .tool-card-bar { height: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold)); }
+    .tool-card { background: var(--card); border: 1px solid var(--gb); border-radius: 22px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+    .tool-card-bar { height: 4px; background: linear-gradient(90deg,var(--gold),var(--gold-lt),var(--gold)); }
     .tool-card-inner { padding: 36px; }
     @media (max-width: 640px) { .tool-card-inner { padding: 22px 16px; } }
-
-    .upload-zone {
-      border: 2px dashed rgba(201,150,12,0.3); border-radius: 14px; padding: 52px 24px;
-      text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
-      position: relative; overflow: hidden;
-    }
-    .upload-zone:hover, .upload-zone.dragover { border-color: var(--gold); background: rgba(201,150,12,0.04); }
+    .upload-zone { border: 2px dashed rgba(201,150,12,0.3); border-radius: 14px; padding: 52px 24px; text-align: center; cursor: pointer; transition: border-color 0.2s,background 0.2s; position: relative; overflow: hidden; }
+    .upload-zone:hover,.upload-zone.dragover { border-color: var(--gold); background: rgba(201,150,12,0.04); }
     .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
     .upload-icon { font-size: 40px; margin-bottom: 14px; display: block; }
     .upload-title { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
     .upload-hint { font-size: 12px; color: rgba(250,247,242,0.3); }
-
     .preview-area { display: none; }
     .preview-area.active { display: block; }
     .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
@@ -246,220 +126,114 @@
     .preview-label.after { left: auto; right: 10px; color: var(--gold-lt); background: rgba(201,150,12,0.2); }
     .preview-blur-overlay { position: absolute; inset: 0; background: rgba(14,12,8,0.55); backdrop-filter: blur(3px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px; text-align: center; }
     .preview-blur-overlay p { font-size: 13px; color: rgba(250,247,242,0.7); line-height: 1.5; }
-
     .mode-picker { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 22px; }
-    .mode-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cream35); margin-bottom: 10px; }
-    .mode-btn {
-      padding: 7px 15px; border-radius: 40px;
-      border: 1px solid rgba(201,150,12,0.28); background: transparent;
-      color: rgba(250,247,242,0.55); font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
-      cursor: pointer; transition: all 0.2s;
-    }
+    .mode-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--c35); margin-bottom: 10px; }
+    .mode-btn { padding: 7px 15px; border-radius: 40px; border: 1px solid rgba(201,150,12,0.28); background: transparent; color: rgba(250,247,242,0.55); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .mode-btn:hover { border-color: var(--gold); color: var(--gold); }
-    .mode-btn.active { background: var(--gold-bg2); border-color: var(--gold); color: var(--gold); }
-
+    .mode-btn.active { background: var(--gbg2); border-color: var(--gold); color: var(--gold); }
     .tool-action { display: flex; flex-direction: column; gap: 10px; }
     .btn-restore { width: 100%; padding: 17px; border-radius: 13px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
-    .btn-restore-free { background: var(--gold-bg); border: 1px solid rgba(201,150,12,0.4); color: var(--gold); }
-    .btn-restore-free:hover { background: var(--gold-bg2); }
-    .btn-restore-paid { background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold)); color: var(--bg); box-shadow: 0 6px 24px rgba(201,150,12,0.28); }
-    .btn-restore-paid:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(201,150,12,0.4); }
+    .btn-restore-free { background: var(--gbg); border: 1px solid rgba(201,150,12,0.4); color: var(--gold); }
+    .btn-restore-free:hover { background: var(--gbg2); }
+    .btn-restore-paid { background: linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold)); color: var(--bg); box-shadow: 0 6px 24px rgba(201,150,12,0.28); }
+    .btn-restore-paid:hover { transform: translateY(-1px); }
     .btn-download { background: rgba(39,174,96,0.14); border: 1px solid rgba(39,174,96,0.4); color: #5DE391; font-size: 14px; font-weight: 700; cursor: pointer; }
     .btn-download:hover { background: rgba(39,174,96,0.22); }
     .btn-reset { background: transparent; border: 1px solid rgba(250,247,242,0.1); color: rgba(250,247,242,0.35); font-size: 13px; cursor: pointer; padding: 11px; border-radius: 10px; }
-    .btn-reset:hover { border-color: rgba(250,247,242,0.22); color: rgba(250,247,242,0.55); }
+    .btn-reset:hover { border-color: rgba(250,247,242,0.22); color: var(--c55); }
     .tool-note { font-size: 11px; color: rgba(250,247,242,0.22); text-align: center; margin-top: 14px; line-height: 1.6; }
-
-    /* Status messages */
-    .status-msg { font-size: 13px; color: rgba(250,247,242,0.5); text-align: center; padding: 12px; background: rgba(255,255,255,0.04); border-radius: 8px; margin-bottom: 12px; display: none; }
+    .status-msg { font-size: 13px; color: var(--c55); text-align: center; padding: 12px; background: rgba(255,255,255,0.04); border-radius: 8px; margin-bottom: 12px; display: none; }
     .status-msg.visible { display: block; }
     .status-msg.error { background: rgba(255,82,82,0.08); color: #FF8080; border: 1px solid rgba(255,82,82,0.2); }
     .status-msg.success { background: rgba(39,174,96,0.08); color: #5DE391; border: 1px solid rgba(39,174,96,0.2); }
 
-    /* ── BEFORE / AFTER GALLERY ── */
-    .ba-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-    .ba-card { border-radius: 18px; overflow: hidden; background: var(--card); border: 1px solid var(--gold-b); transition: border-color 0.2s; }
-    .ba-card:hover { border-color: var(--gold-b2); }
+    /* BEFORE / AFTER GALLERY */
+    .ba-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap: 20px; }
+    .ba-card { border-radius: 18px; overflow: hidden; background: var(--card); border: 1px solid var(--gb); transition: border-color 0.2s; }
+    .ba-card:hover { border-color: var(--gb2); }
     .ba-images { display: grid; grid-template-columns: 1fr 1fr; position: relative; }
     .ba-images img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
     .ba-label { position: absolute; top: 10px; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: rgba(0,0,0,0.65); color: rgba(255,255,255,0.8); padding: 4px 10px; border-radius: 4px; }
     .ba-label.left { left: 10px; }
     .ba-label.right { right: 10px; left: auto; color: var(--gold-lt); }
     .ba-divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: rgba(255,255,255,0.55); transform: translateX(-50%); }
-    .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 30px; height: 30px; border-radius: 50%; background: rgba(201,150,12,0.9); display: flex; align-items: center; justify-content: center; font-size: 11px; box-shadow: 0 2px 12px rgba(0,0,0,0.4); color: var(--bg); font-weight: 700; }
+    .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 30px; height: 30px; border-radius: 50%; background: rgba(201,150,12,0.9); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--bg); font-weight: 700; }
     .ba-caption { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
     .ba-caption-label { font-size: 12px; font-weight: 600; color: var(--cream); font-family: 'Cinzel', serif; }
-    .ba-caption-mode { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); background: var(--gold-bg); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--gold-b); }
+    .ba-caption-mode { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); background: var(--gbg); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--gb); }
 
-    /* ── PRINT YOUR MEMORIES ── */
+    /* PRINT YOUR MEMORIES */
     .print-section { background: var(--bg3); padding: 80px 24px; }
     .print-inner { max-width: 860px; margin: 0 auto; }
-    .print-card {
-      background: var(--card); border: 1px solid var(--gold-b);
-      border-radius: 22px; overflow: hidden;
-    }
+    .print-card { background: var(--card); border: 1px solid var(--gb); border-radius: 22px; overflow: hidden; }
     .print-card-inner { padding: 36px 32px 28px; }
-    .print-head { margin-bottom: 28px; }
-    .print-head .eyebrow { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
-    .print-card-title { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 32px); font-weight: 700; color: var(--cream); margin-bottom: 8px; }
-    .print-card-sub { font-size: 13px; color: var(--cream55); line-height: 1.7; max-width: 540px; }
-
+    .print-card-sub { font-size: 13px; color: var(--c55); line-height: 1.7; max-width: 540px; margin-bottom: 8px; }
     .print-row { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; }
     .print-row + .print-row { border-top: 1px solid rgba(201,150,12,0.1); }
-    .print-row-icon {
-      width: 46px; height: 46px; border-radius: 23px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 20px;
-    }
+    .print-row-icon { width: 46px; height: 46px; border-radius: 23px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
     .print-row-body { flex: 1; }
     .print-row-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
-    .print-row-title { font-size: 14px; font-weight: 700; color: var(--cream); font-family: 'Inter', sans-serif; }
-    .print-row-badge {
-      font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
-      padding: 3px 9px; border-radius: 20px; border: 1px solid;
-    }
-    .print-row-desc { font-size: 12px; color: var(--cream55); line-height: 1.65; }
-    .print-row-cta {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--gold);
-      background: var(--gold-bg); border: 1px solid var(--gold-b); border-radius: 40px;
-      padding: 6px 16px; text-decoration: none; cursor: pointer;
-      transition: background 0.2s;
-    }
-    .print-row-cta:hover { background: var(--gold-bg2); }
+    .print-row-title { font-size: 14px; font-weight: 700; color: var(--cream); }
+    .print-row-badge { font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; border: 1px solid; }
+    .print-row-desc { font-size: 12px; color: var(--c55); line-height: 1.65; }
+    .print-row-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--gold); background: var(--gbg); border: 1px solid var(--gb); border-radius: 40px; padding: 6px 16px; text-decoration: none; cursor: pointer; transition: background 0.2s; }
+    .print-row-cta:hover { background: var(--gbg2); }
 
-    /* ── COLLECTIONS DIRECTORY ── */
+    /* COLLECTIONS DIRECTORY */
     .collections-section { padding: 80px 24px; max-width: 860px; margin: 0 auto; }
-    .collections-card {
-      background: var(--card); border: 1px solid var(--gold-b);
-      border-radius: 22px; overflow: hidden; margin-top: 28px;
-    }
-    .coll-row {
-      display: flex; align-items: center; gap: 14px; padding: 18px 24px;
-      transition: background 0.2s; text-decoration: none;
-    }
+    .collections-card { background: var(--card); border: 1px solid var(--gb); border-radius: 22px; overflow: hidden; margin-top: 28px; }
+    .coll-row { display: flex; align-items: center; gap: 14px; padding: 18px 24px; transition: background 0.2s; text-decoration: none; }
     .coll-row + .coll-row { border-top: 1px solid rgba(201,150,12,0.12); }
     .coll-row:hover { background: rgba(201,150,12,0.05); }
-    .coll-icon {
-      width: 40px; height: 40px; border-radius: 20px; flex-shrink: 0;
-      background: var(--gold-bg); border: 1px solid var(--gold-b);
-      display: flex; align-items: center; justify-content: center; font-size: 16px;
-    }
+    .coll-icon { width: 40px; height: 40px; border-radius: 20px; flex-shrink: 0; background: var(--gbg); border: 1px solid var(--gb); display: flex; align-items: center; justify-content: center; font-size: 16px; }
     .coll-text { flex: 1; }
-    .coll-label { font-size: 14px; font-weight: 700; color: var(--cream); font-family: 'Inter', sans-serif; margin-bottom: 2px; }
-    .coll-sub { font-size: 11px; color: var(--cream55); }
+    .coll-label { font-size: 14px; font-weight: 700; color: var(--cream); margin-bottom: 2px; }
+    .coll-sub { font-size: 11px; color: var(--c55); }
     .coll-arrow { color: rgba(201,150,12,0.5); font-size: 14px; flex-shrink: 0; }
-    .coll-cta-btn {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      margin-top: 20px; width: 100%; padding: 16px;
-      background: linear-gradient(90deg, var(--gold), var(--gold-dk));
-      border-radius: 14px; border: none; cursor: pointer;
-      font-size: 14px; font-weight: 700; color: #fff; letter-spacing: 0.3px;
-      text-decoration: none; transition: opacity 0.2s;
-    }
+    .coll-cta-btn { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; width: 100%; padding: 16px; background: linear-gradient(90deg,var(--gold),var(--gold-dk)); border-radius: 14px; border: none; cursor: pointer; font-size: 14px; font-weight: 700; color: #fff; text-decoration: none; transition: opacity 0.2s; }
     .coll-cta-btn:hover { opacity: 0.88; }
 
-    /* ── SHOP ── */
-    .shop-section { background: var(--bg3); padding: 88px 24px; }
-    .shop-inner { max-width: 1100px; margin: 0 auto; }
-    .shop-category { margin-bottom: 60px; }
-    .shop-cat-header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; flex-wrap: wrap; }
-    .shop-cat-icon {
-      width: 40px; height: 40px; border-radius: 20px;
-      background: var(--gold-bg); border: 1px solid var(--gold-b);
-      display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
-    }
-    .shop-cat-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 600; color: var(--cream); }
-    .shop-cat-sub { font-size: 13px; color: var(--cream55); margin-bottom: 24px; line-height: 1.65; max-width: 540px; }
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-    @media (max-width: 640px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } }
+    /* JUBILEE BANNER */
+    .jubilee-banner { border-radius: 18px; overflow: hidden; border: 1px solid var(--gb); background: linear-gradient(135deg,#080808,#0E0E0E,#050505); }
+    .jubilee-inner { padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
+    .jubilee-icon { width: 44px; height: 44px; border-radius: 22px; background: var(--gbg); border: 1px solid var(--gb); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .jubilee-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
+    .jubilee-title { font-family: 'Cinzel', serif; font-size: 16px; color: var(--cream); font-weight: 600; }
 
-    .product-card {
-      background: var(--card2); border: 1px solid rgba(201,150,12,0.18);
-      border-radius: 18px; overflow: hidden;
-      transition: border-color 0.22s, transform 0.22s;
-    }
-    .product-card:hover { border-color: var(--gold-b2); transform: translateY(-3px); }
-    .product-image {
-      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-      position: relative; overflow: hidden;
-    }
-    .prod-emoji-ring {
-      width: 64px; height: 64px; border-radius: 32px;
-      background: var(--gold-bg); border: 1.5px solid var(--gold-b);
-      display: flex; align-items: center; justify-content: center; font-size: 28px;
-    }
-    .product-body { padding: 14px 16px 16px; }
-    .product-cat { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
-    .product-name { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: var(--cream); margin-bottom: 5px; line-height: 1.3; }
-    .product-desc { font-size: 11px; color: rgba(250,247,242,0.35); line-height: 1.6; margin-bottom: 12px; }
-    .product-footer { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .product-price { font-size: 18px; font-weight: 900; color: var(--cream); font-family: 'Inter', sans-serif; }
-    .product-price small { font-size: 10px; color: var(--cream35); font-weight: 400; display: block; line-height: 1.2; }
-    .btn-order {
-      padding: 7px 16px; border-radius: 40px;
-      border: 1px solid var(--gold-b2); background: var(--gold-bg);
-      color: var(--gold); font-size: 11px; font-weight: 700; cursor: pointer;
-      transition: all 0.2s; letter-spacing: 0.3px; white-space: nowrap;
-    }
-    .btn-order:hover { background: var(--gold-bg2); border-color: var(--gold); }
-    .shop-note { font-size: 12px; color: rgba(250,247,242,0.22); margin-top: 20px; text-align: center; line-height: 1.7; }
-    .shop-note a { color: rgba(201,150,12,0.55); text-decoration: none; }
-    .shop-note a:hover { color: var(--gold); }
-
-    /* ── HOW IT WORKS ── */
+    /* HOW IT WORKS */
     .how-section { padding: 80px 24px; }
     .how-inner { max-width: 1100px; margin: 0 auto; }
-    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 28px; margin-top: 48px; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 28px; margin-top: 48px; }
     .step { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
-    .step-icon {
-      width: 64px; height: 64px; border-radius: 22px;
-      background: var(--gold-bg); border: 1px solid var(--gold-b);
-      display: flex; align-items: center; justify-content: center; font-size: 24px;
-    }
+    .step-icon { width: 64px; height: 64px; border-radius: 22px; background: var(--gbg); border: 1px solid var(--gb); display: flex; align-items: center; justify-content: center; font-size: 24px; }
     .step-num { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
     .step-title { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600; color: var(--cream); }
-    .step-desc { font-size: 12px; color: var(--cream55); line-height: 1.7; max-width: 200px; }
+    .step-desc { font-size: 12px; color: var(--c55); line-height: 1.7; max-width: 200px; }
 
-    /* ── PRICING ── */
+    /* PRICING */
     .pricing-section { background: var(--bg2); padding: 88px 24px; }
     .pricing-inner { max-width: 940px; margin: 0 auto; }
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 48px; }
-    .price-card {
-      background: var(--card); border: 2px solid rgba(255,255,255,0.07);
-      border-radius: var(--r-lg); padding: 26px 22px;
-      display: flex; flex-direction: column; gap: 10px;
-      position: relative; transition: border-color 0.2s, transform 0.2s;
-    }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 16px; margin-top: 48px; }
+    .price-card { background: var(--card); border: 2px solid rgba(255,255,255,0.07); border-radius: var(--r-lg); padding: 26px 22px; display: flex; flex-direction: column; gap: 10px; position: relative; transition: border-color 0.2s,transform 0.2s; }
     .price-card:hover { transform: translateY(-4px); }
     .price-card.featured { border-color: #27AE60; background: rgba(39,174,96,0.05); }
-    .price-badge {
-      position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
-      background: #27AE60; color: #fff; font-size: 9px; font-weight: 700;
-      letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; white-space: nowrap;
-    }
-    .price-icon {
-      width: 42px; height: 42px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center; font-size: 18px;
-    }
+    .price-badge { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: #27AE60; color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
+    .price-icon { width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .price-label { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 600; color: var(--cream); }
-    .price-desc { font-size: 12px; color: var(--cream55); line-height: 1.6; flex: 1; }
-    .price-amount { font-family: 'Inter', sans-serif; font-size: 34px; font-weight: 900; color: var(--cream); }
-    .price-period { font-size: 10px; color: var(--cream35); margin-top: -6px; }
-    .price-cta {
-      display: block; text-align: center; padding: 13px; border-radius: 12px;
-      font-size: 12px; font-weight: 700; text-decoration: none; margin-top: 8px;
-      transition: opacity 0.2s; cursor: pointer; border: none;
-    }
+    .price-desc { font-size: 12px; color: var(--c55); line-height: 1.6; flex: 1; }
+    .price-amount { font-size: 34px; font-weight: 900; color: var(--cream); }
+    .price-period { font-size: 10px; color: var(--c35); margin-top: -6px; }
+    .price-cta { display: block; text-align: center; padding: 13px; border-radius: 12px; font-size: 12px; font-weight: 700; text-decoration: none; margin-top: 8px; transition: opacity 0.2s; cursor: pointer; border: none; }
     .price-cta:hover { opacity: 0.85; }
 
-    /* ── PAYMENT MODALS ── */
+    /* MODALS */
     .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.78); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
     .modal-backdrop.open { display: flex; }
-    .modal { background: var(--card); border: 1px solid var(--gold-b); border-radius: var(--r-lg); padding: 36px; max-width: 460px; width: 100%; }
+    .modal { background: var(--card); border: 1px solid var(--gb); border-radius: var(--r-lg); padding: 36px; max-width: 460px; width: 100%; }
     .modal-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
-    .modal-sub { font-size: 13px; color: var(--cream55); margin-bottom: 24px; line-height: 1.5; }
-    .modal-price { font-size: 38px; font-weight: 900; color: var(--cream); display: flex; align-items: baseline; gap: 6px; margin-bottom: 22px; font-family: 'Inter', sans-serif; }
-    .modal-price small { font-size: 14px; color: var(--cream35); font-weight: 400; }
+    .modal-sub { font-size: 13px; color: var(--c55); margin-bottom: 24px; line-height: 1.5; }
+    .modal-price { font-size: 38px; font-weight: 900; color: var(--cream); display: flex; align-items: baseline; gap: 6px; margin-bottom: 22px; }
+    .modal-price small { font-size: 14px; color: var(--c35); font-weight: 400; }
     #payment-element { margin-bottom: 18px; }
     .payment-error { background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3); color: #FF8080; font-size: 13px; padding: 12px 16px; border-radius: 8px; margin-bottom: 14px; display: none; }
     .modal-close { float: right; background: none; border: none; color: rgba(250,247,242,0.35); font-size: 18px; cursor: pointer; padding: 4px 8px; margin: -8px -8px 0 0; }
@@ -467,32 +241,21 @@
     .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.25); border-top-color: currentColor; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Product order modal */
-    .prod-modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.78); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-    .prod-modal-backdrop.open { display: flex; }
-    .prod-modal { background: var(--card); border: 1px solid var(--gold-b); border-radius: var(--r-lg); padding: 36px; max-width: 440px; width: 100%; }
-    .prod-modal-name { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
-    .prod-modal-price { font-size: 34px; font-weight: 900; color: var(--cream); margin-bottom: 14px; font-family: 'Inter', sans-serif; }
-    .prod-modal-info { font-size: 13px; color: var(--cream55); line-height: 1.7; margin-bottom: 22px; padding: 16px; background: var(--gold-bg); border: 1px solid rgba(201,150,12,0.12); border-radius: 12px; }
-    .prod-modal-info strong { color: rgba(250,247,242,0.75); }
-    .prod-modal-btns { display: flex; flex-direction: column; gap: 10px; }
-    @media (max-width: 640px) { .modal, .prod-modal { padding: 24px 18px; } }
-
-    /* ── EMAIL SIGNUP POPUP ── */
+    /* EMAIL SIGNUP */
     .signup-backdrop { display: none; position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 20px; }
     .signup-backdrop.open { display: flex; }
-    .signup-modal { background: var(--card); border: 1px solid var(--gold-b); border-radius: 24px; max-width: 520px; width: 100%; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.7); position: relative; }
-    .signup-hero-strip { background: linear-gradient(135deg, var(--bg) 0%, #1C1608 50%, var(--bg) 100%); border-bottom: 1px solid var(--gold-b); padding: 36px 40px 28px; text-align: center; }
-    .signup-badge { display: inline-block; background: var(--gold-bg); border: 1px solid rgba(201,150,12,0.35); color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 40px; margin-bottom: 18px; }
-    .signup-headline { font-family: 'Playfair Display', serif; font-size: clamp(26px, 5vw, 34px); font-weight: 900; color: var(--cream); line-height: 1.15; margin: 0 0 10px; }
-    .signup-headline em { font-style: normal; background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .signup-sub { font-size: 14px; color: var(--cream55); line-height: 1.6; margin: 0; }
+    .signup-modal { background: var(--card); border: 1px solid var(--gb); border-radius: 24px; max-width: 520px; width: 100%; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.7); position: relative; }
+    .signup-hero-strip { background: linear-gradient(135deg,var(--bg) 0%,#1C1608 50%,var(--bg)); border-bottom: 1px solid var(--gb); padding: 36px 40px 28px; text-align: center; }
+    .signup-badge { display: inline-block; background: var(--gbg); border: 1px solid rgba(201,150,12,0.35); color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 40px; margin-bottom: 18px; }
+    .signup-headline { font-family: 'Playfair Display', serif; font-size: clamp(26px,5vw,34px); font-weight: 900; color: var(--cream); line-height: 1.15; margin: 0 0 10px; }
+    .signup-headline em { font-style: normal; background: linear-gradient(90deg,var(--gold),var(--gold-lt),var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .signup-sub { font-size: 14px; color: var(--c55); line-height: 1.6; margin: 0; }
     .signup-body { padding: 28px 40px 32px; }
     .signup-form { display: flex; gap: 10px; }
-    .signup-input { flex: 1; background: rgba(250,247,242,0.06); border: 1px solid rgba(201,150,12,0.25); border-radius: 12px; padding: 13px 18px; color: var(--cream); font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+    .signup-input { flex: 1; background: rgba(250,247,242,0.06); border: 1px solid rgba(201,150,12,0.25); border-radius: 12px; padding: 13px 18px; color: var(--cream); font-size: 14px; font-family: 'Inter',sans-serif; outline: none; transition: border-color 0.2s; }
     .signup-input:focus { border-color: var(--gold); }
     .signup-input::placeholder { color: rgba(250,247,242,0.3); }
-    .signup-btn { background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold)); color: var(--bg); font-size: 13px; font-weight: 700; padding: 13px 20px; border-radius: 12px; border: none; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
+    .signup-btn { background: linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold)); color: var(--bg); font-size: 13px; font-weight: 700; padding: 13px 20px; border-radius: 12px; border: none; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
     .signup-btn:hover { opacity: 0.88; }
     .signup-btn:disabled { opacity: 0.5; cursor: default; }
     .signup-note { font-size: 11px; color: rgba(250,247,242,0.22); text-align: center; margin-top: 10px; line-height: 1.5; }
@@ -501,47 +264,35 @@
     .signup-success { text-align: center; padding: 8px 0 4px; }
     .signup-success-icon { font-size: 36px; margin-bottom: 12px; }
     .signup-success h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--cream); margin-bottom: 8px; }
-    .signup-success p { font-size: 14px; color: var(--cream55); line-height: 1.6; margin-bottom: 16px; }
-    .signup-code-box { background: var(--gold-bg); border: 2px dashed rgba(201,150,12,0.4); border-radius: 10px; padding: 14px 20px; margin: 0 auto 16px; display: inline-block; }
+    .signup-success p { font-size: 14px; color: var(--c55); line-height: 1.6; margin-bottom: 16px; }
+    .signup-code-box { background: var(--gbg); border: 2px dashed rgba(201,150,12,0.4); border-radius: 10px; padding: 14px 20px; margin: 0 auto 16px; display: inline-block; }
     .signup-code-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
     .signup-code-value { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; color: var(--cream); letter-spacing: 4px; }
 
-    /* ── ORDER SUCCESS BANNER ── */
     #order-success-banner { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(39,174,96,0.14); border: 1px solid rgba(39,174,96,0.4); color: #5DE391; padding: 16px 28px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 300; text-align: center; max-width: 480px; width: 90%; }
 
-    /* ── FOOTER ── */
+    /* FOOTER */
     footer { background: var(--bg); border-top: 1px solid rgba(201,150,12,0.12); padding: 48px 40px 32px; }
     .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
-    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 10px; background: linear-gradient(135deg, var(--gold-dk), var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 10px; background: linear-gradient(135deg,var(--gold-dk),var(--gold),var(--gold-lt),var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .footer-tagline { font-size: 11px; color: rgba(250,247,242,0.28); letter-spacing: 1.5px; font-family: 'Cinzel', serif; }
     .footer-links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
-    .footer-links a { font-size: 11px; color: rgba(250,247,242,0.3); text-decoration: none; transition: color 0.2s; letter-spacing: 0.3px; }
+    .footer-links a { font-size: 11px; color: rgba(250,247,242,0.3); text-decoration: none; transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
     .footer-copy { font-size: 10px; color: rgba(250,247,242,0.18); }
     @media (max-width: 640px) { footer { padding: 36px 20px 24px; } }
 
-    /* ── Anniversary/Jubilee banner ── */
-    .jubilee-banner {
-      margin: 0 24px;
-      border-radius: 18px; overflow: hidden;
-      border: 1px solid var(--gold-b);
-      background: linear-gradient(135deg, #080808, #0E0E0E, #050505);
-    }
-    .jubilee-inner { padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
-    .jubilee-icon { width: 44px; height: 44px; border-radius: 22px; background: var(--gold-bg); border: 1px solid var(--gold-b); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-    .jubilee-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
-    .jubilee-title { font-family: 'Cinzel', serif; font-size: 16px; color: var(--cream); font-weight: 600; }
+    .section { padding: 88px 24px; max-width: 1100px; margin: 0 auto; }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a class="nav-brand" href="#">ONJJEM</a>
+  <a class="nav-brand" href="/">ONJJEM</a>
   <ul class="nav-links">
     <li><a href="#tool">Try Free</a></li>
     <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#shop">Shop</a></li>
+    <li><a href="/shop">Gift Shop</a></li>
     <li><a href="#how">How It Works</a></li>
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#tool" class="nav-cta">Restore Now</a></li>
@@ -552,8 +303,6 @@
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-layout">
-
-    <!-- Left panel: Wedding -->
     <div class="hero-panel">
       <div class="gold-bar"></div>
       <div class="hero-panel-slot">
@@ -570,8 +319,6 @@
         <span class="hero-panel-foot-tag">Colourised</span>
       </div>
     </div>
-
-    <!-- Centre text -->
     <div class="hero-center">
       <div class="hero-eyebrow-pill">✦ &nbsp;Cinema-Grade AI · London</div>
       <div class="hero-onjjem">ONJJEM</div>
@@ -592,15 +339,13 @@
       <p class="hero-sub">Upload any old, blurry, or black-and-white photograph. Our AI restores it to museum quality in seconds — then order it as a luxury print delivered to your door.</p>
       <div class="hero-buttons">
         <a href="#tool" class="btn-primary"><span>✦</span> Restore a Photo Free</a>
-        <a href="#shop" class="btn-secondary"><span>🖼</span> Browse the Shop</a>
+        <a href="/shop" class="btn-secondary"><span>🖼</span> Browse the Shop</a>
       </div>
       <div class="scroll-hint">
         <div class="scroll-line"></div>
         <span>Scroll</span>
       </div>
     </div>
-
-    <!-- Right panel: Victorian portrait -->
     <div class="hero-panel">
       <div class="gold-bar"></div>
       <div class="hero-panel-slot">
@@ -617,7 +362,6 @@
         <span class="hero-panel-foot-tag">Colourised</span>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -641,33 +385,33 @@
       <p class="section-sub">Select one or combine up to three — our Cinema-Grade AI handles the rest.</p>
     </div>
     <div class="enh-card-grid">
-      <div class="enh-card" style="--accent-color:rgba(74,144,217,0.5);">
-        <div class="enh-icon-ring" style="--accent-bg:rgba(74,144,217,0.14);--accent-ring:rgba(74,144,217,0.4);">⬡</div>
+      <div class="enh-card">
+        <div class="enh-icon-ring" style="background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.4);">⬡</div>
         <div class="enh-label" style="color:#4A90D9">Sharpen</div>
         <div class="enh-sub">Fix soft &amp; blurry photos with AI upscaling</div>
       </div>
-      <div class="enh-card" style="--accent-color:rgba(245,166,35,0.5);">
-        <div class="enh-icon-ring" style="--accent-bg:rgba(245,166,35,0.14);--accent-ring:rgba(245,166,35,0.4);">☀</div>
+      <div class="enh-card">
+        <div class="enh-icon-ring" style="background:rgba(245,166,35,0.14);border:1px solid rgba(245,166,35,0.4);">☀</div>
         <div class="enh-label" style="color:#F5A623">Brighten</div>
         <div class="enh-sub">Lift dark &amp; underexposed photos intelligently</div>
       </div>
-      <div class="enh-card" style="--accent-color:rgba(155,89,182,0.5);">
-        <div class="enh-icon-ring" style="--accent-bg:rgba(155,89,182,0.14);--accent-ring:rgba(155,89,182,0.4);">✧</div>
+      <div class="enh-card">
+        <div class="enh-icon-ring" style="background:rgba(155,89,182,0.14);border:1px solid rgba(155,89,182,0.4);">✧</div>
         <div class="enh-label" style="color:#9B59B6">Denoise</div>
         <div class="enh-sub">Remove grain &amp; film noise while preserving detail</div>
       </div>
-      <div class="enh-card" style="--accent-color:rgba(39,174,96,0.5);">
-        <div class="enh-icon-ring" style="--accent-bg:rgba(39,174,96,0.14);--accent-ring:rgba(39,174,96,0.4);">⟳</div>
+      <div class="enh-card">
+        <div class="enh-icon-ring" style="background:rgba(39,174,96,0.14);border:1px solid rgba(39,174,96,0.4);">⟳</div>
         <div class="enh-label" style="color:#27AE60">Restore</div>
         <div class="enh-sub">Full old photo restoration — faded, scratched, torn</div>
       </div>
-      <div class="enh-card" style="--accent-color:rgba(231,76,60,0.5);">
-        <div class="enh-icon-ring" style="--accent-bg:rgba(231,76,60,0.14);--accent-ring:rgba(231,76,60,0.4);">🌈</div>
+      <div class="enh-card">
+        <div class="enh-icon-ring" style="background:rgba(231,76,60,0.14);border:1px solid rgba(231,76,60,0.4);">🌈</div>
         <div class="enh-label" style="color:#E74C3C">Vivid</div>
         <div class="enh-sub">Bold colours &amp; contrast for washed-out prints</div>
       </div>
-      <div class="enh-card" style="--accent-color:rgba(201,150,12,0.5);">
-        <div class="enh-icon-ring" style="--accent-bg:rgba(201,150,12,0.14);--accent-ring:rgba(201,150,12,0.4);">🎨</div>
+      <div class="enh-card">
+        <div class="enh-icon-ring" style="background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.4);">🎨</div>
         <div class="enh-label" style="color:#C9960C">Colourize</div>
         <div class="enh-sub">Add natural colour to black-and-white photos</div>
       </div>
@@ -683,22 +427,16 @@
       <h2 class="section-title">Restore Your Photo</h2>
       <p class="section-sub">Upload any photo and see the difference instantly — free preview, HD quality for just £1.49.</p>
     </div>
-
     <div class="tool-card">
       <div class="tool-card-bar"></div>
       <div class="tool-card-inner">
-
-        <!-- Upload zone -->
         <div class="upload-zone" id="uploadZone">
           <input type="file" id="fileInput" accept="image/*" />
           <span class="upload-icon">📷</span>
           <div class="upload-title">Drop your photo here</div>
           <p class="upload-hint">or tap to choose from your library &nbsp;·&nbsp; JPEG, PNG, WebP</p>
         </div>
-
-        <!-- Preview area (hidden until photo uploaded) -->
         <div class="preview-area" id="previewArea">
-
           <p class="mode-label">Choose Enhancement</p>
           <div class="mode-picker" id="modePicker">
             <button class="mode-btn active" data-mode="sharpen">⬡ Sharpen</button>
@@ -708,7 +446,6 @@
             <button class="mode-btn" data-mode="denoise">✧ Denoise</button>
             <button class="mode-btn" data-mode="vivid">🌈 Vivid</button>
           </div>
-
           <div class="preview-grid">
             <div class="preview-slot">
               <img id="originalImg" src="" alt="Original photo" />
@@ -722,19 +459,15 @@
               </div>
             </div>
           </div>
-
           <div class="status-msg" id="statusMsg"></div>
-
           <div class="tool-action">
             <button class="btn-restore btn-restore-free" id="btnPreview">✦ See Free Preview</button>
             <button class="btn-restore btn-restore-paid" id="btnPay" style="display:none">⭐ Get Full Quality — £1.49</button>
-            <button class="btn-restore btn-restore btn-download" id="btnDownload" style="display:none">⬇ Download HD Photo</button>
+            <button class="btn-restore btn-download" id="btnDownload" style="display:none">⬇ Download HD Photo</button>
             <button class="btn-reset" id="btnReset">← Try a different photo</button>
           </div>
-
           <p class="tool-note">Free preview is a reduced-quality sample. HD result is full resolution with Cinema-Grade enhancement.<br>Payment processed securely by Stripe. Your photos are never stored.</p>
         </div>
-
       </div>
     </div>
   </div>
@@ -811,10 +544,7 @@
     <div class="print-card">
       <div class="gold-bar-w"></div>
       <div class="print-card-inner">
-        <div class="print-head">
-          <p class="print-card-sub">Three ways to turn your restored photos into something you can hold, display, and treasure.</p>
-        </div>
-
+        <p class="print-card-sub">Three ways to turn your restored photos into something you can hold, display, and treasure.</p>
         <div class="print-row">
           <div class="print-row-icon" style="background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.3);">∞</div>
           <div class="print-row-body">
@@ -822,10 +552,9 @@
               <span class="print-row-title">Monthly Plan — £12.99/month</span>
               <span class="print-row-badge" style="color:#4A90D9;background:rgba(74,144,217,0.12);border-color:rgba(74,144,217,0.35);">UNLIMITED</span>
             </div>
-            <p class="print-row-desc">Full studio-quality restoration every month — same high-end results as the annual plan. No limits, no per-photo charges. Cancel anytime.</p>
+            <p class="print-row-desc">Full studio-quality restoration every month. No limits, no per-photo charges. Cancel anytime.</p>
           </div>
         </div>
-
         <div class="print-row">
           <div class="print-row-icon" style="background:rgba(39,174,96,0.14);border:1px solid rgba(39,174,96,0.3);">∞</div>
           <div class="print-row-body">
@@ -833,10 +562,9 @@
               <span class="print-row-title">Annual Plan — £24.99/year</span>
               <span class="print-row-badge" style="color:#27AE60;background:rgba(39,174,96,0.12);border-color:rgba(39,174,96,0.35);">BEST VALUE</span>
             </div>
-            <p class="print-row-desc">Everything in the monthly plan, all year — save 83% versus paying monthly. Download studio-quality HD files anytime, as many photos as you like.</p>
+            <p class="print-row-desc">Everything in the monthly plan, all year — save 83% versus paying monthly.</p>
           </div>
         </div>
-
         <div class="print-row">
           <div class="print-row-icon" style="background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.3);">✦</div>
           <div class="print-row-body">
@@ -844,11 +572,10 @@
               <span class="print-row-title">We Do It For You</span>
               <span class="print-row-badge" style="color:#C9960C;background:rgba(201,150,12,0.12);border-color:rgba(201,150,12,0.35);">CONCIERGE</span>
             </div>
-            <p class="print-row-desc">Want it made really special? Just send us your pictures and we will do it all for you — beautifully printed on whatever you need. Canvas, cushions, mugs, jigsaws, throws, silk keepsakes, and more.</p>
-            <a href="#shop" class="print-row-cta">Browse our Gift Shop →</a>
+            <p class="print-row-desc">Send us your pictures and we'll do it all — beautifully printed on canvas, cushions, jigsaws, throws, silk keepsakes, and more.</p>
+            <a href="/shop" class="print-row-cta">Browse our Gift Shop →</a>
           </div>
         </div>
-
         <div class="print-row">
           <div class="print-row-icon" style="background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.3);">⌂</div>
           <div class="print-row-body">
@@ -856,26 +583,26 @@
               <span class="print-row-title">Do It Yourself</span>
               <span class="print-row-badge" style="color:#4A90D9;background:rgba(74,144,217,0.12);border-color:rgba(74,144,217,0.35);">YOUR PRINTER</span>
             </div>
-            <p class="print-row-desc">Already have a printer at home? Download your fully restored, studio-quality HD photo and print it yourself — exactly how you want it, exactly when you want it.</p>
+            <p class="print-row-desc">Download your fully restored HD photo and print it yourself — total creative control, right in your hands.</p>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </section>
 
-<!-- ANNIVERSARY & JUBILEE BANNER -->
-<div style="background:var(--bg2);padding:24px 0 0;">
+<!-- ANNIVERSARY BANNER -->
+<div style="background:var(--bg2);padding:24px;">
   <div class="jubilee-banner" style="max-width:860px;margin:0 auto;">
     <div class="gold-bar-w"></div>
     <div class="jubilee-inner">
       <div class="jubilee-icon">💎</div>
-      <div>
+      <div style="flex:1;">
         <div class="jubilee-eyebrow">Anniversary &amp; Jubilee Collection</div>
         <div class="jubilee-title">Celebrate a Lifetime of Love</div>
         <div style="font-size:11px;color:rgba(250,247,242,0.45);margin-top:3px;">Silver · Ruby · Golden · Diamond · Platinum jubilee gifts, crafted around your restored family photographs.</div>
       </div>
+      <a href="/shop" style="display:inline-flex;align-items:center;gap:6px;background:var(--gbg);border:1px solid var(--gb);color:var(--gold);font-size:11px;font-weight:700;padding:8px 16px;border-radius:40px;text-decoration:none;white-space:nowrap;flex-shrink:0;">Shop Now ›</a>
     </div>
   </div>
 </div>
@@ -885,10 +612,11 @@
   <div class="section-header" style="margin-bottom:0;">
     <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;"><span style="color:var(--gold)">✦</span> ONJJEM Collections</div>
     <h2 class="section-title" style="margin-top:10px;">Explore Our Gift Range</h2>
+    <p class="section-sub" style="margin-top:10px;">Beautifully printed gifts made from your restored photographs — delivered to your door.</p>
   </div>
   <div class="collections-card">
     <div class="gold-bar"></div>
-    <a class="coll-row" href="#shop">
+    <a class="coll-row" href="/shop#anniversaries">
       <div class="coll-icon">💎</div>
       <div class="coll-text">
         <div class="coll-label">Jubilees &amp; Anniversaries</div>
@@ -896,7 +624,7 @@
       </div>
       <span class="coll-arrow">›</span>
     </a>
-    <a class="coll-row" href="#shop">
+    <a class="coll-row" href="/shop#canvas">
       <div class="coll-icon">🖼</div>
       <div class="coll-text">
         <div class="coll-label">Canvas &amp; Fine Art Prints</div>
@@ -904,7 +632,7 @@
       </div>
       <span class="coll-arrow">›</span>
     </a>
-    <a class="coll-row" href="#shop">
+    <a class="coll-row" href="/shop#lounge">
       <div class="coll-icon">🏠</div>
       <div class="coll-text">
         <div class="coll-label">Lounge &amp; Home Gifts</div>
@@ -912,254 +640,24 @@
       </div>
       <span class="coll-arrow">›</span>
     </a>
-    <a class="coll-row" href="#shop">
+    <a class="coll-row" href="/shop#jigsaws">
       <div class="coll-icon">🧩</div>
       <div class="coll-text">
         <div class="coll-label">Heritage Jigsaws</div>
-        <div class="coll-sub">Heart · Collage · Cardboard · Premium wood</div>
+        <div class="coll-sub">252 · 500 · 1000 pieces · Premium wood</div>
+      </div>
+      <span class="coll-arrow">›</span>
+    </a>
+    <a class="coll-row" href="/shop#gifts">
+      <div class="coll-icon">🎁</div>
+      <div class="coll-text">
+        <div class="coll-label">Personal Gifts</div>
+        <div class="coll-sub">Mugs · Keyrings · Acrylic memory blocks</div>
       </div>
       <span class="coll-arrow">›</span>
     </a>
   </div>
-  <a href="#shop" class="coll-cta-btn" style="margin-top:20px;">🎁 &nbsp;Browse the Full Gift Shop</a>
-</section>
-
-<!-- SHOP -->
-<section class="shop-section" id="shop">
-  <div class="shop-inner">
-    <div class="section-header" style="margin-bottom:52px;">
-      <div class="eyebrow"><span>✦</span> Luxury Gifts</div>
-      <h2 class="section-title" style="margin-top:12px;">Turn Memories Into Masterpieces</h2>
-      <p class="section-sub" style="margin-top:12px;">Restore your photo, then order it beautifully printed. Every product is made by our UK print studio and delivered to your door.</p>
-    </div>
-
-    <!-- Canvas Prints -->
-    <div class="shop-category">
-      <div class="shop-cat-header">
-        <div class="shop-cat-icon">🖼</div>
-        <div class="shop-cat-title">Canvas Prints</div>
-      </div>
-      <p class="shop-cat-sub">Hand-stretched on solid wood frames, printed on premium artist canvas. Ready to hang — no frame required.</p>
-      <div class="products-grid">
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#1A1610,#2A2218)">
-            <div class="prod-emoji-ring">🖼</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Canvas Print</div>
-            <div class="product-name">Classic Canvas 30×20cm</div>
-            <div class="product-desc">Perfect for a mantelpiece or shelf. Premium stretched canvas on solid pine frame.</div>
-            <div class="product-footer">
-              <div class="product-price">£29.99</div>
-              <button class="btn-order" onclick="openProdModal('Classic Canvas Print (30×20cm)','£29.99','canvas-classic-30x20')">Order</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#1A1610,#2A2218)">
-            <div class="prod-emoji-ring">🖼</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Canvas Print</div>
-            <div class="product-name">Large Canvas 60×40cm</div>
-            <div class="product-desc">A statement piece. Gallery-grade canvas for a living room or hallway feature wall.</div>
-            <div class="product-footer">
-              <div class="product-price">£59.99</div>
-              <button class="btn-order" onclick="openProdModal('Large Canvas Print (60×40cm)','£59.99','canvas-large-60x40')">Order</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#1A1610,#2A2218)">
-            <div class="prod-emoji-ring">🖼</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Canvas Print</div>
-            <div class="product-name">Extra Large Canvas 90×60cm</div>
-            <div class="product-desc">Museum-scale. Breathtaking as a centrepiece. Arrives ready to hang.</div>
-            <div class="product-footer">
-              <div class="product-price">£89.99</div>
-              <button class="btn-order" onclick="openProdModal('Extra Large Canvas Print (90×60cm)','£89.99','canvas-xl-90x60')">Order</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Heritage Jigsaws -->
-    <div class="shop-category">
-      <div class="shop-cat-header">
-        <div class="shop-cat-icon">🧩</div>
-        <div class="shop-cat-title">Heritage Jigsaws</div>
-      </div>
-      <p class="shop-cat-sub">Your restored family photograph as a premium jigsaw puzzle — a cherished gift that brings the whole family together.</p>
-      <div class="products-grid">
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#1A1205,#2A2010)">
-            <div class="prod-emoji-ring">🧩</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Heritage Jigsaw</div>
-            <div class="product-name">Heritage Jigsaw 252 Pieces</div>
-            <div class="product-desc">Perfect for young families. Full-colour print on sturdy puzzle board.</div>
-            <div class="product-footer">
-              <div class="product-price">£24.99</div>
-              <button class="btn-order" onclick="openProdModal('Heritage Jigsaw — 252 Pieces','£24.99','jigsaw-252')">Order</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#1A1205,#2A2010)">
-            <div class="prod-emoji-ring">🧩</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Heritage Jigsaw</div>
-            <div class="product-name">Heritage Jigsaw 500 Pieces</div>
-            <div class="product-desc">A classic challenge. Premium cut, beautiful box — a keepsake in itself.</div>
-            <div class="product-footer">
-              <div class="product-price">£34.99</div>
-              <button class="btn-order" onclick="openProdModal('Heritage Jigsaw — 500 Pieces','£34.99','jigsaw-500')">Order</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#1A1205,#2A2010)">
-            <div class="prod-emoji-ring">🧩</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Heritage Jigsaw</div>
-            <div class="product-name">Heritage Jigsaw 1000 Pieces</div>
-            <div class="product-desc">The heirloom jigsaw. A truly thoughtful gift for any occasion.</div>
-            <div class="product-footer">
-              <div class="product-price">£49.99</div>
-              <button class="btn-order" onclick="openProdModal('Heritage Jigsaw — 1000 Pieces','£49.99','jigsaw-1000')">Order</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Home & Textiles -->
-    <div class="shop-category">
-      <div class="shop-cat-header">
-        <div class="shop-cat-icon">🛋</div>
-        <div class="shop-cat-title">Lounge &amp; Home Gifts</div>
-      </div>
-      <p class="shop-cat-sub">Wrap your favourite restored photo around everyday luxury. Machine washable, made to last.</p>
-      <div class="products-grid">
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#0A1020,#15202A)">
-            <div class="prod-emoji-ring">🛋</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Home Gift</div>
-            <div class="product-name">Personalised Cushion 45×45cm</div>
-            <div class="product-desc">Plump, high-quality cushion with concealed zip. Machine washable cover.</div>
-            <div class="product-footer">
-              <div class="product-price">£34.99</div>
-              <button class="btn-order" onclick="openProdModal('Personalised Cushion','£34.99','cushion-45x45')">Order</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#0A1020,#15202A)">
-            <div class="prod-emoji-ring">🧣</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Home Gift</div>
-            <div class="product-name">Personalised Blanket 120×150cm</div>
-            <div class="product-desc">Super-soft fleece blanket, full-colour print. The perfect gift for a loved one.</div>
-            <div class="product-footer">
-              <div class="product-price">£49.99</div>
-              <button class="btn-order" onclick="openProdModal('Personalised Blanket','£49.99','blanket-fleece')">Order</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Personal Gifts -->
-    <div class="shop-category">
-      <div class="shop-cat-header">
-        <div class="shop-cat-icon">🎁</div>
-        <div class="shop-cat-title">Personal Gifts</div>
-      </div>
-      <p class="shop-cat-sub">Small items, big memories. Thoughtful gifts for birthdays, anniversaries, and special occasions.</p>
-      <div class="products-grid">
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#150A05,#250F0A)">
-            <div class="prod-emoji-ring">☕</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Personal Gift</div>
-            <div class="product-name">Personalised Mug 11oz Ceramic</div>
-            <div class="product-desc">Dishwasher-safe ceramic mug. Full-colour lasting print.</div>
-            <div class="product-footer">
-              <div class="product-price">£14.99</div>
-              <button class="btn-order" onclick="openProdModal('Personalised Mug','£14.99','mug-11oz')">Order</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#150A05,#250F0A)">
-            <div class="prod-emoji-ring">🔑</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Personal Gift</div>
-            <div class="product-name">Personalised Keyring Premium Metal</div>
-            <div class="product-desc">A beautiful everyday reminder of a special memory. Durable metal with photo charm.</div>
-            <div class="product-footer">
-              <div class="product-price">£9.99</div>
-              <button class="btn-order" onclick="openProdModal('Personalised Keyring','£9.99','keyring-metal')">Order</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image" style="background:linear-gradient(135deg,#150A05,#250F0A)">
-            <div class="prod-emoji-ring">💎</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">Personal Gift</div>
-            <div class="product-name">Acrylic Memory Block 10×10cm</div>
-            <div class="product-desc">Striking, modern, freestanding. Your photo embedded in premium clear acrylic.</div>
-            <div class="product-footer">
-              <div class="product-price">£39.99</div>
-              <button class="btn-order" onclick="openProdModal('Acrylic Memory Block','£39.99','acrylic-block-10x10')">Order</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bespoke Feature Walls -->
-    <div class="shop-category">
-      <div class="shop-cat-header">
-        <div class="shop-cat-icon">🏠</div>
-        <div class="shop-cat-title">Bespoke Feature Walls</div>
-      </div>
-      <p class="shop-cat-sub">Transform a wall in your home into a stunning tribute to your family's history. Custom-sized murals designed and printed to your specification.</p>
-      <div class="products-grid" style="grid-template-columns:1fr;">
-        <div class="product-card" style="display:flex;flex-direction:row;align-items:center;">
-          <div class="product-image" style="width:140px;flex-shrink:0;aspect-ratio:1;background:linear-gradient(135deg,#1A0A08,#2A1510);border-radius:0;">
-            <div class="prod-emoji-ring" style="width:56px;height:56px;font-size:24px;">🏠</div>
-          </div>
-          <div class="product-body" style="flex:1;">
-            <div class="product-cat">Bespoke Service</div>
-            <div class="product-name">Bespoke Feature Wall Mural</div>
-            <div class="product-desc">Full-wall restoration murals for living rooms, hallways, bedrooms, and commercial spaces. Custom sizing, premium materials, professional installation guidance included.</div>
-            <div class="product-footer">
-              <div class="product-price">From £199 <small>custom quote</small></div>
-              <a href="mailto:orders@onjjem.co.uk?subject=Mural%20Enquiry" class="btn-order" style="text-decoration:none;">Enquire</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <p class="shop-note">All physical products are printed and dispatched by our UK studio partner within 3–5 working days.<br>
-    After payment you'll receive an email — simply reply with your restored photo to begin your order.<br>
-    Questions? Email <a href="mailto:orders@onjjem.co.uk">orders@onjjem.co.uk</a></p>
-  </div>
+  <a href="/shop" class="coll-cta-btn">🎁 &nbsp;Browse the Full Gift Shop</a>
 </section>
 
 <!-- HOW IT WORKS -->
@@ -1181,7 +679,7 @@
         <div class="step-icon">✦</div>
         <span class="step-num">Step 02</span>
         <div class="step-title">Choose Enhancement</div>
-        <p class="step-desc">Select Sharpen, Colourize, Restore, or combine them. AI does the rest.</p>
+        <p class="step-desc">Select Sharpen, Colourize, Restore, or combine them.</p>
       </div>
       <div class="step">
         <div class="step-icon">🖼</div>
@@ -1230,17 +728,16 @@
         <div class="price-badge">Best Value</div>
         <div class="price-icon" style="background:rgba(39,174,96,0.1)">★</div>
         <div class="price-label">Annual Unlimited</div>
-        <div class="price-desc">Unlimited restorations all year long. The best price — less than £2.09 a month.</div>
+        <div class="price-desc">Unlimited restorations all year long. Less than £2.09 a month.</div>
         <div class="price-amount">£24.99</div>
         <div class="price-period">per year</div>
         <button class="price-cta" style="background:rgba(39,174,96,0.14);color:#27AE60;border:1px solid rgba(39,174,96,0.4);" onclick="startSubscribe('annual')" id="btnAnnual">Subscribe Annually</button>
       </div>
     </div>
-    <p style="text-align:center;font-size:12px;color:rgba(250,247,242,0.28);margin-top:22px;line-height:1.7;">Subscriptions renew automatically. Cancel anytime — email <a href="mailto:hello@onjjem.com" style="color:rgba(201,150,12,0.55);">hello@onjjem.com</a> or manage via your Stripe billing portal.</p>
+    <p style="text-align:center;font-size:12px;color:rgba(250,247,242,0.28);margin-top:22px;line-height:1.7;">Subscriptions renew automatically. Cancel anytime — email <a href="mailto:hello@onjjem.com" style="color:rgba(201,150,12,0.55);">hello@onjjem.com</a></p>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="gold-rule"></div>
   <div class="footer-inner" style="margin-top:36px;">
@@ -1249,7 +746,7 @@
     <div class="footer-links">
       <a href="#tool">Try Free</a>
       <a href="#gallery">Gallery</a>
-      <a href="#shop">Shop</a>
+      <a href="/shop">Gift Shop</a>
       <a href="#how">How It Works</a>
       <a href="#pricing">Pricing</a>
       <a href="/privacy">Privacy Policy</a>
@@ -1261,7 +758,7 @@
   </div>
 </footer>
 
-<!-- PAYMENT MODAL (photo restoration) -->
+<!-- PAYMENT MODAL -->
 <div class="modal-backdrop" id="payModal">
   <div class="modal">
     <button class="modal-close" onclick="closePayModal()">✕</button>
@@ -1271,32 +768,8 @@
     <div class="modal-price">£1.49 <small>one-time</small></div>
     <div class="payment-error" id="payError"></div>
     <div id="payment-element"></div>
-    <button class="btn-restore btn-restore-paid" id="btnSubmitPay" style="width:100%;margin-top:4px;" onclick="submitPayment()">
-      Pay £1.49 &amp; Get HD Photo
-    </button>
+    <button class="btn-restore btn-restore-paid" id="btnSubmitPay" style="width:100%;margin-top:4px;" onclick="submitPayment()">Pay £1.49 &amp; Get HD Photo</button>
     <p style="font-size:11px;color:rgba(250,247,242,0.22);text-align:center;margin-top:12px;">🔒 Secured by Stripe · Photos never stored</p>
-  </div>
-</div>
-
-<!-- PRODUCT ORDER MODAL -->
-<div class="prod-modal-backdrop" id="prodModal">
-  <div class="prod-modal">
-    <button class="modal-close" onclick="closeProdModal()">✕</button>
-    <div class="gold-bar" style="margin:-36px -36px 22px;"></div>
-    <div class="prod-modal-name" id="prodModalName"></div>
-    <div class="prod-modal-price" id="prodModalPrice"></div>
-    <div class="prod-modal-info">
-      <strong>How it works:</strong><br>
-      1. Pay securely via Stripe<br>
-      2. You'll receive an order confirmation by email<br>
-      3. Simply reply with your restored photo<br>
-      4. We'll print and dispatch within 3–5 working days 🇬🇧
-    </div>
-    <div class="prod-modal-btns">
-      <button class="btn-restore btn-restore-paid" id="btnProceedOrder" onclick="proceedToCheckout()" style="width:100%">Proceed to Payment →</button>
-      <button class="btn-reset" onclick="closeProdModal()">Cancel</button>
-    </div>
-    <p style="font-size:11px;color:rgba(250,247,242,0.22);text-align:center;margin-top:12px;">🔒 Secured by Stripe &nbsp;·&nbsp; UK print studio &nbsp;·&nbsp; 3–5 day dispatch</p>
   </div>
 </div>
 
@@ -1304,22 +777,19 @@
 <div class="signup-backdrop" id="signupBackdrop">
   <div class="signup-modal">
     <button class="signup-close" onclick="closeSignup()" aria-label="Close">✕</button>
-
     <div class="signup-hero-strip">
       <div class="signup-badge">✦ &nbsp;Welcome Gift</div>
       <h2 class="signup-headline">Get <em>10% off</em><br>your first order</h2>
       <p class="signup-sub">Join ONJJEM and we'll send your exclusive discount code straight to your inbox.</p>
     </div>
-
     <div class="signup-body">
       <div id="signupFormWrap">
         <div class="signup-form">
           <input class="signup-input" type="email" id="signupEmail" placeholder="Your email address" autocomplete="email" />
           <button class="signup-btn" id="signupBtn" onclick="submitSignup()">Get 10% Off</button>
         </div>
-        <p class="signup-note">No spam, ever. Unsubscribe anytime. &nbsp;·&nbsp; Your photo is never stored on our servers.</p>
+        <p class="signup-note">No spam, ever. Unsubscribe anytime.</p>
       </div>
-
       <div class="signup-success" id="signupSuccess" style="display:none">
         <div class="signup-success-icon">✦</div>
         <h3>You're in!</h3>
@@ -1334,41 +804,27 @@
   </div>
 </div>
 
-<!-- ORDER SUCCESS BANNER -->
-<div id="order-success-banner">
-  ✅ Payment successful! Check your email for next steps — then reply with your restored photo to begin production.
-</div>
+<div id="order-success-banner">✅ Payment successful! Check your email for next steps.</div>
 
 <script>
-// ── State ─────────────────────────────────────────────────────────────────────
-let stripeJs = null;
-let stripeElements = null;
-let uploadedBase64 = null;
-let selectedModes = ['sharpen'];
-let hdResultBase64 = null;
-let currentProdSku = null;
+let stripeJs = null, stripeElements = null, uploadedBase64 = null, selectedModes = ['sharpen'], hdResultBase64 = null;
 
-// ── Init Stripe.js ────────────────────────────────────────────────────────────
 async function initStripe() {
   try {
     const r = await fetch('/api/stripe/config');
     if (!r.ok) return;
     const { publishableKey } = await r.json();
     if (publishableKey) stripeJs = Stripe(publishableKey);
-  } catch (e) {
-    console.warn('Stripe not available:', e.message);
-  }
+  } catch (e) { console.warn('Stripe not available:', e.message); }
 }
 initStripe();
 
-// ── Check for order success in URL hash ───────────────────────────────────────
 if (location.hash === '#order-success') {
   const banner = document.getElementById('order-success-banner');
   banner.style.display = 'block';
-  setTimeout(() => { banner.style.display = 'none'; history.replaceState(null, '', location.pathname); }, 8000);
+  setTimeout(() => { banner.style.display = 'none'; history.replaceState(null,'',location.pathname); }, 8000);
 }
 
-// ── File upload ───────────────────────────────────────────────────────────────
 const uploadZone = document.getElementById('uploadZone');
 const fileInput = document.getElementById('fileInput');
 const previewArea = document.getElementById('previewArea');
@@ -1387,158 +843,102 @@ uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classL
 fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
 
 function handleFile(file) {
-  if (!file.type.startsWith('image/')) { showStatus('Please select an image file.', 'error'); return; }
+  if (!file.type.startsWith('image/')) { showStatus('Please select an image file.','error'); return; }
   const reader = new FileReader();
   reader.onload = e => {
     uploadedBase64 = e.target.result.split(',')[1];
     originalImg.src = e.target.result;
     uploadZone.style.display = 'none';
     previewArea.classList.add('active');
-    resultImg.style.display = 'none';
-    resultImg.src = '';
-    blurOverlay.style.display = 'none';
-    btnPay.style.display = 'none';
-    btnDownload.style.display = 'none';
-    btnPreview.style.display = '';
-    btnPreview.textContent = '✦ See Free Preview';
-    btnPreview.disabled = false;
-    hideStatus();
-    hdResultBase64 = null;
+    resultImg.style.display = 'none'; resultImg.src = '';
+    blurOverlay.style.display = 'none'; btnPay.style.display = 'none'; btnDownload.style.display = 'none';
+    btnPreview.style.display = ''; btnPreview.textContent = '✦ See Free Preview'; btnPreview.disabled = false;
+    hideStatus(); hdResultBase64 = null;
   };
   reader.readAsDataURL(file);
 }
 
-// ── Mode picker ───────────────────────────────────────────────────────────────
 document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.dataset.mode;
     const idx = selectedModes.indexOf(mode);
     if (idx > -1) {
-      if (selectedModes.length === 1) return; // keep at least one
-      selectedModes.splice(idx, 1);
-      btn.classList.remove('active');
+      if (selectedModes.length === 1) return;
+      selectedModes.splice(idx, 1); btn.classList.remove('active');
     } else {
-      if (selectedModes.length >= 3) { showStatus('You can combine up to 3 enhancements.', 'error'); return; }
-      selectedModes.push(mode);
-      btn.classList.add('active');
+      if (selectedModes.length >= 3) { showStatus('You can combine up to 3 enhancements.','error'); return; }
+      selectedModes.push(mode); btn.classList.add('active');
     }
-    // Reset result when modes change
-    resultImg.style.display = 'none';
-    blurOverlay.style.display = 'none';
-    btnPay.style.display = 'none';
-    btnDownload.style.display = 'none';
-    btnPreview.style.display = '';
-    hdResultBase64 = null;
-    hideStatus();
+    resultImg.style.display = 'none'; blurOverlay.style.display = 'none';
+    btnPay.style.display = 'none'; btnDownload.style.display = 'none';
+    btnPreview.style.display = ''; hdResultBase64 = null; hideStatus();
   });
 });
 
-// ── Free preview ──────────────────────────────────────────────────────────────
 btnPreview.addEventListener('click', async () => {
   if (!uploadedBase64) return;
   btnPreview.disabled = true;
   btnPreview.innerHTML = '<span class="spinner"></span> Restoring…';
-  showStatus('Running free preview…', '');
-
+  showStatus('Running free preview…','');
   try {
-    const resp = await fetch('/api/process', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageBase64: uploadedBase64, modes: selectedModes, freePreview: true })
-    });
+    const resp = await fetch('/api/process', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ imageBase64: uploadedBase64, modes: selectedModes, freePreview: true }) });
     const data = await resp.json();
     if (!resp.ok || !data.resultBase64) throw new Error(data.error || 'Preview failed');
-
     resultImg.src = 'data:image/jpeg;base64,' + data.resultBase64;
-    resultImg.style.display = 'block';
-    resultLabel.textContent = 'Preview';
-    blurOverlay.style.display = 'flex';
-    btnPreview.style.display = 'none';
-    btnPay.style.display = '';
-    hideStatus();
+    resultImg.style.display = 'block'; resultLabel.textContent = 'Preview';
+    blurOverlay.style.display = 'flex'; btnPreview.style.display = 'none'; btnPay.style.display = ''; hideStatus();
   } catch (e) {
-    showStatus('Preview failed: ' + e.message, 'error');
-    btnPreview.disabled = false;
-    btnPreview.textContent = '✦ See Free Preview';
+    showStatus('Preview failed: ' + e.message,'error');
+    btnPreview.disabled = false; btnPreview.textContent = '✦ See Free Preview';
   }
 });
 
-// ── Pay for HD ────────────────────────────────────────────────────────────────
 btnPay.addEventListener('click', openPayModal);
 
 async function openPayModal() {
-  if (!stripeJs) {
-    showStatus('Payment unavailable. Please try the iPhone app or contact support.', 'error');
-    return;
-  }
+  if (!stripeJs) { showStatus('Payment unavailable. Please try the iPhone app or contact support.','error'); return; }
   document.getElementById('payModal').classList.add('open');
   document.getElementById('payError').style.display = 'none';
   document.getElementById('payment-element').innerHTML = '';
   stripeElements = null;
-
   try {
-    const r = await fetch('/api/stripe/create-intent', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+    const r = await fetch('/api/stripe/create-intent', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
     const { clientSecret, error } = await r.json();
     if (error) throw new Error(error);
-
-    stripeElements = stripeJs.elements({ clientSecret, appearance: { theme: 'night', variables: { colorBackground: '#1A1610', colorText: '#FAF7F2', colorPrimary: '#C9960C', fontFamily: 'Inter, sans-serif', borderRadius: '10px' } } });
-    const payEl = stripeElements.create('payment');
-    payEl.mount('#payment-element');
+    stripeElements = stripeJs.elements({ clientSecret, appearance: { theme:'night', variables:{ colorBackground:'#1A1610', colorText:'#FAF7F2', colorPrimary:'#C9960C', fontFamily:'Inter,sans-serif', borderRadius:'10px' } } });
+    stripeElements.create('payment').mount('#payment-element');
   } catch (e) {
     document.getElementById('payError').textContent = e.message;
     document.getElementById('payError').style.display = 'block';
   }
 }
 
-function closePayModal() {
-  document.getElementById('payModal').classList.remove('open');
-}
+function closePayModal() { document.getElementById('payModal').classList.remove('open'); }
 
 async function submitPayment() {
   if (!stripeJs || !stripeElements) return;
   const btn = document.getElementById('btnSubmitPay');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Processing…';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Processing…';
   document.getElementById('payError').style.display = 'none';
-
   try {
-    const { error: confirmError, paymentIntent } = await stripeJs.confirmPayment({
-      elements: stripeElements,
-      redirect: 'if_required',
-      confirmParams: { return_url: location.origin + '/#tool' }
-    });
-
+    const { error: confirmError, paymentIntent } = await stripeJs.confirmPayment({ elements: stripeElements, redirect:'if_required', confirmParams:{ return_url: location.origin+'/#tool' } });
     if (confirmError) throw new Error(confirmError.message);
     if (!paymentIntent || paymentIntent.status !== 'succeeded') throw new Error('Payment did not complete. Please try again.');
-
-    closePayModal();
-    showStatus('Payment confirmed! Processing full HD result…', 'success');
-    btnPay.style.display = 'none';
-
-    // Get HD result
-    const r2 = await fetch('/api/stripe/verify-process', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ paymentIntentId: paymentIntent.id, imageBase64: uploadedBase64, modes: selectedModes })
-    });
+    closePayModal(); showStatus('Payment confirmed! Processing full HD result…','success'); btnPay.style.display = 'none';
+    const r2 = await fetch('/api/stripe/verify-process', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ paymentIntentId: paymentIntent.id, imageBase64: uploadedBase64, modes: selectedModes }) });
     const data2 = await r2.json();
     if (!r2.ok || !data2.resultBase64) throw new Error(data2.error || 'Processing failed');
-
     hdResultBase64 = data2.resultBase64;
     resultImg.src = 'data:image/jpeg;base64,' + hdResultBase64;
-    resultLabel.textContent = 'HD Result ✦';
-    blurOverlay.style.display = 'none';
-    btnDownload.style.display = '';
-    showStatus('✅ Full HD restoration complete! Click Download to save your photo.', 'success');
+    resultLabel.textContent = 'HD Result ✦'; blurOverlay.style.display = 'none'; btnDownload.style.display = '';
+    showStatus('✅ Full HD restoration complete! Click Download to save your photo.','success');
   } catch (e) {
     document.getElementById('payError').textContent = e.message;
     document.getElementById('payError').style.display = 'block';
-    btn.disabled = false;
-    btn.innerHTML = 'Pay £1.99 &amp; Get HD Photo';
+    btn.disabled = false; btn.innerHTML = 'Pay £1.49 &amp; Get HD Photo';
   }
 }
 
-// ── Download HD ───────────────────────────────────────────────────────────────
 btnDownload.addEventListener('click', () => {
   if (!hdResultBase64) return;
   const a = document.createElement('a');
@@ -1547,178 +947,75 @@ btnDownload.addEventListener('click', () => {
   a.click();
 });
 
-// ── Reset ─────────────────────────────────────────────────────────────────────
 document.getElementById('btnReset').addEventListener('click', () => {
-  uploadZone.style.display = '';
-  previewArea.classList.remove('active');
-  uploadedBase64 = null;
-  hdResultBase64 = null;
-  fileInput.value = '';
-  hideStatus();
+  uploadZone.style.display = ''; previewArea.classList.remove('active');
+  uploadedBase64 = null; hdResultBase64 = null; fileInput.value = ''; hideStatus();
 });
 
-// ── Status helpers ────────────────────────────────────────────────────────────
-function showStatus(msg, type) {
-  statusMsg.textContent = msg;
-  statusMsg.className = 'status-msg visible' + (type ? ' ' + type : '');
-}
-function hideStatus() {
-  statusMsg.className = 'status-msg';
-}
+function showStatus(msg, type) { statusMsg.textContent = msg; statusMsg.className = 'status-msg visible' + (type ? ' '+type : ''); }
+function hideStatus() { statusMsg.className = 'status-msg'; }
 
-// ── Product order modal ───────────────────────────────────────────────────────
-function openProdModal(name, price, sku) {
-  currentProdSku = sku;
-  document.getElementById('prodModalName').textContent = name;
-  document.getElementById('prodModalPrice').textContent = price;
-  document.getElementById('prodModal').classList.add('open');
-}
-function closeProdModal() {
-  document.getElementById('prodModal').classList.remove('open');
-  currentProdSku = null;
-}
-
-async function proceedToCheckout() {
-  const btn = document.getElementById('btnProceedOrder');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Loading…';
-  try {
-    // Include the restored photo so it goes straight to Bags of Love after payment
-    const payload = { sku: currentProdSku };
-    if (hdResultBase64) payload.photoBase64 = hdResultBase64;
-
-    const r = await fetch('/api/stripe/checkout', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const { url, error } = await r.json();
-    if (error || !url) throw new Error(error || 'Could not start checkout');
-    window.location.href = url;
-  } catch (e) {
-    btn.disabled = false;
-    btn.innerHTML = 'Proceed to Payment →';
-    // Fallback: email link
-    const name = document.getElementById('prodModalName').textContent;
-    const price = document.getElementById('prodModalPrice').textContent;
-    window.location.href = 'mailto:orders@onjjem.co.uk?subject=Order%20Enquiry%3A%20' + encodeURIComponent(name) + '&body=Hi%20ONJJEM%2C%0A%0AI%27d%20like%20to%20order%3A%20' + encodeURIComponent(name) + '%20(' + encodeURIComponent(price) + ')%0A%0APlease%20send%20me%20payment%20details.%0A%0AThank%20you';
-  }
-}
-
-// ── Subscription checkout ─────────────────────────────────────────────────────
 async function startSubscribe(plan) {
   const btnId = plan === 'monthly' ? 'btnMonthly' : 'btnAnnual';
   const btn = document.getElementById(btnId);
-  const originalText = btn.textContent;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Loading…';
+  const orig = btn.textContent;
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Loading…';
   try {
-    const r = await fetch('/api/stripe/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plan })
-    });
+    const r = await fetch('/api/stripe/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ plan }) });
     const { url, error } = await r.json();
     if (error || !url) throw new Error(error || 'Could not start checkout');
     window.location.href = url;
-  } catch (e) {
-    btn.disabled = false;
-    btn.textContent = originalText;
-    alert('Sorry, something went wrong. Please email hello@onjjem.com to subscribe.');
-  }
+  } catch (e) { btn.disabled = false; btn.textContent = orig; alert('Sorry, something went wrong. Please email hello@onjjem.com to subscribe.'); }
 }
 
-// ── Single photo checkout (£1.49) ─────────────────────────────────────────────
 async function startSinglePhoto() {
   const btn = document.querySelector('[onclick="startSinglePhoto()"]');
-  const originalText = btn ? btn.textContent : '';
+  const orig = btn ? btn.textContent : '';
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Loading…'; }
   try {
-    const r = await fetch('/api/stripe/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sku: 'single' })
-    });
+    const r = await fetch('/api/stripe/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ sku:'single' }) });
     const { url, error } = await r.json();
     if (error || !url) throw new Error(error || 'Could not start checkout');
     window.location.href = url;
-  } catch (e) {
-    if (btn) { btn.disabled = false; btn.textContent = originalText; }
-    // Fall back to opening the inline payment modal
-    openPayModal();
-  }
+  } catch (e) { if (btn) { btn.disabled = false; btn.textContent = orig; } openPayModal(); }
 }
 
-// ── Order success banner (Stripe redirects back to /?order=success) ───────────
 (function() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('subscribed') === 'success') {
-    const banner = document.createElement('div');
-    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#1A3A24;border-bottom:2px solid #27AE60;padding:18px 24px;text-align:center;font-family:Georgia,serif;';
-    banner.innerHTML = '<span style="color:#5DE391;font-size:1.1rem;font-weight:700">✓ Subscription Active!</span> <span style="color:#E8E2D6;font-size:.95rem;margin-left:12px">Welcome to ONJJEM — your subscription is now live. Download the iPhone app to start restoring photos.</span> <button onclick="this.parentElement.remove()" style="margin-left:16px;background:none;border:1px solid #5DE39144;color:#5DE391;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:.8rem">✕</button>';
-    document.body.prepend(banner);
-    history.replaceState({}, '', '/');
-  }
-  if (params.get('order') === 'success') {
-    const banner = document.createElement('div');
-    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#1A3A24;border-bottom:2px solid #27AE60;padding:18px 24px;text-align:center;font-family:Georgia,serif;';
-    banner.innerHTML = '<span style="color:#5DE391;font-size:1.1rem;font-weight:700">✓ Order Confirmed!</span> <span style="color:#E8E2D6;font-size:.95rem;margin-left:12px">Your photo is being printed and will be dispatched within 3–5 working days. Check your email for confirmation.</span> <button onclick="this.parentElement.remove()" style="margin-left:16px;background:none;border:1px solid #5DE39144;color:#5DE391;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:.8rem">✕</button>';
-    document.body.prepend(banner);
-    // Clean the URL so a refresh doesn't re-show the banner
-    history.replaceState({}, '', '/');
+    const b = document.createElement('div');
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#1A3A24;border-bottom:2px solid #27AE60;padding:18px 24px;text-align:center;font-family:Georgia,serif;';
+    b.innerHTML = '<span style="color:#5DE391;font-size:1.1rem;font-weight:700">✓ Subscription Active!</span> <span style="color:#E8E2D6;font-size:.95rem;margin-left:12px">Welcome to ONJJEM — download the iPhone app to start restoring photos.</span> <button onclick="this.parentElement.remove()" style="margin-left:16px;background:none;border:1px solid #5DE39144;color:#5DE391;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:.8rem">✕</button>';
+    document.body.prepend(b); history.replaceState({},'',' /');
   }
 })();
 
-// Close modals on backdrop click
 document.getElementById('payModal').addEventListener('click', e => { if (e.target === document.getElementById('payModal')) closePayModal(); });
-document.getElementById('prodModal').addEventListener('click', e => { if (e.target === document.getElementById('prodModal')) closeProdModal(); });
 document.getElementById('signupBackdrop').addEventListener('click', e => { if (e.target === document.getElementById('signupBackdrop')) closeSignup(); });
 
-// ── Email signup popup ─────────────────────────────────────────────────────────
 function openSignup() { document.getElementById('signupBackdrop').classList.add('open'); }
 function closeSignup() { document.getElementById('signupBackdrop').classList.remove('open'); }
 
 async function submitSignup() {
   const input = document.getElementById('signupEmail');
-  const btn   = document.getElementById('signupBtn');
+  const btn = document.getElementById('signupBtn');
   const email = input.value.trim();
   if (!email || !email.includes('@')) { input.focus(); return; }
-  btn.disabled = true;
-  btn.textContent = 'Sending…';
+  btn.disabled = true; btn.textContent = 'Sending…';
   try {
-    const r = await fetch('/api/email-signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    });
+    const r = await fetch('/api/email-signup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email }) });
     const data = await r.json();
     if (data.ok) {
       if (data.code) document.getElementById('signupCodeDisplay').textContent = data.code;
       document.getElementById('signupFormWrap').style.display = 'none';
-      document.getElementById('signupSuccess').style.display  = 'block';
-      sessionStorage.setItem('onjjem_signup_done', '1');
-    } else {
-      btn.disabled = false;
-      btn.textContent = 'Get 10% Off';
-      input.style.borderColor = '#FF8080';
-    }
-  } catch(e) {
-    btn.disabled = false;
-    btn.textContent = 'Get 10% Off';
-  }
+      document.getElementById('signupSuccess').style.display = 'block';
+      sessionStorage.setItem('onjjem_signup_done','1');
+    } else { btn.disabled = false; btn.textContent = 'Get 10% Off'; input.style.borderColor = '#FF8080'; }
+  } catch(e) { btn.disabled = false; btn.textContent = 'Get 10% Off'; }
 }
 
-// Allow Enter key in email input
-document.getElementById('signupEmail').addEventListener('keydown', e => {
-  if (e.key === 'Enter') submitSignup();
-});
-
-// Show popup after 6 seconds — once per session, not shown if already subscribed
-(function() {
-  if (sessionStorage.getItem('onjjem_signup_done')) return;
-  setTimeout(openSignup, 6000);
-})();
+document.getElementById('signupEmail').addEventListener('keydown', e => { if (e.key === 'Enter') submitSignup(); });
+(function() { if (sessionStorage.getItem('onjjem_signup_done')) return; setTimeout(openSignup, 6000); })();
 </script>
-
 </body>
 </html>
