@@ -58,10 +58,11 @@
     .shop-section { padding: 64px 24px; border-bottom: 1px solid rgba(201,150,12,0.08); }
     .shop-section.alt { background: var(--bg2); }
     .shop-section-inner { max-width: 1100px; margin: 0 auto; }
-    .section-label { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .section-label { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
     .section-label-icon { width: 42px; height: 42px; border-radius: 21px; background: var(--gbg); border: 1px solid rgba(201,150,12,0.3); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
     .section-label-text h2 { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 600; color: var(--cream); }
     .section-label-text p { font-size: 12px; color: var(--c55); margin-top: 3px; }
+    .section-subtitle { font-size: 12px; color: rgba(201,150,12,0.7); letter-spacing: 0.5px; margin-bottom: 28px; padding-left: 54px; }
 
     /* PRODUCT GRID */
     .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
@@ -70,15 +71,26 @@
     /* PRODUCT CARD */
     .prod-card { background: var(--card); border: 1px solid rgba(201,150,12,0.18); border-radius: 18px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
     .prod-card:hover { border-color: rgba(201,150,12,0.55); transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.45); }
+    .prod-card.wide { grid-column: span 2; }
+    @media (max-width: 520px) { .prod-card.wide { grid-column: span 2; } }
     .prod-img-placeholder { width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, var(--bg2), var(--card2)); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .prod-card.wide .prod-img-placeholder { aspect-ratio: 2/1; }
     .prod-body { padding: 14px 16px 16px; flex: 1; display: flex; flex-direction: column; }
-    .prod-name { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600; color: var(--cream); margin-bottom: 5px; line-height: 1.3; }
+    .prod-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+    .badge { font-size: 9px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; }
+    .badge-best { background: rgba(201,150,12,0.2); color: var(--gold); border: 1px solid rgba(201,150,12,0.35); }
+    .badge-premium { background: rgba(120,80,200,0.18); color: #C8A8FF; border: 1px solid rgba(120,80,200,0.3); }
+    .badge-london { background: rgba(220,38,38,0.15); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.25); }
+    .badge-free { background: rgba(34,197,94,0.12); color: #86EFAC; border: 1px solid rgba(34,197,94,0.2); }
+    .prod-name { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600; color: var(--cream); margin-bottom: 4px; line-height: 1.3; }
+    .prod-size { font-size: 10px; color: rgba(201,150,12,0.65); margin-bottom: 5px; line-height: 1.4; }
     .prod-desc { font-size: 11px; color: var(--c55); line-height: 1.6; flex: 1; margin-bottom: 12px; }
     .prod-footer { display: flex; align-items: center; justify-content: space-between; }
     .prod-price { font-size: 20px; font-weight: 800; color: var(--cream); }
     .prod-price sup { font-size: 11px; font-weight: 600; vertical-align: super; color: var(--c55); }
-    .prod-btn { background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold)); color: var(--bg); font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 40px; border: none; cursor: pointer; transition: opacity 0.2s; }
+    .prod-btn { background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold)); color: var(--bg); font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 40px; border: none; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; }
     .prod-btn:hover { opacity: 0.85; }
+    .prod-btn.enquire { background: var(--gbg2); border: 1px solid var(--gb); color: var(--gold); }
 
     /* JUBILEE CARDS */
     .jubilee-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
@@ -119,7 +131,7 @@
     .modal-cancel { display: block; text-align: center; margin-top: 12px; font-size: 12px; color: rgba(250,247,242,0.28); cursor: pointer; }
     .modal-cancel:hover { color: var(--c55); }
 
-    /* EMAIL MODAL (jubilee / bespoke) */
+    /* EMAIL MODAL */
     .email-modal-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 15px; border-radius: 13px; font-size: 14px; font-weight: 700; background: var(--gbg2); border: 1px solid var(--gb); color: var(--gold); text-decoration: none; transition: background 0.2s; }
     .email-modal-link:hover { background: rgba(201,150,12,0.25); }
 
@@ -151,30 +163,115 @@
   <div class="shop-eyebrow">🎁 &nbsp;Gift Shop</div>
   <div class="shop-title">Gift Shop</div>
   <div class="shop-sub">Restore. Print. Treasure.</div>
-  <p class="shop-desc">Turn your restored family photographs into luxury gifts — canvas prints, heritage jigsaws, personalised cushions, blankets, mugs, and more. All made to order and delivered to your door.</p>
+  <p class="shop-desc">Turn your restored family photographs into luxury gifts — canvas prints, heritage jigsaws, personalised cushions, blankets, rugs, wearables, and more. All made to order and delivered to your door.</p>
 </div>
 
 <!-- CATEGORY TABS -->
 <div class="cat-tabs">
   <div class="cat-tabs-inner">
-    <a class="cat-tab active" href="#anniversaries">💎 Jubilees &amp; Anniversaries</a>
-    <a class="cat-tab" href="#canvas">🖼 Canvas Prints</a>
-    <a class="cat-tab" href="#textiles">🏠 Cushions &amp; Blankets</a>
+    <a class="cat-tab active" href="#anniversaries">💎 Jubilees</a>
+    <a class="cat-tab" href="#lounge">🛋️ Lounge</a>
+    <a class="cat-tab" href="#bedroom">🌙 Luxury Sleep</a>
+    <a class="cat-tab" href="#personal">🎁 Personal Gifts</a>
     <a class="cat-tab" href="#jigsaws">🧩 Jigsaws</a>
-    <a class="cat-tab" href="#gifts">🎁 Personal Gifts</a>
+    <a class="cat-tab" href="#prints">🖼️ Prints</a>
+    <a class="cat-tab" href="#walls">🏛️ Feature Walls</a>
+    <a class="cat-tab" href="#wearable">👕 Wearable</a>
+    <a class="cat-tab" href="#everyday">🎁 Everyday Gifts</a>
+    <a class="cat-tab" href="#under25">🎀 Under £25</a>
+    <a class="cat-tab" href="#rugs">🏡 Rugs</a>
+    <a class="cat-tab" href="#car">🚙 Car Journey</a>
+    <a class="cat-tab" href="#junior">⚽ Junior Sports</a>
+    <a class="cat-tab" href="#presentation">🎀 Grand Presentation</a>
   </div>
 </div>
 
-<!-- JUBILEES & ANNIVERSARIES -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  JUBILEES & ANNIVERSARIES                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="shop-section" id="anniversaries">
   <div class="shop-section-inner">
     <div class="section-label">
       <div class="section-label-icon">💎</div>
       <div class="section-label-text">
         <h2>Jubilees &amp; Anniversaries</h2>
-        <p>Milestone celebration gifts built around your restored family photographs</p>
+        <p>Silver · Ruby · Golden · Diamond · Platinum — every precious milestone</p>
       </div>
     </div>
+    <div class="section-subtitle">Individual anniversary gifts made from your restored photograph</div>
+
+    <!-- Individual Anniversary Products -->
+    <div class="prod-grid" style="margin-bottom:40px">
+
+      <div class="prod-card" onclick="openProdModal('jubilee-diamond-portrait','Diamond Jubilee Heritage Portrait','💎','Your most treasured wedding photo expertly restored and printed on 300gsm museum-grade archival paper. Double-mounted in cream board, ready to frame — and guaranteed never to fade. A2 size.','89.99')">
+        <div class="prod-img-placeholder">💎</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-premium">Premium</span></div>
+          <div class="prod-name">Diamond Jubilee Heritage Portrait</div>
+          <div class="prod-size">60th Anniversary · A2 · 300gsm archival · double-mounted</div>
+          <div class="prod-desc">Museum-grade archival paper, double-mounted in cream board — guaranteed never to fade.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>89.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openProdModal('jubilee-golden-canvas','Golden Jubilee Gallery Canvas','🟡','Your restored wedding photo hand-stretched onto a solid pine frame, printed with fade-proof inks on 400gsm artist canvas. Arrives ready to hang with a gold-cord hanging system. 40×30cm.','74.99')">
+        <div class="prod-img-placeholder">🟡</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span></div>
+          <div class="prod-name">Golden Jubilee Gallery Canvas</div>
+          <div class="prod-size">50th Anniversary · 40×30 cm · gallery-stretched · ready to hang</div>
+          <div class="prod-desc">Hand-stretched on solid pine, 400gsm artist canvas with fade-proof inks and gold-cord hanging system.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>74.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openProdModal('jubilee-ruby-silk-cushion','Ruby Jubilee Silk Heirloom Cushion','🔴','Your restored photo hand-sewn into 100% natural silk — the most sumptuously soft material we offer. Hand-finished in London, delivered in a luxury gift box with a 5-year print guarantee. 50cm.','54.99')">
+        <div class="prod-img-placeholder">🔴</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Ruby Jubilee Silk Heirloom Cushion</div>
+          <div class="prod-size">40th Anniversary · 50 cm · 100% Natural Silk · luxury gift box</div>
+          <div class="prod-desc">Sumptuously soft 100% natural silk, hand-finished in London. 5-year print guarantee.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>54.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openProdModal('jubilee-silver-print','Silver Jubilee Heritage Framed Print','💍','Your restored wedding photo on 300gsm archival paper, double-mounted in cream board to fit a standard A2 frame. A timeless gift that will never fade.','39.99')">
+        <div class="prod-img-placeholder">💍</div>
+        <div class="prod-body">
+          <div class="prod-name">Silver Jubilee Heritage Framed Print</div>
+          <div class="prod-size">25th Anniversary · A2 · double-mounted · ready to frame</div>
+          <div class="prod-desc">300gsm archival paper, double-mounted in cream board. Fits a standard A2 frame. Never fades.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>39.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openProdModal('jubilee-pearl-throw','Pearl Jubilee Luxury Velvet Throw','🤍','Your restored photo printed across a generous plush velvet throw, hand-finished in London with a satin edge binding. The perfect gift to wrap around their favourite chair. 150×100cm.','49.99')">
+        <div class="prod-img-placeholder">🤍</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Pearl Jubilee Luxury Velvet Throw</div>
+          <div class="prod-size">30th Anniversary · 150×100 cm · plush velvet · satin edge binding</div>
+          <div class="prod-desc">Plush velvet throw with satin edge binding, hand-finished in London. Your photo in full HD colour.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>49.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('jubilee-emerald-photobook','Emerald Jubilee Heritage Photo Book','💚','Your restored photos curated into a 60-page A4 hardback, printed on silk-coated 200gsm paper and bound in a rich forest-green linen cover. Printed and bound by hand in London.','59.99')">
+        <div class="prod-img-placeholder">💚</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Emerald Jubilee Heritage Photo Book</div>
+          <div class="prod-size">55th Anniversary · A4 hardback · 60 pages · silk-coated 200gsm · forest-green linen cover</div>
+          <div class="prod-desc">Your restored photos curated into a 60-page A4 hardback, printed on silk-coated paper and bound by hand in London in a rich forest-green linen cover.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>59.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Jubilee Collections (bespoke, via email) -->
+    <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--gold-lt);margin-bottom:18px;letter-spacing:0.5px;">Bespoke Jubilee Collections</div>
     <div class="jubilee-grid">
 
       <div class="jubilee-card" onclick="openJubileeModal('Silver Jubilee','🥈','25 Years Together','silver-jubilee','A canvas print of your restored wedding or family photograph, beautifully produced to mark 25 years together.')">
@@ -189,10 +286,7 @@
           <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Cushion</span><span style="color:var(--gold);font-size:12px">✓</span></div>
           <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Mug</span><span style="color:var(--gold);font-size:12px">✓</span></div>
         </div>
-        <div class="jubilee-footer">
-          <div class="jubilee-price">Enquire</div>
-          <button class="jubilee-btn">Order →</button>
-        </div>
+        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
       </div>
 
       <div class="jubilee-card" onclick="openJubileeModal('Ruby Jubilee','♦️','40 Years Together','ruby-jubilee','A canvas print of your restored photograph and an acrylic memory block — the perfect ruby anniversary keepsake.')">
@@ -207,10 +301,7 @@
           <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Cushion</span><span style="color:var(--gold);font-size:12px">✓</span></div>
           <div class="jubilee-item-row"><span class="jubilee-item-name">Acrylic Memory Block</span><span style="color:var(--gold);font-size:12px">✓</span></div>
         </div>
-        <div class="jubilee-footer">
-          <div class="jubilee-price">Enquire</div>
-          <button class="jubilee-btn">Order →</button>
-        </div>
+        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
       </div>
 
       <div class="jubilee-card" onclick="openJubileeModal('Golden Jubilee','🥇','50 Years Together','golden-jubilee','The ultimate 50-year anniversary gift — a large canvas print, cushion, jigsaw, and blanket, all made from your restored photograph.')">
@@ -226,10 +317,7 @@
           <div class="jubilee-item-row"><span class="jubilee-item-name">Heritage Jigsaw</span><span style="color:var(--gold);font-size:12px">✓</span></div>
           <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Blanket</span><span style="color:var(--gold);font-size:12px">✓</span></div>
         </div>
-        <div class="jubilee-footer">
-          <div class="jubilee-price">Enquire</div>
-          <button class="jubilee-btn">Order →</button>
-        </div>
+        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
       </div>
 
       <div class="jubilee-card" onclick="openJubileeModal('Diamond Jubilee','💎','60 Years Together','diamond-jubilee','60 years — the rarest milestone. The complete ONJJEM keepsake set made from your restored family photograph.')">
@@ -245,10 +333,7 @@
           <div class="jubilee-item-row"><span class="jubilee-item-name">Heritage Jigsaw 1000pc</span><span style="color:var(--gold);font-size:12px">✓</span></div>
           <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Blanket</span><span style="color:var(--gold);font-size:12px">✓</span></div>
         </div>
-        <div class="jubilee-footer">
-          <div class="jubilee-price">Enquire</div>
-          <button class="jubilee-btn">Order →</button>
-        </div>
+        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
       </div>
 
       <div class="jubilee-card" onclick="openJubileeModal('Platinum Jubilee','🤍','70 Years Together','platinum-jubilee','70 years of love — the most precious anniversary of all. The full ONJJEM collection crafted from your restored photographs.')">
@@ -264,193 +349,1054 @@
           <div class="jubilee-item-row"><span class="jubilee-item-name">Heritage Jigsaw 1000pc</span><span style="color:var(--gold);font-size:12px">✓</span></div>
           <div class="jubilee-item-row"><span class="jubilee-item-name">Personalised Blanket</span><span style="color:var(--gold);font-size:12px">✓</span></div>
         </div>
-        <div class="jubilee-footer">
-          <div class="jubilee-price">Enquire</div>
-          <button class="jubilee-btn">Order →</button>
-        </div>
+        <div class="jubilee-footer"><div class="jubilee-price">Enquire</div><button class="jubilee-btn">Order →</button></div>
       </div>
 
     </div>
   </div>
 </div>
 
-<!-- CANVAS PRINTS -->
-<div class="shop-section alt" id="canvas">
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  LOUNGE                                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section alt" id="lounge">
   <div class="shop-section-inner">
     <div class="section-label">
-      <div class="section-label-icon">🖼</div>
+      <div class="section-label-icon">🛋️</div>
       <div class="section-label-text">
-        <h2>Canvas Prints</h2>
-        <p>Gallery-stretched, ready to hang — three sizes</p>
+        <h2>Lounge</h2>
+        <p>Plush cushions · Velvet throws · Silk — all for your lounge</p>
       </div>
     </div>
+    <div class="section-subtitle">Master Print Lab &amp; Master Textiles</div>
     <div class="prod-grid">
-      <div class="prod-card" onclick="openProdModal('canvas-classic-30x20','Classic Canvas Print','🖼','Your restored photograph on premium artist canvas, hand-stretched over a solid wood frame. Ready to hang. 30×20cm.','29.99')">
-        <div class="prod-img-placeholder">🖼</div>
-        <div class="prod-body">
-          <div class="prod-name">Classic Canvas (30×20cm)</div>
-          <div class="prod-desc">Premium artist canvas · Solid wood frame · Ready to hang</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>29.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
-        </div>
-      </div>
-      <div class="prod-card" onclick="openProdModal('canvas-large-60x40','Large Canvas Print','🖼','Statement-size restored photo on gallery-grade canvas, hand-stretched on a solid wood frame. 60×40cm.','59.99')">
-        <div class="prod-img-placeholder">🖼</div>
-        <div class="prod-body">
-          <div class="prod-name">Large Canvas (60×40cm)</div>
-          <div class="prod-desc">Gallery-grade canvas · Solid wood frame · Statement size</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>59.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
-        </div>
-      </div>
-      <div class="prod-card" onclick="openProdModal('canvas-xl-90x60','Extra Large Canvas Print','🖼','Museum-quality extra large canvas of your restored photo — 90×60cm, perfect as a room centrepiece.','89.99')">
-        <div class="prod-img-placeholder">🖼</div>
-        <div class="prod-body">
-          <div class="prod-name">Extra Large Canvas (90×60cm)</div>
-          <div class="prod-desc">Museum-quality · 90×60cm · Centrepiece size</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>89.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- CUSHIONS & BLANKETS -->
-<div class="shop-section" id="textiles">
-  <div class="shop-section-inner">
-    <div class="section-label">
-      <div class="section-label-icon">🏠</div>
-      <div class="section-label-text">
-        <h2>Cushions &amp; Blankets</h2>
-        <p>Your memories woven into everyday life</p>
-      </div>
-    </div>
-    <div class="prod-grid">
-      <div class="prod-card" onclick="openProdModal('cushion-45x45','Personalised Cushion','🛋️','Your restored photograph printed on a plump, high-quality 45×45cm cushion with a concealed zip.','34.99')">
+      <div class="prod-card" onclick="openProdModal('cushion-square-40x40','Square Photo Cushion','🛋️','Your restored photo printed on a soft velvet-touch front with a plain colour-matched backing. Fill of your choice: duck feather &amp; down or poly-fibre. Zip fastening. Machine washable. 5-Year Print Guarantee.','44.99')">
         <div class="prod-img-placeholder">🛋️</div>
         <div class="prod-body">
-          <div class="prod-name">Personalised Cushion</div>
-          <div class="prod-desc">45×45cm · High-quality fill · Concealed zip · Full colour print</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>34.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
+          <div class="prod-name">Square Photo Cushion</div>
+          <div class="prod-size">40×40 cm · soft velvet-touch front · duck feather &amp; down or poly-fibre fill · zip fastening</div>
+          <div class="prod-desc">Soft velvet-touch front, colour-matched backing. Choice of fill. Machine washable. 5-Year Print Guarantee.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>44.99</div><button class="prod-btn">Order →</button></div>
         </div>
       </div>
-      <div class="prod-card" onclick="openProdModal('blanket-fleece','Personalised Blanket','🧣','Luxurious fleece blanket (120×150cm) printed with your restored family photograph. Super-soft and machine washable.','49.99')">
-        <div class="prod-img-placeholder">🧣</div>
+
+      <div class="prod-card" onclick="openProdModal('cushion-large-60x60','Large Luxury Cushion','🟥','Our largest cushion — a bold centrepiece for any sofa. Soft velvet-touch front with your expertly restored photo, plain colour-matched backing. Fill of your choice. Machine washable. 5-Year Print Guarantee.','59.99')">
+        <div class="prod-img-placeholder">🟥</div>
         <div class="prod-body">
-          <div class="prod-name">Personalised Blanket</div>
-          <div class="prod-desc">120×150cm · Super-soft fleece · Machine washable · Full print</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>49.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span></div>
+          <div class="prod-name">Large Luxury Cushion</div>
+          <div class="prod-size">60×60 cm · soft velvet-touch front · duck feather &amp; down or poly-fibre fill · zip fastening</div>
+          <div class="prod-desc">Our largest cushion — a bold sofa centrepiece. Velvet-touch front, choice of fill. Machine washable.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>59.99</div><button class="prod-btn">Order →</button></div>
         </div>
       </div>
+
+      <div class="prod-card wide" onclick="openProdModal('cushion-silk-portrait','Luxury Silk Portrait Cushion','🌸','Crafted from buttery-soft 100% natural silk — the same quality found in luxury accessories. Hand-sewn in London with your choice of duck feather &amp; down or poly-fibre fill, hidden zip fastening. Dry-clean recommended. 5-Year Print Guarantee.','84.99')">
+        <div class="prod-img-placeholder">🌸</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Luxury Silk Portrait Cushion</div>
+          <div class="prod-size">50×50 cm · 100% natural silk front · duck feather &amp; down or poly-fibre fill · zip fastening</div>
+          <div class="prod-desc">Your restored photo on 100% natural silk — hand-sewn in London. The finest cushion we make. Dry-clean recommended. 5-Year Print Guarantee.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>84.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('blanket-fleece-small','Photo Fleece Blanket — Small','🟨','Your restored photo printed in full-colour HD onto 570gsm double-layer anti-pilling polar fleece. Handstitched by our London seamstresses. Machine washable, non-fray. Choose from four backing colours. Ideal as a children\'s blanket or lap throw.','54.99')">
+        <div class="prod-img-placeholder">🟨</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Photo Fleece Blanket — Small</div>
+          <div class="prod-size">100×73 cm · 570gsm anti-pilling polar fleece · handstitched in London</div>
+          <div class="prod-desc">570gsm double-layer anti-pilling polar fleece. Handstitched in London. Four backing colours. Machine washable. Ideal as a children's blanket or lap throw.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>54.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('blanket-fleece-medium','Photo Fleece Blanket — Medium','🟦','Our most popular size — drapes beautifully over sofas and armchairs. 570gsm double-layer anti-pilling polar fleece, handstitched by our London seamstresses. Printed both sides or single side. Machine washable. Four backing colours.','74.99')">
+        <div class="prod-img-placeholder">🟦</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Photo Fleece Blanket — Medium</div>
+          <div class="prod-size">145×106 cm · 570gsm anti-pilling polar fleece · handstitched in London</div>
+          <div class="prod-desc">Our most popular size — drapes beautifully over sofas. 570gsm fleece, handstitched in London. Printed both sides or single side. Four backing colours.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>74.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('blanket-fleece-queen','Photo Fleece Blanket — Queen','🟩','The ultimate queen-size keepsake. 570gsm double-layer anti-pilling polar fleece — comfortingly weighty without feeling heavy. Printed in full-colour HD, handstitched by our London seamstresses. Machine washable, anti-pilling. Four backing colour choices.','89.99')">
+        <div class="prod-img-placeholder">🟩</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Photo Fleece Blanket — Queen</div>
+          <div class="prod-size">198×145 cm · 570gsm anti-pilling polar fleece · handstitched in London</div>
+          <div class="prod-desc">Queen-size keepsake. 570gsm fleece — comfortingly weighty. Handstitched in London. Anti-pilling. Four backing colour choices.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>89.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('throw-sherpa','Luxury Sherpa Throw','🟥','A genuinely two-sided luxury throw: plush velvet printed front with your restored photo, and a sumptuously soft Sherpa fleece reverse for warmth. Handstitched in London. Choose from six Sherpa backing colours. Spot clean recommended.','94.99')">
+        <div class="prod-img-placeholder">🟥</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Luxury Sherpa Throw</div>
+          <div class="prod-size">127×152 cm · plush velvet front · sherpa fleece reverse · handstitched in London</div>
+          <div class="prod-desc">Two-sided luxury: plush velvet printed front, sumptuously soft Sherpa fleece reverse. Handstitched in London. Six Sherpa backing colours. Spot clean.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>94.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<!-- JIGSAWS -->
-<div class="shop-section alt" id="jigsaws">
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  LUXURY SLEEP                                                    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section" id="bedroom">
   <div class="shop-section-inner">
     <div class="section-label">
-      <div class="section-label-icon">🧩</div>
+      <div class="section-label-icon">🌙</div>
       <div class="section-label-text">
-        <h2>Heritage Jigsaws</h2>
-        <p>Your restored family photo as a premium puzzle — a gift that becomes a tradition</p>
+        <h2>Luxury Sleep</h2>
+        <p>Heirloom textiles for your bedroom</p>
       </div>
     </div>
+    <div class="section-subtitle">ONJJEM Master Textiles · Handcrafted in London</div>
     <div class="prod-grid">
-      <div class="prod-card" onclick="openProdModal('jigsaw-252','Heritage Jigsaw — 252 Pieces','🧩','Your restored family photo as a premium 252-piece jigsaw. Perfect for children and quick gifting.','24.99')">
-        <div class="prod-img-placeholder">🧩</div>
+
+      <div class="prod-card wide" onclick="openProdModal('duvet-organic-cotton','Photo Duvet Cover','🌟','Your restored photo printed across the full face of a 100% organic cotton duvet cover. Crisp, breathable, machine washable at 40°C. Zip fastening. Available in four standard UK sizes. Duvet cover only. 5-Year Print Guarantee.','59.00')">
+        <div class="prod-img-placeholder">🌟</div>
         <div class="prod-body">
-          <div class="prod-name">Heritage Jigsaw 252pc</div>
-          <div class="prod-desc">252 pieces · Premium cardboard · Gift box included</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>24.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
+          <div class="prod-badges"><span class="badge badge-london">London</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Photo Duvet Cover</div>
+          <div class="prod-size">Single 140×198cm · Double 218×229cm · King · Super King · 100% Organic Cotton</div>
+          <div class="prod-desc">Your photo across the full face of 100% organic cotton. Breathable, machine washable at 40°C. Zip fastening. Four UK sizes. Duvet cover only. 5-Year Print Guarantee.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>59.00</div><button class="prod-btn">Order →</button></div>
         </div>
       </div>
-      <div class="prod-card" onclick="openProdModal('jigsaw-500','Heritage Jigsaw — 500 Pieces','🧩','Your restored family photo as a premium 500-piece jigsaw. A beautiful keepsake for the whole family.','34.99')">
-        <div class="prod-img-placeholder">🧩</div>
+
+      <div class="prod-card wide" onclick="openProdModal('rug-bedside-90x63','Plush Bedside Rug','🏡','Wake up to your most treasured memory every morning. Your restored photo reproduced in vivid, deep colour on a plush velour surface with a non-slip rubber base — soft underfoot and beautiful to look at. Wipe-clean.','99.00')">
+        <div class="prod-img-placeholder">🏡</div>
         <div class="prod-body">
-          <div class="prod-name">Heritage Jigsaw 500pc</div>
-          <div class="prod-desc">500 pieces · Premium cardboard · Presentation box</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>34.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
+          <div class="prod-badges"><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Plush Bedside Rug</div>
+          <div class="prod-size">90×63 cm · plush velour print surface · non-slip rubber base</div>
+          <div class="prod-desc">Wake up to your most treasured memory every morning. Plush velour surface with non-slip rubber base. Wipe-clean.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>99.00</div><button class="prod-btn">Order →</button></div>
         </div>
       </div>
-      <div class="prod-card" onclick="openProdModal('jigsaw-1000','Heritage Jigsaw — 1000 Pieces','🧩','The heirloom jigsaw — your restored photograph as a 1000-piece premium puzzle. A truly cherished gift.','49.99')">
-        <div class="prod-img-placeholder">🧩</div>
+
+      <div class="prod-card wide" onclick="openProdModal('duvet-pure-silk','Pure Silk Duvet Cover','✨','The ultimate bedroom luxury. Hand-sewn in London from natural silk satin — gentle on skin and naturally temperature-regulating. Your restored photo reproduced in breathtaking clarity across the full face. 10-Year Master Guarantee.','129.00')">
+        <div class="prod-img-placeholder">✨</div>
         <div class="prod-body">
-          <div class="prod-name">Heritage Jigsaw 1000pc</div>
-          <div class="prod-desc">1000 pieces · Luxury box · Heirloom quality</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>49.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Pure Silk Duvet Cover</div>
+          <div class="prod-size">Single · Double · King · Super King · 100% Natural Silk Satin · 10-Year Master Guarantee</div>
+          <div class="prod-desc">Natural silk satin hand-sewn in London — gentle on skin, naturally temperature-regulating. Your photo in breathtaking clarity. 10-Year Master Guarantee.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>129.00</div><button class="prod-btn">Order →</button></div>
         </div>
       </div>
+
+      <div class="prod-card" onclick="openProdModal('duvet-single-140x198','Photo Duvet Cover — Single','🛏️','Your restored photo printed across the full face of a single duvet cover in 100% organic cotton. Breathable, machine washable at 40°C, zip fastening. Duvet cover only — insert not included.','135.00')">
+        <div class="prod-img-placeholder">🛏️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Photo Duvet Cover — Single</div>
+          <div class="prod-size">Single 140×198 cm · 100% Organic Cotton · zip fastening</div>
+          <div class="prod-desc">Full-face print on 100% organic cotton. Breathable, machine washable. Duvet cover only.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>135.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openProdModal('duvet-double-218x229','Photo Duvet Cover — Double','🛏️','Your restored photo printed across the full face of a double duvet cover in 100% organic cotton. Breathable, machine washable at 40°C, zip fastening. Duvet cover only — insert not included.','165.00')">
+        <div class="prod-img-placeholder">🛏️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Photo Duvet Cover — Double</div>
+          <div class="prod-size">Double 218×229 cm · 100% Organic Cotton · zip fastening</div>
+          <div class="prod-desc">Full-face print on 100% organic cotton. Breathable, machine washable. Duvet cover only.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>165.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<!-- PERSONAL GIFTS -->
-<div class="shop-section" id="gifts">
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PERSONAL GIFTS                                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section alt" id="personal">
   <div class="shop-section-inner">
     <div class="section-label">
       <div class="section-label-icon">🎁</div>
       <div class="section-label-text">
         <h2>Personal Gifts</h2>
-        <p>Mugs, keyrings, and memory blocks — daily keepsakes of people you love</p>
+        <p>Keyrings, mugs &amp; keepsakes for everyone</p>
       </div>
     </div>
+    <div class="section-subtitle">Master Print Lab</div>
     <div class="prod-grid">
-      <div class="prod-card" onclick="openProdModal('mug-11oz','Personalised Mug','☕','Dishwasher-safe ceramic mug with your restored photograph. 11oz, full-colour print that lasts.','14.99')">
-        <div class="prod-img-placeholder">☕</div>
+
+      <div class="prod-card" onclick="openProdModal('magnet-photo','Fridge Magnet','🧲','Your restored photo on a premium acrylic-finish magnet. Choose round (60mm) or rectangular (65×46mm). Heat-proof gloss surface — wipe clean.','24.99')">
+        <div class="prod-img-placeholder">🧲</div>
         <div class="prod-body">
-          <div class="prod-name">Personalised Mug</div>
-          <div class="prod-desc">11oz ceramic · Dishwasher safe · Full colour · Gift box</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>14.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
+          <div class="prod-name">Fridge Magnet</div>
+          <div class="prod-size">Round 60mm diameter or Rectangular 65×46mm · acrylic finish</div>
+          <div class="prod-desc">Premium acrylic-finish magnet. Round or rectangular. Heat-proof gloss surface, wipe clean.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
         </div>
       </div>
-      <div class="prod-card" onclick="openProdModal('keyring-metal','Personalised Keyring','🔑','Premium metal keyring with a printed photo charm — a beautiful everyday reminder of a special memory.','9.99')">
+
+      <div class="prod-card" onclick="openProdModal('keyring-photo','Photo Keyring','🔑','Take your memories everywhere. Premium metal keyring with your restored photo — a beautiful everyday reminder of a special memory.','24.99')">
         <div class="prod-img-placeholder">🔑</div>
         <div class="prod-body">
-          <div class="prod-name">Personalised Keyring</div>
-          <div class="prod-desc">Premium metal · Photo charm · Gift-wrapped</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>9.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
+          <div class="prod-name">Photo Keyring</div>
+          <div class="prod-size">Premium metal · photo charm · gift-wrapped</div>
+          <div class="prod-desc">Take your memories everywhere. Premium metal keyring with your restored photo.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
         </div>
       </div>
-      <div class="prod-card" onclick="openProdModal('acrylic-block-10x10','Acrylic Memory Block','🔲','Your restored photograph embedded in a luxury 10×10cm acrylic block — striking, modern, freestanding.','39.99')">
-        <div class="prod-img-placeholder">🔲</div>
+
+      <div class="prod-card" onclick="openProdModal('mug-classic-11oz','Classic Photo Mug','☕','Dishwasher safe, vibrant print. Your restored photograph on a classic 11oz ceramic mug — a daily reminder of your favourite memory.','29.99')">
+        <div class="prod-img-placeholder">☕</div>
         <div class="prod-body">
-          <div class="prod-name">Acrylic Memory Block</div>
-          <div class="prod-desc">10×10cm · Deep acrylic · Modern desk ornament · Gift-boxed</div>
-          <div class="prod-footer">
-            <div class="prod-price"><sup>£</sup>39.99</div>
-            <button class="prod-btn">Order →</button>
-          </div>
+          <div class="prod-name">Classic Photo Mug</div>
+          <div class="prod-size">11 oz · ceramic · dishwasher safe · vibrant full-colour print</div>
+          <div class="prod-desc">Dishwasher safe, vibrant print. Your restored photograph on a classic 11oz ceramic mug.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>29.99</div><button class="prod-btn">Order →</button></div>
         </div>
       </div>
+
+      <div class="prod-card wide" onclick="openProdModal('keyring-leather-nappa','Handmade Leather Keyring','🔑','Crafted from buttery-soft Genuine Nappa calf leather — the same quality found in luxury handbags. Double-sided photo print using water-based eco-friendly inks that won\'t peel, rub or scratch. Available in heart or rectangle shape.','34.99')">
+        <div class="prod-img-placeholder">🔑</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Handmade Leather Keyring</div>
+          <div class="prod-size">Heart 6.4×7.9cm or Rectangle 7.1×7.6cm · Genuine Nappa calf leather · double-sided print</div>
+          <div class="prod-desc">Buttery-soft Genuine Nappa calf leather. Double-sided print — water-based inks that won't peel or scratch. Heart or rectangle shape.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>34.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openProdModal('mug-travel-15oz','Tall Travel Mug','🧋','Keep memories warm on the go. Your restored photo on a 15oz travel mug — perfect for commutes and days out.','34.99')">
+        <div class="prod-img-placeholder">🧋</div>
+        <div class="prod-body">
+          <div class="prod-name">Tall Travel Mug</div>
+          <div class="prod-size">15 oz · keep memories warm on the go</div>
+          <div class="prod-desc">Your restored photo on a tall 15oz travel mug — perfect for commutes and days out.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>34.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  HERITAGE JIGSAWS                                               -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section" id="jigsaws">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🧩</div>
+      <div class="section-label-text">
+        <h2>Heritage Jigsaws</h2>
+        <p>Every puzzle includes a Luxury Printed Metal Tin · Cinema-Grade AI Restoration included</p>
+      </div>
+    </div>
+    <div class="section-subtitle">ONJJEM Master Print Lab · Luxury Printed Metal Tin included</div>
+    <div class="prod-grid">
+
+      <div class="prod-card wide" onclick="openProdModal('jigsaw-heart-500','Anniversary Heart Jigsaw','❤️','A beautiful heart-shaped puzzle crafted for your most treasured wedding or anniversary memories. 500 precision-cut pieces, satin-gloss finish — a truly romantic keepsake.','64.99')">
+        <div class="prod-img-placeholder">❤️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span></div>
+          <div class="prod-name">The Anniversary Heart Jigsaw</div>
+          <div class="prod-size">Specialty Collection · Heart Shaped · 500 Pieces · satin-gloss finish</div>
+          <div class="prod-desc">Heart-shaped puzzle for wedding and anniversary memories. 500 precision-cut pieces, satin-gloss finish. A truly romantic keepsake.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>64.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('jigsaw-collage-500','Generations Collage Puzzle','🎞️','Can\'t pick just one? Our experts will arrange your favourite restored photos into a stunning 500-piece collage puzzle.','44.99')">
+        <div class="prod-img-placeholder">🎞️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">The Generations Collage Puzzle</div>
+          <div class="prod-size">Specialty Collection · 500 Pieces · multiple photos arranged by our experts</div>
+          <div class="prod-desc">Can't pick just one? Our experts arrange your favourite restored photos into a stunning collage puzzle.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>44.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('jigsaw-face-500','Portrait Face Jigsaw','🧩','A show-stopping gift. Our experts zoom in on the most important face in your photo and produce a giant, detail-rich portrait puzzle — perfect for grandparents, parents and anyone who loves a challenge.','74.99')">
+        <div class="prod-img-placeholder">🧩</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">The Portrait Face Jigsaw</div>
+          <div class="prod-size">Specialty Collection · 500 Pieces · close-up portrait detail</div>
+          <div class="prod-desc">Our experts zoom in on the most important face in your photo — a giant, detail-rich portrait puzzle. Perfect for grandparents and anyone who loves a challenge.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>74.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('jigsaw-1000-giant','1000 Piece Giant Puzzle','🧩','Our largest cardboard puzzle — 66×40.6cm when complete. 1,000 precision-cut pieces on 2mm reinforced cardboard with a satin-gloss surface. A true family challenge for heritage and group shots.','49.99')">
+        <div class="prod-img-placeholder">🧩</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span></div>
+          <div class="prod-name">1000 Piece Giant Puzzle</div>
+          <div class="prod-size">66×40.6 cm · 2mm reinforced cardboard · satin-gloss finish</div>
+          <div class="prod-desc">Our largest cardboard puzzle. 1,000 precision-cut pieces on 2mm reinforced cardboard with satin-gloss surface.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>49.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('jigsaw-500-standard','500 Piece Standard Puzzle','🧩','Our most popular puzzle — 33×47cm when complete. 500 precision-cut pieces on 2mm reinforced cardboard with a satin-gloss surface. Perfect for everyday portraits and family memories.','39.99')">
+        <div class="prod-img-placeholder">🧩</div>
+        <div class="prod-body">
+          <div class="prod-name">500 Piece Standard Puzzle</div>
+          <div class="prod-size">33×47 cm · 2mm reinforced cardboard · satin-gloss finish</div>
+          <div class="prod-desc">Our most popular puzzle. 500 precision-cut pieces on 2mm reinforced cardboard with satin-gloss surface.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>39.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('jigsaw-252-cardboard','252 Piece Classic Cardboard','🧩','27×33.5cm when complete — 252 precision-cut cardboard pieces with a satin-gloss laminate surface. Satisfying to handle and built to last. A perfect afternoon puzzle for all ages.','49.99')">
+        <div class="prod-img-placeholder">🧩</div>
+        <div class="prod-body">
+          <div class="prod-name">252 Piece Classic Cardboard</div>
+          <div class="prod-size">27×33.5 cm · 2mm reinforced cardboard · satin-gloss laminate</div>
+          <div class="prod-desc">252 precision-cut pieces with satin-gloss laminate. Satisfying to handle and built to last. A perfect afternoon puzzle for all ages.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>49.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('jigsaw-wood-96-classic','96 Piece Classic Wooden','🪵','36×25cm when complete — 96 chunky, hand-cut wooden pieces with a satisfying click. 2.5mm thick, gloss-finished top. Ideal for adults and older children. Includes luxury printed metal tin.','84.99')">
+        <div class="prod-img-placeholder">🪵</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">96 Piece Classic Wooden</div>
+          <div class="prod-size">36×25 cm · 2.5mm chunky wood · gloss-top finish · includes luxury printed metal tin</div>
+          <div class="prod-desc">96 chunky hand-cut wooden pieces with a satisfying click. 2.5mm thick, gloss-finished top. Includes luxury printed metal tin.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>84.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('jigsaw-wood-96-heritage','96 Piece Wooden — Heritage Edition','🪵','Our premium wooden puzzle — identical satisfying 2.5mm chunky wood pieces at 36×25cm — presented in a luxury ONJJEM Heritage Gift Box with a Certificate of Authenticity. The ultimate heirloom gift.','89.99')">
+        <div class="prod-img-placeholder">🪵</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span></div>
+          <div class="prod-name">96 Piece Wooden — Heritage Edition</div>
+          <div class="prod-size">36×25 cm · 2.5mm chunky wood · ONJJEM Heritage Gift Box · Certificate of Authenticity</div>
+          <div class="prod-desc">Our premium wooden puzzle in a luxury ONJJEM Heritage Gift Box with Certificate of Authenticity. The ultimate heirloom gift.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>89.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('jigsaw-wood-30-kids','30 Piece Kids Wooden','🧸','25×17.5cm when complete — 30 extra-chunky 2.5mm wooden pieces sized perfectly for small hands. Smooth gloss surface, easy to wipe clean. A wonderful personalised gift for little ones.','64.99')">
+        <div class="prod-img-placeholder">🧸</div>
+        <div class="prod-body">
+          <div class="prod-name">30 Piece Kids Wooden</div>
+          <div class="prod-size">25×17.5 cm · 2.5mm chunky wood · sized for small hands</div>
+          <div class="prod-desc">30 extra-chunky wooden pieces sized perfectly for small hands. Smooth gloss surface, easy to wipe clean. A wonderful gift for little ones.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>64.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PRINTS                                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section alt" id="prints">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🖼️</div>
+      <div class="section-label-text">
+        <h2>Prints</h2>
+        <p>Flat photo prints from 7×5 inch to giant A0 · UK Master Print Lab</p>
+      </div>
+    </div>
+    <div class="section-subtitle">ONJJEM Master Print Lab · UK Master Printers</div>
+    <div class="prod-grid">
+
+      <div class="prod-card wide" onclick="openProdModal('print-7x5-standard','Standard Photo Print','📸','Printed on premium gloss photo paper — vibrant, true-to-life colour. A timeless print of your restored memory, ready to frame or display. 7×5 inch.','24.99')">
+        <div class="prod-img-placeholder">📸</div>
+        <div class="prod-body">
+          <div class="prod-name">Standard Photo Print</div>
+          <div class="prod-size">7×5 inch · premium gloss photo paper</div>
+          <div class="prod-desc">Printed on premium gloss photo paper — vibrant, true-to-life colour. Ready to frame or display.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('print-a4-poster','A4 Photo Poster','📄','Printed on 160gsm semi-gloss satin paper with a smart white border — sharp, vivid, and ready to frame. A4 size: 21×29.7cm.','24.99')">
+        <div class="prod-img-placeholder">📄</div>
+        <div class="prod-body">
+          <div class="prod-name">A4 Photo Poster</div>
+          <div class="prod-size">A4 · 21×29.7 cm · 160gsm satin paper · white border</div>
+          <div class="prod-desc">160gsm semi-gloss satin paper with a smart white border — sharp, vivid, and ready to frame.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('print-a3-poster','A3 Photo Poster','🖼️','Printed on 160gsm semi-gloss satin paper with a smart white border — crisp, gallery-quality print ready to frame and hang in minutes. A3: 29.7×42cm.','29.99')">
+        <div class="prod-img-placeholder">🖼️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span></div>
+          <div class="prod-name">A3 Photo Poster</div>
+          <div class="prod-size">A3 · 29.7×42 cm · 160gsm satin paper · white border</div>
+          <div class="prod-desc">160gsm semi-gloss satin paper with white border — crisp, gallery-quality. Ready to frame and hang in minutes.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>29.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('print-a2-boutique','A2 Boutique Poster','🎨','Printed on 189gsm smooth matte fine art paper — rich, true-to-life colour with no glare. A refined gallery print that commands any wall, perfect for framing. A2: 42×59.4cm.','34.99')">
+        <div class="prod-img-placeholder">🎨</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span></div>
+          <div class="prod-name">A2 Boutique Poster</div>
+          <div class="prod-size">A2 · 42×59.4 cm · 189gsm smooth matte fine art paper</div>
+          <div class="prod-desc">189gsm smooth matte fine art paper — rich, true-to-life colour with no glare. A refined gallery print.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>34.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('print-a1-statement','A1 Statement Poster','🖼️','Printed on 189gsm smooth matte fine art paper — a high-impact gallery print that fills the room. Your restored memory at its most powerful. A1: 59.4×84.1cm.','54.99')">
+        <div class="prod-img-placeholder">🖼️</div>
+        <div class="prod-body">
+          <div class="prod-name">A1 Statement Poster</div>
+          <div class="prod-size">A1 · 59.4×84.1 cm · 189gsm smooth matte fine art paper</div>
+          <div class="prod-desc">189gsm smooth matte fine art paper — a high-impact gallery print that fills the room.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>54.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('print-a0-giant','A0 Giant Poster','🏛️','Printed on 189gsm smooth matte fine art paper — our largest print, truly commanding at A0 scale. A statement centrepiece for any room. A0: 84.1×118.9cm.','89.99')">
+        <div class="prod-img-placeholder">🏛️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span></div>
+          <div class="prod-name">A0 Giant Poster</div>
+          <div class="prod-size">A0 · 84.1×118.9 cm · 189gsm smooth matte fine art paper</div>
+          <div class="prod-desc">Our largest print at A0 scale — a true statement centrepiece for any room. 189gsm matte fine art paper.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>89.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('print-panoramic-150cm','Massive Panoramic Print','🌅','Breathtaking wide-angle restoration — walls brought to life with extraordinary detail. 150cm wide, printed on premium fine art paper.','115.00')">
+        <div class="prod-img-placeholder">🌅</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span></div>
+          <div class="prod-name">Massive Panoramic Print</div>
+          <div class="prod-size">150 cm wide · premium fine art paper</div>
+          <div class="prod-desc">Breathtaking wide-angle restoration — walls brought to life with extraordinary detail at 150cm wide.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>115.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  FEATURE WALLS                                                   -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section" id="walls">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🏛️</div>
+      <div class="section-label-text">
+        <h2>Feature Walls</h2>
+        <p>Life-Sized Feature Walls · Bespoke prints made to fit your room</p>
+      </div>
+    </div>
+    <div class="section-subtitle">ONJJEM Master Print Lab · Architectural Tube Shipping</div>
+    <div class="prod-grid">
+
+      <div class="prod-card wide" onclick="openJubileeModal('The Masterpiece Wall Mural','🖼️','From £40 per m²','wall-mural','Turn your entire wall into a stunning, life-sized heritage portrait or landscape. Choose Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Greenguard Gold-certified inks, 10-year non-fade guarantee. Enter your wall dimensions for an instant price.')">
+        <div class="prod-img-placeholder">🖼️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-premium">Premium</span></div>
+          <div class="prod-name">The Masterpiece Wall Mural</div>
+          <div class="prod-size">Any size — no limits · panel width 62.5 cm · Greenguard Gold-certified inks · 10-year non-fade guarantee</div>
+          <div class="prod-desc">Turn your entire wall into a life-sized heritage portrait. Standard, Premium or Self-Adhesive. 8cm bleed added at no charge.</div>
+          <div class="prod-footer"><div class="prod-price" style="font-size:16px">from £40/m²</div><button class="prod-btn enquire">Get a Quote →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openJubileeModal('Bespoke Wall Mural — Full Room','🏛️','From £40 per m²','bespoke-mural','The ultimate statement wall. Your restored photo reproduced at life-sized scale. Choose Standard (paste-the-wall), Premium (water-activated) or Self-Adhesive (peel-and-stick). Supplied as 62.5cm drops, printed to fit your exact wall — any width, any height.')">
+        <div class="prod-img-placeholder">🏛️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Bespoke Wall Mural — Full Room</div>
+          <div class="prod-size">Any size — no limits · 62.5 cm panel drops · made to your exact measurements</div>
+          <div class="prod-desc">The ultimate statement wall. Your photo at life-sized scale, supplied as numbered panel drops to fit your exact room.</div>
+          <div class="prod-footer"><div class="prod-price" style="font-size:16px">from £40/m²</div><button class="prod-btn enquire">Get a Quote →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openProdModal('wallpaper-sample','Master Lab Wallpaper Sample','🧾','See the stunning detail of our Cinema-Grade AI restoration in person. Printed on the same premium wallpaper we use for our full murals. If you order a full mural afterwards, we credit the £5.00 back. Approx 62×30cm.','5.00')">
+        <div class="prod-img-placeholder">🧾</div>
+        <div class="prod-body">
+          <div class="prod-name">Master Lab Wallpaper Sample</div>
+          <div class="prod-size">Large sample · approx. 62×30 cm · credited back on full mural order</div>
+          <div class="prod-desc">See the quality in person before you commit. We credit the £5 back if you order a full mural.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>5.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  WEARABLE MEMORIES                                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section alt" id="wearable">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">👕</div>
+      <div class="section-label-text">
+        <h2>Wearable Memories</h2>
+        <p>Cut and sewn by hand in London · 10-year print guarantee</p>
+      </div>
+    </div>
+    <div class="section-subtitle">Master London Garments</div>
+    <div class="prod-grid">
+
+      <div class="prod-card wide" onclick="openProdModal('tee-kids-all-over','Personalised Kids Tee','🧒','Your restored photo printed edge-to-edge. Choose from cotton jersey, Supima cotton, recycled polyester jersey or Tencel cotton jersey. Vivid, machine washable. Ages 2–12.','34.99')">
+        <div class="prod-img-placeholder">🧒</div>
+        <div class="prod-body">
+          <div class="prod-name">Personalised Kids Tee</div>
+          <div class="prod-size">Ages 2–12 · all-over print · choice of soft jersey fabric</div>
+          <div class="prod-desc">Your photo printed edge-to-edge. Cotton jersey, Supima cotton, recycled polyester or Tencel. Vivid, machine washable.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>34.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('tee-adult-all-over','Custom All-Over Print Tee','👕','Your restored photo printed edge-to-edge. Choose from Bounce Cotton Jersey, Supima Cotton Candy Jersey, Lifestyle Recycled Poly Jersey or Tencel Cotton Jersey. Machine washable. XS–3XL.','44.99')">
+        <div class="prod-img-placeholder">👕</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span></div>
+          <div class="prod-name">Custom All-Over Print Tee</div>
+          <div class="prod-size">XS–3XL · all-over print · choice of soft jersey fabric</div>
+          <div class="prod-desc">Your photo printed edge-to-edge. Choice of premium jersey fabrics. Machine washable. XS to 3XL.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>44.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  EVERYDAY GIFTS                                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section" id="everyday">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🎁</div>
+      <div class="section-label-text">
+        <h2>Everyday Gifts</h2>
+        <p>Small gifts, big memories · Handmade in London · Free expert personalisation</p>
+      </div>
+    </div>
+    <div class="section-subtitle">ONJJEM Master Artisans · London Studio</div>
+    <div class="prod-grid">
+
+      <div class="prod-card wide" onclick="openProdModal('stickers-memory-vinyl','Memory Stickers','⭐','Waterproof, UV-resistant vinyl stickers — great for laptops, water bottles &amp; journals. Sheet of 20.','9.99')">
+        <div class="prod-img-placeholder">⭐</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Memory Stickers</div>
+          <div class="prod-size">Sheet of 20 · Waterproof Vinyl · UV-resistant</div>
+          <div class="prod-desc">Waterproof, UV-resistant vinyl stickers — great for laptops, bottles and journals.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>9.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('magnets-heritage-5','Heritage Fridge Magnets','🧲','Five beautifully printed premium acrylic magnets for any magnetic surface.','12.99')">
+        <div class="prod-img-placeholder">🧲</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Heritage Fridge Magnets</div>
+          <div class="prod-size">Set of 5 · Premium Acrylic</div>
+          <div class="prod-desc">Five beautifully printed acrylic magnets for fridges, whiteboards and metal doors.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>12.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('mat-photo-mouse','Photo Mouse Mat','🖱️','Smooth polyester surface for easy mouse glide, with a 6mm non-slip rubber base. Dye-sublimation print — vivid, permanent colour. Wipe-clean with a damp cloth.','19.99')">
+        <div class="prod-img-placeholder">🖱️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Photo Mouse Mat</div>
+          <div class="prod-size">Smooth polyester surface · 6mm non-slip rubber base · dye-sublimation print</div>
+          <div class="prod-desc">Smooth polyester surface, 6mm non-slip rubber base. Dye-sublimation print — vivid, permanent colour. Wipe-clean.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>19.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('mug-masterlab-11oz','Master Lab Photo Mug','☕','High-gloss ceramic mug with your restored photo in rich, vivid colour. 11oz, dishwasher safe.','19.99')">
+        <div class="prod-img-placeholder">☕</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Master Lab Photo Mug</div>
+          <div class="prod-size">11 oz · High-Gloss · Dishwasher Safe</div>
+          <div class="prod-desc">High-gloss ceramic mug with your restored photo in rich, vivid colour. Dishwasher safe.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>19.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('coasters-gloss-set4','High-Gloss Coasters','🟫','Set of four 10×10cm photo coasters — each with a sturdy wooden core sealed under a heat-proof gloss surface. Each coaster can carry a different photo. Wipe-clean only.','24.99')">
+        <div class="prod-img-placeholder">🟫</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">High-Gloss Coasters</div>
+          <div class="prod-size">Set of 4 · 10×10 cm each · wooden core · heat-proof gloss finish</div>
+          <div class="prod-desc">Four photo coasters with sturdy wooden cores, heat-proof gloss finish. Each can carry a different photo.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('keyring-leather-everyday','Genuine Leather Keyring','🔑','Buttery-soft genuine Nappa calf leather in heart or rectangle shape — double-sided photo print using water-based inks that won\'t peel, rub or scratch.','24.99')">
+        <div class="prod-img-placeholder">🔑</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Genuine Leather Keyring</div>
+          <div class="prod-size">Heart 6.4×7.9cm or Rectangle 7.1×7.6cm · Genuine Nappa calf leather · double-sided print</div>
+          <div class="prod-desc">Buttery-soft Nappa calf leather. Double-sided photo print in water-based inks that won't peel or scratch.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('labels-fabric-sheet12','Custom Fabric Labels','🏷️','Iron-on fabric labels — a beautiful finishing touch for quilts &amp; handmade gifts. Sheet of 12.','24.99')">
+        <div class="prod-img-placeholder">🏷️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Custom Fabric Labels</div>
+          <div class="prod-size">Sheet of 12 · iron-on · fabric finish</div>
+          <div class="prod-desc">Iron-on fabric labels — a beautiful finishing touch for quilts and handmade gifts.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('bag-drawstring-heritage','Heritage Drawstring Bag','🎒','44.5×31.8cm sustainable eco calico cotton bag with your restored photo on the front. Natural drawstring closure. Reusable, lightweight and washable — perfect for gym, beach or shopping.','24.99')">
+        <div class="prod-img-placeholder">🎒</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Heritage Drawstring Bag</div>
+          <div class="prod-size">44.5×31.8 cm · eco calico cotton · natural drawstring</div>
+          <div class="prod-desc">Eco calico cotton bag with your photo. Natural drawstring closure. Reusable, lightweight, washable.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('notebook-handmade-a5','Handmade Notebook','📔','75 sheets of thick ivory artists paper — handles pencils, ballpoints, gel pens and fountain pens. Your restored photo printed on the cover. A5 format (20.5×15cm).','24.99')">
+        <div class="prod-img-placeholder">📔</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Handmade Notebook</div>
+          <div class="prod-size">A5 · 20.5×15 cm · 75 sheets · thick ivory artists paper · approx. 380g</div>
+          <div class="prod-desc">75 sheets of thick ivory artists paper. Handles all pens beautifully. Your photo on the cover. A5 format.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('towel-heritage-tea','Heritage Tea Towel','🧺','Vivid dye-sublimation print on 100% cotton. Machine washable and colour-fast. 50×70cm.','29.99')">
+        <div class="prod-img-placeholder">🧺</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Heritage Tea Towel</div>
+          <div class="prod-size">50×70 cm · 100% Cotton · dye-sublimation print</div>
+          <div class="prod-desc">Vivid dye-sublimation print on 100% cotton. Machine washable and colour-fast.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>29.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('socks-face','Face Socks','🧦','Soft, stretchy and brilliantly printed — put a favourite face on someone\'s feet. Available in three sizes (S / M / L). Face printed all over. Machine washable.','29.99')">
+        <div class="prod-img-placeholder">🧦</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Face Socks</div>
+          <div class="prod-size">Available in S / M / L · face printed all over · machine washable</div>
+          <div class="prod-desc">Soft, stretchy and brilliantly printed — put a favourite face on someone's feet. Three sizes. Machine washable.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>29.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('calendar-heritage-photo','Heritage Photo Calendar','📅','A full year of your finest restored memories. White metal wire binding with a built-in hanging hook. Choose A4 or A3 size. 12 months.','29.99')">
+        <div class="prod-img-placeholder">📅</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Heritage Photo Calendar</div>
+          <div class="prod-size">A4 (21×29.7cm) or A3 (29.7×42cm) · 12 months · white metal wire binding · hanging hook</div>
+          <div class="prod-desc">A full year of your finest restored memories. Wire binding with hanging hook. Choose A4 or A3.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>29.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('candle-glass-scented','Glass Scented Candle','🕯️','100% vegan soy wax in a luxury gift box. A memory you can see, smell and treasure. 50-hour burn time.','29.99')">
+        <div class="prod-img-placeholder">🕯️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Glass Scented Candle</div>
+          <div class="prod-size">50-Hour Burn · 100% vegan soy wax · luxury gift box</div>
+          <div class="prod-desc">100% vegan soy wax in a luxury gift box. A memory you can see, smell and treasure.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>29.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('mug-bone-china','Fine Bone China Mug','☕','Finer and lighter than ceramic — your restored photo on authentic Fine Bone China. Large 300ml. Hand wash recommended to protect the print and glaze.','39.99')">
+        <div class="prod-img-placeholder">☕</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Fine Bone China Mug</div>
+          <div class="prod-size">Large 300ml · 8.3cm dia × 9.3cm tall · Fine Bone China · hand wash recommended</div>
+          <div class="prod-desc">Finer and lighter than ceramic. Your photo on authentic Fine Bone China — a daily reminder of your most cherished memory. Hand wash recommended.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>39.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  UNDER £25                                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section alt" id="under25">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🎀</div>
+      <div class="section-label-text">
+        <h2>Under £25</h2>
+        <p>Little Treasures &amp; Fast Gifts · Free expert personalisation</p>
+      </div>
+    </div>
+    <div class="section-subtitle">ONJJEM Master Artisans · London Studio</div>
+    <div class="prod-grid">
+
+      <div class="prod-card wide" onclick="openProdModal('stickers-memory-vinyl','Memory Stickers','⭐','Share your restored photos everywhere. Waterproof, UV-resistant vinyl stickers — perfect for laptops, water bottles, journals and scrapbooks. Sheet of 20.','9.99')">
+        <div class="prod-img-placeholder">⭐</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span></div>
+          <div class="prod-name">Memory Stickers</div>
+          <div class="prod-size">Sheet of 20 · Waterproof Vinyl · UV-resistant · £9.99</div>
+          <div class="prod-desc">Waterproof, UV-resistant vinyl stickers. Perfect for laptops, water bottles, journals and scrapbooks.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>9.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('magnets-heritage-5','Heritage Fridge Magnets','🧲','Share your restored memories on any magnetic surface. Five beautifully printed magnets — perfect for fridges, whiteboards and metal doors. A small gift with a big emotional impact.','12.99')">
+        <div class="prod-img-placeholder">🧲</div>
+        <div class="prod-body">
+          <div class="prod-name">Heritage Fridge Magnets</div>
+          <div class="prod-size">Set of 5 · Premium Acrylic · £12.99</div>
+          <div class="prod-desc">Five beautifully printed acrylic magnets. A small gift with a big emotional impact.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>12.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('mug-masterlab-11oz','Master Lab Photo Mug','☕','A sturdy, high-gloss mug for your morning coffee. Your expertly restored photo printed in rich, vivid colour — a daily reminder of your most cherished memory. 11oz, dishwasher safe.','19.99')">
+        <div class="prod-img-placeholder">☕</div>
+        <div class="prod-body">
+          <div class="prod-name">Master Lab Photo Mug</div>
+          <div class="prod-size">11 oz · High-Gloss · Dishwasher Safe · £19.99</div>
+          <div class="prod-desc">High-gloss mug for your morning coffee — a daily reminder of your most cherished memory.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>19.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('keyring-leather-everyday','Genuine Leather Keyring','🔑','Genuine Nappa calf leather in heart (6.4×7.9cm) or rectangle (7.1×7.6cm). Double-sided photo print using water-based inks that won\'t peel, rub or scratch.','24.99')">
+        <div class="prod-img-placeholder">🔑</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span></div>
+          <div class="prod-name">Genuine Leather Keyring</div>
+          <div class="prod-size">Heart 6.4×7.9cm or Rectangle 7.1×7.6cm · Genuine Nappa calf leather · £24.99</div>
+          <div class="prod-desc">Genuine Nappa calf leather. Double-sided photo print — same leather quality found in luxury handbags.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  RUGS                                                            -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section" id="rugs">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🏡</div>
+      <div class="section-label-text">
+        <h2>Rugs</h2>
+        <p>Plush velour print surface · Non-slip rubber base · 10-year print guarantee</p>
+      </div>
+    </div>
+    <div class="section-subtitle">ONJJEM Master Artisans · London Studio</div>
+    <div class="prod-grid">
+
+      <div class="prod-card wide" onclick="openProdModal('rug-hallway-180x63','Hallway Runner Rug','🏡','Your restored photo printed on a plush velour surface with a non-slip rubber base. 180×63cm — the ideal runner for hallways and high-traffic areas. Wipe-clean surface. 10-year print guarantee.','145.00')">
+        <div class="prod-img-placeholder">🏡</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">The Hallway Runner</div>
+          <div class="prod-size">180×63 cm · plush velour print surface · non-slip rubber base</div>
+          <div class="prod-desc">Your photo on plush velour with non-slip base. 180×63cm — ideal for hallways. Wipe-clean. 10-year print guarantee.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>145.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('rug-square-128x128','Large Square Rug','🏡','Your restored photo printed on a plush velour surface with a non-slip rubber base. 128×128cm square — a striking centrepiece for any living room. Wipe-clean surface. 10-year print guarantee.','155.00')">
+        <div class="prod-img-placeholder">🏡</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Large Square Rug</div>
+          <div class="prod-size">128×128 cm · plush velour print surface · non-slip rubber base</div>
+          <div class="prod-desc">128×128cm square — a striking living room centrepiece. Plush velour, non-slip base. 10-year print guarantee.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>155.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('rug-classic-135x105','Classic Area Rug','🏡','Your restored photo printed on a plush velour surface with a non-slip rubber base. 135×105cm — a beautiful area rug for any room. Wipe-clean surface. 10-year print guarantee.','165.00')">
+        <div class="prod-img-placeholder">🏡</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Classic Area Rug</div>
+          <div class="prod-size">135×105 cm · plush velour print surface · non-slip rubber base</div>
+          <div class="prod-desc">135×105cm — a beautiful area rug for any room. Plush velour, non-slip base. 10-year print guarantee.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>165.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('rug-statement-128x200','Statement Rug','🏡','Your restored photo printed on a plush velour surface with a non-slip rubber base. Our largest rug at 128×200cm — a true statement piece for any room. Wipe-clean surface. 10-year print guarantee.','195.00')">
+        <div class="prod-img-placeholder">🏡</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">The Statement Rug</div>
+          <div class="prod-size">128×200 cm · plush velour print surface · non-slip rubber base</div>
+          <div class="prod-desc">Our largest rug at 128×200cm — a true statement piece. Plush velour, non-slip base. 10-year print guarantee.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>195.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  CAR JOURNEY                                                     -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section alt" id="car">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🚙</div>
+      <div class="section-label-text">
+        <h2>Car Journey</h2>
+        <p>Your memories on every drive</p>
+      </div>
+    </div>
+    <div class="section-subtitle">ONJJEM Master Print Lab · UK Master Printers</div>
+    <div class="prod-grid">
+
+      <div class="prod-card wide" onclick="openProdModal('car-window-stickers-4','Heritage Car Window Stickers','🪟','Pack of 4 high-definition photo stickers for the inside of your car windows. UV-resistant glass-cling film — wipe-clean, easy to reposition, simple to remove without residue.','24.99')">
+        <div class="prod-img-placeholder">🪟</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Heritage Car Window Stickers</div>
+          <div class="prod-size">Pack of 4 · UV-resistant glass-cling film · easy to reposition</div>
+          <div class="prod-desc">Pack of 4 HD photo stickers for car windows. UV-resistant, wipe-clean, repositionable, no residue.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('car-air-freshener','Personalised Photo Air Freshener','🌿','Your restored photo on a premium air freshener. Hangs from any rear-view mirror. Heart, Round or Rectangular shape. Four luxury scents: New Car, Ocean Mist, Vanilla Dream or Fresh Linen.','29.99')">
+        <div class="prod-img-placeholder">🌿</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Personalised Photo Air Freshener</div>
+          <div class="prod-size">Heart · Round · Rectangular · four luxury scents</div>
+          <div class="prod-desc">Your photo on a premium air freshener. Three shapes, four luxury scents. Hangs from any rear-view mirror.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>29.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('car-sun-visor-strip','Photo Sun Visor Strip','☀️','A custom sun visor strip printed with your cherished restored photo. Durable UV-resistant film fits most car windscreens — vivid colour that won\'t fade in the sun. Universal fit.','29.99')">
+        <div class="prod-img-placeholder">☀️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Photo Sun Visor Strip</div>
+          <div class="prod-size">Universal fit · UV-resistant film · vivid colour</div>
+          <div class="prod-desc">Custom sun visor strip with your restored photo. UV-resistant film, universal fit, won't fade in the sun.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>29.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('car-travel-mug','Travel Coffee Mug','☕','Designed to fit any standard car cup holder. Your restored photo in vivid HD on a double-walled mug with a secure spill-proof lid — your memory on every journey.','24.99')">
+        <div class="prod-img-placeholder">☕</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Travel Coffee Mug</div>
+          <div class="prod-size">Spill-proof lid · fits standard car cup holder · double-walled</div>
+          <div class="prod-desc">Fits any car cup holder. Double-walled with spill-proof lid. Your photo in vivid HD on every journey.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  JUNIOR SPORTS                                                   -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section" id="junior">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">⚽</div>
+      <div class="section-label-text">
+        <h2>Junior Sports</h2>
+        <p>Junior Champions &amp; Sports · Personalised team keepsakes</p>
+      </div>
+    </div>
+    <div class="section-subtitle">ONJJEM Master Print Lab · Handcrafted in London</div>
+    <div class="prod-grid">
+
+      <div class="prod-card wide" onclick="openProdModal('junior-throw-100x73','Junior Throw Blanket','🏆','A soft, snuggly throw featuring their local team or sports hero. 570gsm double-layer anti-pilling polar fleece, handstitched in London. Machine washable. Our master restorers will enhance your team\'s colours to look sharp and vivid.','54.99')">
+        <div class="prod-img-placeholder">🏆</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Junior Throw Blanket</div>
+          <div class="prod-size">100×73 cm · 570gsm anti-pilling polar fleece · handstitched in London</div>
+          <div class="prod-desc">Soft throw with their team or sports hero. 570gsm fleece, handstitched in London. Colours enhanced by our master restorers. Machine washable.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>54.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('junior-duvet','Sports Hero Duvet Cover','🛏️','Your team\'s photo printed across the full face of a 100% organic cotton duvet cover. Vibrant colours, machine washable at 40°C. Available Junior to King. Our master restorers will enhance your team\'s colours. Duvet cover only.','69.00')">
+        <div class="prod-img-placeholder">🛏️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-london">London</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Sports Hero Duvet Cover</div>
+          <div class="prod-size">Junior 119×150cm · Single · Double · King · 100% Organic Cotton</div>
+          <div class="prod-desc">Your team printed across the full face of organic cotton. Vibrant colours, machine washable. Duvet cover only.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>69.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('junior-peel-stick-poster','Peel &amp; Stick Team Poster','📌','The perfect giant sticker for their bedroom door or wall. Just peel and stick — no frames required! Our master restorers will sharpen and colour-enhance your team photo to look incredible at poster size. A1: 59×84cm.','34.99')">
+        <div class="prod-img-placeholder">📌</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span></div>
+          <div class="prod-name">Peel &amp; Stick Team Poster</div>
+          <div class="prod-size">A1 · 59×84 cm · just peel and stick · no frames required</div>
+          <div class="prod-desc">Giant bedroom sticker — just peel and stick. Our master restorers sharpen and colour-enhance your team photo to look incredible.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>34.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openProdModal('wallpaper-sample','Master Lab Wallpaper Sample','🧾','See the stunning detail of our Cinema-Grade AI restoration in person before ordering a full room mural. Printed on the same premium wallpaper we use for stadium murals. Credit £5 back on full mural order.','5.00')">
+        <div class="prod-img-placeholder">🧾</div>
+        <div class="prod-body">
+          <div class="prod-name">Wallpaper Sample</div>
+          <div class="prod-size">Large sample · approx. 62×30 cm · credited back on full order</div>
+          <div class="prod-desc">See the quality before you commit. £5 credited back if you order a full mural.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>5.00</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openJubileeModal('Bespoke Wall Mural (Full Room)','🏟️','From £149','junior-wall-mural','We create a custom-fit, life-sized stadium or team mural for any wall — printed on premium, easy-to-hang wallpaper with eco-friendly, fade-resistant inks. Final price depends on your wall dimensions. Email us your measurements for an exact quote.')">
+        <div class="prod-img-placeholder">🏟️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span></div>
+          <div class="prod-name">Bespoke Wall Mural (Full Room)</div>
+          <div class="prod-size">Any size — made to measure · premium fade-resistant wallpaper</div>
+          <div class="prod-desc">Life-sized stadium or team mural for any wall. Email your measurements for an exact price.</div>
+          <div class="prod-footer"><div class="prod-price" style="font-size:16px">from £149</div><button class="prod-btn enquire">Get a Quote →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openJubileeModal('Bespoke Team Curtains','🪟','From £125','junior-curtains','Custom-fit blackout curtains for your child\'s bedroom — made to your exact window measurements. Send us your team photo and we\'ll restore the colours. Blackout lining included. A truly unique piece no other family will have.')">
+        <div class="prod-img-placeholder">🪟</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Bespoke Team Curtains</div>
+          <div class="prod-size">Made to your exact window measurements · blackout lining · handmade in London</div>
+          <div class="prod-desc">Custom-fit blackout curtains made to your exact measurements. Blackout lining included. A truly unique piece no other family will have.</div>
+          <div class="prod-footer"><div class="prod-price" style="font-size:16px">from £125</div><button class="prod-btn enquire">Get a Quote →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  GRAND PRESENTATION                                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shop-section alt" id="presentation">
+  <div class="shop-section-inner">
+    <div class="section-label">
+      <div class="section-label-icon">🎀</div>
+      <div class="section-label-text">
+        <h2>Grand Presentation</h2>
+        <p>Luxury gift wrapping · Hand-printed in London</p>
+      </div>
+    </div>
+    <div class="section-subtitle">ONJJEM Master Print Lab · London</div>
+    <div class="prod-grid">
+
+      <div class="prod-card" onclick="openProdModal('ribbon-photo-per-metre','Bespoke Photo Ribbon','🎀','Add elegance with satin-finish ribbon featuring your restored memories. Perfect for gifts and cakes. Each metre hand-finished at the ONJJEM Master Print Lab in London.','14.95')">
+        <div class="prod-img-placeholder">🎀</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Bespoke Photo Ribbon</div>
+          <div class="prod-size">Per metre · satin finish · hand-finished in London</div>
+          <div class="prod-desc">Satin-finish ribbon with your restored memories. Perfect for gifts and cakes. Hand-finished in London.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>14.95/m</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('gift-tags-heritage-20','Heritage Gift Tags','🏷️','Double-sided premium tags with your photos and message. Includes luxury hanging chains or ribbon. Heavyweight card with satin-gloss finish. Pack of 20.','24.99')">
+        <div class="prod-img-placeholder">🏷️</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-london">London</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Heritage Gift Tags</div>
+          <div class="prod-size">Pack of 20 · double-sided premium card · satin-gloss finish · luxury hanging chains</div>
+          <div class="prod-desc">Double-sided premium card with your photos and message. Satin-gloss finish, luxury hanging chains or ribbon. The finishing touch that turns a gift into an heirloom.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>24.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openProdModal('giftwrap-single-sheet','Luxury Gift Wrap — Single Sheet','🎀','Your restored photo printed on 140gsm satin-gloss paper, hand-finished in London. A3 sheet including UK delivery.','4.99')">
+        <div class="prod-img-placeholder">🎀</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-best">Best Seller</span><span class="badge badge-london">London</span></div>
+          <div class="prod-name">Luxury Gift Wrap — Single Sheet</div>
+          <div class="prod-size">A3 sheet · 140gsm satin-gloss · incl. UK delivery</div>
+          <div class="prod-desc">Your photo on 140gsm satin-gloss paper, hand-finished in London. Tell a story before they open it.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>4.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
+      <div class="prod-card wide" onclick="openProdModal('giftwrap-full-roll','Luxury Gift Wrap — Full Roll','🎁','Enough matching paper to wrap multiple gifts — perfect for a golden anniversary or family Christmas. Full roll (A0), 140gsm satin-gloss, hand-printed in London.','14.99')">
+        <div class="prod-img-placeholder">🎁</div>
+        <div class="prod-body">
+          <div class="prod-badges"><span class="badge badge-premium">Premium</span><span class="badge badge-london">London</span><span class="badge badge-free">Free Personalisation</span></div>
+          <div class="prod-name">Luxury Gift Wrap — Full Roll</div>
+          <div class="prod-size">Full roll (A0) · 140gsm satin-gloss · incl. UK delivery</div>
+          <div class="prod-desc">Enough matching paper to wrap multiple gifts — perfect for a golden anniversary or family Christmas. Hand-printed in London.</div>
+          <div class="prod-footer"><div class="prod-price"><sup>£</sup>14.99</div><button class="prod-btn">Order →</button></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -521,31 +1467,28 @@ let currentSku = null;
 
 function openProdModal(sku, name, icon, desc, price) {
   currentSku = sku;
+  document.getElementById('modalIcon').textContent  = icon;
   document.getElementById('modalTitle').textContent = name;
-  document.getElementById('modalIcon').textContent = icon;
-  document.getElementById('modalDesc').textContent = desc;
-  document.getElementById('modalPrice').innerHTML = '£' + price + ' <small>one-time</small>';
-  const btn = document.getElementById('modalOrderBtn');
-  btn.disabled = false;
-  btn.innerHTML = '🔒 &nbsp;Proceed to Secure Checkout';
+  document.getElementById('modalDesc').textContent  = desc;
+  document.getElementById('modalPrice').innerHTML   = '£' + price + ' <small>one-time</small>';
+  document.getElementById('modalOrderBtn').disabled = false;
+  document.getElementById('modalOrderBtn').innerHTML = '🔒 &nbsp;Proceed to Secure Checkout';
   document.getElementById('prodModal').classList.add('open');
 }
-
 function closeProdModal() {
   document.getElementById('prodModal').classList.remove('open');
   currentSku = null;
 }
 
-function openJubileeModal(name, icon, years, slug, desc) {
-  document.getElementById('jubModalTitle').textContent = name + ' — ' + years;
-  document.getElementById('jubModalIcon').textContent = icon;
-  document.getElementById('jubModalDesc').textContent = desc;
-  const subject = encodeURIComponent('Bespoke ' + name + ' Order');
-  const body = encodeURIComponent('Hi ONJJEM,\n\nI\'d like to order a ' + name + ' collection.\n\nOccasion: \nItems wanted: \n\nI\'ll attach my restored photograph.\n\nThank you');
+function openJubileeModal(name, icon, years, sku, desc) {
+  document.getElementById('jubModalIcon').textContent  = icon;
+  document.getElementById('jubModalTitle').textContent = name;
+  document.getElementById('jubModalDesc').textContent  = desc;
+  const subject = encodeURIComponent('ONJJEM Order Enquiry — ' + name);
+  const body    = encodeURIComponent('Hi,\n\nI would like to enquire about: ' + name + '\n\nPlease could you get back to me with pricing and availability?\n\nMany thanks');
   document.getElementById('jubModalEmail').href = 'mailto:hello@onjjem.com?subject=' + subject + '&body=' + body;
   document.getElementById('jubileeModal').classList.add('open');
 }
-
 function closeJubileeModal() {
   document.getElementById('jubileeModal').classList.remove('open');
 }
@@ -554,42 +1497,48 @@ async function proceedToCheckout() {
   if (!currentSku) return;
   const btn = document.getElementById('modalOrderBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Loading secure checkout…';
+  btn.innerHTML = '<span class="spinner"></span>Opening checkout…';
   try {
-    const r = await fetch('/api/stripe/checkout', {
+    const res  = await fetch('/api/stripe/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sku: currentSku })
+      body: JSON.stringify({ sku: currentSku }),
     });
-    const data = await r.json();
-    if (!r.ok || !data.url) throw new Error(data.error || 'Could not start checkout');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Checkout failed');
     window.location.href = data.url;
-  } catch (e) {
+  } catch (err) {
     btn.disabled = false;
     btn.innerHTML = '🔒 &nbsp;Proceed to Secure Checkout';
-    alert('Sorry — could not start checkout. Please email hello@onjjem.com and we\'ll sort it straight away.');
+    alert('Sorry — ' + err.message);
   }
 }
 
-document.getElementById('prodModal').addEventListener('click', e => {
-  if (e.target === document.getElementById('prodModal')) closeProdModal();
+// Close on backdrop click
+document.getElementById('prodModal').addEventListener('click', function(e) {
+  if (e.target === this) closeProdModal();
 });
-document.getElementById('jubileeModal').addEventListener('click', e => {
-  if (e.target === document.getElementById('jubileeModal')) closeJubileeModal();
+document.getElementById('jubileeModal').addEventListener('click', function(e) {
+  if (e.target === this) closeJubileeModal();
 });
 
-if (new URLSearchParams(location.search).get('order') === 'success') {
-  const b = document.getElementById('order-success-banner');
-  b.style.display = 'block';
-  setTimeout(() => { b.style.display = 'none'; history.replaceState(null, '', location.pathname); }, 9000);
+// Success banner
+const params = new URLSearchParams(window.location.search);
+if (params.get('order') === 'success') {
+  const banner = document.getElementById('order-success-banner');
+  banner.style.display = 'block';
+  setTimeout(() => { banner.style.display = 'none'; }, 6000);
 }
 
+// Highlight active tab on scroll
 const sections = document.querySelectorAll('.shop-section[id]');
 const tabs = document.querySelectorAll('.cat-tab');
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      tabs.forEach(t => t.classList.toggle('active', t.getAttribute('href') === '#' + entry.target.id));
+      tabs.forEach(t => t.classList.remove('active'));
+      const active = document.querySelector('.cat-tab[href="#' + entry.target.id + '"]');
+      if (active) active.classList.add('active');
     }
   });
 }, { threshold: 0.3 });
