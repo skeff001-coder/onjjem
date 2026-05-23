@@ -42,15 +42,18 @@ Bags of Love trade cost. The admin screen shows the per-order margin
 
 `app/feature-walls.tsx` uses fixed retail prices per square metre (AI restoration included):
 
-| Paper          | Trade £/m² | Retail £/m² | Margin  | Notes |
-| -------------- | ---------- | ----------- | ------- | ----- |
-| Standard       | £18        | £59         | £41/m²  | Confirmed: BoL portal shows £288 for 4×4m (16m²) = £18/m² trade. BoL public retail starts from £14/m² — our £59/m² reflects AI restoration premium at a competitive market rate. |
-| Premium        | £27        | £75         | £48/m²  | Confirmed: BoL portal shows £302.58 for 408×274cm (11.18m²) Silk Vista 350gsm = £27/m² trade. BoL RRP is £49/m² — our £75/m² is 1.5× their own suggested retail. |
-| Self-Adhesive  | ~£45       | £89         | ~£44/m² | Estimate — confirm in BoL portal |
+| Paper                    | gsm  | Trade £/m² | Retail £/m² | Margin  | Notes |
+| ------------------------ | ---- | ---------- | ----------- | ------- | ----- |
+| Standard 120gsm          | 120  | £18        | £59         | £41/m²  | Confirmed: £288 trade for 4×4m (16m²). BoL public from £14/m². |
+| Premium 173gsm           | 173  | ~£22       | £75         | ~£53/m² | Spray the wall. Estimate — confirm in BoL portal. |
+| Royal Gold 173gsm        | 173  | ~£24       | £82         | ~£58/m² | Metallic shimmer finish. Estimate — confirm in BoL portal. |
+| Faux Grasscloth 275gsm   | 275  | ~£30       | £85         | ~£55/m² | Natural woven texture. Estimate — confirm in BoL portal. |
+| Self-Adhesive 350gsm     | 350  | ~£38       | £89         | ~£51/m² | Peel-and-stick. Estimate — confirm in BoL portal. |
+| Silk Vista 350gsm        | 350  | £27        | £95         | £68/m²  | Confirmed: £302.58 trade for 408×274cm (11.18m²). BoL RRP £49/m². |
 
-Pricing rationale: BoL's public retail is from £14/m² (repeat patterns) to ~£25/m² (large Photo/Montage).
-ONJJEM adds AI restoration + bespoke London service, justifying ~2.4–3.3× the BoL public price.
-Previous prices (£85/£99/£119) were reduced after reviewing BoL's own public retail pricing.
+Pricing rationale: BoL's public retail is from £14/m² (repeat patterns) to ~£49/m² (Silk Vista large).
+ONJJEM adds AI restoration + bespoke London service, justifying a clear premium above BoL's own retail.
+Previous prices (£85/£99/£119 for 3 tiers) replaced with accurate 6-tier range (£59–£95) after BoL portal review.
 
 ### Gift shop catalogue
 
