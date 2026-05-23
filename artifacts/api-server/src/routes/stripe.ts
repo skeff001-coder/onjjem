@@ -96,14 +96,25 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
   try {
     const stripe = await getUncachableStripeClient();
 
-    // Look up the product directly via the Stripe API by SKU metadata.
-    // This avoids any dependency on the stripe-sync database schema.
-    const results = await stripe.products.search({
+    // Try the search index first (fast). Newly-created products may not be
+    // indexed yet, so fall back to a full paginated list scan if needed.
+    let product: Awaited<ReturnType<typeof stripe.products.retrieve>> | undefined;
+
+    const searchResults = await stripe.products.search({
       query: `active:"true" AND metadata["sku"]:"${body.sku}"`,
       limit: 1,
     });
+    product = searchResults.data[0];
 
-    const product = results.data[0];
+    if (!product) {
+      // Fallback: page through all active products and match by metadata.sku
+      for await (const p of stripe.products.list({ active: true, limit: 100 })) {
+        if (p.metadata?.sku === body.sku) {
+          product = p;
+          break;
+        }
+      }
+    }
 
     if (!product) {
       res.status(404).json({ error: "Product not found. Please contact orders@onjjem.co.uk." });
