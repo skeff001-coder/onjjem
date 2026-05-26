@@ -1521,11 +1521,6 @@ export default function HomeScreen() {
                     <Text style={[s.pricingTilePrice, { color: "#4A90D9" }]}>{PRICING.monthly.amount}</Text>
                     <Text style={[s.pricingTileLabel, { color: "rgba(74,144,217,0.7)" }]}>per month</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
-                    <Ionicons name="star" size={20} color="#27AE60" />
-                    <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>{PRICING.annual.amount}</Text>
-                    <Text style={[s.pricingTileLabel, { color: "rgba(39,174,96,0.7)" }]}>per year</Text>
-                  </TouchableOpacity>
                 </>
               ) : (
                 <>
@@ -1899,13 +1894,13 @@ export default function HomeScreen() {
               </LinearGradient>
               <View style={s.printRowBody}>
                 <View style={s.printRowTitleRow}>
-                  <Text style={s.printRowTitle}>Monthly Plan — £12.99/month</Text>
+                  <Text style={s.printRowTitle}>Monthly Plan — £11.99/month</Text>
                   <View style={[s.printRowBadge, { backgroundColor: "#4A90D922", borderColor: "#4A90D955" }]}>
                     <Text style={[s.printRowBadgeText, { color: "#4A90D9" }]}>UNLIMITED</Text>
                   </View>
                 </View>
                 <Text style={s.printRowDesc}>
-                  Full studio-quality restoration every month — same high-end results as the annual plan. No limits, no per-photo charges. Cancel anytime.
+                  Full studio-quality restoration every month — no limits, no per-photo charges. Cancel anytime.
                 </Text>
               </View>
             </View>

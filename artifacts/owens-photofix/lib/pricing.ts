@@ -1,6 +1,6 @@
 export const PRICING = {
   perPhoto: {
-    amount: "£1.99",
+    amount: "£1.49",
     period: "per photo",
     planName: "One Photo Enhancement",
     shortLabel: "Enhance This Photo",
@@ -10,12 +10,6 @@ export const PRICING = {
     period: "/month",
     planName: "Monthly Unlimited",
     shortLabel: "Start Monthly",
-  },
-  annual: {
-    amount: "£53.99",
-    period: "/year",
-    planName: "Annual Unlimited",
-    shortLabel: "Start Annual",
   },
   bagsOfLove: {
     masterPrintLab: "Bags of Love",

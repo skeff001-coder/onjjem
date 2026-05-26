@@ -37,15 +37,6 @@ const MONTHLY_FEATURES = [
   "Cancel anytime",
 ];
 
-const ANNUAL_FEATURES = [
-  "Ultra-HD · 4K-Grade · Cinema-Sharp",
-  "Gallery-Quality · Exhibition-Grade · Frame-Worthy",
-  "Studio-Perfect · Archival-Resolution · Magazine-Ready",
-  "Professional-Finish · Crystal-Clear · Broadcast-Quality",
-  "All 6 modes · Unlimited photos · Priority queue",
-  "The absolute best your memories have ever looked",
-];
-
 const UNLIMITED_FEATURES = MONTHLY_FEATURES;
 
 const PLANS = [
@@ -56,18 +47,8 @@ const PLANS = [
     period: "/month",
     saving: null,
     accent: "#4A90D9",
-    tagline: "Unlimited photos · Same studio-grade quality as annual · Cancel anytime",
+    tagline: "Unlimited photos · Studio-grade quality · Cancel anytime",
     features: MONTHLY_FEATURES,
-  },
-  {
-    id: "annual",
-    label: "Annual",
-    price: PRICING.annual.amount,
-    period: "/year",
-    saving: "Save 62%",
-    accent: "#27AE60",
-    tagline: "The deal of the decade — every quality word you can think of, for one incredible price",
-    features: ANNUAL_FEATURES,
   },
 ] as const;
 
@@ -88,7 +69,7 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
   const [purchasedPlan, setPurchasedPlan] = useState<PlanId>("monthly");
   const successOpacity = useRef(new Animated.Value(0)).current;
   const successScale = useRef(new Animated.Value(0.85)).current;
-  const { monthlyPackage, annualPackage, purchase, isPurchasing } = useSubscription();
+  const { monthlyPackage, purchase, isPurchasing } = useSubscription();
 
   useEffect(() => {
     void trackPaywallImpression("enhancement_paywall");
@@ -104,7 +85,7 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
   }, [purchased]);
 
   const handleUnlimitedPress = async () => {
-    const pkg = activePlan === "annual" ? annualPackage : monthlyPackage;
+    const pkg = monthlyPackage;
     if (!pkg) {
       onUpgradeUnlimited();
       return;
@@ -163,8 +144,6 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
   const LIVE_PLANS = PLANS.map((p) =>
     p.id === "monthly"
       ? { ...p, price: monthlyPackage?.product.priceString ?? p.price }
-      : p.id === "annual"
-      ? { ...p, price: annualPackage?.product.priceString ?? p.price }
       : p,
   );
 
@@ -223,42 +202,10 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
         ))}
       </View>
 
-      {/* ── Unlimited plans header ── */}
+      {/* ── Unlimited plan header ── */}
       <View style={s.unlimitedHeader}>
-        <Text style={s.unlimitedHeaderTitle}>Unlimited Plans</Text>
-        <Text style={[s.unlimitedHeaderSub, { color: colors.mutedForeground }]}>Choose your commitment — save more, pay less</Text>
-      </View>
-
-      {/* ── 3 plan selectors ── */}
-      <View style={s.planSelectorRow}>
-        {LIVE_PLANS.map((plan) => {
-          const isActive = activePlan === plan.id;
-          return (
-            <TouchableOpacity
-              key={plan.id}
-              style={[s.planSelector, isActive && { borderColor: plan.accent }]}
-              onPress={() => setActivePlan(plan.id)}
-              activeOpacity={0.8}
-            >
-              {plan.id === "annual" && (
-                <View style={[s.planSelectorBadge, { backgroundColor: "#27AE60" }]}>
-                  <Text style={s.planSelectorBadgeText}>BEST</Text>
-                </View>
-              )}
-              <Text style={[s.planSelectorLabel, isActive && { color: plan.accent }]}>{plan.label}</Text>
-              <Text style={[s.planSelectorPrice, isActive && { color: plan.accent }]}>{plan.price}</Text>
-              <Text style={[s.planSelectorPeriod, { color: colors.mutedForeground }]}>{plan.period}</Text>
-              {plan.saving && (
-                <Text style={[s.planSelectorSaving, { color: plan.accent }]}>{plan.saving}</Text>
-              )}
-              {isActive && (
-                <View style={[s.planSelectorCheck, { backgroundColor: plan.accent }]}>
-                  <Ionicons name="checkmark" size={10} color="#fff" />
-                </View>
-              )}
-            </TouchableOpacity>
-          );
-        })}
+        <Text style={s.unlimitedHeaderTitle}>Monthly Unlimited</Text>
+        <Text style={[s.unlimitedHeaderSub, { color: colors.mutedForeground }]}>Unlimited photos · Cancel anytime</Text>
       </View>
 
       {/* ── Active plan detail card ── */}

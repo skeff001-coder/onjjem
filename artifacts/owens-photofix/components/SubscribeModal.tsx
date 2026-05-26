@@ -22,18 +22,17 @@ interface Props {
   onClose: () => void;
 }
 
-type Plan = "perpic" | "monthly" | "annual";
+type Plan = "perpic" | "monthly";
 
 export function SubscribeModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
-  const [plan, setPlan] = useState<Plan>("annual");
+  const [plan, setPlan] = useState<Plan>("monthly");
   const [purchased, setPurchased] = useState(false);
-  const [purchasedPlan, setPurchasedPlan] = useState<Plan>("annual");
+  const [purchasedPlan, setPurchasedPlan] = useState<Plan>("monthly");
   const successOpacity = useRef(new Animated.Value(0)).current;
   const successScale = useRef(new Animated.Value(0.85)).current;
   const {
     monthlyPackage,
-    annualPackage,
     perPhotoPackage,
     purchase,
     restore,
@@ -109,17 +108,6 @@ export function SubscribeModal({ visible, onClose }: Props) {
       icon: "infinite" as const,
       pkg: monthlyPackage,
     },
-    {
-      id: "annual" as Plan,
-      label: "Annual",
-      price: annualPackage?.product.priceString ?? PRICING.annual.amount,
-      period: "per year",
-      desc: "Everything in monthly, all year. Save over 60%.",
-      color: "#27AE60",
-      icon: "star" as const,
-      badge: "BEST VALUE",
-      pkg: annualPackage,
-    },
   ];
 
   const selected = PLANS.find((p) => p.id === plan)!;
@@ -148,9 +136,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
   const successPerks =
     purchasedPlan === "perpic"
       ? ["Full HD quality output", "All 6 modes", "No watermark"]
-      : purchasedPlan === "monthly"
-      ? ["Unlimited HD photos", "All 6 modes combined", "Cancel anytime"]
-      : ["Unlimited HD photos", "All 6 modes combined", "Save over 60%"];
+      : ["Unlimited HD photos", "All 6 modes combined", "Cancel anytime"];
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>
@@ -226,11 +212,6 @@ export function SubscribeModal({ visible, onClose }: Props) {
                   onPress={() => setPlan(p.id)}
                   activeOpacity={0.8}
                 >
-                  {p.badge && (
-                    <View style={[s.badge, { backgroundColor: p.color }]}>
-                      <Text style={s.badgeText}>{p.badge}</Text>
-                    </View>
-                  )}
                   <View style={s.cardTop}>
                     <View style={[s.iconWrap, { backgroundColor: p.color + "20" }]}>
                       <Ionicons name={p.icon} size={20} color={p.color} />
@@ -259,9 +240,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
             >
               <LinearGradient
                 colors={
-                  plan === "annual"
-                    ? ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]
-                    : plan === "perpic"
+                  plan === "perpic"
                     ? ["#8B6200", "#E8A020", "#F5C050", "#E8A020"]
                     : ["#2C6FAE", "#4A90D9", "#5BA3E8", "#4A90D9"]
                 }
@@ -276,9 +255,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
                     <Text style={s.ctaText}>
                       {plan === "perpic"
                         ? `${PRICING.perPhoto.shortLabel} — ${selected.price}`
-                        : plan === "monthly"
-                        ? `${PRICING.monthly.shortLabel} — ${selected.price}${PRICING.monthly.period}`
-                        : `${PRICING.annual.shortLabel} — ${selected.price}${PRICING.annual.period}`}
+                        : `${PRICING.monthly.shortLabel} — ${selected.price}${PRICING.monthly.period}`}
                     </Text>
                   </>
                 )}
