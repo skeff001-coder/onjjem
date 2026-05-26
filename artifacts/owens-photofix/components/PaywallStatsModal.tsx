@@ -47,7 +47,6 @@ import {
 const KNOWN_SURFACES = ["pro_paywall", "subscribe_modal", "enhancement_paywall"] as const;
 
 const KNOWN_PLANS = [
-  { id: "annual",  label: "Annual" },
   { id: "monthly", label: "Monthly" },
   { id: "perpic",  label: "One Photo" },
 ] as const;
@@ -752,10 +751,8 @@ export function PaywallStatsModal({
         "dismissals",
         "purchases",
         "conversion_rate_pct",
-        "plan_purchases_annual",
         "plan_purchases_monthly",
         "plan_purchases_perpic",
-        "plan_dismissals_annual",
         "plan_dismissals_monthly",
         "plan_dismissals_perpic",
         "first_seen_at",
@@ -769,10 +766,8 @@ export function PaywallStatsModal({
         csvEscape(s.dismissals),
         csvEscape(s.purchases),
         csvEscape(s.conversionRate.toFixed(2)),
-        csvEscape(s.planPurchases["annual"] ?? 0),
         csvEscape(s.planPurchases["monthly"] ?? 0),
         csvEscape(s.planPurchases["perpic"] ?? 0),
-        csvEscape(s.planDismissals["annual"] ?? 0),
         csvEscape(s.planDismissals["monthly"] ?? 0),
         csvEscape(s.planDismissals["perpic"] ?? 0),
         csvEscape(s.firstSeenAt ?? ""),

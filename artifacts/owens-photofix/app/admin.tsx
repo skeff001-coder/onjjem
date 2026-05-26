@@ -84,7 +84,7 @@ export default function AdminScreen() {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
-    const planKeys = ["annual", "monthly", "perpic"] as const;
+    const planKeys = ["monthly", "perpic"] as const;
     const reasonKeys = ["cancel", "billing_error"] as const;
     const churnKeys = [
       CHURN_TOTAL_COUNT_KEY,
@@ -109,7 +109,7 @@ export default function AdminScreen() {
 
     const churnMap = Object.fromEntries(churnPairs.map(([k, v]) => [k, v]));
     const parse = (k: string) => parseInt(churnMap[k] ?? "0", 10) || 0;
-    const planLabels: Record<string, string> = { annual: "Annual", monthly: "Monthly", perpic: "Per-photo" };
+    const planLabels: Record<string, string> = { monthly: "Monthly", perpic: "Per-photo" };
     const reasonLabels: Record<"cancel" | "billing_error", string> = {
       cancel: "Cancelled",
       billing_error: "Billing error",

@@ -432,14 +432,11 @@ export async function trackSubscriptionChurn(
  *
  * Examples:
  *   "com.onjjem.photorestoration.monthly" → "monthly"
- *   "com.onjjem.photorestoration.annual"  → "annual"
  *   "one_photo"                           → "perpic"
  *   "$rc_monthly"                         → "monthly"
- *   "$rc_annual"                          → "annual"
  */
 export function planIdFromProductIdentifier(productId: string): string | undefined {
   const lower = productId.toLowerCase();
-  if (lower.includes("annual") || lower.includes("yearly")) return "annual";
   if (lower.includes("monthly")) return "monthly";
   if (lower === PACKAGE_IDENTIFIERS.perPhoto || lower.includes("one_photo") || lower.includes("perpic")) return "perpic";
   return undefined;
@@ -521,7 +518,6 @@ export const PHOTO_CREDITS_STORAGE_KEY = "onjjem_photo_credits";
 
 export const PACKAGE_IDENTIFIERS = {
   monthly: "$rc_monthly",
-  annual: "$rc_annual",
   perPhoto: "one_photo",
 } as const;
 
@@ -626,10 +622,6 @@ function useSubscriptionContext() {
     currentOffering?.availablePackages.find(
       (p) => p.identifier === PACKAGE_IDENTIFIERS.monthly,
     ) ?? null;
-  const annualPackage =
-    currentOffering?.availablePackages.find(
-      (p) => p.identifier === PACKAGE_IDENTIFIERS.annual,
-    ) ?? null;
   const perPhotoPackage =
     currentOffering?.availablePackages.find(
       (p) => p.identifier === PACKAGE_IDENTIFIERS.perPhoto,
@@ -644,7 +636,6 @@ function useSubscriptionContext() {
     offerings: offeringsQuery.data,
     currentOffering,
     monthlyPackage,
-    annualPackage,
     perPhotoPackage,
     isSubscribed,
     photoCredits,
