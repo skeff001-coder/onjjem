@@ -345,6 +345,86 @@ export async function sendAdminNotification(data: AdminNotificationData): Promis
   );
 }
 
+// ── Photo fulfilment forward ──────────────────────────────────────────────────
+
+export interface PhotoFulfilmentData {
+  refId: string;
+  productName: string;
+  originalFilename: string;
+  contentType: string;
+  photoBuffer: Buffer;
+}
+
+export async function sendPhotoForFulfilment(data: PhotoFulfilmentData): Promise<void> {
+  const transport = createTransport();
+  const fulfilEmail = process.env.FULFILMENT_EMAIL || ADMIN();
+  if (!transport || !fulfilEmail) {
+    logger.warn("Email not configured — skipping photo fulfilment forward");
+    return;
+  }
+
+  const ext = data.originalFilename.split(".").pop() || "jpg";
+  const attachmentFilename = `${data.refId}.${ext}`;
+
+  const body = `
+    <tr><td style="height:4px;background:linear-gradient(90deg,${GOLD},#F0C040,${GOLD})"></td></tr>
+    <tr><td style="padding:36px 40px 32px">
+
+      <p style="font-size:10px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 8px">New Customer Photo</p>
+      <h1 style="font-size:24px;color:#FAF7F2;margin:0 0 4px;font-weight:700">Photo for Printing</h1>
+      <p style="font-size:14px;color:${MUTED};margin:0 0 28px">A customer has uploaded their photo for the order below. The photo is attached to this email.</p>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+        style="background:rgba(250,247,242,0.03);border:1px solid rgba(250,247,242,0.08);border-radius:10px;margin-bottom:24px">
+        <tr><td style="padding:20px 24px">
+          ${[
+            ["Reference", data.refId],
+            ["Product", data.productName],
+          ].map(([label, value]) => `
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:14px">
+              <tr>
+                <td style="width:110px;font-size:11px;letter-spacing:.1em;color:${MUTED};text-transform:uppercase;vertical-align:top;padding-top:2px">${label}</td>
+                <td style="font-size:13px;color:${TEXT};line-height:1.6;font-weight:700">${value}</td>
+              </tr>
+            </table>
+          `).join("")}
+        </td></tr>
+      </table>
+
+      <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
+        This reference number will appear on the corresponding Shopify order as the <strong style="color:${TEXT}">Photo Reference</strong> line item property.
+      </p>
+
+    </td></tr>
+    <tr><td style="height:1px;background:rgba(201,150,12,0.15)"></td></tr>
+    <tr><td style="padding:16px 40px;text-align:center">
+      <p style="font-size:11px;color:${MUTED};margin:0">ONJJEM · Sent automatically on photo upload</p>
+    </td></tr>
+  `;
+
+  await transport.sendMail({
+    from: FROM(),
+    to: fulfilEmail,
+    subject: `📷 New photo for printing — ${data.refId} · ${data.productName}`,
+    html: baseTemplate(
+      `Customer photo attached for ${data.productName} — ref ${data.refId}`,
+      body,
+    ),
+    attachments: [
+      {
+        filename: attachmentFilename,
+        content: data.photoBuffer,
+        contentType: data.contentType,
+      },
+    ],
+  });
+
+  logger.info(
+    { to: fulfilEmail, refId: data.refId, product: data.productName },
+    "Photo forwarded for fulfilment",
+  );
+}
+
 // ── Welcome / discount email ───────────────────────────────────────────────────
 
 export async function sendWelcomeEmail(toEmail: string, discountCode: string): Promise<void> {
