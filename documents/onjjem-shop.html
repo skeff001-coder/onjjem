@@ -222,6 +222,17 @@
     .modal-whatsapp:hover { background: rgba(37,211,102,0.2); }
 
     /* LIFESTYLE HERO SECTION */
+    .showcase-strip { background: var(--bg2); border-bottom: 1px solid rgba(201,150,12,0.18); padding: 28px 0; overflow: hidden; }
+    .showcase-inner { display: flex; gap: 16px; padding: 0 24px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+    .showcase-inner::-webkit-scrollbar { display: none; }
+    .showcase-item { flex: 0 0 150px; cursor: pointer; }
+    .showcase-img-wrap { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; background: var(--card); border: 1px solid rgba(201,150,12,0.2); margin-bottom: 8px; }
+    .showcase-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+    .showcase-item:hover .showcase-img-wrap img { transform: scale(1.08); }
+    .showcase-overlay { position: absolute; inset: 0; background: rgba(201,150,12,0.75); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #0E0C08; opacity: 0; transition: opacity 0.2s; }
+    .showcase-item:hover .showcase-overlay { opacity: 1; }
+    .showcase-label { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600; color: var(--cream); margin-bottom: 2px; }
+    .showcase-price { font-size: 11px; color: var(--gold-lt); font-weight: 600; }
     .lifestyle-hero { position: relative; overflow: hidden; background: linear-gradient(135deg, #080600 0%, #1A1200 40%, #0D0B08 100%); border-bottom: 1px solid rgba(201,150,12,0.12); padding: 48px 24px; }
     .lifestyle-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 80% at 80% 50%, rgba(201,150,12,0.07) 0%, transparent 70%); pointer-events: none; }
     .lifestyle-hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
@@ -276,6 +287,76 @@
     <span class="shop-trust-badge">⭐ 10-Year Print Guarantee</span>
   </div>
   <p class="shop-desc">Your AI-restored photograph transformed into museum-quality prints, luxury canvases and heirloom keepsakes — every piece crafted to the highest standard by our London master artisans and delivered to your door.</p>
+</div>
+
+<!-- PRODUCT SHOWCASE STRIP -->
+<div class="showcase-strip">
+  <div class="showcase-inner">
+    <div class="showcase-item" onclick="document.querySelector('#lounge').scrollIntoView({behavior:'smooth'})">
+      <div class="showcase-img-wrap">
+        <img src="/assets/product-cushion.png" alt="Photo Cushion" />
+        <div class="showcase-overlay">Shop Now</div>
+      </div>
+      <div class="showcase-label">Photo Cushions</div>
+      <div class="showcase-price">from £44.99</div>
+    </div>
+    <div class="showcase-item" onclick="document.querySelector('#prints').scrollIntoView({behavior:'smooth'})">
+      <div class="showcase-img-wrap">
+        <img src="/assets/product-canvas-print.png" alt="Canvas Print" />
+        <div class="showcase-overlay">Shop Now</div>
+      </div>
+      <div class="showcase-label">Canvas Prints</div>
+      <div class="showcase-price">from £39.99</div>
+    </div>
+    <div class="showcase-item" onclick="document.querySelector('#jigsaws').scrollIntoView({behavior:'smooth'})">
+      <div class="showcase-img-wrap">
+        <img src="/assets/product-jigsaw.png" alt="Photo Jigsaw" />
+        <div class="showcase-overlay">Shop Now</div>
+      </div>
+      <div class="showcase-label">Heritage Jigsaws</div>
+      <div class="showcase-price">from £34.99</div>
+    </div>
+    <div class="showcase-item" onclick="document.querySelector('#everyday').scrollIntoView({behavior:'smooth'})">
+      <div class="showcase-img-wrap">
+        <img src="/assets/product-mug.png" alt="Photo Mug" />
+        <div class="showcase-overlay">Shop Now</div>
+      </div>
+      <div class="showcase-label">Photo Mugs</div>
+      <div class="showcase-price">from £14.99</div>
+    </div>
+    <div class="showcase-item" onclick="document.querySelector('#prints').scrollIntoView({behavior:'smooth'})">
+      <div class="showcase-img-wrap">
+        <img src="/assets/product-fine-art-print.png" alt="Fine Art Print" />
+        <div class="showcase-overlay">Shop Now</div>
+      </div>
+      <div class="showcase-label">Fine Art Prints</div>
+      <div class="showcase-price">from £29.99</div>
+    </div>
+    <div class="showcase-item" onclick="document.querySelector('#anniversaries').scrollIntoView({behavior:'smooth'})">
+      <div class="showcase-img-wrap">
+        <img src="/assets/product-gift-collection.png" alt="Gift Collection" />
+        <div class="showcase-overlay">Shop Now</div>
+      </div>
+      <div class="showcase-label">Gift Collections</div>
+      <div class="showcase-price">from £189</div>
+    </div>
+    <div class="showcase-item" onclick="document.querySelector('#kitchen').scrollIntoView({behavior:'smooth'})">
+      <div class="showcase-img-wrap">
+        <img src="/assets/product-tea-towel.png" alt="Tea Towel" />
+        <div class="showcase-overlay">Shop Now</div>
+      </div>
+      <div class="showcase-label">Tea Towels</div>
+      <div class="showcase-price">from £19.99</div>
+    </div>
+    <div class="showcase-item" onclick="document.querySelector('#wall-art').scrollIntoView({behavior:'smooth'})">
+      <div class="showcase-img-wrap">
+        <img src="/assets/product-wall-mural.png" alt="Wall Mural" />
+        <div class="showcase-overlay">Shop Now</div>
+      </div>
+      <div class="showcase-label">Wall Murals</div>
+      <div class="showcase-price">from £149</div>
+    </div>
+  </div>
 </div>
 
 <!-- LIFESTYLE HERO -->
