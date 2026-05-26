@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONJJEM — Shopify Image Upload Guide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #111; color: #eee; padding: 20px; }
+  h1 { text-align: center; margin-bottom: 10px; font-size: 1.5rem; }
+  p.subtitle { text-align: center; color: #aaa; margin-bottom: 30px; font-size: 0.9rem; }
+  .section { margin-bottom: 40px; }
+  .section-title { font-size: 1.1rem; font-weight: 600; color: #c9a96e; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #333; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: #1a1a1a; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
+  .card img { width: 100%; height: 200px; object-fit: cover; display: block; }
+  .card-body { padding: 12px 14px; }
+  .card-filename { font-family: monospace; font-size: 0.8rem; color: #c9a96e; margin-bottom: 8px; }
+  .product-list { font-size: 0.85rem; line-height: 1.6; }
+  .product-list span { display: block; color: #ccc; }
+  .product-list span::before { content: "→ "; color: #666; }
+  .badge { display: inline-block; background: #c9a96e; color: #111; font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<h1>ONJJEM Shopify Image Upload Guide</h1>
+<p class="subtitle">Search for each product in Shopify Admin → Products, then upload the matching image</p>
+
+<div class="section">
+  <div class="section-title">Jubilee Collections</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/jubilee-collection.png" alt="Jubilee Collection">
+      <div class="card-body">
+        <div class="card-filename">jubilee-collection.png</div>
+        <div class="badge">6 products</div>
+        <div class="product-list">
+          <span>Silver Jubilee Collection</span>
+          <span>Pearl Jubilee Collection</span>
+          <span>Ruby Jubilee Collection</span>
+          <span>Golden Jubilee Collection</span>
+          <span>Diamond Jubilee Collection</span>
+          <span>Platinum Jubilee Collection</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Lounge & Home</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/cushion-velvet.png" alt="Cushion">
+      <div class="card-body">
+        <div class="card-filename">cushion-velvet.png</div>
+        <div class="badge">3 products</div>
+        <div class="product-list">
+          <span>Square Photo Cushion</span>
+          <span>Large Luxury Cushion</span>
+          <span>Luxury Silk Portrait Cushion</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/blanket-fleece.png" alt="Blanket">
+      <div class="card-body">
+        <div class="card-filename">blanket-fleece.png</div>
+        <div class="badge">3 products</div>
+        <div class="product-list">
+          <span>Photo Fleece Blanket - Small</span>
+          <span>Photo Fleece Blanket - Medium</span>
+          <span>Photo Fleece Blanket - Large</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/velvet-throw.png" alt="Throw">
+      <div class="card-body">
+        <div class="card-filename">velvet-throw.png</div>
+        <div class="badge">2 products</div>
+        <div class="product-list">
+          <span>Luxury Velvet Photo Throw</span>
+          <span>Luxury Sherpa Photo Throw</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/custom-rug.png" alt="Rug">
+      <div class="card-body">
+        <div class="card-filename">custom-rug.png</div>
+        <div class="badge">2 products</div>
+        <div class="product-list">
+          <span>Custom Living Room Rug</span>
+          <span>Plush Bedside Rug</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/storage-trunk.png" alt="Trunk">
+      <div class="card-body">
+        <div class="card-filename">storage-trunk.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Storage Trunk</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/footstool.png" alt="Footstool">
+      <div class="card-body">
+        <div class="card-filename">footstool.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Photo Round Footstool</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/scented-candle.png" alt="Candle">
+      <div class="card-body">
+        <div class="card-filename">scented-candle.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Scented Photo Candle</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/glass-vase.png" alt="Vase">
+      <div class="card-body">
+        <div class="card-filename">glass-vase.png</div>
+        <div class="badge">2 products</div>
+        <div class="product-list">
+          <span>Personalised Glass Vase</span>
+          <span>Metallic Photo Vase</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/photo-calendar.png" alt="Calendar">
+      <div class="card-body">
+        <div class="card-filename">photo-calendar.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Photo Calendar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Jigsaws</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/jigsaw-puzzle.png" alt="Jigsaw">
+      <div class="card-body">
+        <div class="card-filename">jigsaw-puzzle.png</div>
+        <div class="badge">6 products</div>
+        <div class="product-list">
+          <span>Anniversary Heart Jigsaw</span>
+          <span>Generations Collage Puzzle</span>
+          <span>Portrait Face Jigsaw</span>
+          <span>1000 Piece Giant Puzzle</span>
+          <span>500 Piece Standard Puzzle</span>
+          <span>252 Piece Classic Cardboard</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/wooden-jigsaw.png" alt="Wooden Jigsaw">
+      <div class="card-body">
+        <div class="card-filename">wooden-jigsaw.png</div>
+        <div class="badge">3 products</div>
+        <div class="product-list">
+          <span>96 Piece Classic Wooden</span>
+          <span>96 Piece Wooden - Heritage Edition</span>
+          <span>30 Piece Kids Wooden</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Prints & Canvas</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/canvas-print.png" alt="Canvas">
+      <div class="card-body">
+        <div class="card-filename">canvas-print.png</div>
+        <div class="badge">4 products</div>
+        <div class="product-list">
+          <span>A3 Gallery Canvas</span>
+          <span>A2 Premium Canvas</span>
+          <span>A1 Master Gallery Canvas</span>
+          <span>A0 Giant Statement Canvas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Kitchen</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/photo-mug.png" alt="Mug">
+      <div class="card-body">
+        <div class="card-filename">photo-mug.png</div>
+        <div class="badge">3 products</div>
+        <div class="product-list">
+          <span>Classic Photo Mug</span>
+          <span>Master Lab Photo Mug</span>
+          <span>Car Travel Cup</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/tea-set.png" alt="Tea Set">
+      <div class="card-body">
+        <div class="card-filename">tea-set.png</div>
+        <div class="badge">2 products</div>
+        <div class="product-list">
+          <span>Bone China Photo Teapot</span>
+          <span>Coffee and Espresso Cups - Set of 2</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/dinner-plates.png" alt="Plates">
+      <div class="card-body">
+        <div class="card-filename">dinner-plates.png</div>
+        <div class="badge">2 products</div>
+        <div class="product-list">
+          <span>Photo Dinner Plates - Set of 2</span>
+          <span>Kids Photo Plate</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/beer-coasters.png" alt="Coasters">
+      <div class="card-body">
+        <div class="card-filename">beer-coasters.png</div>
+        <div class="badge">2 products</div>
+        <div class="product-list">
+          <span>Photo Beer Coasters - Set of 4</span>
+          <span>Heritage Photo Beer Mat</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/photo-apron.png" alt="Apron">
+      <div class="card-body">
+        <div class="card-filename">photo-apron.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Photo Apron</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/oven-gloves.png" alt="Oven Gloves">
+      <div class="card-body">
+        <div class="card-filename">oven-gloves.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Double Oven Gloves</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/chopping-board.png" alt="Chopping Board">
+      <div class="card-body">
+        <div class="card-filename">chopping-board.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Photo Chopping Board</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/tea-caddy.png" alt="Tea Caddy">
+      <div class="card-body">
+        <div class="card-filename">tea-caddy.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Photo Tea Caddy</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/table-runner.png" alt="Table Runner">
+      <div class="card-body">
+        <div class="card-filename">table-runner.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Photo Table Runner</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/wine-cooler.png" alt="Wine Cooler">
+      <div class="card-body">
+        <div class="card-filename">wine-cooler.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Photo Wine Bottle Cooler</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/snack-bowl.png" alt="Snack Bowl">
+      <div class="card-body">
+        <div class="card-filename">snack-bowl.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Photo Snack Bowl</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/travel-mug.png" alt="Travel Mug">
+      <div class="card-body">
+        <div class="card-filename">travel-mug.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Thermal Travel Mug</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Wall & Bedroom</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/duvet-cover.png" alt="Duvet">
+      <div class="card-body">
+        <div class="card-filename">duvet-cover.png</div>
+        <div class="badge">2 products</div>
+        <div class="product-list">
+          <span>Photo Duvet Cover</span>
+          <span>Pure Silk Duvet Cover</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/organic-duvet.png" alt="Organic Duvet">
+      <div class="card-body">
+        <div class="card-filename">organic-duvet.png</div>
+        <div class="badge">2 products</div>
+        <div class="product-list">
+          <span>Photo Duvet Cover - Single</span>
+          <span>Photo Duvet Cover - Double</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/wall-mural.png" alt="Wall Mural">
+      <div class="card-body">
+        <div class="card-filename">wall-mural.png</div>
+        <div class="badge">4 products</div>
+        <div class="product-list">
+          <span>The Masterpiece Wall Mural</span>
+          <span>Bespoke Wall Mural - Full Room</span>
+          <span>Master Lab Wallpaper Sample</span>
+          <span>Bespoke Wall Mural (Full Room)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Fashion & Accessories</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/leather-tote.png" alt="Tote Bag">
+      <div class="card-body">
+        <div class="card-filename">leather-tote.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Luxury Leather Tote Bag</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/silk-scarf.png" alt="Silk Scarf">
+      <div class="card-body">
+        <div class="card-filename">silk-scarf.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Pure Silk Square Scarf</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/leather-wallet.png" alt="Wallet">
+      <div class="card-body">
+        <div class="card-filename">leather-wallet.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Men's Leather Wallet</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/leather-purse.png" alt="Purse">
+      <div class="card-body">
+        <div class="card-filename">leather-purse.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Zip-Around Leather Purse</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/wrap-belt.png" alt="Belt">
+      <div class="card-body">
+        <div class="card-filename">wrap-belt.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Wide Photo Wrap Belt</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/photo-umbrella.png" alt="Umbrella">
+      <div class="card-body">
+        <div class="card-filename">photo-umbrella.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Photo Umbrella</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/face-socks.png" alt="Socks">
+      <div class="card-body">
+        <div class="card-filename">face-socks.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Face Socks</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/hair-brush.png" alt="Hair Brush">
+      <div class="card-body">
+        <div class="card-filename">hair-brush.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Photo Hair Brush</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/sunglasses.png" alt="Sunglasses">
+      <div class="card-body">
+        <div class="card-filename">sunglasses.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Photo Sunglasses</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/leather-keyring.png" alt="Keyring">
+      <div class="card-body">
+        <div class="card-filename">leather-keyring.png</div>
+        <div class="badge">2 products</div>
+        <div class="product-list">
+          <span>Genuine Leather Keyring</span>
+          <span>Leather Photo Keyrings</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Jewellery</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/cufflinks.png" alt="Cufflinks">
+      <div class="card-body">
+        <div class="card-filename">cufflinks.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Photo Cufflinks</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/hip-flask.png" alt="Hip Flask">
+      <div class="card-body">
+        <div class="card-filename">hip-flask.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Leather Photo Hip Flask</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/heart-ornament.png" alt="Ornament">
+      <div class="card-body">
+        <div class="card-filename">heart-ornament.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Heart Ornament</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/silk-tie.png" alt="Silk Tie">
+      <div class="card-body">
+        <div class="card-filename">silk-tie.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Silk Tie</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Everyday & Gift</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/stickers.png" alt="Stickers">
+      <div class="card-body">
+        <div class="card-filename">stickers.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Memory Stickers</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/fridge-magnets.png" alt="Magnets">
+      <div class="card-body">
+        <div class="card-filename">fridge-magnets.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Fridge Magnets</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/mouse-mat.png" alt="Mouse Mat">
+      <div class="card-body">
+        <div class="card-filename">mouse-mat.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Photo Mouse Mat</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/fabric-labels.png" alt="Labels">
+      <div class="card-body">
+        <div class="card-filename">fabric-labels.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Custom Fabric Labels</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/drawstring-bag.png" alt="Drawstring Bag">
+      <div class="card-body">
+        <div class="card-filename">drawstring-bag.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Drawstring Bag</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/notebook.png" alt="Notebook">
+      <div class="card-body">
+        <div class="card-filename">notebook.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Handmade Notebook</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/tea-towel.png" alt="Tea Towel">
+      <div class="card-body">
+        <div class="card-filename">tea-towel.png</div>
+        <div class="badge">1 product</div>
+        <div class="product-list">
+          <span>Heritage Tea Towel</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img src="../attached_assets/product_images/gift-wrap.png" alt="Gift Wrap">
+      <div class="card-body">
+        <div class="card-filename">gift-wrap.png</div>
+        <div class="badge">4 products</div>
+        <div class="product-list">
+          <span>Luxury Gift Wrap - Single Sheet</span>
+          <span>Luxury Gift Wrap - Full Roll</span>
+          <span>Bespoke Photo Ribbon</span>
+          <span>Heritage Gift Tags</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Junior & Sports</div>
+  <div class="grid">
+    <div class="card">
+      <img src="../attached_assets/product_images/junior-sports.png" alt="Junior Sports">
+      <div class="card-body">
+        <div class="card-filename">junior-sports.png</div>
+        <div class="badge">5 products</div>
+        <div class="product-list">
+          <span>Junior Throw Blanket</span>
+          <span>Sports Hero Duvet Cover</span>
+          <span>Peel and Stick Team Poster</span>
+          <span>Bespoke Wall Mural (Full Room)</span>
+          <span>Bespoke Team Curtains</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
