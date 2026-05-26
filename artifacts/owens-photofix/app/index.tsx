@@ -1907,29 +1907,6 @@ export default function HomeScreen() {
 
             <View style={s.printDivider} />
 
-            {/* Option 1b: Annual unlimited printing */}
-            <View style={s.printRow}>
-              <LinearGradient
-                colors={["#27AE6022", "#27AE6011"]}
-                style={s.printRowIcon}
-              >
-                <Ionicons name="infinite" size={22} color="#27AE60" />
-              </LinearGradient>
-              <View style={s.printRowBody}>
-                <View style={s.printRowTitleRow}>
-                  <Text style={s.printRowTitle}>Annual Plan — £24.99/year</Text>
-                  <View style={[s.printRowBadge, { backgroundColor: "#27AE6022", borderColor: "#27AE6055" }]}>
-                    <Text style={[s.printRowBadgeText, { color: "#27AE60" }]}>BEST VALUE</Text>
-                  </View>
-                </View>
-                <Text style={s.printRowDesc}>
-                  Everything in the monthly plan, all year — save 83% versus paying monthly. Download studio-quality HD files anytime, as many photos as you like.
-                </Text>
-              </View>
-            </View>
-
-            <View style={s.printDivider} />
-
             {/* Option 2: Concierge service */}
             <View style={s.printRow}>
               <LinearGradient
