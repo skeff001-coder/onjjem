@@ -693,20 +693,10 @@
           <div class="print-row-icon" style="background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.3);">∞</div>
           <div class="print-row-body">
             <div class="print-row-head">
-              <span class="print-row-title">Monthly Plan — £12.99/month</span>
+              <span class="print-row-title">Monthly Plan — £11.99/month</span>
               <span class="print-row-badge" style="color:#4A90D9;background:rgba(74,144,217,0.12);border-color:rgba(74,144,217,0.35);">UNLIMITED</span>
             </div>
             <p class="print-row-desc">Full studio-quality restoration every month. No limits, no per-photo charges. Cancel anytime.</p>
-          </div>
-        </div>
-        <div class="print-row">
-          <div class="print-row-icon" style="background:rgba(39,174,96,0.14);border:1px solid rgba(39,174,96,0.3);">∞</div>
-          <div class="print-row-body">
-            <div class="print-row-head">
-              <span class="print-row-title">Annual Plan — £24.99/year</span>
-              <span class="print-row-badge" style="color:#27AE60;background:rgba(39,174,96,0.12);border-color:rgba(39,174,96,0.35);">BEST VALUE</span>
-            </div>
-            <p class="print-row-desc">Everything in the monthly plan, all year — save 83% versus paying monthly.</p>
           </div>
         </div>
         <div class="print-row">
@@ -867,15 +857,6 @@
         <div class="price-amount">£11.99</div>
         <div class="price-period">per month</div>
         <button class="price-cta" style="background:rgba(74,144,217,0.14);color:#4A90D9;border:1px solid rgba(74,144,217,0.4);" onclick="startSubscribe('monthly')" id="btnMonthly">Subscribe Monthly</button>
-      </div>
-      <div class="price-card featured">
-        <div class="price-badge">Best Value</div>
-        <div class="price-icon" style="background:rgba(39,174,96,0.1)">★</div>
-        <div class="price-label">Annual Unlimited</div>
-        <div class="price-desc">Unlimited restorations all year long. Less than £2.09 a month.</div>
-        <div class="price-amount">£24.99</div>
-        <div class="price-period">per year</div>
-        <button class="price-cta" style="background:rgba(39,174,96,0.14);color:#27AE60;border:1px solid rgba(39,174,96,0.4);" onclick="startSubscribe('annual')" id="btnAnnual">Subscribe Annually</button>
       </div>
     </div>
     <p style="text-align:center;font-size:12px;color:rgba(250,247,242,0.28);margin-top:22px;line-height:1.7;">Subscriptions renew automatically. Cancel anytime — email <a href="mailto:hello@onjjem.com" style="color:rgba(201,150,12,0.55);">hello@onjjem.com</a></p>
@@ -1100,16 +1081,15 @@ function showStatus(msg, type) { statusMsg.textContent = msg; statusMsg.classNam
 function hideStatus() { statusMsg.className = 'status-msg'; }
 
 async function startSubscribe(plan) {
-  const btnId = plan === 'monthly' ? 'btnMonthly' : 'btnAnnual';
-  const btn = document.getElementById(btnId);
-  const orig = btn.textContent;
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Loading…';
+  const btn = document.getElementById('btnMonthly');
+  const orig = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Loading…'; }
   try {
     const r = await fetch('/api/stripe/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ plan }) });
     const { url, error } = await r.json();
     if (error || !url) throw new Error(error || 'Could not start checkout');
     window.location.href = url;
-  } catch (e) { btn.disabled = false; btn.textContent = orig; alert('Sorry, something went wrong. Please email hello@onjjem.com to subscribe.'); }
+  } catch (e) { if (btn) { btn.disabled = false; btn.textContent = orig; } alert('Sorry, something went wrong. Please email hello@onjjem.com to subscribe.'); }
 }
 
 async function startSinglePhoto() {
