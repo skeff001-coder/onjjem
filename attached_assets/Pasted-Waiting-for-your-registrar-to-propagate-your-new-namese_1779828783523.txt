@@ -1,0 +1,74 @@
+Waiting for your registrar to propagate your new nameservers
+We are verifying that your domain is pointing to Cloudflare. This typically takes 1-2 hours but may take up to 24 hours, depending on your registrar. We are checking your status periodically.
+
+Next steps
+Go to 
+DNS
+ to verify your existing records and configure proxy status.
+
+Use 
+SSL/TLS
+ to manage certificates. We will issue you a free universal SSL certificate to cover your root domain (example.com) and first-level subdomains (www.example.com, blog.example.com, etc.).
+
+Automatic SSL/TLS regularly scans your origin to set an encryption mode that suits your setup, in case you uploaded a new certificate or changed your TLS settings.
+
+Log into your DNS provider (most likely your registrar)
+Find your registrar on 
+ICANN Lookup
+
+If you purchased your domain through a reseller (e.g., Squarespace) or use a separate DNS provider, log into that account instead.
+
+Replace your current nameservers with Cloudflare nameservers
+This is unlikely to cause downtime, but you may skip this and check your 
+DNS records
+ first.
+Find the nameservers section
+Add each of your assigned Cloudflare nameservers:
+arch.ns.cloudflare.com
+margot.ns.cloudflare.com
+Delete your other nameservers:
+ns1.livedns.co.uk
+
+ns2.livedns.co.uk
+
+ns3.livedns.co.uk
+
+Save your changes
+
+Recommended
+Make sure DNSSEC is off
+Find and turn off the DNS security (DNSSEC) setting if it is on. You can re-enable it later through Cloudflare.
+
+Only allow Cloudflare IP addresses at your origin
+Update your origin server's firewall (usually via your web hosting provider or server console) to block all incoming traffic that doesn't originate from Cloudflare.
+
+Need help? Follow our 
+set-up documentation
+ or 
+visit our support portal
+.
+
+DNS
+DNS Setup:
+Full
+DNS Records
+Quick Actions
+Under Attack Mode
+Show your site visitors a non-interactive challenge once your domain is active on Cloudflare.
+About Under Attack Mode
+
+Active Subscriptions
+Free plan
+API
+Zone ID
+36828f3a9887c10402f9f87634b60a7e
+Account ID
+cdbd752fe219fe050cf043d11e1710e2
+Get your API token
+API documentation
+Advanced Actions
+Remove from Cloudflare
+Support
+System status
+Careers
+Terms 
