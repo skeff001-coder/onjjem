@@ -6,16 +6,10 @@ export const PRICING = {
     shortLabel: "Enhance This Photo",
   },
   monthly: {
-    amount: "£12.99",
+    amount: "£11.99",
     period: "/month",
     planName: "Monthly Unlimited",
     shortLabel: "Start Monthly",
-  },
-  annual: {
-    amount: "£24.99",
-    period: "/year",
-    planName: "Annual Unlimited",
-    shortLabel: "Start Annual",
   },
   bagsOfLove: {
     masterPrintLab: "Bags of Love",
