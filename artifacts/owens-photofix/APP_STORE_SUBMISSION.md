@@ -180,12 +180,11 @@ https://appstoreconnect.apple.com/apps/6770767370/appstore/ios/version/inflight
 
 ### Step A — Attach in-app purchases to version 1.0
 
-Go to **Distribution → iOS App → version 1.0 → Monetisation → In-App Purchases and Subscriptions** and add all three IAPs:
+Go to **Distribution → iOS App → version 1.0 → Monetisation → In-App Purchases and Subscriptions** and add both IAPs:
 
 | Product ID                                    | Type                     | Status required before submitting |
 |-----------------------------------------------|--------------------------|------------------------------------|
 | com.onjjem.photorestoration.monthly           | Auto-Renewable Sub.      | Ready to Submit                    |
-| com.onjjem.photorestoration.annual            | Auto-Renewable Sub.      | Ready to Submit                    |
 | com.onjjem.photorestoration.one_photo         | Non-Consumable           | Ready to Submit                    |
 
 ### Step B — Confirm build selection
