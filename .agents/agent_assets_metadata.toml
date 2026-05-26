@@ -108,6 +108,54 @@ uri = "file://artifacts/owens-photofix/assets/gallery/mural_hallway.png"
 type = "image"
 title = "family portrait hallway mural"
 
+[[generated]]
+id = "NMRRLJ3Upa2pTfGY9thyV"
+uri = "file://documents/assets/product-canvas-print.png"
+type = "image"
+title = "heritage canvas print"
+
+[[generated]]
+id = "PnSVVn-WlC4LINTPetiPO"
+uri = "file://documents/assets/product-cushion.png"
+type = "image"
+title = "photo cushion"
+
+[[generated]]
+id = "05aj8xlQOUsjE0p0vDgY4"
+uri = "file://documents/assets/product-mug.png"
+type = "image"
+title = "heritage mug"
+
+[[generated]]
+id = "0AwmjlpjZtz0iAbpm_mF6"
+uri = "file://documents/assets/product-jigsaw.png"
+type = "image"
+title = "heritage jigsaw"
+
+[[generated]]
+id = "tWsftXXG80xq_A6V-blra"
+uri = "file://documents/assets/product-wall-mural.png"
+type = "image"
+title = "wall mural"
+
+[[generated]]
+id = "OkHO0bHNXejlICLIno1XY"
+uri = "file://documents/assets/product-gift-collection.png"
+type = "image"
+title = "anniversary gift collection"
+
+[[generated]]
+id = "atSgLhJZj1oBw0PMyt40E"
+uri = "file://documents/assets/product-fine-art-print.png"
+type = "image"
+title = "fine art portrait print"
+
+[[generated]]
+id = "4AhFcpeOM_064xrLTegA0"
+uri = "file://documents/assets/product-tea-towel.png"
+type = "image"
+title = "photo tea towel"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"

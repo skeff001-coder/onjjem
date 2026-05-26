@@ -173,6 +173,11 @@ app.get(["/", "/home"], (_req: Request, res: Response) => {
   );
 });
 
+// Shop product images and other static documents assets
+app.use("/assets", express.static(path.resolve(__dirname, "../../../documents/assets"), {
+  maxAge: "7d",
+}));
+
 // Gift shop — separate page
 app.get("/shop", (_req: Request, res: Response) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

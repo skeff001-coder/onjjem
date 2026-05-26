@@ -2440,20 +2440,96 @@
 
 <script>
 let currentSku = null;
+let currentName = null;
+
+// Map SKUs that exist as real Shopify products to their store URLs
+const SHOPIFY_BASE = 'https://onjjem.myshopify.com/products/';
+const SHOPIFY_PRODUCTS = {
+  'cushion-square-40x40':       'heritage-photo-cushion-40x40cm',
+  'cushion-large-60x60':        'large-luxury-heritage-cushion-60x60cm',
+  'cushion-silk-portrait':      'luxury-silk-heritage-cushion',
+  'mug-classic':                'master-lab-photo-mug',
+  'mug-bone-china':             'fine-bone-china-heritage-mug',
+  'mug-bone-china-single':      'fine-bone-china-heritage-mug',
+  'mug-bone-china-pair':        'fine-bone-china-heritage-mug',
+  'mug-master-lab':             'master-lab-photo-mug',
+  'jigsaw-500':                 'family-legacy-jigsaw-500-pieces',
+  'jigsaw-1000':                'heritage-portrait-jigsaw-1000-pieces',
+  'jigsaw-anniversary-heart':   'anniversary-heart-jigsaw-500-pieces',
+  'jigsaw-heart-500':           'anniversary-heart-jigsaw-500-pieces',
+  'print-a2-portrait':          'classic-a2-heritage-portrait-print',
+  'print-a0-museum':            'a0-museum-heritage-print',
+  'print-panoramic-150':        'massive-panoramic-heritage-print-150cm-wide',
+  'mural-small-1m':             'small-heritage-mural-1m-x-1m',
+  'mural-medium-2m':            'medium-heritage-mural-2m-x-2m',
+  'mural-large-3m':             'large-heritage-mural-3m-x-3m',
+  'mural-statement-4m':         'statement-heritage-mural-4m-x-4m',
+  'tea-towel':                  'heritage-photo-tea-towel',
+  'tapestry-canvas':            'heritage-photo-tapestry-canvas',
+  'candle-scented':             'heritage-glass-scented-candle',
+  'calendar-heritage':          'heritage-photo-calendar',
+};
+
+// Product images keyed by SKU prefix pattern
+const PRODUCT_IMAGES = {
+  cushion:    'assets/product-cushion.png',
+  blanket:    'assets/product-cushion.png',
+  mug:        'assets/product-mug.png',
+  jigsaw:     'assets/product-jigsaw.png',
+  print:      'assets/product-fine-art-print.png',
+  mural:      'assets/product-wall-mural.png',
+  canvas:     'assets/product-canvas-print.png',
+  tapestry:   'assets/product-canvas-print.png',
+  'tea-towel':'assets/product-tea-towel.png',
+  calendar:   'assets/product-tea-towel.png',
+  candle:     'assets/product-gift-collection.png',
+  jubilee:    'assets/product-gift-collection.png',
+  anniv:      'assets/product-gift-collection.png',
+};
+
+function getProductImage(sku) {
+  for (const [prefix, src] of Object.entries(PRODUCT_IMAGES)) {
+    if (sku && sku.startsWith(prefix)) return src;
+  }
+  return 'assets/product-gift-collection.png';
+}
+
+// Replace emoji placeholders with real images on load
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[onclick*="openProdModal"]').forEach(card => {
+    const match = card.getAttribute('onclick').match(/openProdModal\('([^']+)'/);
+    if (!match) return;
+    const sku = match[1];
+    const ph = card.querySelector('.prod-img-placeholder');
+    if (ph) {
+      const img = document.createElement('img');
+      img.src = getProductImage(sku);
+      img.alt = '';
+      img.style.cssText = 'width:100%;aspect-ratio:inherit;object-fit:cover;display:block;';
+      ph.innerHTML = '';
+      ph.appendChild(img);
+    }
+  });
+});
 
 function openProdModal(sku, name, icon, desc, price) {
-  currentSku = sku;
+  currentSku  = sku;
+  currentName = name;
   document.getElementById('modalIcon').textContent  = icon;
   document.getElementById('modalTitle').textContent = name;
   document.getElementById('modalDesc').textContent  = desc;
   document.getElementById('modalPrice').innerHTML   = '£' + price + ' <small>one-time</small>';
   document.getElementById('modalOrderBtn').disabled = false;
-  document.getElementById('modalOrderBtn').innerHTML = '🔒 &nbsp;Proceed to Secure Checkout';
+  const isShopify = !!SHOPIFY_PRODUCTS[sku];
+  document.getElementById('modalOrderBtn').innerHTML = isShopify
+    ? '🛍️ &nbsp;Buy Now on Our Shop'
+    : '✉ &nbsp;Email Us to Order';
   document.getElementById('prodModal').classList.add('open');
 }
 function closeProdModal() {
   document.getElementById('prodModal').classList.remove('open');
-  currentSku = null;
+  currentSku  = null;
+  currentName = null;
 }
 
 function openJubileeModal(name, icon, years, sku, desc) {
@@ -2469,24 +2545,18 @@ function closeJubileeModal() {
   document.getElementById('jubileeModal').classList.remove('open');
 }
 
-async function proceedToCheckout() {
+function proceedToCheckout() {
   if (!currentSku) return;
-  const btn = document.getElementById('modalOrderBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Opening checkout…';
-  try {
-    const res  = await fetch('/api/stripe/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sku: currentSku }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Checkout failed');
-    window.location.href = data.url;
-  } catch (err) {
-    btn.disabled = false;
-    btn.innerHTML = '🔒 &nbsp;Proceed to Secure Checkout';
-    alert('Sorry — ' + err.message);
+  const shopifyHandle = SHOPIFY_PRODUCTS[currentSku];
+  if (shopifyHandle) {
+    window.open(SHOPIFY_BASE + shopifyHandle, '_blank');
+    closeProdModal();
+  } else {
+    // Not yet on Shopify — send enquiry email
+    const subject = encodeURIComponent('ONJJEM Order — ' + (currentName || currentSku));
+    const body    = encodeURIComponent('Hi,\n\nI would like to order: ' + (currentName || currentSku) + '\n\nPlease could you confirm availability and next steps?\n\nMany thanks');
+    window.open('mailto:hello@onjjem.com?subject=' + subject + '&body=' + body, '_self');
+    closeProdModal();
   }
 }
 
