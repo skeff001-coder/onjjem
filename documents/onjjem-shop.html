@@ -189,6 +189,53 @@
     /* DELIVERY INCLUDED BADGE */
     .prod-delivery-incl { font-size: 10px; font-weight: 600; color: rgba(134,239,172,0.8); background: rgba(46,125,50,0.12); border: 1px solid rgba(46,125,50,0.25); border-radius: 20px; padding: 2px 8px; white-space: nowrap; }
 
+    /* ANNOUNCEMENT BAR */
+    .announce-bar { background: linear-gradient(90deg,#3A2400,#1E1200,#3A2400); border-bottom: 1px solid rgba(201,150,12,0.3); padding: 10px 20px; text-align: center; font-size: 12px; font-weight: 600; color: var(--gold-lt); letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; }
+    .announce-sep { color: rgba(201,150,12,0.4); margin: 0 12px; }
+    @media (max-width: 520px) { .announce-sep:last-of-type { display: none; } .announce-bar span:last-child { display: none; } }
+
+    /* HOW IT WORKS STRIP */
+    .how-strip { background: var(--bg2); border-bottom: 1px solid rgba(201,150,12,0.1); padding: 32px 24px; }
+    .how-strip-inner { max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 12px; }
+    @media (max-width: 620px) { .how-strip-inner { grid-template-columns: 1fr 1fr 1fr; } .how-arrow { display: none !important; } }
+    .how-step { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+    .how-step-num { width: 44px; height: 44px; border-radius: 50%; background: var(--gbg); border: 1px solid var(--gb); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .how-step-title { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600; color: var(--cream); letter-spacing: 0.3px; }
+    .how-step-sub { font-size: 10px; color: var(--c55); line-height: 1.5; max-width: 160px; }
+    .how-arrow { font-size: 20px; color: rgba(201,150,12,0.3); text-align: center; }
+
+    /* PRODUCT IMAGE UPGRADE */
+    .prod-img-wrap { width: 100%; overflow: hidden; position: relative; }
+    .prod-img-wrap img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .prod-card:hover .prod-img-wrap img { transform: scale(1.06); }
+    .prod-card.wide .prod-img-wrap img { aspect-ratio: 16/7; }
+    .prod-img-skeleton { width: 100%; aspect-ratio: 1; background: linear-gradient(90deg, var(--bg2) 25%, var(--card2) 50%, var(--bg2) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; display: flex; align-items: center; justify-content: center; font-size: 40px; color: rgba(201,150,12,0.25); }
+    .prod-card.wide .prod-img-skeleton { aspect-ratio: 16/7; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* MODAL IMAGE */
+    .modal-img { width: 100%; border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+    .modal-img img { width: 100%; height: 180px; object-fit: cover; display: block; }
+
+    /* WHATSAPP BUTTON */
+    .modal-whatsapp { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; border-radius: 13px; font-size: 13px; font-weight: 700; background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.35); color: #4ADE80; text-decoration: none; margin-top: 10px; transition: background 0.2s; }
+    .modal-whatsapp:hover { background: rgba(37,211,102,0.2); }
+
+    /* LIFESTYLE HERO SECTION */
+    .lifestyle-hero { position: relative; overflow: hidden; background: linear-gradient(135deg, #080600 0%, #1A1200 40%, #0D0B08 100%); border-bottom: 1px solid rgba(201,150,12,0.12); padding: 48px 24px; }
+    .lifestyle-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 80% at 80% 50%, rgba(201,150,12,0.07) 0%, transparent 70%); pointer-events: none; }
+    .lifestyle-hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
+    @media (max-width: 680px) { .lifestyle-hero-inner { grid-template-columns: 1fr; } .lifestyle-hero-imgs { display: none; } }
+    .lifestyle-hero-text .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+    .lifestyle-hero-text h2 { font-family: 'Cinzel', serif; font-size: clamp(22px,3.5vw,36px); font-weight: 600; color: var(--cream); line-height: 1.2; margin-bottom: 14px; }
+    .lifestyle-hero-text p { font-size: 13px; color: var(--c55); line-height: 1.75; margin-bottom: 20px; }
+    .lifestyle-hero-cta { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg,var(--gold-dk),var(--gold)); color: var(--bg); font-size: 13px; font-weight: 700; padding: 12px 24px; border-radius: 40px; text-decoration: none; border: none; cursor: pointer; }
+    .lifestyle-hero-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .lifestyle-hero-img { border-radius: 14px; overflow: hidden; }
+    .lifestyle-hero-img img { width: 100%; height: 160px; object-fit: cover; display: block; }
+    .lifestyle-hero-img:first-child { grid-row: span 2; }
+    .lifestyle-hero-img:first-child img { height: 100%; }
+
     footer { background: var(--bg); border-top: 1px solid rgba(201,150,12,0.12); padding: 48px 40px 32px; }
     .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
     .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 10px; background: linear-gradient(135deg, var(--gold-dk), var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -201,6 +248,15 @@
   </style>
 </head>
 <body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce-bar">
+  <span>🚚 Free UK Delivery on orders over £50</span>
+  <span class="announce-sep">·</span>
+  <span>🏆 Hand-crafted in London</span>
+  <span class="announce-sep">·</span>
+  <span>⭐ 10-Year Print Guarantee</span>
+</div>
 
 <nav>
   <a class="nav-brand" href="/">ONJJEM</a>
@@ -220,6 +276,29 @@
     <span class="shop-trust-badge">⭐ 10-Year Print Guarantee</span>
   </div>
   <p class="shop-desc">Your AI-restored photograph transformed into museum-quality prints, luxury canvases and heirloom keepsakes — every piece crafted to the highest standard by our London master artisans and delivered to your door.</p>
+</div>
+
+<!-- LIFESTYLE HERO -->
+<div class="lifestyle-hero">
+  <div class="lifestyle-hero-inner">
+    <div class="lifestyle-hero-text">
+      <div class="eyebrow">✦ &nbsp;The ONJJEM Difference</div>
+      <h2>Every Gift Begins With Your Photograph</h2>
+      <p>We restore your faded, blurry or black-and-white family photos to cinematic quality — then transform them into museum-grade prints, silk cushions, fine bone china, heritage jigsaws and luxury keepsakes. Each piece is unique to you, made by hand in London.</p>
+      <a href="#anniversaries" class="lifestyle-hero-cta">Explore the Collection ↓</a>
+    </div>
+    <div class="lifestyle-hero-imgs">
+      <div class="lifestyle-hero-img">
+        <img src="/assets/product-cushion.png" alt="Heritage photo cushion" loading="lazy" />
+      </div>
+      <div class="lifestyle-hero-img">
+        <img src="/assets/product-mug.png" alt="Heritage photo mug" loading="lazy" />
+      </div>
+      <div class="lifestyle-hero-img">
+        <img src="/assets/product-jigsaw.png" alt="Heritage jigsaw" loading="lazy" />
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- CATEGORY TABS -->
@@ -246,6 +325,29 @@
     <a class="cat-tab" href="#fashion">👒 Fashion &amp; Accessories</a>
     <a class="cat-tab" href="#jewellery">💍 Jewellery</a>
     <a class="cat-tab" href="#presentation">🎀 Grand Presentation</a>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how-strip">
+  <div class="how-strip-inner">
+    <div class="how-step">
+      <div class="how-step-num">📸</div>
+      <div class="how-step-title">Send Your Photo</div>
+      <div class="how-step-sub">Order first, then simply email us your restored photo</div>
+    </div>
+    <div class="how-arrow">›</div>
+    <div class="how-step">
+      <div class="how-step-num">🎨</div>
+      <div class="how-step-title">We Craft It</div>
+      <div class="how-step-sub">Our London artisans print and handcraft your keepsake in 3–5 days</div>
+    </div>
+    <div class="how-arrow">›</div>
+    <div class="how-step">
+      <div class="how-step-num">📦</div>
+      <div class="how-step-title">Delivered to You</div>
+      <div class="how-step-sub">Sent in luxury gift-ready packaging with tracked UK delivery</div>
+    </div>
   </div>
 </div>
 
@@ -2394,6 +2496,9 @@
   <div class="modal">
     <button class="modal-close" onclick="closeProdModal()">✕</button>
     <div class="gold-bar" style="margin:-36px -36px 24px;"></div>
+    <div class="modal-img" id="modalImg" style="display:none;">
+      <img id="modalImgEl" src="" alt="" />
+    </div>
     <span class="modal-icon" id="modalIcon">🖼</span>
     <div class="modal-title" id="modalTitle">Product Name</div>
     <p class="modal-sub" id="modalDesc">Description</p>
@@ -2401,16 +2506,17 @@
     <div class="modal-info">
       <span class="modal-info-icon">📧</span>
       <div class="modal-info-text">
-        <strong>How it works:</strong> After payment you'll receive a confirmation email. Simply reply with your restored photo and we'll print and dispatch your order within 3–5 working days. <strong>No upload required at checkout.</strong> UK tracked delivery £6.99 added at checkout. <em>Rugs include delivery in their price.</em>
+        <strong>How it works:</strong> Order securely, then simply email us your restored photo. We print and dispatch within 3–5 working days. <strong>No upload needed at checkout.</strong> UK tracked delivery £6.99 added at checkout.
       </div>
     </div>
     <div class="modal-info" style="background:rgba(201,150,12,0.06);border-color:rgba(201,150,12,0.2)">
       <span class="modal-info-icon">🎁</span>
       <div class="modal-info-text">
-        <strong>Deluxe Gift Wrapping — £5.99:</strong> Luxury tissue paper, satin ribbon &amp; gift box. Just mention it when you reply with your photo and we'll add it to your order.
+        <strong>Deluxe Gift Wrapping — £5.99:</strong> Luxury tissue, satin ribbon &amp; gift box. Just mention it when you send your photo.
       </div>
     </div>
-    <button class="modal-btn" id="modalOrderBtn" onclick="proceedToCheckout()">🔒 &nbsp;Proceed to Secure Checkout</button>
+    <button class="modal-btn" id="modalOrderBtn" onclick="proceedToCheckout()">🛍️ &nbsp;Buy Now on Our Shop</button>
+    <a class="modal-whatsapp" id="modalWhatsApp" href="#" onclick="openWhatsApp(event)">💬 &nbsp;Order via WhatsApp</a>
     <span class="modal-cancel" onclick="closeProdModal()">Cancel</span>
   </div>
 </div>
@@ -2472,29 +2578,29 @@ const SHOPIFY_PRODUCTS = {
 
 // Product images keyed by SKU prefix pattern
 const PRODUCT_IMAGES = {
-  cushion:    'assets/product-cushion.png',
-  blanket:    'assets/product-cushion.png',
-  mug:        'assets/product-mug.png',
-  jigsaw:     'assets/product-jigsaw.png',
-  print:      'assets/product-fine-art-print.png',
-  mural:      'assets/product-wall-mural.png',
-  canvas:     'assets/product-canvas-print.png',
-  tapestry:   'assets/product-canvas-print.png',
-  'tea-towel':'assets/product-tea-towel.png',
-  calendar:   'assets/product-tea-towel.png',
-  candle:     'assets/product-gift-collection.png',
-  jubilee:    'assets/product-gift-collection.png',
-  anniv:      'assets/product-gift-collection.png',
+  cushion:    '/assets/product-cushion.png',
+  blanket:    '/assets/product-cushion.png',
+  mug:        '/assets/product-mug.png',
+  jigsaw:     '/assets/product-jigsaw.png',
+  print:      '/assets/product-fine-art-print.png',
+  mural:      '/assets/product-wall-mural.png',
+  canvas:     '/assets/product-canvas-print.png',
+  tapestry:   '/assets/product-canvas-print.png',
+  'tea-towel':'/assets/product-tea-towel.png',
+  calendar:   '/assets/product-tea-towel.png',
+  candle:     '/assets/product-gift-collection.png',
+  jubilee:    '/assets/product-gift-collection.png',
+  anniv:      '/assets/product-gift-collection.png',
 };
 
 function getProductImage(sku) {
   for (const [prefix, src] of Object.entries(PRODUCT_IMAGES)) {
     if (sku && sku.startsWith(prefix)) return src;
   }
-  return 'assets/product-gift-collection.png';
+  return '/assets/product-gift-collection.png';
 }
 
-// Replace emoji placeholders with real images on load
+// Replace emoji placeholders with real images on load — wrapped in zoom-capable div
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[onclick*="openProdModal"]').forEach(card => {
     const match = card.getAttribute('onclick').match(/openProdModal\('([^']+)'/);
@@ -2502,12 +2608,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const sku = match[1];
     const ph = card.querySelector('.prod-img-placeholder');
     if (ph) {
+      const wrap = document.createElement('div');
+      wrap.className = 'prod-img-wrap';
       const img = document.createElement('img');
-      img.src = getProductImage(sku);
       img.alt = '';
-      img.style.cssText = 'width:100%;aspect-ratio:inherit;object-fit:cover;display:block;';
-      ph.innerHTML = '';
-      ph.appendChild(img);
+      img.loading = 'lazy';
+      img.onload = () => { wrap.style.background = 'none'; };
+      img.src = getProductImage(sku);
+      wrap.appendChild(img);
+      ph.replaceWith(wrap);
     }
   });
 });
@@ -2520,11 +2629,31 @@ function openProdModal(sku, name, icon, desc, price) {
   document.getElementById('modalDesc').textContent  = desc;
   document.getElementById('modalPrice').innerHTML   = '£' + price + ' <small>one-time</small>';
   document.getElementById('modalOrderBtn').disabled = false;
+
+  // Show product image in modal
+  const imgSrc = getProductImage(sku);
+  const modalImg = document.getElementById('modalImg');
+  const modalImgEl = document.getElementById('modalImgEl');
+  if (imgSrc) {
+    modalImgEl.src = imgSrc;
+    modalImgEl.alt = name;
+    modalImg.style.display = 'block';
+  } else {
+    modalImg.style.display = 'none';
+  }
+
   const isShopify = !!SHOPIFY_PRODUCTS[sku];
   document.getElementById('modalOrderBtn').innerHTML = isShopify
     ? '🛍️ &nbsp;Buy Now on Our Shop'
     : '✉ &nbsp;Email Us to Order';
   document.getElementById('prodModal').classList.add('open');
+}
+
+function openWhatsApp(e) {
+  e.preventDefault();
+  const msg = encodeURIComponent('Hi ONJJEM! I\'d like to order: ' + (currentName || currentSku) + '. Please can you confirm the next steps?');
+  window.open('https://wa.me/447700000000?text=' + msg, '_blank');
+  closeProdModal();
 }
 function closeProdModal() {
   document.getElementById('prodModal').classList.remove('open');
