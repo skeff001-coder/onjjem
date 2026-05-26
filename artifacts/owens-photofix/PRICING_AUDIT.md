@@ -15,9 +15,8 @@ MUST be kept in sync by hand. Period strings such as "/month", "/year",
 
 | Plan                    | Price        | Declared in listing | Apple-safe |
 | ----------------------- | ------------ | ------------------- | ---------- |
-| One Photo Enhancement   | £1.99        | ✓ consumable        | ✓          |
+| One Photo Enhancement   | £1.49        | ✓ consumable        | ✓          |
 | Monthly Unlimited       | £12.99 / mo  | ✓ auto-renew sub    | ✓          |
-| Annual Unlimited        | £24.99 / yr  | ✓ auto-renew sub    | ✓          |
 
 The previously-shown 6-month £19.99 tier was removed from `EnhancementPaywall`
 because it was NOT declared as an IAP — Apple would reject. ProPaywall's
@@ -78,7 +77,7 @@ of typical categories:
 
 ## Apple submission checklist
 
-- [x] In-app prices match declared IAPs (£1.49 / £11.99 / £24.99)
+- [x] In-app prices match declared IAPs (£1.49 / £12.99)
 - [x] No undeclared paywall tiers (6-month removed)
 - [x] All paywalls use the shared `PRICING` source
 - [x] Subscription auto-renew terms shown on every sub paywall
