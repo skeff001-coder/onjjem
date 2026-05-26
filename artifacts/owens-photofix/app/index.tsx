@@ -480,6 +480,7 @@ export default function HomeScreen() {
       : originalUri;
 
   const pickImage = async () => {
+    try {
     const permission =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -490,7 +491,7 @@ export default function HomeScreen() {
       if (!permission.canAskAgain) {
         Alert.alert(
           "Photos Access Blocked",
-          "ONJJEM needs access to your photo library. Please go to iPhone Settings → Privacy → Photos → ONJJEM and choose 'All Photos'.",
+          "ONJJEM needs access to your photo library. Please go to iPhone Settings → Privacy & Security → Photos → ONJJEM and choose 'All Photos'.",
           [
             { text: "Open Settings", onPress: () => Linking.openSettings() },
             { text: "Cancel", style: "cancel" },
@@ -510,7 +511,7 @@ export default function HomeScreen() {
       allowsEditing: false,
       allowsMultipleSelection: true,
       quality: 0.92,
-      base64: true,
+      base64: false,
     });
 
     // ── Multi-select: start batch flow ───────────────────────────────────────
@@ -564,7 +565,7 @@ export default function HomeScreen() {
 
       const commitPhoto = async () => {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        originalBase64Ref.current = asset.base64 ?? null;
+        originalBase64Ref.current = null; // read from file URI at process time
         setOriginalUri(asset.uri);
         setResultBase64(null);
         setResultLocalUri(null);
@@ -599,6 +600,10 @@ export default function HomeScreen() {
       }
 
       await commitPhoto();
+    }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Could not open photo library";
+      Alert.alert("Unable to Open Photos", msg, [{ text: "OK" }]);
     }
   };
 
