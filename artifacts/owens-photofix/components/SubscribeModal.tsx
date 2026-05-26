@@ -114,7 +114,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
       label: "Annual",
       price: annualPackage?.product.priceString ?? PRICING.annual.amount,
       period: "per year",
-      desc: "Everything in monthly, all year. Save over 80%.",
+      desc: "Everything in monthly, all year. Save over 60%.",
       color: "#27AE60",
       icon: "star" as const,
       badge: "BEST VALUE",
@@ -150,7 +150,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
       ? ["Full HD quality output", "All 6 modes", "No watermark"]
       : purchasedPlan === "monthly"
       ? ["Unlimited HD photos", "All 6 modes combined", "Cancel anytime"]
-      : ["Unlimited HD photos", "All 6 modes combined", "Save over 80%"];
+      : ["Unlimited HD photos", "All 6 modes combined", "Save over 60%"];
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>

@@ -64,7 +64,7 @@ const PLANS = [
     label: "Annual",
     price: PRICING.annual.amount,
     period: "/year",
-    saving: "Save 83%",
+    saving: "Save 62%",
     accent: "#27AE60",
     tagline: "The deal of the decade — every quality word you can think of, for one incredible price",
     features: ANNUAL_FEATURES,

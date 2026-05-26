@@ -12,7 +12,7 @@ export const PRICING = {
     shortLabel: "Start Monthly",
   },
   annual: {
-    amount: "£24.99",
+    amount: "£53.99",
     period: "/year",
     planName: "Annual Unlimited",
     shortLabel: "Start Annual",
