@@ -1,0 +1,3 @@
+- [EAS release pipeline](eas-release-pipeline.md) — EAS_NO_VCS=1 is required; ASC key must be written from env secret; release script handles this automatically.
+- [Shop links vs Shopify](shop-navigation.md) — onjjem-website.html shop links must point to /shop (our page), not shop.onjjem.com (Shopify).
+- [ASC key storage format](asc-key-format.md) — ASC_API_KEY_P8 secret is stored with newlines replaced by spaces; extract header/body/footer separately before restoring newlines.

@@ -2,21 +2,23 @@
 /**
  * Full iOS release pipeline:
  *   1. Bump the semver version + buildNumber in app.json
- *   2. Copy the artifact to /tmp (avoids Replit's large workspace + git restrictions)
+ *   2. Copy the artifact to /tmp (avoids Replit's large workspace)
  *   3. Generate a standalone package.json (catalog: resolved, workspace: deps removed)
- *   4. Init a fresh git repo in /tmp so EAS can archive the project
- *   5. EAS build (production, non-interactive) — captures build URL
- *   6. EAS submit (production, non-interactive)
- *   7. Send a push notification via ntfy.sh on success OR failure
- *   8. Clean up the /tmp directory
+ *   4. EAS build (production, non-interactive, EAS_NO_VCS=1) — captures build URL
+ *   5. EAS submit (production, non-interactive)
+ *   6. Send a push notification via ntfy.sh on success OR failure
+ *   7. Clean up the /tmp directory
+ *
+ * Note: EAS_NO_VCS=1 is set automatically — no git repo is needed in /tmp.
+ * EAS uses a shallow file copy instead of git archive to upload source.
  *
  * Flags:
  *   --preview   Read-only sanity check: shows the version that would be published,
  *               the list of files that would be synced, and any missing env vars.
  *               No files are created or modified. Use this before committing to a release.
- *   --dry-run   Run Steps 1-4 only (version bump, rsync copy, standalone package.json,
- *               git init), print the resolved package.json to stdout, then exit without
- *               calling EAS. Useful for verifying the build setup without spending credits.
+ *   --dry-run   Run Steps 1-3 only (version bump, copy to /tmp, standalone package.json),
+ *               print the resolved package.json to stdout, then exit without calling EAS.
+ *               Useful for verifying the build setup without spending credits.
  *   --minor     Bump the minor version instead of the default patch bump.
  *   --major     Bump the major version instead of the default patch bump.
  *   --yes       Skip all interactive prompts (the "Press Enter to continue" pause after
@@ -117,12 +119,13 @@ function notify(title, message, { priority = "default", tags = [] } = {}) {
 
 // ── Process runner ───────────────────────────────────────────────────────────
 
-function runCapture(cmd, args, cwd) {
+function runCapture(cmd, args, cwd, extraEnv = {}) {
   const result = spawnSync(cmd, args, {
     cwd,
     stdio: ["inherit", "pipe", "pipe"],
     shell: true,
     encoding: "utf8",
+    env: { ...process.env, ...extraEnv },
   });
 
   const out = result.stdout ?? "";
@@ -608,36 +611,25 @@ async function main() {
     });
     console.log("Dependencies installed.");
 
-    // ── Step 4: initialise git repo ────────────────────────────────────────────
-    console.log("\n=== Step 4: initialise git repo in /tmp ===");
-    execSync("git init && git add -A && git commit -m 'release'", {
-      cwd: tmpDir,
-      stdio: "inherit",
-      env: {
-        ...process.env,
-        GIT_AUTHOR_NAME: "release-script",
-        GIT_AUTHOR_EMAIL: "release@local",
-        GIT_COMMITTER_NAME: "release-script",
-        GIT_COMMITTER_EMAIL: "release@local",
-      },
-    });
-    console.log("Git repo initialised.");
-
     // ── Dry-run exit ───────────────────────────────────────────────────────────
     if (DRY_RUN) {
-      console.log("\n=== DRY RUN — Steps 1-4 complete. Resolved package.json: ===");
+      console.log("\n=== DRY RUN — Steps 1-3 complete. Resolved package.json: ===");
       const resolvedPkg = fs.readFileSync(path.join(tmpDir, "package.json"), "utf8");
       console.log(resolvedPkg);
       console.log("=== DRY RUN complete — EAS build/submit skipped. ===\n");
       return;
     }
 
-    // ── Step 5: EAS build ──────────────────────────────────────────────────────
-    console.log("\n=== Step 5: EAS build ===");
+    // ── Step 4: EAS build ──────────────────────────────────────────────────────
+    // EAS_NO_VCS=1 tells EAS CLI to use a shallow file copy instead of a git
+    // archive. This is required in the Replit environment where git commits are
+    // restricted to the workspace main agent.
+    console.log("\n=== Step 4: EAS build ===");
     const { status: buildStatus, combined: buildOutput } = runCapture(
       "eas",
       ["build", "--platform", "ios", "--profile", "production", "--non-interactive"],
       tmpDir,
+      { EAS_NO_VCS: "1" },
     );
 
     const buildUrl = extractBuildUrl(buildOutput);
@@ -651,14 +643,25 @@ async function main() {
       process.exit(buildStatus);
     }
 
-    // ── Step 6: EAS submit ─────────────────────────────────────────────────────
+    // ── Step 5: EAS submit ─────────────────────────────────────────────────────
+    // Write the ASC API key from the ASC_API_KEY_P8 environment secret to
+    // /tmp/asc_key.p8 (the path referenced in eas.json). This must happen before
+    // EAS submit so the submit step can authenticate with Apple.
+    console.log("\n=== Step 5: EAS submit ===");
+    const ascKeyContent = process.env.ASC_API_KEY_P8;
+    if (ascKeyContent) {
+      fs.writeFileSync("/tmp/asc_key.p8", ascKeyContent, "utf8");
+      console.log("Wrote /tmp/asc_key.p8 from ASC_API_KEY_P8 secret.");
+    } else {
+      console.warn("[warn] ASC_API_KEY_P8 env var not set — /tmp/asc_key.p8 may be missing.");
+    }
     // Run submit from ARTIFACT_DIR (not tmpDir) so the EAS project context is
     // correct and --latest picks up the build we just triggered.
-    console.log("\n=== Step 6: EAS submit ===");
     const { status: submitStatus, combined: submitOutput } = runCapture(
       "eas",
       ["submit", "--platform", "ios", "--profile", "production", "--non-interactive", "--latest"],
       ARTIFACT_DIR,
+      { EAS_NO_VCS: "1" },
     );
 
     if (submitStatus !== 0) {

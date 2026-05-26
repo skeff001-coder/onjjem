@@ -19,9 +19,13 @@ pnpm --filter @workspace/owens-photofix run release:ios
 
 This automatically bumps the **patch** version and **buildNumber** in `app.json`
 (e.g. version 1.0.0 → 1.0.1, buildNumber 9 → 10), copies the artifact to a clean `/tmp`
-directory (avoiding Replit's large workspace and git restrictions), then chains
-`eas build --platform ios --profile production --non-interactive` followed by
-`eas submit --platform ios --profile production --non-interactive`.
+directory, generates a standalone `package.json` (resolving pnpm catalog entries), runs
+`npm install`, then chains `eas build --platform ios --profile production --non-interactive`
+followed by `eas submit --platform ios --profile production --non-interactive`.
+
+**No git required** — the script sets `EAS_NO_VCS=1` so EAS uses a shallow file copy
+instead of a git archive. This is necessary because Replit restricts git commits in the
+agent environment.
 
 Three release variants are available depending on the scope of the release:
 
