@@ -10,7 +10,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "release:ios": "node scripts/release-ios.js",
     "release:ios:minor": "node scripts/release-ios.js --minor",
-    "release:ios:major": "node scripts/release-ios.js --major"
+    "release:ios:major": "node scripts/release-ios.js --major",
+    "check:pricing": "node scripts/check-pricing-docs.mjs"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
