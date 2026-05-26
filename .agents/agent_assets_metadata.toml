@@ -545,3 +545,9 @@ id = "A47GfWJf8oqwGnESqkzmP"
 uri = "file://artifacts/owens-photofix/assets/SubscriptionKey_LKZCCH49F7.tar.gz"
 type = "unspecified"
 title = "App Store Connect P8 Key (extract to get .p8 file)"
+
+[[outputs]]
+id = "Ju4s4rfN8A2h9vYAgTwVz"
+uri = "file://attached_assets/product_images.tar.gz"
+type = "unspecified"
+title = "All 50 Product Images (tar.gz)"
