@@ -11,6 +11,12 @@ export const PRICING = {
     planName: "Monthly Unlimited",
     shortLabel: "Start Monthly",
   },
+  annual: {
+    amount: "£24.99",
+    period: "/year",
+    planName: "Annual Unlimited",
+    shortLabel: "Start Annual",
+  },
   bagsOfLove: {
     masterPrintLab: "Bags of Love",
     shipping: "Free UK delivery",
