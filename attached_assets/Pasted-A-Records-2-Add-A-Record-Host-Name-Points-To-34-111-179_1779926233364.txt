@@ -1,0 +1,73 @@
+A Records (2) 
+ Add A Record
+Host Name	Points To	
+34.111.179.208	
+Edit Remove
+34.111.179.208	
+Edit Remove
+AAAA Records (0) 
+ Add AAAA Record
+Host Name	Points To	
+There are currently no AAAA records
+The AAAA record is a version of the A record for IPv6, the new generation of Internet Protocol introduced to cater for the diminishing number of unused IPv4 addresses.
+
+ Add AAAA Record
+
+CNAME Records (4) 
+ Add CNAME Record
+Host Name	Points To	
+livemail1._domainkey	livemail1._domainkey.1405247.dkim.livemail.co.uk	
+Edit Remove
+livemail2._domainkey	livemail2._domainkey.1405247.dkim.livemail.co.uk	
+Edit Remove
+livemail3._domainkey	livemail3._domainkey.1405247.dkim.livemail.co.uk	
+Edit Remove
+livemail4._domainkey	livemail4._domainkey.1405247.dkim.livemail.co.uk	
+Edit Remove
+ALIAS Records (0) 
+ Add ALIAS Record
+Points To	
+There are currently no ALIAS records
+ALIAS records provide CNAME-like aliases from one domain name to another, on your apex (blank host) domain. For example, you could create an alias from your domain to 'anotherdomain.com'.
+
+ Add ALIAS Record
+
+MX Records (1) 
+ Add MX Record
+Host Name	Points To	Priority	
+mailserver.livemail.co.uk	10	
+Edit Remove
+SRV Records (0) 
+ Add SRV Record
+Host Name	Points To	Port	Weight	Priority	
+There are currently no SRV records
+Service (SRV) records allow you to specify the locations and port numbers of different services such as SIP and XMPP.
+
+ Add SRV Record
+
+TXT Records (9) 
+ Add TXT Record
+Host Name	Value	
+replit-verify=66b36b09-174f-4a92-9753-24f8cec1d5c6	
+Edit Remove
+replit-verify=66b36b09-174f-4a92-9753-24f8cec1d5c6	
+Edit Remove
+v=spf1 mx a include:_spf.livemail.co.uk ~all	
+Edit Remove
+_dmarc	v=DMARC1; p=none;	
+Edit Remove
+www	replit-verify=66b36b09-174f-4a92-9753-24f8cec1d5c6	
+Edit Remove
+shopify_verification_shop	MK9SRWBWPFU6EHHL	
+Edit Remove
+replit-verify=66b36b09-174f-4a92-9753-24f8cec1d5c6	
+Edit Remove
+shopify_verification	J5NFL1C3	
+Edit Remove
+shopify_verification	J5NFL1C3	
+Edit Remove
+CAA Records (0) 
+ Add CAA Record
+Host Name	Flags	Tag	Points To	
+There are currently no CAA records
+A Certification Authority Authorisation (CAA) record is used to specify which certificate authorities (CAs) are allowed to issue certificates for a domain.
