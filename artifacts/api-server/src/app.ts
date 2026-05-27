@@ -54,6 +54,10 @@ const PRIVACY_HTML = `<!DOCTYPE html>
   <li>We do not use your photos for training any AI or machine-learning model.</li>
 </ul>
 
+<h2>Face Data</h2>
+<p>Photos you upload may contain faces. <strong>ONJJEM does not use face recognition, face detection, or any biometric analysis.</strong> Your photo is processed as a complete image for visual enhancement only (sharpening, colour restoration, noise removal). No face-specific data is extracted, stored, or transmitted separately from the photo.</p>
+<p><strong>Face data is NOT retained.</strong> The entire photo is processed as a single image file and immediately discarded after processing is complete. No third-party services receive, process, or store your photos or any face data contained within them.</p>
+
 <h2>Data Retention</h2>
 <p>Photo data is held in memory during processing only and is not written to disk or retained after the result is returned to your device. Order records are retained by Bags of Love Ltd in accordance with their privacy policy. Support emails are retained for up to 2 years.</p>
 <h2>Your Rights</h2>

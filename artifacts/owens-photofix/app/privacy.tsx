@@ -31,6 +31,10 @@ const SECTIONS = [
     body: "To enhance your photos, the image you select is transmitted over an encrypted HTTPS connection to ONJJEM's AI processing server (photo-fix-ai.replit.app), operated by ONJJEM and hosted in the United Kingdom.\n\nNo third-party AI companies receive your photo. The processing server applies AI-based image enhancement (sharpening, colour restoration, noise removal, etc.) and immediately returns the result to your device. Your photo is permanently deleted from the server as soon as processing is complete — it is never stored, retained, or shared.\n\nYour permission is requested before your photo is sent for the first time. You may withdraw consent at any time by uninstalling the app.",
   },
   {
+    title: "Face Data",
+    body: "Photos you upload may contain faces. ONJJEM does not use face recognition, face detection, or any biometric analysis. Your photo is processed as a complete image for visual enhancement only (sharpening, colour restoration, noise removal).\n\nFace data is NOT retained. No face-specific data is extracted, stored, or transmitted separately from the photo. The entire photo is processed as a single image file and immediately discarded after processing is complete.\n\nWe do not share face data with any third parties. No third-party services receive, process, or store your photos or any face data contained within them.",
+  },
+  {
     title: "Data Sharing",
     body: "We do not sell, rent, or share your personal data or photos with any third parties.\n\nThe only data transmission is your selected photo being sent to ONJJEM's own secure processing server, over an encrypted HTTPS connection. No external or third-party AI services receive your data.",
   },
