@@ -55,12 +55,4 @@ console.log(`Build number bumped: ${currentBuild} → ${nextBuild}`);
 
 fs.writeFileSync(APP_JSON, JSON.stringify(config, null, 2) + '\n', 'utf8');
 
-// ── optional git commit ──────────────────────────────────────────────────────
-try {
-  execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
-  execSync(`git add "${APP_JSON}"`, { stdio: 'inherit' });
-  execSync(`git commit -m "chore: bump app version to ${next} (build ${nextBuild})"`, { stdio: 'inherit' });
-  console.log(`Committed version bump to ${next} (build ${nextBuild})`);
-} catch {
-  console.warn(`bump-version: git commit skipped (git unavailable or blocked — file updated on disk)`);
-}
+// Git commit skipped — Replit environment manages version control via checkpoints.

@@ -63,6 +63,10 @@ const DRY_RUN = process.argv.includes("--dry-run");
 // When --preview is passed, nothing is written — only a release summary is printed.
 const PREVIEW = process.argv.includes("--preview");
 
+// When --skip-bump is passed, Step 1 (version bump) is skipped entirely.
+// Use this when the version has already been bumped in a previous run.
+const SKIP_BUMP = process.argv.includes("--skip-bump");
+
 // When --yes / --no-confirm is passed (or stdin is not a TTY), skip all prompts.
 const YES =
   process.argv.includes("--yes") ||
@@ -557,19 +561,23 @@ async function main() {
     }
 
     // ── Step 1: bump version ───────────────────────────────────────────────────
-    console.log("\n=== Step 1: bump version ===");
-    const bumpCmd = BUMP_FLAG
-      ? `node scripts/bump-version.js ${BUMP_FLAG}`
-      : "node scripts/bump-version.js";
-    try {
-      execSync(bumpCmd, { cwd: ARTIFACT_DIR, stdio: "inherit" });
-    } catch (err) {
-      await notify(
-        `${APP_NAME} — Release failed ❌`,
-        `Version bump failed before build started.\n\n${trimError(String(err))}`,
-        { priority: "high", tags: ["rotating_light"] },
-      );
-      process.exit(1);
+    if (SKIP_BUMP) {
+      console.log("\n=== Step 1: bump version (SKIPPED — --skip-bump flag set) ===");
+    } else {
+      console.log("\n=== Step 1: bump version ===");
+      const bumpCmd = BUMP_FLAG
+        ? `node scripts/bump-version.js ${BUMP_FLAG}`
+        : "node scripts/bump-version.js";
+      try {
+        execSync(bumpCmd, { cwd: ARTIFACT_DIR, stdio: "inherit" });
+      } catch (err) {
+        await notify(
+          `${APP_NAME} — Release failed ❌`,
+          `Version bump failed before build started.\n\n${trimError(String(err))}`,
+          { priority: "high", tags: ["rotating_light"] },
+        );
+        process.exit(1);
+      }
     }
 
     // ── Step 2: create isolated /tmp build directory ───────────────────────────
