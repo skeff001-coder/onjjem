@@ -15,11 +15,11 @@ async function applySharpen(buf: Buffer): Promise<Buffer> {
 }
 
 async function applyBrighten(buf: Buffer): Promise<Buffer> {
-  // Auto-levels first then lift midtones
+  // Auto-levels first then lift midtones, rein in highlights
   return sharp(buf)
     .normalise({ lower: 1, upper: 99 })
     .modulate({ brightness: 1.18 })
-    .gamma(0.82)
+    .modulate({ brightness: 0.88 })
     .toBuffer();
 }
 
@@ -41,7 +41,7 @@ async function applyRestore(buf: Buffer): Promise<Buffer> {
   return sharp(stage1)
     .sharpen({ sigma: 1.0, m1: 1.0, m2: 2.0 })
     .modulate({ brightness: 1.05, saturation: 1.15 })
-    .gamma(0.95)
+    .modulate({ brightness: 0.96 })
     // Warm the shadows slightly
     .linear([1.04, 1.0, 0.96], [4, 0, -4])
     .toBuffer();
@@ -52,7 +52,7 @@ async function applyVivid(buf: Buffer): Promise<Buffer> {
   return sharp(buf)
     .normalise({ lower: 1, upper: 99 })
     .modulate({ saturation: 1.65, brightness: 1.05 })
-    .gamma(0.88)
+    .modulate({ brightness: 0.92 })
     // Boost reds/warmth, gentle cyan pull
     .linear([1.08, 1.0, 0.93], [6, 0, -6])
     .toBuffer();
@@ -89,7 +89,7 @@ async function applyColourize(buf: Buffer): Promise<Buffer> {
   return sharp(buf)
     .normalise({ lower: 2, upper: 98 })
     .modulate({ saturation: 1.4, brightness: 1.03 })
-    .gamma(0.97)
+    .modulate({ brightness: 0.98 })
     .linear([1.04, 1.0, 0.97], [3, 0, -3])
     .toBuffer();
 }
@@ -143,7 +143,7 @@ async function makeFreePreview(inputBuffer: Buffer, modes: EnhancementMode[]): P
         buf = await sharp(buf).sharpen({ sigma: 0.7, m1: 0.8, m2: 1.0 }).toBuffer();
         break;
       case "brighten":
-        buf = await sharp(buf).modulate({ brightness: 1.08 }).gamma(0.93).toBuffer();
+        buf = await sharp(buf).modulate({ brightness: 1.08 }).modulate({ brightness: 0.95 }).toBuffer();
         break;
       case "denoise":
         buf = await sharp(buf).median(3).toBuffer();
