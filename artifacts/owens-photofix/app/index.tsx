@@ -1524,7 +1524,15 @@ export default function HomeScreen() {
                 </>
               ) : (
                 <>
-                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]} onPress={() => Alert.alert("Free Sample", "Your first photo enhancement is completely free — no payment needed. Just select an enhancement below and tap Enhance My Photo.")} activeOpacity={0.8}>
+                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]} onPress={() => {
+                    if (selectedModes.size === 0) {
+                      Alert.alert("Pick an Enhancement", "Select one of the enhancement types below, then tap Enhance Free.");
+                    } else {
+                      appState === "batch-selected"
+                        ? void handleProcessWithConsent("batch")
+                        : void handleProcessWithConsent("single");
+                    }
+                  }} activeOpacity={0.8}>
                     <Ionicons name="sparkles" size={20} color="#27AE60" />
                     <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>Free</Text>
                     <Text style={[s.pricingTileLabel, { color: "rgba(39,174,96,0.7)" }]}>1 sample</Text>
@@ -1633,18 +1641,18 @@ export default function HomeScreen() {
             >
               <LinearGradient
                 colors={hasUsedFreeTrial
-                  ? ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]
-                  : ["#A67C00", "#C9960C", "#E8B422", "#C9960C"]}
+                  ? ["#A67C00", "#C9960C", "#E8B422", "#C9960C"]
+                  : ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]}
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                 style={s.processBtnGradient}
               >
-                <Ionicons name={hasUsedFreeTrial ? "infinite" : "color-wand"} size={24} color="#fff" />
+                <Ionicons name={hasUsedFreeTrial ? "infinite" : "sparkles"} size={24} color="#fff" />
                 <Text style={s.processBtnText}>
                   {hasUsedFreeTrial
                     ? "Subscribe to Enhance — Unlimited"
                     : appState === "batch-selected"
-                      ? `Restore ${batchItems.length} Photos${selectedModes.size > 1 ? ` (${selectedModes.size} effects)` : ""}`
-                      : `Enhance My Photo${selectedModes.size > 1 ? ` (${selectedModes.size})` : ""}`}
+                      ? `Enhance Free — ${batchItems.length} Photos${selectedModes.size > 1 ? ` (${selectedModes.size} effects)` : ""}`
+                      : `Enhance Free${selectedModes.size > 1 ? ` (${selectedModes.size} effects)` : " — First Photo Free"}`}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
