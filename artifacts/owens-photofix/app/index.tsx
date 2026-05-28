@@ -1524,7 +1524,7 @@ export default function HomeScreen() {
                 </>
               ) : (
                 <>
-                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]} onPress={() => Alert.alert("Free Sample", "Your first photo enhancement is completely free — no payment needed. Just select an enhancement below and tap Enhance My Photo.")} activeOpacity={0.8}>
                     <Ionicons name="sparkles" size={20} color="#27AE60" />
                     <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>Free</Text>
                     <Text style={[s.pricingTileLabel, { color: "rgba(39,174,96,0.7)" }]}>1 sample</Text>
