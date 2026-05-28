@@ -140,12 +140,8 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
     );
   }
 
-  // Override displayed prices with live store prices when available
-  const LIVE_PLANS = PLANS.map((p) =>
-    p.id === "monthly"
-      ? { ...p, price: monthlyPackage?.product.priceString ?? p.price }
-      : p,
-  );
+  // Always use PRICING constants to ensure consistent GBP display
+  const LIVE_PLANS = PLANS;
 
   return (
     <View style={s.root}>

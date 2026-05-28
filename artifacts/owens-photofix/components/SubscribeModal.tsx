@@ -91,7 +91,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
     {
       id: "perpic" as Plan,
       label: "One Photo",
-      price: perPhotoPackage?.product.priceString ?? PRICING.perPhoto.amount,
+      price: PRICING.perPhoto.amount,
       period: "per photo",
       desc: "Pay once, enhance one photo at full quality. No subscription.",
       color: "#E8A020",
@@ -101,7 +101,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
     {
       id: "monthly" as Plan,
       label: "Monthly",
-      price: monthlyPackage?.product.priceString ?? PRICING.monthly.amount,
+      price: PRICING.monthly.amount,
       period: "per month",
       desc: "Unlimited full-quality restorations. Cancel anytime.",
       color: "#4A90D9",

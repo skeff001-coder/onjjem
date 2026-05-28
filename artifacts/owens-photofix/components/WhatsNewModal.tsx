@@ -36,10 +36,16 @@ export const CHANGELOG: Record<string, VersionNotes> = {
     headline: "What's New in v1.0.27",
     items: [
       {
-        icon: "sparkles-outline",
-        accent: "#C9960C",
-        title: "Improvements & Bug Fixes",
-        body: "Behind-the-scenes improvements and small fixes to keep your photo restorations running smoothly.",
+        icon: "sparkles",
+        accent: "#27AE60",
+        title: "Free Trial Now Works Properly",
+        body: "Tapping the Free tile now actually enhances your photo — no payment needed. Select an enhancement type, then tap Enhance Free.",
+      },
+      {
+        icon: "cash-outline",
+        accent: "#4A90D9",
+        title: "Prices Now Show in £",
+        body: "All prices are now displayed consistently in pounds throughout the app.",
       },
     ],
   },

@@ -103,9 +103,8 @@ export function ProPaywall({ visible, onClose }: Props) {
   const topPad = Platform.OS === "web" ? Math.max(insets.top, 56) : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom + 16;
 
-  // Use live store price when available; otherwise fall back to display price.
-  const priceLabel =
-    monthlyPackage?.product.priceString ?? PRICING.monthly.amount;
+  // Always use PRICING constant to ensure consistent GBP display.
+  const priceLabel = PRICING.monthly.amount;
   const periodLabel = PRICING.monthly.period;
 
   const handleSubscribe = async () => {
