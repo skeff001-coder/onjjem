@@ -282,7 +282,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
               </TouchableOpacity>
               <Text style={s.footerLinkSep}>·</Text>
               <TouchableOpacity
-                onPress={() => Linking.openURL("https://onjjem.co.uk/privacy")}
+                onPress={() => Linking.openURL("https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/")}
                 activeOpacity={0.7}
                 style={s.footerLinkBtn}
               >

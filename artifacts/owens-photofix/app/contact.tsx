@@ -22,7 +22,7 @@ const DARK = "#1C1A14";
 const MUTED = "#7A6E57";
 
 const BUSINESS_EMAIL = "hello@onjjem.co.uk";
-const PRIVACY_URL = "https://onjjem.co.uk/privacy";
+const PRIVACY_URL = "https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/";
 
 function ContactRow({
   icon,
@@ -146,7 +146,7 @@ export default function ContactScreen() {
           <ContactRow
             icon="shield-checkmark-outline"
             label="Privacy Policy"
-            value="onjjem.co.uk/privacy"
+            value="View our privacy policy"
             sub="How we handle your photos and data"
             onPress={openPrivacy}
             actionLabel="View"

@@ -269,7 +269,7 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
             <View style={s.legalLinks}>
               <Text
                 style={s.legalLink}
-                onPress={() => require("react-native").Linking.openURL("https://onjjem.co.uk/privacy")}
+                onPress={() => require("react-native").Linking.openURL("https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/")}
               >Privacy Policy</Text>
               <Text style={s.legalLinkSep}>·</Text>
               <Text

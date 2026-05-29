@@ -32,6 +32,23 @@ interface VersionNotes {
  * The key must match the version string in app.json exactly.
  */
 export const CHANGELOG: Record<string, VersionNotes> = {
+  "1.0.28": {
+    headline: "What's New in v1.0.28",
+    items: [
+      {
+        icon: "color-wand-outline",
+        accent: "#C9960C",
+        title: "Restore & Colourise Fixed",
+        body: "Fixed an error that could stop photos from being restored or colourised. Every enhancement now works reliably.",
+      },
+      {
+        icon: "shield-checkmark-outline",
+        accent: "#C9960C",
+        title: "Updated Privacy Policy Link",
+        body: "Our privacy policy now opens correctly everywhere in the app.",
+      },
+    ],
+  },
   "1.0.27": {
     headline: "What's New in v1.0.27",
     items: [

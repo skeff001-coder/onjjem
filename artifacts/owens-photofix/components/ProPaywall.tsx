@@ -280,7 +280,7 @@ export function ProPaywall({ visible, onClose }: Props) {
           </Text>
 
           <View style={s.legalLinks}>
-            <TouchableOpacity onPress={() => Linking.openURL("https://onjjem.co.uk/privacy")} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => Linking.openURL("https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/")} activeOpacity={0.7}>
               <Text style={[s.legalLink, { color: colors.mutedForeground }]}>Privacy Policy</Text>
             </TouchableOpacity>
             <Text style={[s.legalLinkSep, { color: colors.mutedForeground }]}>·</Text>
