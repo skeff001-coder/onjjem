@@ -15,3 +15,12 @@ description: How onjjem.com/shop sells physical goods — Contrado POD via Shopi
 **Why:** user is non-technical and believed the whole ~130-item catalogue was already sellable; only the handful synced into Shopify actually are. Do not promise automatic payment/fulfilment for unsynced products.
 
 **How to apply:** before wiring shop buttons, pull `onjjem.myshopify.com/products.json`, match products by name/price, point links at the real handles, keep bespoke items as enquiry, and surface any price mismatches for the user to fix in Contrado/Shopify.
+
+## CRITICAL: Contrado does NOT auto-fulfil custom-customer-photo orders
+- Contrado's Shopify dropship auto-fulfilment only works for **fixed merchant designs** (you upload the artwork once in Contrado; that same design prints for every order). There is **no mechanism** for a customer's uploaded photo to travel with a Shopify order into a Contrado print job automatically.
+- This business prints each customer's own photo, so **every order requires a manual step**: collect the customer's photo (Shopify file-upload app / line-item property), then the merchant logs into Contrado, uploads that photo into the design tool, and places the order. Contrado then prints + ships white-labelled.
+- True 100% hands-off photo personalisation needs a different POD provider that supports automated per-order images (e.g. Printful/Printify/Gelato, often via a personalizer app like Teeinblue) — Contrado is NOT supported by those automated personalizer integrations.
+
+**Why:** user (non-technical) wants a fully automatic "customer pays → it ships, I do nothing" shop. With Contrado that is impossible for photo products; be honest about the unavoidable manual order-placement step so expectations are correct.
+
+**How to apply:** when the user asks to "simplify" or "fully automate" the shop, do NOT promise hands-off fulfilment on Contrado. Offer: (A) keep Contrado quality + minimise the manual step (one Shopify catalogue, auto-attach photo to order, fast fulfilment helper), or (B) switch supplier for true automation. Let the user choose — it's a business/quality/cost tradeoff.
