@@ -2664,30 +2664,32 @@ let currentName = null;
 
 // Map SKUs that exist as real Shopify products to their store URLs
 const SHOPIFY_BASE = 'https://shop.onjjem.com/products/';
+// SKU → real Shopify product handle (verified against onjjem.myshopify.com/products.json).
+// Only products that actually exist in Shopify (synced from Contrado) are listed here;
+// everything else falls back to "Email Us to Order". Murals are sold as bespoke per-m²
+// enquiries on this site, so they intentionally stay email-only.
 const SHOPIFY_PRODUCTS = {
-  'cushion-square-40x40':       'heritage-photo-cushion-40x40cm',
-  'cushion-large-60x60':        'large-luxury-heritage-cushion-60x60cm',
-  'cushion-silk-portrait':      'luxury-silk-heritage-cushion',
-  'mug-classic':                'master-lab-photo-mug',
-  'mug-bone-china':             'fine-bone-china-heritage-mug',
-  'mug-bone-china-single':      'fine-bone-china-heritage-mug',
-  'mug-bone-china-pair':        'fine-bone-china-heritage-mug',
-  'mug-master-lab':             'master-lab-photo-mug',
-  'jigsaw-500':                 'family-legacy-jigsaw-500-pieces',
-  'jigsaw-1000':                'heritage-portrait-jigsaw-1000-pieces',
-  'jigsaw-anniversary-heart':   'anniversary-heart-jigsaw-500-pieces',
-  'jigsaw-heart-500':           'anniversary-heart-jigsaw-500-pieces',
-  'print-a2-portrait':          'classic-a2-heritage-portrait-print',
-  'print-a0-museum':            'a0-museum-heritage-print',
-  'print-panoramic-150':        'massive-panoramic-heritage-print-150cm-wide',
-  'mural-small-1m':             'small-heritage-mural-1m-x-1m',
-  'mural-medium-2m':            'medium-heritage-mural-2m-x-2m',
-  'mural-large-3m':             'large-heritage-mural-3m-x-3m',
-  'mural-statement-4m':         'statement-heritage-mural-4m-x-4m',
-  'tea-towel':                  'heritage-photo-tea-towel',
-  'tapestry-canvas':            'heritage-photo-tapestry-canvas',
-  'candle-scented':             'heritage-glass-scented-candle',
-  'calendar-heritage':          'heritage-photo-calendar',
+  // Cushions
+  'cushion-square-40x40':    'square-cushion',
+  'cushion-large-60x60':     'large-cushion',
+  'cushion-silk-portrait':   'silk-cushion',
+  // Mugs
+  'mug-masterlab-11oz':      'master-lab-mug',
+  'mug-bone-china':          'fine-bone-china-mug',
+  'bone-china-mug':          'fine-bone-china-mug',
+  // Jigsaws
+  'jigsaw-500-standard':     'family-jigsaw',
+  'jigsaw-1000-giant':       'portrait-jigsaw',
+  'jigsaw-heart-500':        'heart-jigsaw',
+  // Prints
+  'print-a2-boutique':       'a2-heritage-portrait',
+  'print-a0-giant':          'a0-museum-print',
+  'print-panoramic-150cm':   'panoramic-print',
+  // Home & gifts
+  'tapestry-medium':         'heritage-tapestry',
+  'towel-heritage-tea':      'heritage-tea-towel',
+  'candle-glass-scented':    'scented-candle',
+  'calendar-heritage-photo': 'photo-calendar',
 };
 
 // Product images keyed by SKU prefix pattern
