@@ -551,3 +551,9 @@ id = "Ju4s4rfN8A2h9vYAgTwVz"
 uri = "file://attached_assets/product_images.tar.gz"
 type = "unspecified"
 title = "All 50 Product Images (tar.gz)"
+
+[[outputs]]
+id = "N2fF5Ef0YeXaTmcRn9GXN"
+uri = "file://exports/onjjem-shop-setup-checklist.md"
+type = "text"
+title = "ONJJEM Shop — Setup Checklist (Shopify + Contrado)"
