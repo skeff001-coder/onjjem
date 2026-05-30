@@ -1,5 +1,5 @@
 import { getStripeSync, getUncachableStripeClient } from "./stripeClient";
-import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/bagsOfLove";
+import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
 import { sendOrderConfirmation, sendAdminNotification } from "./email/mailer";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";

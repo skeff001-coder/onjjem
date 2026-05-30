@@ -128,6 +128,32 @@ export class ObjectStorageService {
     });
   }
 
+  // Upload a buffer to the private object dir and return a publicly-downloadable
+  // signed GET URL. Used to hand the customer's restored photo to a print
+  // provider (e.g. Prodigi) which downloads the image from the URL.
+  async uploadBufferAndGetSignedUrl(
+    buffer: Buffer,
+    opts?: { contentType?: string; ttlSec?: number; prefix?: string },
+  ): Promise<string> {
+    const privateObjectDir = this.getPrivateObjectDir();
+    const objectId = randomUUID();
+    const prefix = opts?.prefix ?? "prodigi";
+    const fullPath = `${privateObjectDir}/${prefix}/${objectId}`;
+    const { bucketName, objectName } = parseObjectPath(fullPath);
+    const bucket = objectStorageClient.bucket(bucketName);
+    const file = bucket.file(objectName);
+    await file.save(buffer, {
+      contentType: opts?.contentType ?? "image/jpeg",
+      resumable: false,
+    });
+    return signObjectURL({
+      bucketName,
+      objectName,
+      method: "GET",
+      ttlSec: opts?.ttlSec ?? 60 * 60 * 24 * 14, // 14 days
+    });
+  }
+
   async getObjectEntityFile(objectPath: string): Promise<File> {
     if (!objectPath.startsWith("/objects/")) {
       throw new ObjectNotFoundError();
@@ -262,6 +288,8 @@ async function signObjectURL({
     );
   }
 
-  const { signed_url: signedURL } = await response.json();
+  const { signed_url: signedURL } = (await response.json()) as {
+    signed_url: string;
+  };
   return signedURL;
 }

@@ -8,6 +8,8 @@ import {
 import { applyEnhancements } from "./process";
 import type { EnhancementMode } from "./process";
 import { storePhoto } from "../webhookHandlers";
+import { db } from "@workspace/db";
+import { sql } from "drizzle-orm";
 
 const router = Router();
 
@@ -86,7 +88,13 @@ router.post("/stripe/verify-process", async (req: Request, res: Response) => {
 // Accepts `sku` (product metadata.sku value) — looks up the real Stripe price ID.
 
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
-  const body = req.body as { sku?: string; photoBase64?: string };
+  const body = req.body as {
+    sku?: string;
+    photoBase64?: string;
+    name?: string;
+    amountPence?: number;
+    currency?: string;
+  };
 
   if (!body.sku) {
     res.status(400).json({ error: "sku is required" });
@@ -96,42 +104,73 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
   try {
     const stripe = await getUncachableStripeClient();
 
-    // Try the search index first (fast). Newly-created products may not be
-    // indexed yet, so fall back to a full paginated list scan if needed.
-    let product: Awaited<ReturnType<typeof stripe.products.retrieve>> | undefined;
+    // Build the checkout line item. Prefer inline pricing (price_data) using the
+    // website's own product name + price — this avoids having to pre-create a
+    // Stripe product/price for every SKU. Fall back to a Stripe product lookup
+    // by metadata.sku if no amount was supplied.
+    let lineItem: {
+      price?: string;
+      price_data?: {
+        currency: string;
+        unit_amount: number;
+        product_data: { name: string; metadata: { sku: string } };
+      };
+      quantity: number;
+    };
 
-    const searchResults = await stripe.products.search({
-      query: `active:"true" AND metadata["sku"]:"${body.sku}"`,
-      limit: 1,
-    });
-    product = searchResults.data[0];
+    if (typeof body.amountPence === "number" && body.amountPence > 0) {
+      lineItem = {
+        price_data: {
+          currency: (body.currency || "gbp").toLowerCase(),
+          unit_amount: Math.round(body.amountPence),
+          product_data: {
+            name: body.name || body.sku,
+            metadata: { sku: body.sku },
+          },
+        },
+        quantity: 1,
+      };
+    } else {
+      // Try the search index first (fast). Newly-created products may not be
+      // indexed yet, so fall back to a full paginated list scan if needed.
+      let product:
+        | Awaited<ReturnType<typeof stripe.products.list>>["data"][number]
+        | undefined;
 
-    if (!product) {
-      // Fallback: page through all active products and match by metadata.sku
-      for await (const p of stripe.products.list({ active: true, limit: 100 })) {
-        if (p.metadata?.sku === body.sku) {
-          product = p;
-          break;
+      const searchResults = await stripe.products.search({
+        query: `active:"true" AND metadata["sku"]:"${body.sku}"`,
+        limit: 1,
+      });
+      product = searchResults.data[0];
+
+      if (!product) {
+        for await (const p of stripe.products.list({ active: true, limit: 100 })) {
+          if (p.metadata?.sku === body.sku) {
+            product = p;
+            break;
+          }
         }
       }
-    }
 
-    if (!product) {
-      res.status(404).json({ error: "Product not found. Please contact orders@onjjem.co.uk." });
-      return;
-    }
+      if (!product) {
+        res.status(404).json({ error: "Product not found. Please contact orders@onjjem.co.uk." });
+        return;
+      }
 
-    const priceList = await stripe.prices.list({
-      product: product.id,
-      active: true,
-      limit: 1,
-    });
+      const priceList = await stripe.prices.list({
+        product: product.id,
+        active: true,
+        limit: 1,
+      });
 
-    const price = priceList.data[0];
+      const price = priceList.data[0];
 
-    if (!price) {
-      res.status(404).json({ error: "No active price for this product. Please contact orders@onjjem.co.uk." });
-      return;
+      if (!price) {
+        res.status(404).json({ error: "No active price for this product. Please contact orders@onjjem.co.uk." });
+        return;
+      }
+
+      lineItem = { price: price.id, quantity: 1 };
     }
 
     // Store the customer's photo so the webhook can retrieve it after payment
@@ -145,7 +184,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: [{ price: price.id, quantity: 1 }],
+      line_items: [lineItem],
       mode: "payment",
       shipping_address_collection: {
         allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK"],
