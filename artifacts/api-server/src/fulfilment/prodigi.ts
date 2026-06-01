@@ -107,6 +107,12 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "mug-11oz": { sku: "GLOBAL-MUG-W",  sizing: "fillPrintArea" },
   "mug-15oz": { sku: "H-MUG-15OZ-W", sizing: "fillPrintArea" },
 
+  // ── Tea Towels ───────────────────────────────────────────────────────────────
+  // SKU prefix confirmed via Prodigi products API (/v4.0/products/H-TEATOWEL).
+  // UK lab: 18.5x27.5" (50x70cm) cotton, £12.00 base. Sandbox returns
+  // NotAvailable (sandbox limitation) but product is valid on live API.
+  "tea-towel": { sku: "H-TEATOWEL", sizing: "fillPrintArea" },
+
   // ── Wooden Coasters ─────────────────────────────────────────────────────────
   // UK lab (H-COAST-*). All 4x4" square with cork underside.
   // Validated against Prodigi live API on 2026-06-01.

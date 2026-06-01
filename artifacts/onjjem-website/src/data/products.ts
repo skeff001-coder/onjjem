@@ -196,6 +196,19 @@ export const products: Product[] = [
   // ── Kitchen & Drinkware ──────────────────────────────────────────────────────
 
   {
+    id: "tea-towels",
+    name: "Tea Towels",
+    description:
+      "Custom all-over printed tea towels made from 100% cotton with hemmed edges and a corner hanging tab. Machine washable and fade-resistant.",
+    image: "/onjjem-website/products/tea-towels.jpg",
+    category: "kitchen",
+    variants: [
+      // Prodigi cost: £12.00 + ~£3.00 shipping (H-TEATOWEL, UK lab, 18.5x27.5")
+      { sku: "tea-towel", label: "Tea Towel (18.5×27.5\")", pricePence: 2499 },
+    ],
+  },
+
+  {
     id: "wooden-coasters",
     name: "Wooden Coasters",
     description:
