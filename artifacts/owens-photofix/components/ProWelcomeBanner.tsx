@@ -110,7 +110,7 @@ export function ProWelcomeBanner({ visible, onDismiss }: Props) {
         <View style={styles.textWrap}>
           <Text style={styles.title}>Welcome to Pro!</Text>
           <Text style={styles.subtitle}>
-            Unlimited restorations, no watermarks
+            Full HD restorations, no watermarks
           </Text>
         </View>
 

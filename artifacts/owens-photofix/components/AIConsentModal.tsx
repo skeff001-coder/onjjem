@@ -72,13 +72,13 @@ export function AIConsentModal({ visible, onAccept, onDecline }: Props) {
               <View style={s.rowText}>
                 <Text style={s.rowTitle}>Who receives it</Text>
                 <Text style={s.rowBody}>
-                  Your photo is sent to and processed entirely on ONJJEM's own server (onjjem.com), operated by ONJJEM, United Kingdom. It is processed using computer vision algorithms running on that server.
+                  Your photo is sent to ONJJEM's processing server (onjjem.com), operated by ONJJEM, United Kingdom. Free-tier previews are processed entirely on our own infrastructure using built-in algorithms. Paid HD enhancements use Replicate AI for advanced AI processing.
                 </Text>
                 <View style={s.highlightBox}>
                   <Ionicons name="checkmark-circle" size={14} color="#27AE60" style={{ marginTop: 1 }} />
                   <Text style={s.highlightText}>
-                    <Text style={s.highlightBold}>No third-party AI service is used.</Text>{" "}
-                    Your photo is never sent to OpenAI, Replicate, Google, or any other external company. Processing happens entirely within ONJJEM's own infrastructure.
+                    <Text style={s.highlightBold}>Your photo is encrypted during transmission.</Text>{" "}
+                    It is permanently deleted from our server as soon as processing is complete. Free previews never leave ONJJEM's own infrastructure. Paid HD processing uses Replicate AI for advanced AI restoration.
                   </Text>
                 </View>
               </View>

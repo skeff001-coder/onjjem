@@ -58,6 +58,7 @@ async function buildAll() {
       "@tensorflow/*",
       "stripe",
       "stripe-replit-sync",
+      "replicate",
       "nodemailer",
       "@prisma/client",
       "@mikro-orm/*",

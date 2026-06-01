@@ -25,13 +25,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, {
-  Defs,
-  LinearGradient as SvgLinear,
-  Path,
-  RadialGradient as SvgRadial,
-  Stop,
-} from "react-native-svg";
 import { useRouter } from "expo-router";
 import { useColors } from "@/hooks/useColors";
 import { PRICING } from "@/lib/pricing";
@@ -55,7 +48,7 @@ import { pruneHistory, saveToHistory } from "@/lib/photoHistory";
 import { PaywallStatsModal } from "@/components/PaywallStatsModal";
 import { ProWelcomeBanner } from "@/components/ProWelcomeBanner";
 
-type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid";
+type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colorize";
 type AppState = "idle" | "selected" | "processing" | "done" | "batch-selected" | "batch-processing" | "batch-done";
 
 type BatchItem = {
@@ -82,6 +75,7 @@ const ENHANCEMENTS: {
   { id: "denoise",   title: "Denoise",   subtitle: "Remove grain\n& film noise",    description: "Cleans up digital noise, grain, and ISO artefacts while preserving fine detail. Ideal for high-ISO shots or scanned film photographs.",                   icon: "water-outline",          accent: "#9B59B6" },
   { id: "restore",   title: "Restore",   subtitle: "Full old photo\nrestoration",   description: "A full-strength treatment for damaged, faded, or scratched old photos. Repairs creases and marks, sharpens faces, and brings lost tones back to life.",    icon: "time-outline",           accent: "#27AE60" },
   { id: "vivid",     title: "Vivid",     subtitle: "Bold colours\n& contrast",      description: "Boosts colour saturation and contrast to make flat or washed-out photos pop. Best used on colour prints that have faded or look lifeless.",                icon: "color-filter-outline",   accent: "#E74C3C" },
+  { id: "colorize",  title: "Colorize",  subtitle: "Black & white\nto colour",     description: "Add vivid, natural colour to old black-and-white photos. Perfect for family portraits, wedding photos, and vintage memories.",                            icon: "color-palette-outline",  accent: "#C9960C" },
 ];
 
 const GALLERY_POOL = [
@@ -127,7 +121,7 @@ export default function HomeScreen() {
   const proWelcomeCheckedRef = useRef(false);
   const [aiConsentVisible, setAiConsentVisible] = useState(false);
   const pendingProcessRef = useRef<"single" | "batch" | null>(null);
-  const { perPhotoPackage, purchase: purchaseSubscription, isSubscribed, isLoading: isSubscriptionLoading } = useSubscription();
+  const { perPhotoPackage, purchase: purchaseSubscription, isSubscribed, isLoading: isSubscriptionLoading, photoCredits, consumePhotoCredit } = useSubscription();
 
   const buyOnePhoto = async () => {
     if (!perPhotoPackage) {
@@ -705,7 +699,11 @@ export default function HomeScreen() {
         response = await fetch(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageBase64: base64, modes: Array.from(selectedModes) }),
+          body: JSON.stringify({
+            imageBase64: base64,
+            modes: Array.from(selectedModes),
+            freePreview: !(isSubscribed || photoCredits > 0),
+          }),
           signal: controller.signal,
         });
       } finally {
@@ -760,6 +758,10 @@ export default function HomeScreen() {
       }
 
       if (!cancelledRef.current) {
+        // Consume a photo credit if user isn't subscribed but has credits
+        if (!isSubscribed && photoCredits > 0) {
+          await consumePhotoCredit();
+        }
         setAppState("done");
         // Show result tip sheet on first successful enhancement
         AsyncStorage.getItem("hasSeenResultTip").then((seen) => {
@@ -838,6 +840,7 @@ export default function HomeScreen() {
             body: JSON.stringify({
               imageBase64: base64,
               modes: Array.from(item.modes),
+              freePreview: !(isSubscribed || photoCredits > 0),
             }),
             signal: controller.signal,
           });
@@ -914,8 +917,15 @@ export default function HomeScreen() {
       // Mark free trial as used — same logic as processPhoto
       await AsyncStorage.setItem("freeTrialUsed", "1");
       setHasUsedFreeTrial(true);
-      setAppState("batch-done");
+      // Consume photo credits for each successfully processed item
       const successCount = updatedItems.filter((it) => it.status === "done").length;
+      if (!isSubscribed && photoCredits > 0) {
+        const creditsToConsume = Math.min(successCount, photoCredits);
+        for (let i = 0; i < creditsToConsume; i++) {
+          await consumePhotoCredit();
+        }
+      }
+      setAppState("batch-done");
       void maybeRequestReview(successCount);
     }
   };
@@ -1101,20 +1111,6 @@ export default function HomeScreen() {
         contentContainerStyle={s.scroll}
         showsVerticalScrollIndicator={false}
       >
-        {/* Promo announcement banner */}
-        <LinearGradient
-          colors={["#1C1A14", "#2E2818"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={s.promoBanner}
-        >
-          <Ionicons name="sparkles" size={13} color="#F5D78E" />
-          <Text style={s.promoBannerText}>
-            NEW CUSTOMERS: Get <Text style={s.promoBannerBold}>£10 OFF</Text> your first order over £20 · code:{" "}
-            <Text style={s.promoBannerCode}>EXPERT10</Text>
-          </Text>
-        </LinearGradient>
-
         <View style={s.header}>
           <View style={s.headerCenter}>
             <GraffitiTitle fontSize={52} letterSpacing={8} />
@@ -1139,54 +1135,6 @@ export default function HomeScreen() {
 
         {appState === "idle" && (
           <>
-            {/* Masterpiece Gallery button — dark emerald mystical */}
-            <TouchableOpacity
-              style={s.galleryBtn}
-              onPress={() => router.push("/gallery")}
-              activeOpacity={0.88}
-            >
-              <LinearGradient
-                colors={["#060F08", "#0C1E10", "#060F08"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={s.galleryBtnGradient}
-              >
-                <LinearGradient
-                  colors={["#155220", "#4CAF58", "#155220"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={s.galleryBtnGreenBar}
-                />
-                <View style={s.galleryBtnInner}>
-                  <Svg width={26} height={30} viewBox="0 0 20 24">
-                    <Defs>
-                      <SvgLinear id="idx_em_body" x1="0.25" y1="0" x2="0.8" y2="1">
-                        <Stop offset="0%"   stopColor="#6EE080" />
-                        <Stop offset="35%"  stopColor="#228A38" />
-                        <Stop offset="72%"  stopColor="#0E5520" />
-                        <Stop offset="100%" stopColor="#062E0C" />
-                      </SvgLinear>
-                      <SvgLinear id="idx_em_crown" x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0%"   stopColor="#B0F0BC" />
-                        <Stop offset="100%" stopColor="#44B858" />
-                      </SvgLinear>
-                      <SvgRadial id="idx_em_glint" cx="36%" cy="26%" r="32%">
-                        <Stop offset="0%"   stopColor="rgba(220,255,228,0.96)" />
-                        <Stop offset="100%" stopColor="rgba(120,220,140,0)" />
-                      </SvgRadial>
-                    </Defs>
-                    <Path d="M 10 0 L 18 4 L 18 18 L 10 24 L 2 18 L 2 4 Z" fill="url(#idx_em_body)" />
-                    <Path d="M 10 0 L 18 4 L 2 4 Z" fill="url(#idx_em_crown)" />
-                    <Path d="M 18 4 L 18 18 L 10 24 L 10 8 Z" fill="rgba(0,0,0,0.20)" />
-                    <Path d="M 10 0 L 18 4 L 18 18 L 10 24 L 2 18 L 2 4 Z" fill="url(#idx_em_glint)" />
-                    <Path d="M 10 0 L 18 4 L 18 18 L 10 24 L 2 18 L 2 4 Z" fill="none" stroke="rgba(0,28,8,0.65)" strokeWidth={0.5} />
-                    <Path d="M 2 4 L 18 4" fill="none" stroke="rgba(100,220,120,0.5)" strokeWidth={0.4} />
-                  </Svg>
-                  <Text style={s.galleryBtnText}>Masterpiece Gallery</Text>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-
             <Pressable
               style={({ pressed }) => [s.uploadArea, pressed && s.pressed]}
               onPress={pickImage}
@@ -1209,54 +1157,6 @@ export default function HomeScreen() {
               </View>
             </Pressable>
 
-            {/* My Restorations button — gold */}
-            <TouchableOpacity
-              style={s.myPhotosBtn}
-              onPress={() => router.push("/my-photos")}
-              activeOpacity={0.88}
-            >
-              <LinearGradient
-                colors={["#0F0B03", "#1C1505", "#0F0B03"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={s.myPhotosBtnGradient}
-              >
-                <LinearGradient
-                  colors={["#7A5800", "#C9960C", "#7A5800"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={s.myPhotosBtnBar}
-                />
-                <View style={s.myPhotosBtnInner}>
-                  <Ionicons name="images" size={20} color="#C9960C" />
-                  <Text style={s.myPhotosBtnText}>My Restorations</Text>
-                  <Ionicons name="chevron-forward" size={16} color="rgba(201,150,12,0.6)" />
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            {/* Referral button */}
-            <TouchableOpacity
-              style={s.referralBtn}
-              onPress={() => setReferralVisible(true)}
-              activeOpacity={0.88}
-            >
-              <LinearGradient
-                colors={["#1A0C04", "#2C1608", "#1A0C04"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={s.referralBtnGradient}
-              >
-                <Text style={s.referralBtnEmoji}>🎁</Text>
-                <View style={s.referralBtnTextWrap}>
-                  <Text style={s.referralBtnPrimary}>Give £10, Get £10</Text>
-                  <Text style={s.referralBtnSub}>Share the Memories</Text>
-                </View>
-                <View style={s.referralBtnBadge}>
-                  <Text style={s.referralBtnBadgeText}>REFER</Text>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
 
           </>
         )}
@@ -1427,7 +1327,7 @@ export default function HomeScreen() {
                     <Text style={[s.pricingTileLabel, { color: "rgba(232,160,32,0.7)" }]}>per photo</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1828", borderColor: "#4A90D9" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
-                    <Ionicons name="infinite" size={20} color="#4A90D9" />
+                    <Ionicons name="calendar" size={20} color="#4A90D9" />
                     <Text style={[s.pricingTilePrice, { color: "#4A90D9" }]}>{PRICING.monthly.amount}</Text>
                     <Text style={[s.pricingTileLabel, { color: "rgba(74,144,217,0.7)" }]}>per month</Text>
                   </TouchableOpacity>
@@ -1453,7 +1353,7 @@ export default function HomeScreen() {
                     <Text style={[s.pricingTileLabel, { color: "rgba(232,160,32,0.7)" }]}>per photo</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1828", borderColor: "#4A90D9" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
-                    <Ionicons name="infinite" size={20} color="#4A90D9" />
+                    <Ionicons name="calendar" size={20} color="#4A90D9" />
                     <Text style={[s.pricingTilePrice, { color: "#4A90D9" }]}>{PRICING.monthly.amount}</Text>
                     <Text style={[s.pricingTileLabel, { color: "rgba(74,144,217,0.7)" }]}>per month</Text>
                   </TouchableOpacity>
@@ -1541,7 +1441,7 @@ export default function HomeScreen() {
             <TouchableOpacity
               style={[s.processBtn, selectedModes.size === 0 && { opacity: 0.45 }]}
               onPress={selectedModes.size > 0
-                ? (hasUsedFreeTrial
+                ? (hasUsedFreeTrial && !isSubscribed && photoCredits === 0
                     ? () => setSubscribeVisible(true)
                     : appState === "batch-selected"
                       ? () => void handleProcessWithConsent("batch")
@@ -1550,16 +1450,16 @@ export default function HomeScreen() {
               activeOpacity={0.85}
             >
               <LinearGradient
-                colors={hasUsedFreeTrial
+                colors={hasUsedFreeTrial && !isSubscribed && photoCredits === 0
                   ? ["#A67C00", "#C9960C", "#E8B422", "#C9960C"]
                   : ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]}
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                 style={s.processBtnGradient}
               >
-                <Ionicons name={hasUsedFreeTrial ? "infinite" : "sparkles"} size={24} color="#fff" />
+                <Ionicons name={hasUsedFreeTrial && !isSubscribed && photoCredits === 0 ? "sparkles" : "sparkles"} size={24} color="#fff" />
                 <Text style={s.processBtnText}>
-                  {hasUsedFreeTrial
-                    ? "Subscribe to Enhance — Unlimited"
+                  {hasUsedFreeTrial && !isSubscribed && photoCredits === 0
+                    ? "Subscribe to Enhance"
                     : appState === "batch-selected"
                       ? `Enhance Free — ${batchItems.length} Photos${selectedModes.size > 1 ? ` (${selectedModes.size} effects)` : ""}`
                       : `Enhance Free${selectedModes.size > 1 ? ` (${selectedModes.size} effects)` : " — First Photo Free"}`}
@@ -1601,6 +1501,14 @@ export default function HomeScreen() {
               activeOpacity={0.7}
             >
               <Text style={s.ghostBtnText}>Fix Another Photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={s.whatsappBtn}
+              onPress={shareOnWhatsApp}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="logo-whatsapp" size={20} color="#fff" />
+              <Text style={s.whatsappBtnText}>Share to WhatsApp</Text>
             </TouchableOpacity>
             {reviewNudgeCount !== null && reviewNudgeCount > 0 && (
               <View style={s.reviewNudge}>
@@ -2792,147 +2700,6 @@ function makeStyles(
       textAlign: "center" as const,
     },
 
-    referralBtn: {
-      borderRadius: 14,
-      overflow: "hidden" as const,
-      borderWidth: 2,
-      borderColor: "#C9960C",
-      shadowColor: "#C9960C",
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.55,
-      shadowRadius: 14,
-      elevation: 8,
-    },
-    referralBtnGradient: {
-      flexDirection: "row" as const,
-      alignItems: "center" as const,
-      paddingVertical: 15,
-      paddingHorizontal: 18,
-      gap: 12,
-    },
-    referralBtnEmoji: { fontSize: 24 },
-    referralBtnTextWrap: { flex: 1, gap: 2 },
-    referralBtnPrimary: {
-      fontSize: 16,
-      fontWeight: "700" as const,
-      fontFamily: "Inter_700Bold",
-      color: "#F5D78E",
-    },
-    referralBtnSub: {
-      fontSize: 12,
-      color: "rgba(245,216,142,0.65)",
-      fontFamily: "Inter_400Regular",
-    },
-    referralBtnBadge: {
-      backgroundColor: "rgba(201,150,12,0.55)",
-      borderWidth: 1.5,
-      borderColor: "#C9960C",
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      borderRadius: 8,
-    },
-    referralBtnBadgeText: {
-      fontSize: 11,
-      fontWeight: "700" as const,
-      fontFamily: "Inter_700Bold",
-      color: "#FAF7F2",
-      letterSpacing: 1.5,
-    },
-    promoBanner: {
-      flexDirection: "row" as const,
-      alignItems: "center" as const,
-      justifyContent: "center" as const,
-      gap: 7,
-      paddingVertical: 10,
-      paddingHorizontal: 14,
-    },
-    promoBannerText: {
-      fontSize: 11,
-      color: "rgba(245,215,142,0.85)",
-      fontFamily: "Inter_400Regular",
-      textAlign: "center" as const,
-      flexShrink: 1,
-      lineHeight: 16,
-    },
-    promoBannerBold: {
-      fontFamily: "Inter_700Bold",
-      fontWeight: "700" as const,
-      color: "#F5D78E",
-    },
-    promoBannerCode: {
-      fontFamily: "Inter_700Bold",
-      fontWeight: "700" as const,
-      color: "#FFE88A",
-      letterSpacing: 1.2,
-    },
-    myPhotosBtn: {
-      borderRadius: 14,
-      overflow: "hidden" as const,
-      borderWidth: 1,
-      borderColor: "#5C3D00",
-      shadowColor: "#C9960C",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 10,
-      elevation: 6,
-    },
-    myPhotosBtnGradient: {
-      borderRadius: 14,
-      overflow: "hidden" as const,
-    },
-    myPhotosBtnBar: {
-      height: 3,
-    },
-    myPhotosBtnInner: {
-      flexDirection: "row" as const,
-      alignItems: "center" as const,
-      gap: 10,
-      paddingVertical: 14,
-      paddingHorizontal: 20,
-    },
-    myPhotosBtnText: {
-      flex: 1,
-      fontSize: 15,
-      fontWeight: "600" as const,
-      fontFamily: "Inter_600SemiBold",
-      color: "#F5D78E",
-    },
-    galleryBtn: {
-      borderRadius: 14,
-      overflow: "hidden" as const,
-      borderWidth: 1,
-      borderColor: "#1E5C2A",
-      shadowColor: "#2ECC52",
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.35,
-      shadowRadius: 14,
-      elevation: 8,
-    },
-    galleryBtnGradient: {
-      borderRadius: 14,
-      overflow: "hidden" as const,
-    },
-    galleryBtnGreenBar: {
-      height: 3,
-    },
-    galleryBtnInner: {
-      flexDirection: "row" as const,
-      alignItems: "center" as const,
-      justifyContent: "center" as const,
-      gap: 12,
-      paddingVertical: 14,
-      paddingHorizontal: 20,
-    },
-    galleryBtnText: {
-      fontSize: 15,
-      fontWeight: "400" as const,
-      fontFamily: "Cinzel_400Regular",
-      color: "#C8F0CE",
-      textAlign: "center" as const,
-      textShadowColor: "rgba(80,220,100,0.7)",
-      textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 10,
-    },
     contactSupportBtn: {
       flexDirection: "row" as const,
       alignItems: "center" as const,

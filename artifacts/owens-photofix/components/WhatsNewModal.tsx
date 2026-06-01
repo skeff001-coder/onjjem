@@ -32,14 +32,37 @@ interface VersionNotes {
  * The key must match the version string in app.json exactly.
  */
 export const CHANGELOG: Record<string, VersionNotes> = {
+  "1.0.29": {
+    headline: "What's New in v1.0.29",
+    items: [
+      {
+        icon: "sparkles-outline",
+        accent: "#C9960C",
+        title: "AI-Powered Photo Restoration",
+        body: "Paid HD enhancements now use Replicate AI for dramatically better results. Sharpen, restore, denoise, and colorize modes now produce studio-quality output.",
+      },
+      {
+        icon: "color-palette-outline",
+        accent: "#C9960C",
+        title: "Colorize Mode Returns",
+        body: "Add vivid, natural colour to old black-and-white photos with AI. Now 6 powerful enhancement modes.",
+      },
+      {
+        icon: "logo-whatsapp",
+        accent: "#25D366",
+        title: "Direct WhatsApp Sharing",
+        body: "Share your enhanced photos straight to WhatsApp from the result screen.",
+      },
+    ],
+  },
   "1.0.28": {
     headline: "What's New in v1.0.28",
     items: [
       {
         icon: "color-wand-outline",
         accent: "#C9960C",
-        title: "Restore & Colourise Fixed",
-        body: "Fixed an error that could stop photos from being restored or colourised. Every enhancement now works reliably.",
+        title: "Enhancement Reliability",
+        body: "All five enhancement modes now process consistently with improved quality and stability.",
       },
       {
         icon: "shield-checkmark-outline",
@@ -205,7 +228,7 @@ export const CHANGELOG: Record<string, VersionNotes> = {
         icon: "shield-checkmark-outline",
         accent: "#27AE60",
         title: "Clearer Privacy Information",
-        body: "We've updated the data consent screen to be more explicit about how your photo is processed — including a clear statement that no third-party AI service ever receives your photo.",
+        body: "We've updated the privacy policy to accurately describe how your photos are processed: free-tier previews stay on ONJJEM's own infrastructure, while paid HD enhancements use Replicate AI for advanced restoration.",
       },
     ],
   },

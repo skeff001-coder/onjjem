@@ -8,7 +8,7 @@ export const PRICING = {
   monthly: {
     amount: "£12.99",
     period: "/month",
-    planName: "Monthly Unlimited",
+    planName: "Monthly Access",
     shortLabel: "Start Monthly",
   },
   bagsOfLove: {

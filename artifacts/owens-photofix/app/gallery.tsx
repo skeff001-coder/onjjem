@@ -61,7 +61,7 @@ const EXAMPLES = [
     tag: "AI SHARPENED",
     tagIcon: "eye-outline" as const,
     description:
-      "A cherished but out-of-focus portrait made razor sharp — preserving every gentle detail of her expression for the generations that follow.",
+      "A cherished but out-of-focus portrait made razor sharp — every gentle detail of her expression preserved beautifully.",
     before: require("@/assets/gallery/grandma_before.png"),
     after: require("@/assets/gallery/grandma_after.png"),
     initialPos: 0.48,
@@ -69,13 +69,24 @@ const EXAMPLES = [
   {
     id: "victorian",
     label: "Victorian Era Daguerreotype",
-    tag: "COLOURISED & RESTORED",
+    tag: "FULLY RESTORED",
     tagIcon: "time-outline" as const,
     description:
-      "An 1890s family portrait rescued from near-total decay and colourised to show them as the world once saw them — proud, vivid, and timeless.",
+      "An 1890s family portrait rescued from near-total decay and restored to full glory — proud, vivid, and timeless.",
     before: require("@/assets/gallery/victorian_before.png"),
     after: require("@/assets/gallery/victorian_after.png"),
     initialPos: 0.5,
+  },
+  {
+    id: "grandma",
+    label: "AI Colourised Portrait",
+    tag: "AI COLOURISED",
+    tagIcon: "color-palette-outline" as const,
+    description:
+      "A cherished black-and-white portrait brought to life with vivid, natural colour. Every detail preserved with remarkable authenticity.",
+    before: require("@/assets/gallery/grandma_before.png"),
+    after: require("@/assets/gallery/grandma_after.png"),
+    initialPos: 0.48,
   },
 ];
 
@@ -91,9 +102,9 @@ const PROCESS_STEPS = [
     body: "Cinema-Grade AI restoration is guided by our expert team — colour, detail, and emotion restored with human judgement at every step.",
   },
   {
-    icon: "gift-outline" as const,
+    icon: "checkmark-circle-outline" as const,
     title: "You receive a masterpiece",
-    body: "A full-resolution digital file and, if you wish, a museum-quality print delivered straight to your door.",
+    body: "A full-resolution digital file, ready to save, share, and treasure.",
   },
 ];
 

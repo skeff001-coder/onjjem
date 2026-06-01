@@ -52,6 +52,12 @@ const TIPS: {
     title: "Vivid",
     body: "Boosts colours and contrast to make your photos bold and striking.",
   },
+  {
+    icon: "color-palette-outline",
+    accent: "#C9960C",
+    title: "Colorize",
+    body: "Add vivid, natural colour to old black-and-white photos with AI.",
+  },
 ];
 
 export function EnhancementTipSheet({ visible, onDismiss }: Props) {

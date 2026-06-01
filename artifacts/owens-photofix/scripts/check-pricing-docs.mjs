@@ -57,7 +57,7 @@ function extractFromSection(sectionKey, leafKey) {
 const perPhotoAmount   = extractFromSection("perPhoto", "amount");   // e.g. "£1.49"
 const perPhotoPlanName = extractFromSection("perPhoto", "planName"); // e.g. "One Photo Enhancement"
 const monthlyAmount    = extractFromSection("monthly",  "amount");   // e.g. "£12.99"
-const monthlyPlanName  = extractFromSection("monthly",  "planName"); // e.g. "Monthly Unlimited"
+const monthlyPlanName  = extractFromSection("monthly",  "planName"); // e.g. "Monthly Access"
 
 console.log(`Canonical prices from lib/pricing.ts:`);
 console.log(`  perPhoto : ${perPhotoPlanName} — ${perPhotoAmount}`);

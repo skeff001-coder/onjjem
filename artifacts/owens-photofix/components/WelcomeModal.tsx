@@ -61,8 +61,16 @@ const SLIDES: {
     accent: "#27AE60",
     title: "Restore",
     body: "Full old-photo restoration — sharpens, brightens and removes damage in one pass.",
-    before: require("../assets/gallery/welcome/restore_before.png"),
-    after: require("../assets/gallery/welcome/restore_after.png"),
+    before: require("../assets/gallery/childhood_before.png"),
+    after: require("../assets/gallery/childhood_after.png"),
+  },
+  {
+    icon: "color-palette-outline",
+    accent: "#C9960C",
+    title: "Colorize",
+    body: "Add vivid, natural colour to old black-and-white photos with AI.",
+    before: require("../assets/gallery/welcome/grandma_before.png"),
+    after: require("../assets/gallery/welcome/grandma_after.png"),
   },
 ];
 

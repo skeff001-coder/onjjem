@@ -29,7 +29,7 @@ const SINGLE_FEATURES = [
 ];
 
 const MONTHLY_FEATURES = [
-  "Unlimited HD photos — no cap, ever",
+  "Full HD photos — no cap for 30 days",
   "Ultra-sharp, crystal-clear studio output",
   "Professional-grade colour & contrast",
   "All 6 enhancement modes combined",
@@ -47,7 +47,7 @@ const PLANS = [
     period: "/month",
     saving: null,
     accent: "#4A90D9",
-    tagline: "Unlimited photos · Studio-grade quality · Cancel anytime",
+    tagline: "Full HD photos for 30 days · Studio-grade quality · Cancel anytime",
     features: MONTHLY_FEATURES,
   },
 ] as const;
@@ -123,7 +123,7 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
               {plan.label} plan activated
             </Text>
             <Text style={s.successBody}>
-              Full HD quality, all 6 enhancement modes, and unlimited photos are now unlocked on your account.
+              Full HD quality, all 6 enhancement modes, and full access for 30 days are now unlocked on your account.
             </Text>
             <View style={[s.successDivider, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
             <View style={s.successPerks}>
@@ -200,8 +200,8 @@ export function EnhancementPaywall({ selectedModeCount, onUpgradeSingle, onUpgra
 
       {/* ── Unlimited plan header ── */}
       <View style={s.unlimitedHeader}>
-        <Text style={s.unlimitedHeaderTitle}>Monthly Unlimited</Text>
-        <Text style={[s.unlimitedHeaderSub, { color: colors.mutedForeground }]}>Unlimited photos · Cancel anytime</Text>
+        <Text style={s.unlimitedHeaderTitle}>Monthly Access</Text>
+        <Text style={[s.unlimitedHeaderSub, { color: colors.mutedForeground }]}>Full HD photos for 30 days · Cancel anytime</Text>
       </View>
 
       {/* ── Active plan detail card ── */}

@@ -103,9 +103,9 @@ export function SubscribeModal({ visible, onClose }: Props) {
       label: "Monthly",
       price: PRICING.monthly.amount,
       period: "per month",
-      desc: "Unlimited full-quality restorations. Cancel anytime.",
+      desc: "Full HD restorations for 30 days. Cancel anytime.",
       color: "#4A90D9",
-      icon: "infinite" as const,
+      icon: "calendar" as const,
       pkg: monthlyPackage,
     },
   ];
@@ -136,7 +136,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
   const successPerks =
     purchasedPlan === "perpic"
       ? ["Full HD quality output", "All 6 modes", "No watermark"]
-      : ["Unlimited HD photos", "All 6 modes combined", "Cancel anytime"];
+      : ["Full HD photos for 30 days", "All 6 modes combined", "Cancel anytime"];
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>
@@ -159,7 +159,7 @@ export function SubscribeModal({ visible, onClose }: Props) {
                   {successPlan.label} plan activated
                 </Text>
                 <Text style={s.successBody}>
-                  Full HD quality, all 6 enhancement modes, and unlimited photos are now unlocked on your account.
+                  Full HD quality, all 6 enhancement modes, and full access for 30 days are now unlocked on your account.
                 </Text>
                 <View style={s.successDivider} />
                 <View style={s.successPerks}>

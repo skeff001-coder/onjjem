@@ -24,9 +24,7 @@ Whether it's a faded wedding photo from the 1950s, a blurry holiday snapshot, or
 
 ✦ Vivid — Intensify colours to make photos pop with warmth and depth.
 
-**UK MASTER PRINT LAB**
-
-Love your restored photo? Order it as a stunning wall canvas, a cosy cushion or throw, a personalised jigsaw puzzle, a photo book, fine art print, or feature wall mural — all hand-finished at our UK Master Print Lab and delivered to your door.
+✦ Colorize — Add vivid, natural colour to old black-and-white photos with AI.
 
 **HOW IT WORKS**
 
@@ -40,7 +38,7 @@ Love your restored photo? Order it as a stunning wall canvas, a cosy cushion or 
 
 • Free sample — try before you buy, no account needed
 • £1.49 per photo — pay once, no subscription required
-• £12.99/month — unlimited photos, cancel anytime
+• £12.99/month — full access for 30 days, cancel anytime
 
 All plans deliver the same full studio quality. Payments are processed securely by Apple.
 
@@ -52,7 +50,7 @@ Your photos are processed on our secure UK servers and immediately discarded —
 
 ONJJEM is a British luxury photo restoration studio. Every enhancement is guided by our expert team to ensure colour, detail, and emotion are restored with the care your memories deserve.
 
-10-Year Quality Guarantee · UK Master Print Lab · Expert Artisans
+10-Year Quality Guarantee · Expert Photo Restoration
 
 ---
 
@@ -87,7 +85,7 @@ Free (with In-App Purchases)
 
 In-App Purchases to declare:
 - One Photo Enhancement — £1.49 (consumable)
-- Monthly Unlimited — £12.99/month (auto-renewable subscription)
+- Monthly Access — £12.99/month (auto-renewable subscription)
 
 ---
 

@@ -37,7 +37,7 @@ const TIPS: {
     icon: "image-outline",
     accent: "#C9960C",
     title: "Order a print",
-    body: "Visit the Gift Shop to turn your restored photo into a beautiful canvas, framed print, or feature wall — printed by our UK master lab.",
+    body: "Visit My Photos to see every restoration you've ever made — all in one place.",
   },
 ];
 

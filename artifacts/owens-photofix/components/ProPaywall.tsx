@@ -42,8 +42,8 @@ const PRO_FEATURES = [
   {
     emoji: "💬",
     color: "#25D366",
-    title: "Unlimited WhatsApp Sharing",
-    sub: "Share every enhanced photo directly to WhatsApp with a single tap — no limits",
+    title: "WhatsApp Sharing",
+    sub: "Share every enhanced photo directly to WhatsApp with a single tap",
   },
   {
     emoji: "📸",
@@ -54,8 +54,8 @@ const PRO_FEATURES = [
   {
     emoji: "∞",
     color: "#BF5AF2",
-    title: "Unlimited Photos",
-    sub: "Process as many photos as you like, any time, with no daily cap",
+    title: "Full HD Photos",
+    sub: "Process as many photos as you like during your active subscription",
   },
 ];
 
@@ -143,7 +143,7 @@ export function ProPaywall({ visible, onClose }: Props) {
   const loading = isPurchasing || isRestoring;
 
   const SUCCESS_COLOR = "#F5C842";
-  const SUCCESS_PERKS = ["Unlimited HD photos", "All 6 modes combined", "No watermark"];
+  const SUCCESS_PERKS = ["Full HD photos for 30 days", "All 6 modes combined", "No watermark"];
 
   return (
     <Modal
@@ -171,7 +171,7 @@ export function ProPaywall({ visible, onClose }: Props) {
                   Monthly plan activated
                 </Text>
                 <Text style={s.successBody}>
-                  Full HD quality, all 6 enhancement modes, and unlimited photos are now unlocked on your account.
+                  Full HD quality, all 6 enhancement modes, and full access for 30 days are now unlocked on your account.
                 </Text>
                 <View style={s.successDivider} />
                 <View style={s.successPerks}>
