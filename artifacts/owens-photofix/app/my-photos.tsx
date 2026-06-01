@@ -47,7 +47,6 @@ const ENHANCEMENT_LABELS: Record<string, string> = {
   denoise: "Denoise",
   restore: "Restore",
   vivid: "Vivid",
-  colourize: "Colourize",
 };
 
 function buildModeLabel(modes: string[]): string {

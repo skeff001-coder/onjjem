@@ -49,20 +49,20 @@ const SLIDES: {
     after: require("../assets/gallery/welcome/portrait_after.png"),
   },
   {
-    icon: "color-palette-outline",
-    accent: "#C9960C",
-    title: "Colourize",
-    body: "Add vivid, natural colour to old black-and-white family photos — in seconds.",
-    before: require("../assets/gallery/welcome/grandma_before.png"),
-    after: require("../assets/gallery/welcome/grandma_after.png"),
-  },
-  {
     icon: "sunny-outline",
     accent: "#F5A623",
-    title: "Restore",
-    body: "Lift dark shots, remove grain, and give faded prints a full professional restoration.",
+    title: "Brighten",
+    body: "Lift dark, underexposed shots and reveal every hidden detail.",
     before: require("../assets/gallery/welcome/victorian_before.png"),
     after: require("../assets/gallery/welcome/victorian_after.png"),
+  },
+  {
+    icon: "time-outline",
+    accent: "#27AE60",
+    title: "Restore",
+    body: "Full old-photo restoration — sharpens, brightens and removes damage in one pass.",
+    before: require("../assets/gallery/welcome/restore_before.png"),
+    after: require("../assets/gallery/welcome/restore_after.png"),
   },
 ];
 

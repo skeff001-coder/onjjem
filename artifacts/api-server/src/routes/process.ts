@@ -4,7 +4,7 @@ import sharp from "sharp";
 
 const router = Router();
 
-export type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colourize";
+export type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid";
 
 // ── Individual processors ─────────────────────────────────────────────────────
 
@@ -58,42 +58,6 @@ async function applyVivid(buf: Buffer): Promise<Buffer> {
     .toBuffer();
 }
 
-async function applyColourize(buf: Buffer): Promise<Buffer> {
-  const meta = await sharp(buf).metadata();
-  const isGreyscale =
-    meta.channels === 1 ||
-    meta.space === "b-w" ||
-    meta.space === "grey16";
-
-  if (isGreyscale) {
-    // B&W → natural warm sepia-to-colour using recomb matrix
-    // Produces a believable historical colour look: warm midtones, bright highlights
-    const stage1 = await sharp(buf)
-      .toColourspace("srgb")
-      .normalise({ lower: 1, upper: 99 })
-      .toBuffer();
-
-    return sharp(stage1)
-      // Sepia-ish matrix that stays natural — not orange
-      .recomb([
-        [1.00, 0.12, 0.00],
-        [0.00, 0.92, 0.06],
-        [0.00, 0.05, 0.84],
-      ])
-      .modulate({ saturation: 1.3, brightness: 1.03 })
-      .gamma(1.05)
-      .toBuffer();
-  }
-
-  // Already colour — just revive faded/washed-out colours
-  return sharp(buf)
-    .normalise({ lower: 2, upper: 98 })
-    .modulate({ saturation: 1.4, brightness: 1.03 })
-    .modulate({ brightness: 0.98 })
-    .linear([1.04, 1.0, 0.97], [3, 0, -3])
-    .toBuffer();
-}
-
 // ── Compose all selected modes in order ───────────────────────────────────────
 
 export async function applyEnhancements(
@@ -110,7 +74,6 @@ export async function applyEnhancements(
       case "denoise":   buf = await applyDenoise(buf);   break;
       case "restore":   buf = await applyRestore(buf);   break;
       case "vivid":     buf = await applyVivid(buf);     break;
-      case "colourize": buf = await applyColourize(buf); break;
     }
   }
 
@@ -154,9 +117,6 @@ async function makeFreePreview(inputBuffer: Buffer, modes: EnhancementMode[]): P
       case "vivid":
         buf = await sharp(buf).modulate({ saturation: 1.2 }).toBuffer();
         break;
-      case "colourize":
-        buf = await applyColourize(buf);
-        break;
     }
   }
 
@@ -185,9 +145,7 @@ router.post("/process", async (req: Request, res: Response) => {
   const modes: EnhancementMode[] =
     body.modes && body.modes.length > 0
       ? body.modes
-      : body.mode === "colorize" || body.mode === "colourize"
-        ? ["colourize"]
-        : body.mode === "sharpen"
+      : body.mode === "sharpen"
           ? ["sharpen"]
           : [];
 

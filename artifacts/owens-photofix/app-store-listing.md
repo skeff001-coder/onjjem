@@ -24,8 +24,6 @@ Whether it's a faded wedding photo from the 1950s, a blurry holiday snapshot, or
 
 ✦ Vivid — Intensify colours to make photos pop with warmth and depth.
 
-✦ Colourize — Add beautiful, natural colour to black-and-white photos.
-
 **UK MASTER PRINT LAB**
 
 Love your restored photo? Order it as a stunning wall canvas, a cosy cushion or throw, a personalised jigsaw puzzle, a photo book, fine art print, or feature wall mural — all hand-finished at our UK Master Print Lab and delivered to your door.
@@ -59,7 +57,7 @@ ONJJEM is a British luxury photo restoration studio. Every enhancement is guided
 ---
 
 ## Keywords (100 chars max, comma-separated)
-photo restoration,old photo repair,colorize photo,sharpen photo,enhance photo,family memories,UK
+photo restoration,old photo repair,sharpen photo,enhance photo,denoise photo,restore photo,UK
 
 ## Support URL
 https://onjjem.co.uk/contact

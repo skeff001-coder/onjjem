@@ -36,10 +36,10 @@ const EXAMPLES = [
   {
     id: "wedding",
     label: "Faded Wedding Photo",
-    tag: "COLOURISED",
-    tagIcon: "color-palette-outline" as const,
+    tag: "RESTORED",
+    tagIcon: "time-outline" as const,
     description:
-      "A black-and-white 1960s ceremony brought to life with warm, natural colour — exactly as it looked on the day. Every shade chosen with meticulous care.",
+      "A faded 1960s ceremony restored to full glory — warm tones, crisp detail and timeless beauty.",
     before: require("@/assets/gallery/wedding_before.png"),
     after: require("@/assets/gallery/wedding_after.png"),
     initialPos: 0.5,

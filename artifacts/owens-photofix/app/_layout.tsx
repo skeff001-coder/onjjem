@@ -279,12 +279,9 @@ function RootLayoutNav() {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="gift-shop" options={{ headerShown: false }} />
       <Stack.Screen name="success" options={{ headerShown: false }} />
       <Stack.Screen name="admin" options={{ headerShown: false }} />
       <Stack.Screen name="gallery" options={{ headerShown: false }} />
-      <Stack.Screen name="feature-walls" options={{ headerShown: false }} />
-      <Stack.Screen name="checkout" options={{ headerShown: false }} />
       <Stack.Screen name="contact" options={{ headerShown: false }} />
       <Stack.Screen name="my-photos" options={{ headerShown: false }} />
       <Stack.Screen name="dev-settings" options={{ headerShown: false }} />

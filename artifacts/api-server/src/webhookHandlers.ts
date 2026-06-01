@@ -1,5 +1,6 @@
 import { getStripeSync, getUncachableStripeClient } from "./stripeClient";
 import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
+// NOTE: old bagsOfLove.ts provider removed — Prodigi is now the sole fulfilment partner.
 import { sendOrderConfirmation, sendAdminNotification } from "./email/mailer";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";

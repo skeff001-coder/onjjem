@@ -214,10 +214,10 @@ export default function SuccessScreen() {
           ))}
         </Animated.View>
 
-        {/* Return to Shop button */}
+        {/* Return Home button */}
         <TouchableOpacity
           style={styles.returnBtn}
-          onPress={() => router.replace("/gift-shop")}
+          onPress={() => router.replace("/")}
           activeOpacity={0.88}
         >
           <LinearGradient
@@ -226,8 +226,8 @@ export default function SuccessScreen() {
             end={{ x: 1, y: 0 }}
             style={styles.returnBtnGradient}
           >
-            <Ionicons name="bag-handle-outline" size={20} color="#fff" />
-            <Text style={styles.returnBtnText}>Return to Shop</Text>
+            <Ionicons name="home-outline" size={20} color="#fff" />
+            <Text style={styles.returnBtnText}>Return Home</Text>
           </LinearGradient>
         </TouchableOpacity>
 

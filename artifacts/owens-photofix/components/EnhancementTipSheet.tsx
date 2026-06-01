@@ -29,12 +29,6 @@ const TIPS: {
     body: "Fixes blurry, soft or low-resolution photos using AI upscaling.",
   },
   {
-    icon: "color-palette-outline",
-    accent: "#C9960C",
-    title: "Colourize",
-    body: "Adds vivid, natural colour to old black-and-white family photos.",
-  },
-  {
     icon: "sunny-outline",
     accent: "#F5A623",
     title: "Brighten",
