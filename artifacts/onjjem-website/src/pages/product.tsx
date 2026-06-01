@@ -157,6 +157,15 @@ export default function ProductDetail() {
             <p className="text-2xl text-foreground font-medium mb-6">
               £{(selectedVariant.pricePence / 100).toFixed(2)}
             </p>
+            {selectedVariant.pricePence >= 5000 ? (
+              <div className="mb-6 text-sm text-foreground bg-primary/10 border border-primary/30 rounded-sm px-4 py-3">
+                <span className="font-medium">🎁 Bonus included:</span> Free Playing Cards with this order
+              </div>
+            ) : (
+              <div className="mb-6 text-sm text-muted-foreground bg-foreground/5 border border-border/50 rounded-sm px-4 py-3">
+                <span className="font-medium">🎁 Bonus:</span> Spend £50 or more for <strong>Free Playing Cards</strong>
+              </div>
+            )}
             <p className="text-muted-foreground leading-relaxed mb-8">
               {product.description}
             </p>

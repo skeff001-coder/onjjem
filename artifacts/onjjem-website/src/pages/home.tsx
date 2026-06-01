@@ -19,6 +19,12 @@ export default function Home() {
       // Clean up URL without reloading
       window.history.replaceState({}, document.title, window.location.pathname);
     }
+    // Scroll to collection when on /shop route
+    if (window.location.pathname.endsWith("/shop")) {
+      setTimeout(() => {
+        document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
   }, [toast]);
 
   return (
@@ -90,6 +96,9 @@ export default function Home() {
             <div>
               <h2 className="text-3xl md:text-4xl font-serif text-foreground">The Collection</h2>
               <p className="mt-2 text-muted-foreground">Every piece is crafted to order.</p>
+            </div>
+            <div className="hidden sm:block text-sm text-muted-foreground bg-foreground/5 px-4 py-2 rounded-sm border border-border/50">
+              <span className="text-foreground font-medium">🎁 Free Playing Cards</span> on orders over £50
             </div>
           </div>
 

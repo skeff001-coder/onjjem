@@ -123,6 +123,7 @@ export interface OrderConfirmationData {
     country: string;
   };
   stripeSessionId: string;
+  bonusCard?: boolean;
 }
 
 export async function sendOrderConfirmation(data: OrderConfirmationData): Promise<void> {
@@ -170,6 +171,10 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
               <td style="font-size:15px;color:${TEXT};font-weight:700;padding-bottom:6px">${data.productName}</td>
               <td align="right" style="font-size:15px;color:#FAF7F2;font-weight:700;padding-bottom:6px">${amount}</td>
             </tr>
+            ${data.bonusCard ? `<tr>
+              <td style="font-size:14px;color:#FAF7F2;padding-top:10px;padding-bottom:6px">🎁 <em>Bonus: Free Playing Cards</em></td>
+              <td align="right" style="font-size:14px;color:#27AE60;font-weight:700;padding-top:10px;padding-bottom:6px">FREE</td>
+            </tr>` : ""}
             <tr>
               <td colspan="2" style="border-top:1px solid rgba(201,150,12,0.15);padding-top:12px;font-size:12px;color:${MUTED}">
                 Ref: ${data.stripeSessionId.slice(-12).toUpperCase()}
@@ -261,6 +266,7 @@ export interface AdminNotificationData {
   stripeSessionId: string;
   bolOrderId?: string | null;
   fulfilmentStatus: "auto" | "queued";
+  bonusCard?: boolean;
 }
 
 export async function sendAdminNotification(data: AdminNotificationData): Promise<void> {
@@ -293,7 +299,7 @@ export async function sendAdminNotification(data: AdminNotificationData): Promis
 
       <p style="font-size:10px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 8px">New Order</p>
       <h1 style="font-size:24px;color:#FAF7F2;margin:0 0 4px;font-weight:700">${amount} received</h1>
-      <p style="font-size:14px;color:${MUTED};margin:0 0 28px">${data.productName}</p>
+      <p style="font-size:14px;color:${MUTED};margin:0 0 28px">${data.productName}${data.bonusCard ? " + FREE Playing Cards" : ""}</p>
 
       <!-- Fulfilment status -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0"

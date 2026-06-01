@@ -188,8 +188,8 @@ export const products: Product[] = [
     image: "/onjjem-website/products/playing-cards.webp",
     category: "gifts",
     variants: [
-      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £22.40
-      { sku: "playing-cards", label: "Standard deck (54 cards)", pricePence: 2299 },
+      // cost £8.00 + £3.20 ship = £11.20 → price at £19.95
+      { sku: "playing-cards", label: "Standard deck (54 cards)", pricePence: 1995 },
     ],
   },
 

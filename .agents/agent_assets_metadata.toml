@@ -557,3 +557,9 @@ id = "N2fF5Ef0YeXaTmcRn9GXN"
 uri = "file://exports/onjjem-shop-setup-checklist.md"
 type = "text"
 title = "ONJJEM Shop — Setup Checklist (Shopify + Contrado)"
+
+[[outputs]]
+id = "ZuOnGGjvpIlMiYsV5Q5d6"
+uri = "file://artifacts/onjjem-video/public/audio/bg_music.mp3"
+type = "audio"
+title = "background music"

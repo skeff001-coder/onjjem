@@ -189,12 +189,17 @@ export async function ensureFulfilmentTable(): Promise<void> {
       amount_paid     INTEGER NOT NULL,
       currency        TEXT NOT NULL DEFAULT 'gbp',
       photo_stored    BOOLEAN NOT NULL DEFAULT false,
+      bonus_card      BOOLEAN NOT NULL DEFAULT false,
       bol_order_id    TEXT,
       status          TEXT NOT NULL DEFAULT 'pending',
       error           TEXT,
       created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
+  `);
+  // Add bonus_card column for older deployments (idempotent)
+  await db.execute(sql`
+    ALTER TABLE fulfilment_queue ADD COLUMN IF NOT EXISTS bonus_card BOOLEAN NOT NULL DEFAULT false
   `);
 }
 
@@ -240,6 +245,36 @@ async function submitToProdigi(
   const printAreas = product.printAreas ?? ["default"];
   const assets = printAreas.map((area) => ({ printArea: area, url: imageUrl }));
 
+  const items: {
+    sku: string;
+    copies: number;
+    sizing: string;
+    attributes?: Record<string, string>;
+    assets: { printArea: string; url: string }[];
+  }[] = [
+    {
+      sku: product.sku,
+      copies: product.copies ?? 1,
+      sizing: product.sizing ?? "fillPrintArea",
+      ...(product.attributes ? { attributes: product.attributes } : {}),
+      assets,
+    },
+  ];
+
+  // ── Bonus: free playing cards on orders ≥ £50 ───────────────────────────
+  const bonusCard = order.amountPaid >= 5000;
+  if (bonusCard) {
+    const cardProduct = PRODIGI_PRODUCTS["playing-cards"];
+    if (cardProduct) {
+      items.push({
+        sku: cardProduct.sku,
+        copies: 1,
+        sizing: cardProduct.sizing ?? "fillPrintArea",
+        assets,
+      });
+    }
+  }
+
   const payload = {
     merchantReference: order.stripeSessionId,
     shippingMethod: SHIPPING_METHOD,
@@ -254,15 +289,7 @@ async function submitToProdigi(
         countryCode: order.shippingAddress.country,
       },
     },
-    items: [
-      {
-        sku: product.sku,
-        copies: product.copies ?? 1,
-        sizing: product.sizing ?? "fillPrintArea",
-        ...(product.attributes ? { attributes: product.attributes } : {}),
-        assets,
-      },
-    ],
+    items,
   };
 
   const resp = await fetch(`${prodigiBaseUrl()}/v4.0/orders`, {
@@ -291,13 +318,14 @@ async function submitToProdigi(
 // ── Queue + status helpers ────────────────────────────────────────────────────
 
 async function queueOrder(order: FulfilmentOrder): Promise<void> {
+  const bonusCard = order.amountPaid >= 5000; // free playing cards on orders ≥ £50
   await db.execute(sql`
     INSERT INTO fulfilment_queue
-      (stripe_session, sku, customer_email, shipping_json, amount_paid, currency, status)
+      (stripe_session, sku, customer_email, shipping_json, amount_paid, currency, bonus_card, status)
     VALUES
       (${order.stripeSessionId}, ${order.sku}, ${order.customerEmail},
        ${JSON.stringify(order.shippingAddress)}::jsonb,
-       ${order.amountPaid}, ${order.currency}, 'pending')
+       ${order.amountPaid}, ${order.currency}, ${bonusCard}, 'pending')
     ON CONFLICT (stripe_session) DO NOTHING
   `);
 }
@@ -354,11 +382,13 @@ export async function fulfilOrder(order: FulfilmentOrder): Promise<void> {
   }
 
   try {
+    const bonusCard = order.amountPaid >= 5000;
     logger.info(
       {
         stripeSession: order.stripeSessionId,
         sku: order.sku,
         env: process.env.PRODIGI_ENV || "sandbox",
+        bonusCard,
       },
       "Submitting order to Prodigi…",
     );
