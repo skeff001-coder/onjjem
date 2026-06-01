@@ -107,6 +107,12 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "mug-11oz": { sku: "GLOBAL-MUG-W",  sizing: "fillPrintArea" },
   "mug-15oz": { sku: "H-MUG-15OZ-W", sizing: "fillPrintArea" },
 
+  // ── Pet Tags ─────────────────────────────────────────────────────────────────
+  // Aluminium, dye-sublimated, UK lab. Both validated live on 2026-06-01.
+  // PET-MET-ROUND: 3.2x3.9cm round tag, £5.00. PET-MET-BONE: 2.8x3.8cm bone, £5.00.
+  "pet-tag-round": { sku: "PET-MET-ROUND", sizing: "fillPrintArea" },
+  "pet-tag-bone":  { sku: "PET-MET-BONE",  sizing: "fillPrintArea" },
+
   // ── Tea Towels ───────────────────────────────────────────────────────────────
   // SKU prefix confirmed via Prodigi products API (/v4.0/products/H-TEATOWEL).
   // UK lab: 18.5x27.5" (50x70cm) cotton, £12.00 base. Sandbox returns

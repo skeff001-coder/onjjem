@@ -196,6 +196,21 @@ export const products: Product[] = [
   // ── Kitchen & Drinkware ──────────────────────────────────────────────────────
 
   {
+    id: "pet-tags",
+    name: "Pet Tags",
+    description:
+      "Personalised aluminium pet tags with your photo or design, dye-sublimated for rich, long-lasting colour. Suitable for dogs and cats — attaches to any collar.",
+    image: "/onjjem-website/products/pet-tags.jpg",
+    category: "pets",
+    variants: [
+      // Prodigi cost: £5.00 + £2.25 (PET-MET-ROUND, 3.2×3.9cm, UK lab)
+      { sku: "pet-tag-round", label: "Round (3.2×3.9cm)",    pricePence: 1299 },
+      // Prodigi cost: £5.00 + £2.25 (PET-MET-BONE, 2.8×3.8cm, UK lab)
+      { sku: "pet-tag-bone",  label: "Bone shape (2.8×3.8cm)", pricePence: 1299 },
+    ],
+  },
+
+  {
     id: "tea-towels",
     name: "Tea Towels",
     description:
