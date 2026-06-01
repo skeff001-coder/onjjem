@@ -32,6 +32,23 @@ interface VersionNotes {
  * The key must match the version string in app.json exactly.
  */
 export const CHANGELOG: Record<string, VersionNotes> = {
+  "1.0.30": {
+    headline: "What's New in v1.0.30",
+    items: [
+      {
+        icon: "gift-outline",
+        accent: "#C9960C",
+        title: "Shop Gift Collection",
+        body: "Browse and buy personalised photo gifts — canvas prints, mugs, jigsaws, and more — directly from the app.",
+      },
+      {
+        icon: "images-outline",
+        accent: "#C9960C",
+        title: "Enhanced Photo Gallery",
+        body: "New gallery view with improved before/after comparison and easy sharing.",
+      },
+    ],
+  },
   "1.0.29": {
     headline: "What's New in v1.0.29",
     items: [
