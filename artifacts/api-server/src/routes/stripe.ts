@@ -94,6 +94,8 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     name?: string;
     amountPence?: number;
     currency?: string;
+    successUrl?: string;
+    cancelUrl?: string;
   };
 
   if (!body.sku) {
@@ -189,8 +191,8 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       shipping_address_collection: {
         allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK"],
       },
-      success_url: `${origin}/?order=success`,
-      cancel_url: `${origin}/#shop`,
+      success_url: body.successUrl || `${origin}/?order=success`,
+      cancel_url: body.cancelUrl || `${origin}/#shop`,
       metadata: {
         sku: body.sku,
         ...(photoToken ? { photo_token: photoToken } : {}),

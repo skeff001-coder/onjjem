@@ -1131,6 +1131,16 @@ export default function HomeScreen() {
           >
             <Ionicons name="information-circle-outline" size={24} color="rgba(201,150,12,0.75)" />
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
+              void Linking.openURL(`https://${domain}/onjjem-website/`);
+            }}
+            style={s.shopHeaderBtn}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="bag-handle-outline" size={22} color="rgba(201,150,12,0.75)" />
+          </TouchableOpacity>
         </View>
 
         {appState === "idle" && (
@@ -1157,6 +1167,23 @@ export default function HomeScreen() {
               </View>
             </Pressable>
 
+            <TouchableOpacity
+              style={s.shopCTA}
+              onPress={() => {
+                const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
+                void Linking.openURL(`https://${domain}/onjjem-website/`);
+              }}
+              activeOpacity={0.85}
+            >
+              <View style={s.shopCTAInner}>
+                <Ionicons name="bag-outline" size={20} color="#C9960C" />
+                <View style={s.shopCTAText}>
+                  <Text style={s.shopCTATitle}>Print Shop</Text>
+                  <Text style={s.shopCTASub}>Canvas, jigsaws & gifts from your photos</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={16} color="rgba(201,150,12,0.6)" />
+              </View>
+            </TouchableOpacity>
 
           </>
         )}
@@ -1965,6 +1992,45 @@ function makeStyles(
       height: 36,
       alignItems: "center" as const,
       justifyContent: "center" as const,
+    },
+    shopHeaderBtn: {
+      position: "absolute" as const,
+      top: 20,
+      left: 24,
+      width: 36,
+      height: 36,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+    },
+    shopCTA: {
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.35)",
+      backgroundColor: "rgba(13,27,42,0.75)",
+      overflow: "hidden" as const,
+    },
+    shopCTAInner: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 12,
+      paddingHorizontal: 18,
+      paddingVertical: 16,
+    },
+    shopCTAText: {
+      flex: 1,
+    },
+    shopCTATitle: {
+      fontSize: 15,
+      fontFamily: "Inter_700Bold",
+      color: "#F5EDD8",
+      letterSpacing: 0.3,
+    },
+    shopCTASub: {
+      fontSize: 12,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(245,237,216,0.55)",
+      marginTop: 2,
+      lineHeight: 16,
     },
     scroll: {
       paddingTop: 22,

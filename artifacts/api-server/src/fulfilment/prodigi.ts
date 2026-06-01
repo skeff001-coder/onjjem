@@ -40,21 +40,81 @@ export interface ProdigiProduct {
 }
 
 export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
-  // Photo / fine-art prints (no frame)
-  "print-a4-boutique": { sku: "GLOBAL-FAP-A4", sizing: "fillPrintArea" },
-  "print-a3-boutique": { sku: "GLOBAL-FAP-A3", sizing: "fillPrintArea" },
-  "print-a2-boutique": { sku: "GLOBAL-FAP-A2", sizing: "fillPrintArea" },
-  "print-a1-giant": { sku: "GLOBAL-FAP-A1", sizing: "fillPrintArea" },
+  // ── Stretched Canvas ────────────────────────────────────────────────────────
+  "canvas-stretched-8x10":  { sku: "GLOBAL-CAN-8X10",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-10x12": { sku: "GLOBAL-CAN-10X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-12x16": { sku: "GLOBAL-CAN-12X16", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-16x20": { sku: "GLOBAL-CAN-16X20", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-20x24": { sku: "GLOBAL-CAN-20X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
 
-  // Stretched canvas
-  "canvas-classic-30x20": {
-    sku: "GLOBAL-CAN-10X8",
-    sizing: "fillPrintArea",
-    attributes: { wrap: "ImageWrap" },
-  },
+  // ── Framed Canvas (Black frame) ─────────────────────────────────────────────
+  "canvas-framed-8x8-black":   { sku: "FRA-MC-8X8-B",   sizing: "fillPrintArea" },
+  "canvas-framed-10x8-black":  { sku: "FRA-MC-10X8-B",  sizing: "fillPrintArea" },
+  "canvas-framed-12x10-black": { sku: "FRA-MC-12X10-B", sizing: "fillPrintArea" },
+  "canvas-framed-16x12-black": { sku: "FRA-MC-16X12-B", sizing: "fillPrintArea" },
 
-  // Mugs
-  "mug-masterlab-11oz": { sku: "GLOBAL-MUG-11OZ", sizing: "fillPrintArea" },
+  // ── Eco Canvas ──────────────────────────────────────────────────────────────
+  "eco-canvas-8x8":   { sku: "ECO-CAN-8X8",   sizing: "fillPrintArea" },
+  "eco-canvas-8x12":  { sku: "ECO-CAN-8X12",  sizing: "fillPrintArea" },
+  "eco-canvas-12x12": { sku: "ECO-CAN-12X12", sizing: "fillPrintArea" },
+  "eco-canvas-12x18": { sku: "ECO-CAN-12X18", sizing: "fillPrintArea" },
+  "eco-canvas-16x16": { sku: "ECO-CAN-16X16", sizing: "fillPrintArea" },
+  "eco-canvas-16x24": { sku: "ECO-CAN-16X24", sizing: "fillPrintArea" },
+
+  // ── Eco Rolled Canvas ───────────────────────────────────────────────────────
+  "eco-rolled-10x10": { sku: "ECO-ROL-10X10", sizing: "fillPrintArea" },
+  "eco-rolled-12x12": { sku: "ECO-ROL-12X12", sizing: "fillPrintArea" },
+  "eco-rolled-12x18": { sku: "ECO-ROL-12X18", sizing: "fillPrintArea" },
+  "eco-rolled-16x20": { sku: "ECO-ROL-16X20", sizing: "fillPrintArea" },
+  "eco-rolled-18x24": { sku: "ECO-ROL-18X24", sizing: "fillPrintArea" },
+
+  // ── Rolled Canvas ───────────────────────────────────────────────────────────
+  "rolled-canvas-30x45": { sku: "ROL-SC-30X45", sizing: "fillPrintArea" },
+  "rolled-canvas-40x60": { sku: "ROL-SC-40X60", sizing: "fillPrintArea" },
+  "rolled-canvas-50x70": { sku: "ROL-SC-50X70", sizing: "fillPrintArea" },
+  "rolled-canvas-60x90": { sku: "ROL-SC-60X90", sizing: "fillPrintArea" },
+
+  // ── Slim Canvas ─────────────────────────────────────────────────────────────
+  "slim-canvas-8x16":  { sku: "GLOBAL-SLIMCAN-8X16",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-24x40": { sku: "GLOBAL-SLIMCAN-24X40", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-28x36": { sku: "GLOBAL-SLIMCAN-28X36", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-40x48": { sku: "GLOBAL-SLIMCAN-40X48", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+
+  // ── Box Frames ──────────────────────────────────────────────────────────────
+  "box-frame-5x7":   { sku: "GLOBAL-BOX-5X7",   sizing: "fillPrintArea" },
+  "box-frame-6x8":   { sku: "GLOBAL-BOX-6X8",   sizing: "fillPrintArea" },
+  "box-frame-11x14": { sku: "GLOBAL-BOX-11X14", sizing: "fillPrintArea" },
+  "box-frame-12x12": { sku: "GLOBAL-BOX-12X12", sizing: "fillPrintArea" },
+  "box-frame-12x16": { sku: "GLOBAL-BOX-12X16", sizing: "fillPrintArea" },
+  "box-frame-16x20": { sku: "GLOBAL-BOX-16X20", sizing: "fillPrintArea" },
+
+  // ── Framed Photo Tiles ──────────────────────────────────────────────────────
+  "photo-tile-5x7":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea" },
+  "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea" },
+  "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea" },
+
+  // ── Jigsaw Puzzles ──────────────────────────────────────────────────────────
+  "jigsaw-110":  { sku: "JIGSAW-PUZZLE-110",  sizing: "fitPrintArea" },
+  "jigsaw-252":  { sku: "JIGSAW-PUZZLE-252",  sizing: "fitPrintArea" },
+  "jigsaw-500":  { sku: "JIGSAW-PUZZLE-500",  sizing: "fitPrintArea" },
+  "jigsaw-1000": { sku: "JIGSAW-PUZZLE-1000", sizing: "fitPrintArea" },
+
+  // ── Playing Cards ───────────────────────────────────────────────────────────
+  "playing-cards": { sku: "PLAY-CARD", sizing: "fillPrintArea" },
+
+  // ── Temporary Tattoos ───────────────────────────────────────────────────────
+  "tattoo-small":  { sku: "GLOBAL-TATT-S", sizing: "fitPrintArea" },
+  "tattoo-medium": { sku: "GLOBAL-TATT-M", sizing: "fitPrintArea" },
+  "tattoo-large":  { sku: "GLOBAL-TATT-L", sizing: "fitPrintArea" },
+  "tattoo-xl":     { sku: "GLOBAL-TATT-X", sizing: "fitPrintArea" },
+
+  // ── Legacy entries (kept for backward compatibility) ────────────────────────
+  "print-a4-boutique":    { sku: "GLOBAL-FAP-A4",   sizing: "fillPrintArea" },
+  "print-a3-boutique":    { sku: "GLOBAL-FAP-A3",   sizing: "fillPrintArea" },
+  "print-a2-boutique":    { sku: "GLOBAL-FAP-A2",   sizing: "fillPrintArea" },
+  "print-a1-giant":       { sku: "GLOBAL-FAP-A1",   sizing: "fillPrintArea" },
+  "canvas-classic-30x20": { sku: "GLOBAL-CAN-10X8", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "mug-masterlab-11oz":   { sku: "GLOBAL-MUG-11OZ", sizing: "fillPrintArea" },
 };
 
 // ── Types (kept identical to the old bagsOfLove module so the webhook handler
