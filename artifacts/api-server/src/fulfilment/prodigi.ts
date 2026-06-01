@@ -100,6 +100,13 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Playing Cards ───────────────────────────────────────────────────────────
   "playing-cards": { sku: "PLAY-CARD", sizing: "fillPrintArea" },
 
+  // ── Photo Mugs ──────────────────────────────────────────────────────────────
+  // Validated against Prodigi live API on 2026-06-01.
+  // GLOBAL-MUG-W: 11oz, multi-region (UK/US/DE), best for international orders.
+  // H-MUG-15OZ-W: 15oz large ceramic, UK lab.
+  "mug-11oz": { sku: "GLOBAL-MUG-W",  sizing: "fillPrintArea" },
+  "mug-15oz": { sku: "H-MUG-15OZ-W", sizing: "fillPrintArea" },
+
   // ── Magnets ─────────────────────────────────────────────────────────────────
   // All five SKUs validated against Prodigi live API on 2026-06-01.
   // ACR = acrylic fridge magnet, FRI = standard fridge magnet, MAG-1 = square.

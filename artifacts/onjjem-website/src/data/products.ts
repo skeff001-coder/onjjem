@@ -193,6 +193,23 @@ export const products: Product[] = [
     ],
   },
 
+  // ── Kitchen & Drinkware ──────────────────────────────────────────────────────
+
+  {
+    id: "photo-mugs",
+    name: "Photo Mugs",
+    description:
+      "Your favourite photo printed on a dishwasher-safe ceramic mug. A thoughtful, everyday gift.",
+    image: "/onjjem-website/products/photo-mugs.jpg",
+    category: "kitchen",
+    variants: [
+      // Prodigi cost: £4.25 + £3.30 = £7.55 (GLOBAL-MUG-W, multi-region)
+      { sku: "mug-11oz", label: "11oz Mug",       pricePence: 1599 },
+      // Prodigi cost: £8.00 + £2.25 = £10.25 (H-MUG-15OZ-W, UK lab)
+      { sku: "mug-15oz", label: "15oz Large Mug", pricePence: 2199 },
+    ],
+  },
+
   // ── Magnets ──────────────────────────────────────────────────────────────────
 
   {
