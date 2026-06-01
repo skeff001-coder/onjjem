@@ -1,31 +1,49 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { products } from "@/data/products";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, ChevronRight, Check } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
+
+const CATEGORIES = [
+  { key: "all",     label: "All" },
+  { key: "wall-art", label: "Wall Art" },
+  { key: "frames",  label: "Frames" },
+  { key: "prints",  label: "Prints" },
+  { key: "gifts",   label: "Gifts" },
+  { key: "pets",    label: "Pets" },
+  { key: "kitchen", label: "Kitchen" },
+  { key: "magnets", label: "Magnets" },
+];
 
 export default function Home() {
   const { toast } = useToast();
-  
+  const [activeCategory, setActiveCategory] = useState("all");
+
+  const scrollToCollection = (category?: string) => {
+    if (category) setActiveCategory(category);
+    setTimeout(() => {
+      document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
+  };
+
   useEffect(() => {
-    // Check if URL has ?order=success
     if (window.location.search.includes("order=success")) {
       toast({
         title: "Order Successful",
         description: "Thank you for your order! We'll begin crafting your memory right away.",
         variant: "default",
       });
-      // Clean up URL without reloading
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-    // Scroll to collection when on /shop route
     if (window.location.pathname.endsWith("/shop")) {
-      setTimeout(() => {
-        document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+      scrollToCollection();
     }
   }, [toast]);
+
+  const filtered = activeCategory === "all"
+    ? products
+    : products.filter(p => p.category === activeCategory);
 
   return (
     <div className="min-h-[100dvh] w-full flex flex-col font-sans selection:bg-primary selection:text-primary-foreground">
@@ -37,16 +55,16 @@ export default function Home() {
           </Link>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-          <Link href="/" className="text-foreground hover:text-primary transition-colors" data-testid="link-nav-shop">Shop</Link>
+          <button onClick={() => scrollToCollection()} className="text-foreground hover:text-primary transition-colors" data-testid="link-nav-shop">Shop</button>
+          <button onClick={() => scrollToCollection("gifts")} className="hover:text-primary transition-colors" data-testid="link-nav-gifts">Gifts</button>
           <span className="hover:text-primary transition-colors cursor-pointer" data-testid="link-nav-about">About</span>
-          <span className="hover:text-primary transition-colors cursor-pointer" data-testid="link-nav-journal">Journal</span>
         </div>
       </nav>
 
       {/* Hero */}
       <section className="pt-32 pb-20 px-6 md:px-12 max-w-7xl mx-auto w-full">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -59,30 +77,34 @@ export default function Home() {
             <p className="text-lg text-muted-foreground max-w-md leading-relaxed">
               We turn your cherished photographs into heirloom objects. Beautifully crafted canvas, framed art, and personal gifts designed to last a lifetime.
             </p>
-            <div className="pt-4">
-              <button 
-                onClick={() => {
-                  document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" });
-                }}
+            <div className="pt-4 flex flex-wrap gap-3">
+              <button
+                onClick={() => scrollToCollection()}
                 className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 rounded-sm text-sm font-medium tracking-wide hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                 data-testid="button-explore"
               >
                 Explore Collection
                 <ArrowRight size={16} />
               </button>
+              <button
+                onClick={() => scrollToCollection("gifts")}
+                className="inline-flex items-center gap-3 border border-border text-foreground px-8 py-4 rounded-sm text-sm font-medium tracking-wide hover:border-primary hover:text-primary transition-all duration-300"
+                data-testid="button-gifts"
+              >
+                Gift Ideas
+              </button>
             </div>
           </motion.div>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
             className="aspect-[4/5] bg-muted rounded-sm overflow-hidden relative shadow-2xl shadow-primary/5"
           >
-            {/* Fallback styling since we don't have a hero image in assets, we use a product image */}
             <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent z-10" />
-            <img 
-              src="/onjjem-website/products/framed-canvas.webp" 
-              alt="Framed canvas resting against a wall" 
+            <img
+              src="/onjjem-website/products/framed-canvas.webp"
+              alt="Framed canvas resting against a wall"
               className="w-full h-full object-cover object-center"
             />
           </motion.div>
@@ -92,60 +114,90 @@ export default function Home() {
       {/* Collection Grid */}
       <section id="collection" className="py-24 px-6 md:px-12 bg-secondary/30">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-12">
+          {/* Header row */}
+          <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-serif text-foreground">The Collection</h2>
               <p className="mt-2 text-muted-foreground">Every piece is crafted to order.</p>
             </div>
-            <div className="hidden sm:block text-sm text-muted-foreground bg-foreground/5 px-4 py-2 rounded-sm border border-border/50">
+            <div className="hidden sm:block text-sm text-muted-foreground bg-foreground/5 px-4 py-2 rounded-sm border border-border/50 shrink-0">
               <span className="text-foreground font-medium">🎁 Free Playing Cards</span> on orders over £50
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-            {products.map((product, i) => (
-              <motion.div 
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="group flex flex-col"
+          {/* Category filter tabs */}
+          <div className="flex flex-wrap gap-2 mb-10">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat.key}
+                onClick={() => setActiveCategory(cat.key)}
+                data-testid={`filter-${cat.key}`}
+                className={`px-4 py-2 rounded-sm text-sm font-medium transition-all duration-200 border ${
+                  activeCategory === cat.key
+                    ? "bg-foreground text-background border-foreground"
+                    : "bg-transparent text-muted-foreground border-border hover:border-foreground hover:text-foreground"
+                }`}
               >
-                <Link href={`/product/${product.id}`} className="block relative aspect-square mb-6 overflow-hidden rounded-sm bg-muted" data-testid={`link-product-${product.id}`}>
-                  <div className="absolute inset-0 bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWRlOWUzIi8+PC9zdmc+';
-                    }}
-                  />
-                </Link>
-                <div className="flex flex-col flex-grow">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-serif text-xl text-foreground group-hover:text-primary transition-colors">
-                      <Link href={`/product/${product.id}`}>{product.name}</Link>
-                    </h3>
-                    <span className="text-sm font-medium text-muted-foreground">
-                      from £{(Math.min(...product.variants.map(v => v.pricePence)) / 100).toFixed(2)}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-grow">
-                    {product.description}
-                  </p>
-                  <Link 
-                    href={`/product/${product.id}`} 
-                    className="inline-flex items-center text-sm font-medium text-foreground hover:text-primary transition-colors mt-auto"
-                    data-testid={`link-personalize-${product.id}`}
-                  >
-                    Personalize <ChevronRight size={14} className="ml-1" />
-                  </Link>
-                </div>
-              </motion.div>
+                {cat.label}
+              </button>
             ))}
           </div>
+
+          {/* Product grid */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeCategory}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16"
+            >
+              {filtered.length === 0 ? (
+                <p className="col-span-3 text-muted-foreground py-12 text-center">No products in this category yet.</p>
+              ) : filtered.map((product, i) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                  className="group flex flex-col"
+                >
+                  <Link href={`/product/${product.id}`} className="block relative aspect-square mb-6 overflow-hidden rounded-sm bg-muted" data-testid={`link-product-${product.id}`}>
+                    <div className="absolute inset-0 bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWRlOWUzIi8+PC9zdmc+';
+                      }}
+                    />
+                  </Link>
+                  <div className="flex flex-col flex-grow">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-serif text-xl text-foreground group-hover:text-primary transition-colors">
+                        <Link href={`/product/${product.id}`}>{product.name}</Link>
+                      </h3>
+                      <span className="text-sm font-medium text-muted-foreground">
+                        from £{(Math.min(...product.variants.map(v => v.pricePence)) / 100).toFixed(2)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-grow">
+                      {product.description}
+                    </p>
+                    <Link
+                      href={`/product/${product.id}`}
+                      className="inline-flex items-center text-sm font-medium text-foreground hover:text-primary transition-colors mt-auto"
+                      data-testid={`link-personalize-${product.id}`}
+                    >
+                      Personalise <ChevronRight size={14} className="ml-1" />
+                    </Link>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
@@ -161,9 +213,24 @@ export default function Home() {
           <div>
             <h5 className="font-medium mb-4 text-sm tracking-widest uppercase text-background/50">Shop</h5>
             <ul className="space-y-2 text-background/80">
-              <li><Link href="/" className="hover:text-primary-foreground transition-colors">All Products</Link></li>
-              <li><span className="hover:text-primary-foreground transition-colors cursor-pointer">Wall Art</span></li>
-              <li><span className="hover:text-primary-foreground transition-colors cursor-pointer">Gifts</span></li>
+              <li>
+                <button onClick={() => scrollToCollection("all")} className="hover:text-primary-foreground transition-colors text-left">All Products</button>
+              </li>
+              <li>
+                <button onClick={() => scrollToCollection("wall-art")} className="hover:text-primary-foreground transition-colors text-left">Wall Art</button>
+              </li>
+              <li>
+                <button onClick={() => scrollToCollection("frames")} className="hover:text-primary-foreground transition-colors text-left">Frames</button>
+              </li>
+              <li>
+                <button onClick={() => scrollToCollection("gifts")} className="hover:text-primary-foreground transition-colors text-left">Gifts</button>
+              </li>
+              <li>
+                <button onClick={() => scrollToCollection("kitchen")} className="hover:text-primary-foreground transition-colors text-left">Kitchen</button>
+              </li>
+              <li>
+                <button onClick={() => scrollToCollection("pets")} className="hover:text-primary-foreground transition-colors text-left">Pets</button>
+              </li>
             </ul>
           </div>
           <div>
