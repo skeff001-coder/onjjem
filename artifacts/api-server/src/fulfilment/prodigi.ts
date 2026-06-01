@@ -15,7 +15,8 @@
  * Sandbox base:  https://api.sandbox.prodigi.com   (no charge, not produced)
  * Live base:     https://api.prodigi.com           (real, produced & shipped)
  * Docs:          https://www.prodigi.com/print-api/docs/reference/
- * Get an API key: dashboard.prodigi.com → Settings → Integrations → API
+ *
+ * All SKUs validated against the LIVE Prodigi API on 2026-06-01.
  */
 
 import { db } from "@workspace/db";
@@ -25,43 +26,40 @@ import { ObjectStorageService } from "../lib/objectStorage";
 
 // ── SKU → Prodigi product mapping ────────────────────────────────────────────
 // Maps our website SKU to a Prodigi product SKU (+ optional copies/attributes).
-// These SKUs MUST be validated against Prodigi (the quotes endpoint validates a
-// SKU) before going live — verify each one in sandbox first.
 //
-//   sizing:     "fillPrintArea" (recommended) crops to fill; "fitPrintArea" letterboxes.
-//   attributes: product-specific options (e.g. canvas { wrap }, frames { color }).
+//   sizing:      "fillPrintArea" (recommended) crops to fill; "fitPrintArea" letterboxes.
+//   attributes:  product-specific options (e.g. wrap, color) — required by Prodigi.
+//   printAreas:  list of print area names to render. Defaults to ["default"].
+//                Jigsaws require ["jigsaw", "lid"] — customer photo is printed on both.
 //
-// Add more rows as products are verified in the Prodigi catalogue.
 export interface ProdigiProduct {
   sku: string;
   copies?: number;
   sizing?: "fillPrintArea" | "fitPrintArea";
   attributes?: Record<string, string>;
+  printAreas?: string[]; // defaults to ["default"]; jigsaws need ["jigsaw","lid"]
 }
 
 export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Stretched Canvas ────────────────────────────────────────────────────────
+  // SKU format: GLOBAL-CAN-{W}X{H} (inches). wrap attribute required.
   "canvas-stretched-8x10":  { sku: "GLOBAL-CAN-8X10",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "canvas-stretched-10x12": { sku: "GLOBAL-CAN-10X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "canvas-stretched-12x16": { sku: "GLOBAL-CAN-12X16", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "canvas-stretched-16x20": { sku: "GLOBAL-CAN-16X20", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "canvas-stretched-20x24": { sku: "GLOBAL-CAN-20X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
 
-  // ── Framed Canvas (Black frame) ─────────────────────────────────────────────
-  "canvas-framed-8x8-black":   { sku: "FRA-MC-8X8-B",   sizing: "fillPrintArea" },
-  "canvas-framed-10x8-black":  { sku: "FRA-MC-10X8-B",  sizing: "fillPrintArea" },
-  "canvas-framed-12x10-black": { sku: "FRA-MC-12X10-B", sizing: "fillPrintArea" },
-  "canvas-framed-16x12-black": { sku: "FRA-MC-16X12-B", sizing: "fillPrintArea" },
-
   // ── Eco Canvas ──────────────────────────────────────────────────────────────
-  "eco-canvas-8x8":   { sku: "ECO-CAN-8X8",   sizing: "fillPrintArea" },
-  "eco-canvas-8x12":  { sku: "ECO-CAN-8X12",  sizing: "fillPrintArea" },
-  "eco-canvas-12x12": { sku: "ECO-CAN-12X12", sizing: "fillPrintArea" },
-  "eco-canvas-12x18": { sku: "ECO-CAN-12X18", sizing: "fillPrintArea" },
-  "eco-canvas-16x16": { sku: "ECO-CAN-16X16", sizing: "fillPrintArea" },
-  "eco-canvas-16x24": { sku: "ECO-CAN-16X24", sizing: "fillPrintArea" },
+  // ECO-CAN-* requires wrap attribute (same as stretched canvas).
+  "eco-canvas-8x8":   { sku: "ECO-CAN-8X8",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "eco-canvas-8x12":  { sku: "ECO-CAN-8X12",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "eco-canvas-12x12": { sku: "ECO-CAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "eco-canvas-12x18": { sku: "ECO-CAN-12X18", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "eco-canvas-16x16": { sku: "ECO-CAN-16X16", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "eco-canvas-16x24": { sku: "ECO-CAN-16X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
 
   // ── Eco Rolled Canvas ───────────────────────────────────────────────────────
+  // ECO-ROL-* unframed rolled prints, no attribute required.
   "eco-rolled-10x10": { sku: "ECO-ROL-10X10", sizing: "fillPrintArea" },
   "eco-rolled-12x12": { sku: "ECO-ROL-12X12", sizing: "fillPrintArea" },
   "eco-rolled-12x18": { sku: "ECO-ROL-12X18", sizing: "fillPrintArea" },
@@ -69,46 +67,60 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "eco-rolled-18x24": { sku: "ECO-ROL-18X24", sizing: "fillPrintArea" },
 
   // ── Rolled Canvas ───────────────────────────────────────────────────────────
-  "rolled-canvas-30x45": { sku: "ROL-SC-30X45", sizing: "fillPrintArea" },
-  "rolled-canvas-40x60": { sku: "ROL-SC-40X60", sizing: "fillPrintArea" },
-  "rolled-canvas-50x70": { sku: "ROL-SC-50X70", sizing: "fillPrintArea" },
-  "rolled-canvas-60x90": { sku: "ROL-SC-60X90", sizing: "fillPrintArea" },
+  // Correct format: GLOBAL-CAN-ROL-SC-{W}X{H} (inches).
+  // NOTE: ROL-SC-* prefix is NOT valid in the Prodigi live catalog.
+  "rolled-canvas-10x10": { sku: "GLOBAL-CAN-ROL-SC-10X10", sizing: "fillPrintArea" },
+  "rolled-canvas-12x16": { sku: "GLOBAL-CAN-ROL-SC-12X16", sizing: "fillPrintArea" },
+  "rolled-canvas-16x20": { sku: "GLOBAL-CAN-ROL-SC-16X20", sizing: "fillPrintArea" },
+  "rolled-canvas-18x24": { sku: "GLOBAL-CAN-ROL-SC-18X24", sizing: "fillPrintArea" },
+  "rolled-canvas-20x28": { sku: "GLOBAL-CAN-ROL-SC-20X28", sizing: "fillPrintArea" },
 
   // ── Slim Canvas ─────────────────────────────────────────────────────────────
+  // GLOBAL-SLIMCAN-* requires wrap attribute.
   "slim-canvas-8x16":  { sku: "GLOBAL-SLIMCAN-8X16",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "slim-canvas-24x40": { sku: "GLOBAL-SLIMCAN-24X40", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "slim-canvas-28x36": { sku: "GLOBAL-SLIMCAN-28X36", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "slim-canvas-40x48": { sku: "GLOBAL-SLIMCAN-40X48", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
 
   // ── Box Frames ──────────────────────────────────────────────────────────────
-  "box-frame-5x7":   { sku: "GLOBAL-BOX-5X7",   sizing: "fillPrintArea" },
-  "box-frame-6x8":   { sku: "GLOBAL-BOX-6X8",   sizing: "fillPrintArea" },
-  "box-frame-11x14": { sku: "GLOBAL-BOX-11X14", sizing: "fillPrintArea" },
-  "box-frame-12x12": { sku: "GLOBAL-BOX-12X12", sizing: "fillPrintArea" },
-  "box-frame-12x16": { sku: "GLOBAL-BOX-12X16", sizing: "fillPrintArea" },
-  "box-frame-16x20": { sku: "GLOBAL-BOX-16X20", sizing: "fillPrintArea" },
+  // GLOBAL-BOX-* requires color attribute: "white" | "natural" | "black".
+  "box-frame-5x7":   { sku: "GLOBAL-BOX-5X7",   sizing: "fillPrintArea", attributes: { color: "black" } },
+  "box-frame-6x8":   { sku: "GLOBAL-BOX-6X8",   sizing: "fillPrintArea", attributes: { color: "black" } },
+  "box-frame-11x14": { sku: "GLOBAL-BOX-11X14", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "box-frame-12x12": { sku: "GLOBAL-BOX-12X12", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "box-frame-12x16": { sku: "GLOBAL-BOX-12X16", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "box-frame-16x20": { sku: "GLOBAL-BOX-16X20", sizing: "fillPrintArea", attributes: { color: "black" } },
 
   // ── Framed Photo Tiles ──────────────────────────────────────────────────────
-  "photo-tile-5x7":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea" },
-  "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea" },
-  "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea" },
+  // PHOTIL-FRA-* requires color attribute: "white" | "black".
+  "photo-tile-5x7":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "black" } },
 
   // ── Jigsaw Puzzles ──────────────────────────────────────────────────────────
-  "jigsaw-110":  { sku: "JIGSAW-PUZZLE-110",  sizing: "fitPrintArea" },
-  "jigsaw-252":  { sku: "JIGSAW-PUZZLE-252",  sizing: "fitPrintArea" },
-  "jigsaw-500":  { sku: "JIGSAW-PUZZLE-500",  sizing: "fitPrintArea" },
-  "jigsaw-1000": { sku: "JIGSAW-PUZZLE-1000", sizing: "fitPrintArea" },
+  // Jigsaws REQUIRE two print areas: "jigsaw" (the puzzle surface) and "lid"
+  // (the box lid). The customer's photo is printed on both.
+  "jigsaw-110":  { sku: "JIGSAW-PUZZLE-110",  sizing: "fitPrintArea", printAreas: ["jigsaw", "lid"] },
+  "jigsaw-252":  { sku: "JIGSAW-PUZZLE-252",  sizing: "fitPrintArea", printAreas: ["jigsaw", "lid"] },
+  "jigsaw-500":  { sku: "JIGSAW-PUZZLE-500",  sizing: "fitPrintArea", printAreas: ["jigsaw", "lid"] },
+  "jigsaw-1000": { sku: "JIGSAW-PUZZLE-1000", sizing: "fitPrintArea", printAreas: ["jigsaw", "lid"] },
 
   // ── Playing Cards ───────────────────────────────────────────────────────────
   "playing-cards": { sku: "PLAY-CARD", sizing: "fillPrintArea" },
 
   // ── Temporary Tattoos ───────────────────────────────────────────────────────
+  // Validated live SKUs: S, M, L. XL variant (GLOBAL-TATT-X / XX) is not in
+  // the Prodigi live catalog — do not add until confirmed.
   "tattoo-small":  { sku: "GLOBAL-TATT-S", sizing: "fitPrintArea" },
   "tattoo-medium": { sku: "GLOBAL-TATT-M", sizing: "fitPrintArea" },
   "tattoo-large":  { sku: "GLOBAL-TATT-L", sizing: "fitPrintArea" },
-  "tattoo-xl":     { sku: "GLOBAL-TATT-X", sizing: "fitPrintArea" },
 
-  // ── Legacy entries (kept for backward compatibility) ────────────────────────
+  // ── Framed Canvas ───────────────────────────────────────────────────────────
+  // TODO: FRA-MC-* SKUs (including -B, -V suffix variants) all return
+  // SkuNotFound from the live Prodigi API (verified 2026-06-01). Omitted until
+  // Prodigi confirms the correct SKU format for framed mini canvases.
+
+  // ── Legacy / Fine Art Prints ────────────────────────────────────────────────
   "print-a4-boutique":    { sku: "GLOBAL-FAP-A4",   sizing: "fillPrintArea" },
   "print-a3-boutique":    { sku: "GLOBAL-FAP-A3",   sizing: "fillPrintArea" },
   "print-a2-boutique":    { sku: "GLOBAL-FAP-A2",   sizing: "fillPrintArea" },
@@ -117,8 +129,7 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "mug-masterlab-11oz":   { sku: "GLOBAL-MUG-11OZ", sizing: "fillPrintArea" },
 };
 
-// ── Types (kept identical to the old bagsOfLove module so the webhook handler
-//    can swap providers by changing only the import path) ──────────────────────
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface FulfilmentAddress {
   name: string;
@@ -210,6 +221,11 @@ async function submitToProdigi(
 
   const imageUrl = await photoToPublicUrl(order.photoBase64);
 
+  // Build assets array — most products use a single "default" print area;
+  // jigsaws (and any future multi-area products) need one entry per area.
+  const printAreas = product.printAreas ?? ["default"];
+  const assets = printAreas.map((area) => ({ printArea: area, url: imageUrl }));
+
   const payload = {
     merchantReference: order.stripeSessionId,
     shippingMethod: SHIPPING_METHOD,
@@ -230,7 +246,7 @@ async function submitToProdigi(
         copies: product.copies ?? 1,
         sizing: product.sizing ?? "fillPrintArea",
         ...(product.attributes ? { attributes: product.attributes } : {}),
-        assets: [{ printArea: "default", url: imageUrl }],
+        assets,
       },
     ],
   };
