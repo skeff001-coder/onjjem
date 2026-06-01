@@ -107,6 +107,14 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "mug-11oz": { sku: "GLOBAL-MUG-W",  sizing: "fillPrintArea" },
   "mug-15oz": { sku: "H-MUG-15OZ-W", sizing: "fillPrintArea" },
 
+  // ── Wooden Coasters ─────────────────────────────────────────────────────────
+  // UK lab (H-COAST-*). All 4x4" square with cork underside.
+  // Validated against Prodigi live API on 2026-06-01.
+  "coaster-1pk": { sku: "H-COAST-1PK", sizing: "fillPrintArea" },
+  "coaster-2pk": { sku: "H-COAST-2PK", sizing: "fillPrintArea" },
+  "coaster-4pk": { sku: "H-COAST-4PK", sizing: "fillPrintArea" },
+  "coaster-6pk": { sku: "H-COAST-6PK", sizing: "fillPrintArea" },
+
   // ── Magnets ─────────────────────────────────────────────────────────────────
   // All five SKUs validated against Prodigi live API on 2026-06-01.
   // ACR = acrylic fridge magnet, FRI = standard fridge magnet, MAG-1 = square.

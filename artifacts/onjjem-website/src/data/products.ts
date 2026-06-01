@@ -196,6 +196,25 @@ export const products: Product[] = [
   // ── Kitchen & Drinkware ──────────────────────────────────────────────────────
 
   {
+    id: "wooden-coasters",
+    name: "Wooden Coasters",
+    description:
+      "Custom photo coasters made from 4mm MDF with a high-gloss finish and protective cork underside. Order individually or as a set.",
+    image: "/onjjem-website/products/wooden-coasters.jpg",
+    category: "kitchen",
+    variants: [
+      // Prodigi cost: £4.00 + £2.25 = £6.25
+      { sku: "coaster-1pk", label: "Single coaster",  pricePence: 1299 },
+      // Prodigi cost: £5.50 + £2.25 = £7.75
+      { sku: "coaster-2pk", label: "Set of 2",        pricePence: 1599 },
+      // Prodigi cost: £10.00 + £2.25 = £12.25
+      { sku: "coaster-4pk", label: "Set of 4",        pricePence: 2499 },
+      // Prodigi cost: £15.00 + £2.25 = £17.25
+      { sku: "coaster-6pk", label: "Set of 6",        pricePence: 3499 },
+    ],
+  },
+
+  {
     id: "photo-mugs",
     name: "Photo Mugs",
     description:
