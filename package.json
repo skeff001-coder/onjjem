@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@replit/revenuecat-sdk": "^4.0.0",
+    "expo": "~54.0.34",
     "stripe": "^22.1.1",
     "stripe-replit-sync": "^1.0.0"
   }
