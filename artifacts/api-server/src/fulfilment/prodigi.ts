@@ -97,36 +97,23 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "black" } },
   "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "black" } },
 
-  // ── Jigsaw Puzzles ──────────────────────────────────────────────────────────
-  // Jigsaws REQUIRE two print areas: "jigsaw" (the puzzle surface) and "lid"
-  // (the box lid). The customer's photo is printed on both.
-  "jigsaw-110":  { sku: "JIGSAW-PUZZLE-110",  sizing: "fitPrintArea", printAreas: ["jigsaw", "lid"] },
-  "jigsaw-252":  { sku: "JIGSAW-PUZZLE-252",  sizing: "fitPrintArea", printAreas: ["jigsaw", "lid"] },
-  "jigsaw-500":  { sku: "JIGSAW-PUZZLE-500",  sizing: "fitPrintArea", printAreas: ["jigsaw", "lid"] },
-  "jigsaw-1000": { sku: "JIGSAW-PUZZLE-1000", sizing: "fitPrintArea", printAreas: ["jigsaw", "lid"] },
-
   // ── Playing Cards ───────────────────────────────────────────────────────────
   "playing-cards": { sku: "PLAY-CARD", sizing: "fillPrintArea" },
 
-  // ── Temporary Tattoos ───────────────────────────────────────────────────────
-  // Validated live SKUs: S, M, L. XL variant (GLOBAL-TATT-X / XX) is not in
-  // the Prodigi live catalog — do not add until confirmed.
-  "tattoo-small":  { sku: "GLOBAL-TATT-S", sizing: "fitPrintArea" },
-  "tattoo-medium": { sku: "GLOBAL-TATT-M", sizing: "fitPrintArea" },
-  "tattoo-large":  { sku: "GLOBAL-TATT-L", sizing: "fitPrintArea" },
+  // ── Magnets ─────────────────────────────────────────────────────────────────
+  // All five SKUs validated against Prodigi live API on 2026-06-01.
+  // ACR = acrylic fridge magnet, FRI = standard fridge magnet, MAG-1 = square.
+  "magnet-acrylic-2x3":  { sku: "M-MAG-ACR-4X6",  sizing: "fillPrintArea" }, // 2"×3" acrylic
+  "magnet-fridge-3x2":   { sku: "M-MAG-FRI-3X2",  sizing: "fillPrintArea" }, // 3"×2"
+  "magnet-fridge-6x4":   { sku: "M-MAG-FRI-4X6",  sizing: "fillPrintArea" }, // 6"×4"
+  "magnet-square-4x4":   { sku: "MAG-1-10X10",     sizing: "fillPrintArea" }, // 4"×4" (10×10cm)
+  "magnet-square-6x6":   { sku: "MAG-1-15X15",     sizing: "fillPrintArea" }, // 6"×6" (15×15cm)
 
   // ── Framed Canvas ───────────────────────────────────────────────────────────
   // TODO: FRA-MC-* SKUs (including -B, -V suffix variants) all return
   // SkuNotFound from the live Prodigi API (verified 2026-06-01). Omitted until
   // Prodigi confirms the correct SKU format for framed mini canvases.
 
-  // ── Legacy / Fine Art Prints ────────────────────────────────────────────────
-  "print-a4-boutique":    { sku: "GLOBAL-FAP-A4",   sizing: "fillPrintArea" },
-  "print-a3-boutique":    { sku: "GLOBAL-FAP-A3",   sizing: "fillPrintArea" },
-  "print-a2-boutique":    { sku: "GLOBAL-FAP-A2",   sizing: "fillPrintArea" },
-  "print-a1-giant":       { sku: "GLOBAL-FAP-A1",   sizing: "fillPrintArea" },
-  "canvas-classic-30x20": { sku: "GLOBAL-CAN-10X8", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "mug-masterlab-11oz":   { sku: "GLOBAL-MUG-11OZ", sizing: "fillPrintArea" },
 };
 
 // ── Types ─────────────────────────────────────────────────────────────────────

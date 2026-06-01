@@ -181,25 +181,6 @@ export const products: Product[] = [
   // ── Gifts ────────────────────────────────────────────────────────────────────
 
   {
-    id: "jigsaw-puzzles",
-    name: "Jigsaw Puzzles",
-    description:
-      "Turn your favourite memory into an interactive experience. Your photo printed on the puzzle surface and the box lid.",
-    image: "/onjjem-website/products/jigsaw-puzzles.webp",
-    category: "gifts",
-    variants: [
-      // Prodigi cost: £12 + £4.30 = £16.30
-      { sku: "jigsaw-110",  label: "110 pieces", pricePence: 3499 },
-      // Prodigi cost: £13 + £4.30 = £17.30
-      { sku: "jigsaw-252",  label: "252 pieces", pricePence: 3499 },
-      // Prodigi cost: £16 + £4.30 = £20.30
-      { sku: "jigsaw-500",  label: "500 pieces", pricePence: 4499 },
-      // Prodigi cost: £20 + £4.30 = £24.30
-      { sku: "jigsaw-1000", label: "1,000 pieces", pricePence: 4999 },
-    ],
-  },
-
-  {
     id: "playing-cards",
     name: "Playing Cards",
     description:
@@ -212,22 +193,26 @@ export const products: Product[] = [
     ],
   },
 
-  // ── Fun ──────────────────────────────────────────────────────────────────────
+  // ── Magnets ──────────────────────────────────────────────────────────────────
 
   {
-    id: "temporary-tattoos",
-    name: "Temporary Tattoos",
+    id: "photo-magnets",
+    name: "Photo Magnets",
     description:
-      "Fun, skin-safe temporary tattoos with your custom photo or design. Great for parties, events, and gifts.",
-    image: "/onjjem-website/products/temporary-tattoos.webp",
-    category: "fun",
+      "Turn your favourite photo into a fridge magnet. Bright, crisp printing on durable magnetic stock — perfect for the kitchen or as a gift.",
+    image: "/onjjem-website/products/photo-magnets.webp",
+    category: "magnets",
     variants: [
-      // Prodigi cost: £2.95 + £2.30 = £5.25
-      { sku: "tattoo-small",  label: "Small (4×2.5 cm)",  pricePence: 1499 },
-      // Prodigi cost: £5.95 + £2.30 = £8.25
-      { sku: "tattoo-medium", label: "Medium (9×5 cm)",   pricePence: 1999 },
-      // Prodigi cost: £8.95 + £2.30 = £11.25
-      { sku: "tattoo-large",  label: "Large (15×8 cm)",   pricePence: 2499 },
+      // Prodigi cost: £2.00 + £1.35 = £3.35
+      { sku: "magnet-fridge-3x2",  label: '3"×2" Fridge Magnet',   pricePence:  799 },
+      // Prodigi cost: £3.00 + £1.35 = £4.35
+      { sku: "magnet-fridge-6x4",  label: '6"×4" Fridge Magnet',   pricePence:  999 },
+      // Prodigi cost: £4.50 + £1.35 = £5.85
+      { sku: "magnet-acrylic-2x3", label: '2"×3" Acrylic Magnet',  pricePence: 1299 },
+      // Prodigi cost: £4.00 + £2.30 = £6.30
+      { sku: "magnet-square-4x4",  label: '4"×4" Square Magnet',   pricePence: 1299 },
+      // Prodigi cost: £6.00 + £2.30 = £8.30
+      { sku: "magnet-square-6x6",  label: '6"×6" Square Magnet',   pricePence: 1699 },
     ],
   },
 ];
