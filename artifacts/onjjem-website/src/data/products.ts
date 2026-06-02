@@ -181,6 +181,23 @@ export const products: Product[] = [
   // ── Gifts ────────────────────────────────────────────────────────────────────
 
   {
+    id: "jigsaw-puzzles",
+    name: "Jigsaw Puzzles",
+    description:
+      "Your restored photo printed on a premium jigsaw puzzle and supplied in a beautiful metal presentation tin. The lid also features your photo.",
+    image: "/onjjem-website/products/jigsaw-puzzles.webp",
+    category: "gifts",
+    variants: [
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £26.40
+      { sku: "jigsaw-252", label: "252 pieces (375×285mm)", pricePence: 2699 },
+      // cost £12.00 + £3.20 ship = £15.20 → 50% margin = £30.40
+      { sku: "jigsaw-500", label: "500 pieces (530×390mm)", pricePence: 3099 },
+      // cost £17.00 + £3.20 ship = £20.20 → 50% margin = £40.40
+      { sku: "jigsaw-1000", label: "1000 pieces (765×525mm)", pricePence: 4099 },
+    ],
+  },
+
+  {
     id: "playing-cards",
     name: "Playing Cards",
     description:

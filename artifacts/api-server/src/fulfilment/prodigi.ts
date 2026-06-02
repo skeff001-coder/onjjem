@@ -136,10 +136,12 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "magnet-square-4x4":   { sku: "MAG-1-10X10",     sizing: "fillPrintArea" }, // 4"×4" (10×10cm)
   "magnet-square-6x6":   { sku: "MAG-1-15X15",     sizing: "fillPrintArea" }, // 6"×6" (15×15cm)
 
-  // ── Framed Canvas ───────────────────────────────────────────────────────────
-  // TODO: FRA-MC-* SKUs (including -B, -V suffix variants) all return
-  // SkuNotFound from the live Prodigi API (verified 2026-06-01). Omitted until
-  // Prodigi confirms the correct SKU format for framed mini canvases.
+  // ── Jigsaw Puzzles ───────────────────────────────────────────────────────────
+  // JIGSAW-PUZZLE-* SKUs validated against Prodigi live API on 2026-06-02.
+  // All require printAreas: ["jigsaw", "lid"] — customer photo prints on both.
+  "jigsaw-252":  { sku: "JIGSAW-PUZZLE-252",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 252pc, 375×285mm
+  "jigsaw-500":  { sku: "JIGSAW-PUZZLE-500",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 500pc, 530×390mm
+  "jigsaw-1000": { sku: "JIGSAW-PUZZLE-1000", sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 1000pc, 765×525mm
 
 };
 
