@@ -354,7 +354,7 @@ export default function Home() {
             <h5 className="font-medium mb-4 text-sm tracking-widest uppercase text-background/50">Support</h5>
             <ul className="space-y-2 text-background/80">
               <li>
-                <a href="mailto:support@onjjem.com" className="hover:text-primary-foreground transition-colors">Contact Us</a>
+                <Link href="/contact" className="hover:text-primary-foreground transition-colors">Contact Us</Link>
               </li>
               <li>
                 <button onClick={() => document.getElementById("shipping")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-primary-foreground transition-colors text-left">Shipping & Returns</button>

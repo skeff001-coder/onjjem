@@ -5,6 +5,7 @@ import analyticsRouter from "./analytics";
 import stripeRouter from "./stripe";
 import emailSignupRouter from "./emailSignup";
 import photoUploadRouter from "./photoUpload";
+import contactRouter from "./contact";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(analyticsRouter);
 router.use(stripeRouter);
 router.use(emailSignupRouter);
 router.use(photoUploadRouter);
+router.use(contactRouter);
 
 export default router;
