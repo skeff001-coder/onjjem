@@ -340,4 +340,93 @@ export const products: Product[] = [
       { sku: "magnet-square-6x6",  label: '6"×6" Square Magnet',   pricePence: 1699 },
     ],
   },
+
+  // ── Phone Cases ──────────────────────────────────────────────────────────────
+
+  {
+    id: "folio-wallet",
+    name: "Folio Wallet Cases",
+    description:
+      "Premium faux-leather folio wallet cases with custom photo printing. Features card slots, stand function, and a magnetic closure. Your photo on the cover, your cards inside.",
+    image: "/onjjem-website/products/folio-wallet.png",
+    category: "phone-cases",
+    variants: [
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
+      { sku: "folio-iphone11",      label: "iPhone 11",       pricePence: 1999 },
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
+      { sku: "folio-iphone11pro",   label: "iPhone 11 Pro",   pricePence: 1999 },
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
+      { sku: "folio-iphone11promax", label: "iPhone 11 Pro Max", pricePence: 1999 },
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
+      { sku: "folio-iphone12",      label: "iPhone 12",       pricePence: 1999 },
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
+      { sku: "folio-iphone12mini",  label: "iPhone 12 mini",  pricePence: 1999 },
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
+      { sku: "folio-iphone12pro",   label: "iPhone 12 Pro",   pricePence: 1999 },
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
+      { sku: "folio-iphone12promax", label: "iPhone 12 Pro Max", pricePence: 1999 },
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
+      { sku: "folio-iphone13",      label: "iPhone 13",       pricePence: 1999 },
+    ],
+  },
+
+  {
+    id: "tough-phone-case",
+    name: "Tough Phone Cases",
+    description:
+      "Dual-layer tough phone cases with custom photo printing. A hard polycarbonate outer shell and soft TPU inner bumper provide serious drop protection while showing off your favourite photo.",
+    image: "/onjjem-website/products/tough-case.png",
+    category: "phone-cases",
+    variants: [
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone11",      label: "iPhone 11",       pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone11pro",   label: "iPhone 11 Pro",   pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone11promax", label: "iPhone 11 Pro Max", pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone12",      label: "iPhone 12",       pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone12mini",  label: "iPhone 12 mini",  pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone12pro",   label: "iPhone 12 Pro",   pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone12promax", label: "iPhone 12 Pro Max", pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone13",      label: "iPhone 13",       pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone13mini",  label: "iPhone 13 mini",  pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone13pro",   label: "iPhone 13 Pro",   pricePence: 1699 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "tough-iphone13promax", label: "iPhone 13 Pro Max", pricePence: 1699 },
+    ],
+  },
+
+  // ── Glow Posters ───────────────────────────────────────────────────────────────
+
+  {
+    id: "glow-poster",
+    name: "Glow in the Dark Posters",
+    description:
+      "Turn your favourite photo into a glow-in-the-dark poster. Charges under natural or artificial light, then glows softly for hours. Perfect for bedrooms, nurseries, and creative spaces.",
+    image: "/onjjem-website/products/glow-poster.png",
+    category: "glow-posters",
+    variants: [
+      // cost £4.00 + £3.20 ship = £7.20 → 50% margin = £10.80
+      { sku: "glow-4x6",   label: '4"×6"',   pricePence: 1099 },
+      // cost £5.00 + £3.20 ship = £8.20 → 50% margin = £12.30
+      { sku: "glow-5x7",   label: '5"×7"',   pricePence: 1299 },
+      // cost £6.00 + £3.20 ship = £9.20 → 50% margin = £13.80
+      { sku: "glow-8x10",  label: '8"×10"',  pricePence: 1399 },
+      // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
+      { sku: "glow-12x16", label: '12"×16"', pricePence: 1699 },
+      // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
+      { sku: "glow-16x20", label: '16"×20"', pricePence: 1999 },
+      // cost £14.00 + £3.20 ship = £17.20 → 50% margin = £25.80
+      { sku: "glow-20x24", label: '20"×24"', pricePence: 2599 },
+      // cost £20.00 + £3.20 ship = £23.20 → 50% margin = £34.80
+      { sku: "glow-24x32", label: '24"×32"', pricePence: 3499 },
+    ],
+  },
 ];

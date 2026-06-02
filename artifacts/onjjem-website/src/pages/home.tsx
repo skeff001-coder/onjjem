@@ -6,15 +6,17 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, ChevronRight } from "lucide-react";
 
 const CATEGORIES = [
-  { key: "all",     label: "All" },
-  { key: "wall-art", label: "Wall Art" },
-  { key: "frames",  label: "Frames" },
-  { key: "prints",  label: "Prints" },
-  { key: "gifts",   label: "Gifts" },
-  { key: "pets",    label: "Pets" },
-  { key: "kitchen", label: "Kitchen" },
-  { key: "magnets", label: "Magnets" },
-  { key: "tattoos", label: "Tattoos" },
+  { key: "all",         label: "All" },
+  { key: "wall-art",    label: "Wall Art" },
+  { key: "frames",      label: "Frames" },
+  { key: "prints",      label: "Prints" },
+  { key: "gifts",       label: "Gifts" },
+  { key: "pets",        label: "Pets" },
+  { key: "kitchen",     label: "Kitchen" },
+  { key: "magnets",     label: "Magnets" },
+  { key: "tattoos",     label: "Tattoos" },
+  { key: "phone-cases", label: "Phone Cases" },
+  { key: "glow-posters", label: "Glow Posters" },
 ];
 
 export default function Home() {
@@ -39,6 +41,12 @@ export default function Home() {
     }
     if (window.location.pathname.endsWith("/shop")) {
       scrollToCollection();
+    }
+    // Sync category from URL query param on load
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get("category");
+    if (cat && CATEGORIES.some(c => c.key === cat)) {
+      setActiveCategory(cat);
     }
   }, [toast]);
 
