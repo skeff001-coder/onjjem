@@ -8,19 +8,19 @@ import { Scene4 } from './video_scenes/Scene4';
 import { Scene5 } from './video_scenes/Scene5';
 
 export const SCENE_DURATIONS = {
-  open: 3500,
-  build1: 4500,
-  build2: 4000,
-  build3: 4000,
-  close: 4000,
+  intro: 3000,
+  onjjem: 3500,
+  byte2eat: 3500,
+  effortless: 3500,
+  whatsupdog: 4500,
 };
 
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
-  open: Scene1,
-  build1: Scene2,
-  build2: Scene3,
-  build3: Scene4,
-  close: Scene5,
+  intro: Scene1,
+  onjjem: Scene2,
+  byte2eat: Scene3,
+  effortless: Scene4,
+  whatsupdog: Scene5,
 };
 
 const SCENE_START_SEC: Record<string, number> = (() => {
@@ -78,38 +78,26 @@ export default function VideoTemplate({
       {/* Persistent Background Layer */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <motion.div
-          className="absolute w-[80vw] h-[80vw] rounded-full opacity-40 blur-3xl"
-          style={{ background: 'radial-gradient(circle, var(--color-bg-muted), transparent)' }}
+          className="absolute w-[80vw] h-[80vw] rounded-full opacity-30 blur-3xl mix-blend-screen"
+          style={{ background: 'radial-gradient(circle, var(--color-primary), transparent)' }}
           animate={{
             x: ['-20%', '10%', '-10%'],
             y: ['-10%', '20%', '0%'],
-            scale: [1, 1.1, 0.9],
+            scale: [1, 1.2, 0.9],
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute w-[60vw] h-[60vw] rounded-full opacity-20 blur-3xl right-0 bottom-0 mix-blend-screen"
+          style={{ background: 'radial-gradient(circle, var(--color-accent), transparent)' }}
+          animate={{
+            x: ['10%', '-30%', '5%'],
+            y: ['10%', '-20%', '-10%'],
           }}
           transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <motion.div
-          className="absolute w-[60vw] h-[60vw] rounded-full opacity-30 blur-3xl right-0 bottom-0"
-          style={{ background: 'radial-gradient(circle, var(--color-secondary), transparent)' }}
-          animate={{
-            x: ['10%', '-20%', '5%'],
-            y: ['10%', '-30%', '-10%'],
-          }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
       </div>
-
-      {/* Persistent Midground Accent */}
-      <motion.div
-        className="absolute w-[1px] z-0"
-        style={{ backgroundColor: 'var(--color-primary)' }}
-        animate={{
-          left: ['10%', '90%', '50%', '20%', '80%'][sceneIndex] || '50%',
-          top: '0%',
-          height: '100%',
-          opacity: [0, 0.3, 0.1, 0.4, 0][sceneIndex] || 0,
-        }}
-        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-      />
 
       {/* Scene Content */}
       <div className="relative w-full h-full z-10">

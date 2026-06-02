@@ -6,10 +6,9 @@ export function Scene1() {
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 200),
+      setTimeout(() => setPhase(1), 300),
       setTimeout(() => setPhase(2), 1000),
-      setTimeout(() => setPhase(3), 2000),
-      setTimeout(() => setPhase(4), 3000),
+      setTimeout(() => setPhase(3), 2500),
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, []);
@@ -19,36 +18,26 @@ export function Scene1() {
       className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center"
       initial={{ opacity: 0, scale: 1.1 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, y: -50, filter: 'blur(10px)' }}
-      transition={{ duration: 0.8 }}
+      exit={{ opacity: 0, scale: 2, filter: 'blur(20px)' }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
-      <motion.div
-        className="w-48 h-48 mb-8 rounded-full border border-primary/20 flex items-center justify-center"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-      >
-        <div className="w-32 h-32 rounded-full border border-primary/40" />
-      </motion.div>
-
-      <h1 className="text-8xl font-display font-bold tracking-tight text-primary leading-tight relative z-10">
+      <h1 className="text-8xl font-display font-bold tracking-tight leading-tight relative z-10 uppercase">
         <motion.span
-          className="block"
-          initial={{ opacity: 0, y: 40 }}
-          animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          className="block mb-2"
+          initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
+          animate={phase >= 1 ? { opacity: 1, y: 0, filter: 'blur(0px)' } : { opacity: 0, y: 40, filter: 'blur(10px)' }}
           transition={{ duration: 0.8, type: 'spring', bounce: 0.4 }}
         >
-          ONJJEM
+          Life's moments
         </motion.span>
       </h1>
       
-      <motion.p 
-        className="text-3xl text-secondary mt-6 font-light"
-        initial={{ opacity: 0, filter: 'blur(10px)' }}
-        animate={phase >= 2 ? { opacity: 1, filter: 'blur(0px)' } : { opacity: 0, filter: 'blur(10px)' }}
-        transition={{ duration: 0.8 }}
-      >
-        Memories made tangible.
-      </motion.p>
+      <div className="flex gap-4 mt-6 text-2xl font-light tracking-widest text-primary font-display uppercase">
+        <motion.span initial={{ opacity: 0, x: -20 }} animate={phase >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.5, delay: 0 }}>Captured.</motion.span>
+        <motion.span initial={{ opacity: 0, x: -20 }} animate={phase >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.5, delay: 0.1 }}>Fuelled.</motion.span>
+        <motion.span initial={{ opacity: 0, x: -20 }} animate={phase >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.5, delay: 0.2 }}>Moved.</motion.span>
+        <motion.span initial={{ opacity: 0, x: -20 }} animate={phase >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.5, delay: 0.3 }}>Loved.</motion.span>
+      </div>
     </motion.div>
   );
 }

@@ -611,3 +611,21 @@ id = "ZuOnGGjvpIlMiYsV5Q5d6"
 uri = "file://artifacts/onjjem-video/public/audio/bg_music.mp3"
 type = "audio"
 title = "background music"
+
+[[outputs]]
+id = "qWTxqusPRFknzu9-ny0SI"
+uri = "file://artifacts/onjjem-video/public/images/byte2eat.jpg"
+type = "image"
+title = "delicious gourmet burger and fries professional food photography dark background"
+
+[[outputs]]
+id = "lX1sY2M5lu_ZsHy2Z4kHh"
+uri = "file://artifacts/onjjem-video/public/images/effortless.jpg"
+type = "image"
+title = "athletic person running fitness cinematic lighting urban"
+
+[[outputs]]
+id = "v5-D7bBq92-3CIx-rTuF1"
+uri = "file://artifacts/onjjem-video/public/images/whatsupdog.jpg"
+type = "image"
+title = "cool dog wearing clothes looking at camera urban setting"
