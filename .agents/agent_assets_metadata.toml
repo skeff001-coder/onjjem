@@ -474,6 +474,36 @@ uri = "file://artifacts/onjjem-website/public/products/wooden-coasters.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "sDxcnddmWUbV_uQmLYHou"
+uri = "file://artifacts/whatsupdog/src/assets/hero.png"
+type = "image"
+title = "cheeky dog stealing sock"
+
+[[generated]]
+id = "SGB1VLdqVh-LSwNuiTc5V"
+uri = "file://artifacts/whatsupdog/src/assets/shirt1.png"
+type = "image"
+title = "t-shirt mockup ask me"
+
+[[generated]]
+id = "UTcCAFww_9tdXTWvsmvQU"
+uri = "file://artifacts/whatsupdog/src/assets/hoodie.png"
+type = "image"
+title = "hoodie mockup introvert"
+
+[[generated]]
+id = "p6Gy6J5cB4ppVS1ZOgfF_"
+uri = "file://artifacts/whatsupdog/src/assets/mug.png"
+type = "image"
+title = "mug mockup dog hair"
+
+[[generated]]
+id = "-kRl95u1-SnBkdx61w0tp"
+uri = "file://artifacts/whatsupdog/src/assets/about.png"
+type = "image"
+title = "pile of cute dogs"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
