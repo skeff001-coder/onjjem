@@ -456,6 +456,24 @@ uri = "file://attached_assets/product_images/wrap-belt.png"
 type = "image"
 title = "photo wrap belt"
 
+[[generated]]
+id = "Q2R29-X9qCBQcAR3e8QoY"
+uri = "file://artifacts/onjjem-website/public/products/photo-mugs.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "YIgCJLd8ed_PZ4-ng9uFC"
+uri = "file://artifacts/onjjem-website/public/products/tea-towels.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "4fRK1-Hpa7oW7eMwLuDoj"
+uri = "file://artifacts/onjjem-website/public/products/wooden-coasters.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"

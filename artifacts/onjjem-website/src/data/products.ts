@@ -122,7 +122,7 @@ export const products: Product[] = [
     name: "Framed Photo Tiles",
     description:
       "Create a stunning gallery wall with these easy-to-hang black-framed tiles. Lightweight and ready to display.",
-    image: "/onjjem-website/products/framed-photo-tiles.jpg",
+    image: "/onjjem-website/products/framed-photo-tiles-02.webp",
     category: "frames",
     variants: [
       // cost £6.06 + £7.96 ship = £14.02 → 50% margin = £28.04
@@ -200,7 +200,7 @@ export const products: Product[] = [
     name: "Pet Tags",
     description:
       "Personalised aluminium pet tags with your photo or design, dye-sublimated for rich, long-lasting colour. Suitable for dogs and cats — attaches to any collar.",
-    image: "/onjjem-website/products/pet-tags.jpg",
+    image: "/onjjem-website/products/metal-pet-tags.jpg",
     category: "pets",
     variants: [
       // cost £5.00 + £2.25 ship = £7.25 → 50% margin = £14.50
@@ -217,7 +217,7 @@ export const products: Product[] = [
     name: "Tea Towels",
     description:
       "Custom all-over printed tea towels made from 100% cotton with hemmed edges and a corner hanging tab. Machine washable and fade-resistant.",
-    image: "/onjjem-website/products/tea-towels.jpg",
+    image: "/onjjem-website/products/tea-towels.png",
     category: "kitchen",
     variants: [
       // cost £12.00 + £3.00 ship = £15.00 → 50% margin = £30.00
@@ -230,7 +230,7 @@ export const products: Product[] = [
     name: "Wooden Coasters",
     description:
       "Custom photo coasters made from 4mm MDF with a high-gloss finish and protective cork underside. Order individually or as a set.",
-    image: "/onjjem-website/products/wooden-coasters.jpg",
+    image: "/onjjem-website/products/wooden-coasters.png",
     category: "kitchen",
     variants: [
       // cost £4.00 + £2.25 ship = £6.25 → 50% margin = £12.50
@@ -249,7 +249,7 @@ export const products: Product[] = [
     name: "Photo Mugs",
     description:
       "Your favourite photo printed on a dishwasher-safe ceramic mug. A thoughtful, everyday gift.",
-    image: "/onjjem-website/products/photo-mugs.jpg",
+    image: "/onjjem-website/products/photo-mugs.png",
     category: "kitchen",
     variants: [
       // cost £4.25 + £3.30 ship = £7.55 → 50% margin = £15.10
