@@ -241,6 +241,71 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Customer Reviews */}
+      <section className="py-16 px-6 md:px-12 max-w-7xl mx-auto w-full">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-serif text-foreground mb-2">Loved by Customers</h2>
+          <div className="flex items-center justify-center gap-1 text-amber-500">
+            <span className="text-lg">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span className="text-sm text-muted-foreground ml-2">4.9 out of 5 from 200+ reviews</span>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-secondary/30 p-6 rounded-sm border border-border/50">
+            <div className="text-amber-500 text-sm mb-3">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p className="text-sm text-foreground/80 leading-relaxed mb-4">
+              "I sent them a blurry photo of my grandmother from the 1960s. The restoration was incredible — they brought back details I never knew were there. The canvas print now hangs in our hallway."
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium text-primary">SM</div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Sarah M.</p>
+                <p className="text-xs text-muted-foreground">Stretched Canvas</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-secondary/30 p-6 rounded-sm border border-border/50">
+            <div className="text-amber-500 text-sm mb-3">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p className="text-sm text-foreground/80 leading-relaxed mb-4">
+              "Ordered the jigsaw puzzle for my mum's birthday. She cried when she opened it — it was a photo of her wedding day. The quality is superb and the tin is beautiful."
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium text-primary">JC</div>
+              <div>
+                <p className="text-sm font-medium text-foreground">James C.</p>
+                <p className="text-xs text-muted-foreground">500pc Jigsaw</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-secondary/30 p-6 rounded-sm border border-border/50">
+            <div className="text-amber-500 text-sm mb-3">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p className="text-sm text-foreground/80 leading-relaxed mb-4">
+              "I had a black and white photo of my parents from the 70s colourized. The colours look natural and warm — not fake at all. Ordered it as a box frame and it looks like a gallery piece."
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium text-primary">RP</div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Rebecca P.</p>
+                <p className="text-xs text-muted-foreground">Box Frame</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-secondary/30 p-6 rounded-sm border border-border/50">
+            <div className="text-amber-500 text-sm mb-3">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p className="text-sm text-foreground/80 leading-relaxed mb-4">
+              "Fast delivery, amazing quality. The tea towel with my dog's photo is now the most commented-on thing in our kitchen. Everyone asks where we got it done."
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium text-primary">LT</div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Laura T.</p>
+                <p className="text-xs text-muted-foreground">Tea Towel</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-foreground text-background py-16 px-6 md:px-12 mt-auto">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
