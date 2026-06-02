@@ -398,7 +398,7 @@ export async function sendPhotoForFulfilment(data: PhotoFulfilmentData): Promise
       </table>
 
       <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
-        This reference number will appear on the corresponding Shopify order as the <strong style="color:${TEXT}">Photo Reference</strong> line item property.
+        This reference number appears on the <strong style="color:${TEXT}">Prodigi order</strong> for automatic printing and shipping.
       </p>
 
     </td></tr>

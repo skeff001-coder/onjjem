@@ -2,6 +2,7 @@ import express, { type Express, type Request, type Response } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
 import path from "path";
+import fs from "node:fs";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { WebhookHandlers } from "./webhookHandlers";
@@ -169,12 +170,16 @@ app.use(express.urlencoded({ extended: true, limit: "30mb" }));
 
 // Marketing website — served at root so onjjem.com points here
 app.get(["/", "/home"], (_req: Request, res: Response) => {
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
-  res.sendFile(
-    path.resolve(__dirname, "../../../documents/onjjem-website.html")
-  );
+  res.setHeader("Vary", "*");
+  const htmlPath = path.resolve(__dirname, "../../../documents/onjjem-website.html");
+  const html = fs.readFileSync(htmlPath, "utf-8");
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  res.setHeader("Content-Length", Buffer.byteLength(html));
+  res.setHeader("Last-Modified", new Date().toUTCString());
+  res.send(html);
 });
 
 // Shop product images and other static documents assets

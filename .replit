@@ -59,4 +59,4 @@ packages = ["eas-cli"]
 [userenv]
 
 [userenv.shared]
-PRODIGI_ENV = "sandbox"
+PRODIGI_ENV = "live"
