@@ -143,6 +143,15 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "jigsaw-500":  { sku: "JIGSAW-PUZZLE-500",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 500pc, 530×390mm
   "jigsaw-1000": { sku: "JIGSAW-PUZZLE-1000", sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 1000pc, 765×525mm
 
+  // ── Temporary Tattoos ───────────────────────────────────────────────────────
+  // GLOBAL-TATT-* SKUs validated against Prodigi live API on 2026-06-02.
+  // Skin-safe waterslide film, lasts up to one week, easy to apply and remove.
+  "tattoo-s":   { sku: "GLOBAL-TATT-S",   sizing: "fillPrintArea" }, // 2×3" (5×7.5cm)
+  "tattoo-m":   { sku: "GLOBAL-TATT-M",   sizing: "fillPrintArea" }, // 3×4" (7.5×10cm)
+  "tattoo-l":   { sku: "GLOBAL-TATT-L",   sizing: "fillPrintArea" }, // 4×6" (10×15cm)
+  "tattoo-xl":  { sku: "GLOBAL-TATT-XL",  sizing: "fillPrintArea" }, // 8×8" (20×20cm)
+  "tattoo-xxl": { sku: "GLOBAL-TATT-XXL", sizing: "fillPrintArea" }, // 12×12" (30×30cm)
+
 };
 
 // ── Types ─────────────────────────────────────────────────────────────────────

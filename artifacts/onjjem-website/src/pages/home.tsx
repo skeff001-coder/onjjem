@@ -14,6 +14,7 @@ const CATEGORIES = [
   { key: "pets",    label: "Pets" },
   { key: "kitchen", label: "Kitchen" },
   { key: "magnets", label: "Magnets" },
+  { key: "tattoos", label: "Tattoos" },
 ];
 
 export default function Home() {
@@ -335,6 +336,9 @@ export default function Home() {
               </li>
               <li>
                 <button onClick={() => scrollToCollection("pets")} className="hover:text-primary-foreground transition-colors text-left">Pets</button>
+              </li>
+              <li>
+                <button onClick={() => scrollToCollection("tattoos")} className="hover:text-primary-foreground transition-colors text-left">Tattoos</button>
               </li>
             </ul>
           </div>

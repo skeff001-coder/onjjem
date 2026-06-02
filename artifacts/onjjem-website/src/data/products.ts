@@ -210,6 +210,30 @@ export const products: Product[] = [
     ],
   },
 
+  // ── Temporary Tattoos ──────────────────────────────────────────────────────
+  // GLOBAL-TATT-* SKUs mapped in prodigi.ts. Skin-safe waterslide film, lasts up to
+  // one week. Cost is Prodigi wholesale + £3.20 shipping, then 50% margin.
+  {
+    id: "temporary-tattoos",
+    name: "Temporary Tattoos",
+    description:
+      "Custom temporary tattoos printed on skin-safe waterslide film. Quick and easy application — lasts up to one week, removes easily with no residue. Personalise with any photo for parties, events, or just for fun.",
+    image: "/onjjem-website/products/tattoo-arm.webp",
+    category: "tattoos",
+    variants: [
+      // cost £2.95 + £3.20 = £6.15 → 50% margin = £9.22
+      { sku: "tattoo-s",   label: "2x3 in (5x7.5cm)",   pricePence: 999 },
+      // cost £3.95 + £3.20 = £7.15 → 50% margin = £10.72
+      { sku: "tattoo-m",   label: "3x4 in (7.5x10cm)", pricePence: 1099 },
+      // cost £5.95 + £3.20 = £9.15 → 50% margin = £13.72
+      { sku: "tattoo-l",   label: "4x6 in (10x15cm)", pricePence: 1399 },
+      // cost £11.95 + £3.20 = £15.15 → 50% margin = £22.72
+      { sku: "tattoo-xl",  label: "8x8 in (20x20cm)", pricePence: 2299 },
+      // cost £19.95 + £3.20 = £23.15 → 50% margin = £34.72
+      { sku: "tattoo-xxl", label: "12x12 in (30x30cm)", pricePence: 3499 },
+    ],
+  },
+
   // ── Pets ─────────────────────────────────────────────────────────────────────
 
   {
