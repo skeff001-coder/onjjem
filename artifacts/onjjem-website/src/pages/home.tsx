@@ -201,6 +201,46 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ & Shipping */}
+      <section id="faq" className="py-16 px-6 md:px-12 max-w-7xl mx-auto w-full">
+        <h2 className="text-3xl font-serif text-foreground mb-8">FAQ</h2>
+        <div className="space-y-6 max-w-2xl">
+          <div>
+            <h3 className="font-medium text-foreground mb-1">How long does delivery take?</h3>
+            <p className="text-muted-foreground text-sm">Most orders are delivered within 3-5 working days. Canvas and framed items may take 5-7 working days.</p>
+          </div>
+          <div>
+            <h3 className="font-medium text-foreground mb-1">What if I am not happy with my order?</h3>
+            <p className="text-muted-foreground text-sm">Contact us within 14 days and we will replace or refund any faulty or misprinted item. Each piece is checked for quality before it leaves.</p>
+          </div>
+          <div>
+            <h3 className="font-medium text-foreground mb-1">Do you ship outside the UK?</h3>
+            <p className="text-muted-foreground text-sm">Yes, we ship to most of Europe, the USA, Canada, and Australia. Delivery times and shipping costs vary by country.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Shipping & Returns */}
+      <section id="shipping" className="py-16 px-6 md:px-12 bg-secondary/30 w-full">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-serif text-foreground mb-8">Shipping & Returns</h2>
+          <div className="grid md:grid-cols-2 gap-8 max-w-3xl">
+            <div>
+              <h3 className="font-medium text-foreground mb-2">Delivery</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                All UK orders ship free via Royal Mail or courier. Tracking is provided on all orders. International orders are shipped with tracking and insurance.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium text-foreground mb-2">Returns</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                If your item arrives damaged or is not as described, contact us within 14 days for a replacement or full refund. Personalised items are non-refundable unless faulty.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-foreground text-background py-16 px-6 md:px-12 mt-auto">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -236,9 +276,15 @@ export default function Home() {
           <div>
             <h5 className="font-medium mb-4 text-sm tracking-widest uppercase text-background/50">Support</h5>
             <ul className="space-y-2 text-background/80">
-              <li><span className="hover:text-primary-foreground transition-colors cursor-pointer">Contact Us</span></li>
-              <li><span className="hover:text-primary-foreground transition-colors cursor-pointer">Shipping & Returns</span></li>
-              <li><span className="hover:text-primary-foreground transition-colors cursor-pointer">FAQ</span></li>
+              <li>
+                <a href="mailto:support@onjjem.com" className="hover:text-primary-foreground transition-colors">Contact Us</a>
+              </li>
+              <li>
+                <button onClick={() => document.getElementById("shipping")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-primary-foreground transition-colors text-left">Shipping & Returns</button>
+              </li>
+              <li>
+                <button onClick={() => document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-primary-foreground transition-colors text-left">FAQ</button>
+              </li>
             </ul>
           </div>
         </div>
