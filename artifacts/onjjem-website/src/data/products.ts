@@ -234,6 +234,24 @@ export const products: Product[] = [
     ],
   },
 
+  // ── iPad Cases ──────────────────────────────────────────────────────────────────────────────
+  // GLOBAL-TECH-IPAD-* SKUs mapped in prodigi.ts. Snap cases, edge-to-edge print.
+  // iPad mini (GLOBAL-TECH-IPADMIN1-CS) not available in Prodigi API.
+  {
+    id: "ipad-cases",
+    name: "iPad Cases",
+    description:
+      "Vibrant snap-on iPad cases with edge-to-edge photo printing. Hard polycarbonate shell with water-based polyurethane coating for a lasting finish. Protects your device while keeping your memories close.",
+    image: "/onjjem-website/products/ipad-case.png",
+    category: "gifts",
+    variants: [
+      // cost £15.00 + £3.20 ship = £18.20 → 50% margin = £27.30
+      { sku: "ipad-air",    label: "iPad Air (10.9)",       pricePence: 2799 },
+      // cost £15.00 + £3.20 ship = £18.20 → 50% margin = £27.30
+      { sku: "ipad-2-3-4",  label: "iPad 2 / 3 / 4 (9.7)",  pricePence: 2799 },
+    ],
+  },
+
   // ── Pets ─────────────────────────────────────────────────────────────────────
 
   {

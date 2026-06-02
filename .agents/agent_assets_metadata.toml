@@ -504,6 +504,12 @@ uri = "file://artifacts/whatsupdog/src/assets/about.png"
 type = "image"
 title = "pile of cute dogs"
 
+[[generated]]
+id = "iri43pYBAW0zw3dWUFcnW"
+uri = "file://artifacts/onjjem-website/public/products/ipad-case.png"
+type = "image"
+title = "iPad case product photo"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"

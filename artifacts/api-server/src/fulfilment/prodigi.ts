@@ -152,6 +152,13 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "tattoo-xl":  { sku: "GLOBAL-TATT-XL",  sizing: "fillPrintArea" }, // 8×8" (20×20cm)
   "tattoo-xxl": { sku: "GLOBAL-TATT-XXL", sizing: "fillPrintArea" }, // 12×12" (30×30cm)
 
+  // ── iPad Cases ──────────────────────────────────────────────────────────────────────────────
+  // GLOBAL-TECH-IPAD-* SKUs validated against Prodigi live API on 2026-06-02.
+  // Snap cases, printed edge-to-edge with water-based polyurethane coating.
+  // GLOBAL-TECH-IPADMIN1-CS not found in API — only Air + 2/3/4 available.
+  "ipad-air":     { sku: "GLOBAL-TECH-IPAD-A-CS",   sizing: "fillPrintArea" }, // iPad Air
+  "ipad-2-3-4":   { sku: "GLOBAL-TECH-IPAD2-CS",    sizing: "fillPrintArea" }, // iPad 2/3/4
+
 };
 
 // ── Types ─────────────────────────────────────────────────────────────────────
