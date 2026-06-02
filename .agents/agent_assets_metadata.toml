@@ -510,6 +510,24 @@ uri = "file://artifacts/onjjem-website/public/products/ipad-case.png"
 type = "image"
 title = "iPad case product photo"
 
+[[generated]]
+id = "YfrRrVUEKoRs6CYTQGHhO"
+uri = "file://artifacts/onjjem-website/public/products/folio-wallet.png"
+type = "image"
+title = "Folio wallet case product photo"
+
+[[generated]]
+id = "EZHUzjCt4bgXy-b7wMCSi"
+uri = "file://artifacts/onjjem-website/public/products/tough-case.png"
+type = "image"
+title = "Tough phone case product photo"
+
+[[generated]]
+id = "KZpqH_GO_gaW3nKSrJm2w"
+uri = "file://artifacts/onjjem-website/public/products/glow-poster.png"
+type = "image"
+title = "Glow in the dark poster product photo"
+
 [[outputs]]
 id = "j6Xw8ttANGRRRiH61iMoB"
 uri = "file://artifacts/owens-photofix/assets/images/icon.png"
