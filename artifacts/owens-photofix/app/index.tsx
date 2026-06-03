@@ -503,7 +503,7 @@ export default function HomeScreen() {
       allowsEditing: false,
       allowsMultipleSelection: true,
       quality: 0.92,
-      base64: false,
+      base64: true,
     });
 
     // ── Multi-select: start batch flow ───────────────────────────────────────
@@ -557,7 +557,7 @@ export default function HomeScreen() {
 
       const commitPhoto = async () => {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        originalBase64Ref.current = null; // read from file URI at process time
+        originalBase64Ref.current = asset.base64 ?? null;
         setOriginalUri(asset.uri);
         setResultBase64(null);
         setResultLocalUri(null);
@@ -681,9 +681,19 @@ export default function HomeScreen() {
           reader.readAsDataURL(blob);
         });
       } else {
-        base64 = await FileSystem.readAsStringAsync(originalUri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
+        try {
+          base64 = await FileSystem.readAsStringAsync(originalUri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+        } catch {
+          throw new Error(
+            "Could not read the selected photo. Please try a different photo or restart the app."
+          );
+        }
+      }
+      // Strip any data-URL prefix that expo-image-picker may include
+      if (base64.startsWith("data:")) {
+        base64 = base64.split(",")[1] ?? "";
       }
 
       if (cancelledRef.current) return;
@@ -822,10 +832,20 @@ export default function HomeScreen() {
               reader.readAsDataURL(blob);
             });
           } else {
-            base64 = await FileSystem.readAsStringAsync(item.uri, {
-              encoding: FileSystem.EncodingType.Base64,
-            });
+            try {
+              base64 = await FileSystem.readAsStringAsync(item.uri, {
+                encoding: FileSystem.EncodingType.Base64,
+              });
+            } catch {
+              throw new Error(
+                "Could not read one of the selected photos. Please try different photos or restart the app."
+              );
+            }
           }
+        }
+        // Strip any data-URL prefix that expo-image-picker may include
+        if (base64 && base64.startsWith("data:")) {
+          base64 = base64.split(",")[1] ?? "";
         }
 
         if (cancelledRef.current) break;
