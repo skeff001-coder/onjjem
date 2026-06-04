@@ -598,12 +598,19 @@ function useSubscriptionContext() {
       }
       return customerInfo;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["revenuecat", "customer-info"] }),
+    onSuccess: (customerInfo) => {
+      // Immediately update the query cache so isSubscribed is true right away
+      qc.setQueryData<CustomerInfo>(["revenuecat", "customer-info"], customerInfo);
+      qc.invalidateQueries({ queryKey: ["revenuecat", "customer-info"] });
+    },
   });
 
   const restoreMutation = useMutation({
     mutationFn: async () => Purchases.restorePurchases(),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["revenuecat", "customer-info"] }),
+    onSuccess: (customerInfo) => {
+      qc.setQueryData<CustomerInfo>(["revenuecat", "customer-info"], customerInfo);
+      qc.invalidateQueries({ queryKey: ["revenuecat", "customer-info"] });
+    },
   });
 
   const consumePhotoCredit = async (): Promise<boolean> => {

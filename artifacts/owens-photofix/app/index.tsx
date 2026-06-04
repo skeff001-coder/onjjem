@@ -1305,10 +1305,12 @@ export default function HomeScreen() {
         {appState === "done" && originalUri && resultBase64 && (
           <View style={s.imageBlock}>
             <View style={s.sampleBadgeRow}>
-              <View style={s.sampleBadge}>
-                <Ionicons name="eye-outline" size={12} color="#fff" />
-                <Text style={s.sampleBadgeText}>FREE SAMPLE</Text>
-              </View>
+              {!isSubscribed && (
+                <View style={s.sampleBadge}>
+                  <Ionicons name="eye-outline" size={12} color="#fff" />
+                  <Text style={s.sampleBadgeText}>FREE SAMPLE</Text>
+                </View>
+              )}
               <Text style={s.imageLabel}>
                 {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")} — drag to compare
               </Text>
@@ -1364,9 +1366,27 @@ export default function HomeScreen() {
               <Text style={s.enhanceSub}>Select up to 3 — they stack together</Text>
             </View>
 
-            {/* Pricing strip — 3 equal tiles */}
+            {/* Pricing strip — Pro active or purchase options */}
             <View style={s.pricingTileRow}>
-              {hasUsedFreeTrial ? (
+              {isSubscribed ? (
+                <TouchableOpacity
+                  style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60", flex: 1 }]}
+                  onPress={() => {
+                    if (selectedModes.size === 0) {
+                      Alert.alert("Pick an Enhancement", "Select one of the enhancement types below, then tap Enhance.");
+                    } else {
+                      appState === "batch-selected"
+                        ? void handleProcessWithConsent("batch")
+                        : void handleProcessWithConsent("single");
+                    }
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="sparkles" size={20} color="#27AE60" />
+                  <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>Enhance</Text>
+                  <Text style={[s.pricingTileLabel, { color: "rgba(39,174,96,0.7)" }]}>Pro Active</Text>
+                </TouchableOpacity>
+              ) : hasUsedFreeTrial ? (
                 <>
                   <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#1A1408", borderColor: "#E8A020" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
                     <Ionicons name="camera" size={20} color="#E8A020" />
@@ -1519,11 +1539,13 @@ export default function HomeScreen() {
 
         {appState === "done" && (
           <>
-            <EnhancementPaywall
-              selectedModeCount={selectedModes.size}
-              onUpgradeSingle={buyOnePhoto}
-              onUpgradeUnlimited={() => setSubscribeVisible(true)}
-            />
+            {!isSubscribed && (
+              <EnhancementPaywall
+                selectedModeCount={selectedModes.size}
+                onUpgradeSingle={buyOnePhoto}
+                onUpgradeUnlimited={() => setSubscribeVisible(true)}
+              />
+            )}
             <TouchableOpacity
               onPress={() => setResultTipVisible(true)}
               activeOpacity={0.7}

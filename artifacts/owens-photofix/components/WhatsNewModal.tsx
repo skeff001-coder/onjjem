@@ -32,6 +32,23 @@ interface VersionNotes {
  * The key must match the version string in app.json exactly.
  */
 export const CHANGELOG: Record<string, VersionNotes> = {
+  "1.0.32": {
+    headline: "What's New in v1.0.32",
+    items: [
+      {
+        icon: "checkmark-circle-outline",
+        accent: "#27AE60",
+        title: "Subscription Recognition Fixed",
+        body: "Fixed an issue where the app did not recognize an active Pro subscription after purchase. Subscribers now see full-quality results immediately.",
+      },
+      {
+        icon: "checkmark-circle-outline",
+        accent: "#27AE60",
+        title: "Photo Restoration Fixed",
+        body: "Fixed a critical bug where photo restoration failed on some iOS devices. Photos now restore reliably every time.",
+      },
+    ],
+  },
   "1.0.31": {
     headline: "What's New in v1.0.31",
     items: [
