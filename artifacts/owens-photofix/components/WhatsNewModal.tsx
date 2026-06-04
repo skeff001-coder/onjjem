@@ -32,19 +32,36 @@ interface VersionNotes {
  * The key must match the version string in app.json exactly.
  */
 export const CHANGELOG: Record<string, VersionNotes> = {
-  "1.0.32": {
-    headline: "What's New in v1.0.32",
+  "1.0.34": {
+    headline: "What's New in v1.0.34",
+    items: [
+      {
+        icon: "sparkles-outline",
+        accent: "#C9960C",
+        title: "Improvements & Bug Fixes",
+        body: "Behind-the-scenes improvements and small fixes to keep your photo restorations running smoothly.",
+      },
+    ],
+  },
+  "1.0.33": {
+    headline: "What's New in v1.0.33",
     items: [
       {
         icon: "checkmark-circle-outline",
         accent: "#27AE60",
-        title: "Subscription Recognition Fixed",
-        body: "Fixed an issue where the app did not recognize an active Pro subscription after purchase. Subscribers now see full-quality results immediately.",
+        title: "Full Quality Delivered Automatically",
+        body: "After subscribing, the app now instantly re-processes your photo at full HD quality — no need to tap anything again.",
       },
       {
         icon: "checkmark-circle-outline",
         accent: "#27AE60",
-        title: "Photo Restoration Fixed",
+        title: "Subscription Recognised Immediately",
+        body: "Fixed an issue where the app kept asking to subscribe even after payment. Your Pro status is now applied the moment payment is confirmed.",
+      },
+      {
+        icon: "checkmark-circle-outline",
+        accent: "#27AE60",
+        title: "Photo Restoration Reliability",
         body: "Fixed a critical bug where photo restoration failed on some iOS devices. Photos now restore reliably every time.",
       },
     ],

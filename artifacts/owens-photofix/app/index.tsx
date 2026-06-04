@@ -119,6 +119,7 @@ export default function HomeScreen() {
   const [reviewNudgeCount, setReviewNudgeCount] = useState<number | null>(null);
   const [proWelcomeVisible, setProWelcomeVisible] = useState(false);
   const proWelcomeCheckedRef = useRef(false);
+  const wasSubscribedRef = useRef(false);
   const [aiConsentVisible, setAiConsentVisible] = useState(false);
   const pendingProcessRef = useRef<"single" | "batch" | null>(null);
   const { perPhotoPackage, purchase: purchaseSubscription, isSubscribed, isLoading: isSubscriptionLoading, photoCredits, consumePhotoCredit } = useSubscription();
@@ -143,6 +144,7 @@ export default function HomeScreen() {
     }
   };
   const [hasUsedFreeTrial, setHasUsedFreeTrial] = useState(false);
+  const [resultWasPreview, setResultWasPreview] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
   const [originalUri, setOriginalUri] = useState<string | null>(null);
   const originalBase64Ref = useRef<string | null>(null);
@@ -437,6 +439,18 @@ export default function HomeScreen() {
     })();
   }, [isSubscriptionLoading, isSubscribed]);
 
+  // Auto-reprocess at full quality the moment the user subscribes while sitting on a free preview result
+  useEffect(() => {
+    if (isSubscriptionLoading) return;
+    const justSubscribed = isSubscribed && !wasSubscribedRef.current;
+    wasSubscribedRef.current = isSubscribed;
+    if (justSubscribed && resultWasPreview && appState === "done" && originalBase64Ref.current) {
+      setResultWasPreview(false);
+      void processPhoto();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubscribed, isSubscriptionLoading]);
+
   // Prune old gallery entries on every launch
   useEffect(() => {
     void pruneHistory();
@@ -651,6 +665,7 @@ export default function HomeScreen() {
     if (!originalUri) return;
 
     cancelledRef.current = false;
+    setResultWasPreview(false);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     setAppState("processing");
 
@@ -701,6 +716,7 @@ export default function HomeScreen() {
       const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
       const apiUrl = `https://${domain}/api/process`;
 
+      const wasFreePreview = !(isSubscribed || photoCredits > 0);
       const controller = new AbortController();
       const fetchTimeoutId = setTimeout(() => controller.abort(), 90_000);
 
@@ -712,7 +728,7 @@ export default function HomeScreen() {
           body: JSON.stringify({
             imageBase64: base64,
             modes: Array.from(selectedModes),
-            freePreview: !(isSubscribed || photoCredits > 0),
+            freePreview: wasFreePreview,
           }),
           signal: controller.signal,
         });
@@ -773,6 +789,7 @@ export default function HomeScreen() {
           await consumePhotoCredit();
         }
         setAppState("done");
+        setResultWasPreview(wasFreePreview);
         // Show result tip sheet on first successful enhancement
         AsyncStorage.getItem("hasSeenResultTip").then((seen) => {
           if (!seen) setResultTipVisible(true);
@@ -1336,15 +1353,17 @@ export default function HomeScreen() {
                 </Animated.View>
               )}
             </View>
-            <TouchableOpacity
-              onPress={() => setSubscribeVisible(true)}
-              activeOpacity={0.85}
-              style={s.imageTapHint}
-            >
-              <Ionicons name="sparkles" size={12} color="#C9960C" />
-              <Text style={s.imageTapHintText}>Tap here to unlock full quality</Text>
-              <Ionicons name="sparkles" size={12} color="#C9960C" />
-            </TouchableOpacity>
+            {!isSubscribed && photoCredits === 0 && (
+              <TouchableOpacity
+                onPress={() => setSubscribeVisible(true)}
+                activeOpacity={0.85}
+                style={s.imageTapHint}
+              >
+                <Ionicons name="sparkles" size={12} color="#C9960C" />
+                <Text style={s.imageTapHintText}>Tap here to unlock full quality</Text>
+                <Ionicons name="sparkles" size={12} color="#C9960C" />
+              </TouchableOpacity>
+            )}
           </View>
         )}
 
