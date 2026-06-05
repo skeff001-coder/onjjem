@@ -1,4 +1,5 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,10 +10,17 @@ import ContactPage from "@/pages/contact";
 
 const queryClient = new QueryClient();
 
+function LandingRedirect() {
+  useEffect(() => {
+    window.location.replace("/onjjem-landing.html");
+  }, []);
+  return null;
+}
+
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/" component={LandingRedirect} />
       <Route path="/shop" component={Home} />
       <Route path="/product/:categoryId" component={ProductDetail} />
       <Route path="/contact" component={ContactPage} />
