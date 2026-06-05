@@ -6,6 +6,7 @@ import stripeRouter from "./stripe";
 import emailSignupRouter from "./emailSignup";
 import photoUploadRouter from "./photoUpload";
 import contactRouter from "./contact";
+import restorationRouter from "./restoration";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(stripeRouter);
 router.use(emailSignupRouter);
 router.use(photoUploadRouter);
 router.use(contactRouter);
+router.use(restorationRouter);
 
 export default router;

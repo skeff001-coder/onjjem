@@ -156,7 +156,7 @@ export async function applyEnhancements(
 
 // ── Free preview (sharp only, downsampled) ───────────────────────────────────
 
-async function makeFreePreview(
+export async function makeFreePreview(
   inputBuffer: Buffer,
   modes: EnhancementMode[],
 ): Promise<Buffer> {
