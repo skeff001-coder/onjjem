@@ -59,7 +59,7 @@ export default function Home() {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="flex items-center gap-2">
-          <Link href="/" className="font-serif text-2xl font-bold tracking-tight text-foreground" data-testid="link-home">
+          <Link href="/" className="font-serif text-2xl font-bold tracking-tight text-primary" data-testid="link-home">
             ONJJEM
           </Link>
         </div>
@@ -81,7 +81,7 @@ export default function Home() {
           >
             <span className="text-sm font-medium uppercase tracking-widest text-primary">Photo Restoration & Print Studio</span>
             <h1 className="text-5xl md:text-7xl font-serif text-foreground leading-[1.1]">
-              Memories made <br/><span className="text-muted-foreground italic">tangible.</span>
+              Memories made <br/><span className="text-primary italic">tangible.</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-md leading-relaxed">
               We turn your cherished photographs into heirloom objects. Beautifully crafted canvas, framed art, and personal gifts designed to last a lifetime.
