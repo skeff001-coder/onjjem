@@ -213,8 +213,32 @@ async function makeFreePreview(
     }
   }
 
-  return sharp(buf)
+  const processed = await sharp(buf)
     .resize(w, h, { kernel: sharp.kernel.linear })
+    .jpeg({ quality: 72 })
+    .toBuffer();
+
+  // Add watermark overlay
+  const meta2 = await sharp(processed).metadata();
+  const imgW = meta2.width ?? 800;
+  const imgH = meta2.height ?? 600;
+
+  const fontSize = Math.max(18, Math.round(imgW * 0.045));
+  const lineH = Math.round(fontSize * 1.6);
+  const lines = ['© ONJJEM.COM', 'WATERMARKED PREVIEW'];
+  const svgH = lines.length * lineH + 16;
+
+  const svgText = `<svg width="${imgW}" height="${svgH}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${imgW}" height="${svgH}" fill="rgba(0,0,0,0.45)"/>
+    ${lines.map((line, i) => `<text
+      x="${imgW / 2}" y="${16 + lineH * i + fontSize}"
+      font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="bold"
+      fill="rgba(255,255,255,0.85)" text-anchor="middle" letter-spacing="3"
+    >${line}</text>`).join('')}
+  </svg>`;
+
+  return sharp(processed)
+    .composite([{ input: Buffer.from(svgText), gravity: 'south' }])
     .jpeg({ quality: 72 })
     .toBuffer();
 }

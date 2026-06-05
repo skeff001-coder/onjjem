@@ -458,7 +458,7 @@
     <div class="section-header">
       <div class="eyebrow"><span>✦</span> Try It Right Now</div>
       <h2 class="section-title">Restore Your Photo</h2>
-      <p class="section-sub">Upload any photo and see the difference instantly — free preview, HD quality for just £1.49.</p>
+      <p class="section-sub">Upload any photo and see your free watermarked restoration instantly. Order a clean HD print from just £1.49.</p>
     </div>
     <div class="tool-card">
       <div class="tool-card-bar"></div>
@@ -486,20 +486,17 @@
             </div>
             <div class="preview-slot" id="resultSlot">
               <img id="resultImg" src="" alt="Restored photo" style="display:none" />
-              <span class="preview-label after" id="resultLabel">Preview</span>
-              <div class="preview-blur-overlay" id="blurOverlay" style="display:none">
-                <p>🎉 <strong style="color:var(--cream)">Preview ready!</strong><br>Get full HD quality for just £1.49</p>
-              </div>
+              <span class="preview-label after" id="resultLabel">Restored</span>
             </div>
           </div>
           <div class="status-msg" id="statusMsg"></div>
           <div class="tool-action">
-            <button class="btn-restore btn-restore-free" id="btnPreview">✦ See Free Preview</button>
-            <button class="btn-restore btn-restore-paid" id="btnPay" style="display:none">⭐ Get Full Quality — £1.49</button>
-            <button class="btn-restore btn-download" id="btnDownload" style="display:none">⬇ Download HD Photo</button>
+            <button class="btn-restore btn-restore-free" id="btnPreview">✦ Restore My Photo Free</button>
+            <button class="btn-restore btn-restore-paid" id="btnOrder" style="display:none">⭐ Order Clean HD Print — from £1.49</button>
+            <button class="btn-restore btn-download" id="btnDownload" style="display:none">⬇ Download Watermarked Preview</button>
             <button class="btn-reset" id="btnReset">← Try a different photo</button>
           </div>
-          <p class="tool-note">Free preview is a reduced-quality sample. HD result is full resolution with Cinema-Grade enhancement.<br>Payment processed securely by Stripe. Your photos are never stored.</p>
+          <p class="tool-note">Your free restoration is watermarked. Order a clean full-resolution print or digital download — from £1.49.<br>Your photos are never stored.</p>
         </div>
       </div>
     </div>
@@ -957,10 +954,9 @@ const previewArea = document.getElementById('previewArea');
 const originalImg = document.getElementById('originalImg');
 const resultImg = document.getElementById('resultImg');
 const resultLabel = document.getElementById('resultLabel');
-const blurOverlay = document.getElementById('blurOverlay');
 const statusMsg = document.getElementById('statusMsg');
 const btnPreview = document.getElementById('btnPreview');
-const btnPay = document.getElementById('btnPay');
+const btnOrder = document.getElementById('btnOrder');
 const btnDownload = document.getElementById('btnDownload');
 
 uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
@@ -977,8 +973,8 @@ function handleFile(file) {
     uploadZone.style.display = 'none';
     previewArea.classList.add('active');
     resultImg.style.display = 'none'; resultImg.src = '';
-    blurOverlay.style.display = 'none'; btnPay.style.display = 'none'; btnDownload.style.display = 'none';
-    btnPreview.style.display = ''; btnPreview.textContent = '✦ See Free Preview'; btnPreview.disabled = false;
+    btnOrder.style.display = 'none'; btnDownload.style.display = 'none';
+    btnPreview.style.display = ''; btnPreview.textContent = '✦ Restore My Photo Free'; btnPreview.disabled = false;
     hideStatus(); hdResultBase64 = null;
   };
   reader.readAsDataURL(file);
@@ -995,8 +991,8 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
       if (selectedModes.length >= 3) { showStatus('You can combine up to 3 enhancements.','error'); return; }
       selectedModes.push(mode); btn.classList.add('active');
     }
-    resultImg.style.display = 'none'; blurOverlay.style.display = 'none';
-    btnPay.style.display = 'none'; btnDownload.style.display = 'none';
+    resultImg.style.display = 'none';
+    btnOrder.style.display = 'none'; btnDownload.style.display = 'none';
     btnPreview.style.display = ''; hdResultBase64 = null; hideStatus();
   });
 });
@@ -1005,65 +1001,24 @@ btnPreview.addEventListener('click', async () => {
   if (!uploadedBase64) return;
   btnPreview.disabled = true;
   btnPreview.innerHTML = '<span class="spinner"></span> Restoring…';
-  showStatus('Running free preview…','');
+  showStatus('Restoring your photo…','');
   try {
     const resp = await fetch('/api/process', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ imageBase64: uploadedBase64, modes: selectedModes, freePreview: true }) });
     const data = await resp.json();
-    if (!resp.ok || !data.resultBase64) throw new Error(data.error || 'Preview failed');
+    if (!resp.ok || !data.resultBase64) throw new Error(data.error || 'Restoration failed');
+    hdResultBase64 = data.resultBase64;
     resultImg.src = 'data:image/jpeg;base64,' + data.resultBase64;
-    resultImg.style.display = 'block'; resultLabel.textContent = 'Preview';
-    blurOverlay.style.display = 'flex'; btnPreview.style.display = 'none'; btnPay.style.display = ''; hideStatus();
+    resultImg.style.display = 'block'; resultLabel.textContent = '✦ Restored (Watermarked)';
+    btnPreview.style.display = 'none'; btnOrder.style.display = ''; btnDownload.style.display = ''; hideStatus();
   } catch (e) {
-    showStatus('Preview failed: ' + e.message,'error');
-    btnPreview.disabled = false; btnPreview.textContent = '✦ See Free Preview';
+    showStatus('Restoration failed: ' + e.message,'error');
+    btnPreview.disabled = false; btnPreview.textContent = '✦ Restore My Photo Free';
   }
 });
 
-btnPay.addEventListener('click', openPayModal);
-
-async function openPayModal() {
-  if (!stripeJs) { showStatus('Payment unavailable. Please try the iPhone app or contact support.','error'); return; }
-  document.getElementById('payModal').classList.add('open');
-  document.getElementById('payError').style.display = 'none';
-  document.getElementById('payment-element').innerHTML = '';
-  stripeElements = null;
-  try {
-    const r = await fetch('/api/stripe/create-intent', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
-    const { clientSecret, error } = await r.json();
-    if (error) throw new Error(error);
-    stripeElements = stripeJs.elements({ clientSecret, appearance: { theme:'night', variables:{ colorBackground:'#1A1610', colorText:'#FAF7F2', colorPrimary:'#C9960C', fontFamily:'Inter,sans-serif', borderRadius:'10px' } } });
-    stripeElements.create('payment').mount('#payment-element');
-  } catch (e) {
-    document.getElementById('payError').textContent = e.message;
-    document.getElementById('payError').style.display = 'block';
-  }
-}
-
-function closePayModal() { document.getElementById('payModal').classList.remove('open'); }
-
-async function submitPayment() {
-  if (!stripeJs || !stripeElements) return;
-  const btn = document.getElementById('btnSubmitPay');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Processing…';
-  document.getElementById('payError').style.display = 'none';
-  try {
-    const { error: confirmError, paymentIntent } = await stripeJs.confirmPayment({ elements: stripeElements, redirect:'if_required', confirmParams:{ return_url: location.origin+'/#tool' } });
-    if (confirmError) throw new Error(confirmError.message);
-    if (!paymentIntent || paymentIntent.status !== 'succeeded') throw new Error('Payment did not complete. Please try again.');
-    closePayModal(); showStatus('Payment confirmed! Processing full HD result…','success'); btnPay.style.display = 'none';
-    const r2 = await fetch('/api/stripe/verify-process', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ paymentIntentId: paymentIntent.id, imageBase64: uploadedBase64, modes: selectedModes }) });
-    const data2 = await r2.json();
-    if (!r2.ok || !data2.resultBase64) throw new Error(data2.error || 'Processing failed');
-    hdResultBase64 = data2.resultBase64;
-    resultImg.src = 'data:image/jpeg;base64,' + hdResultBase64;
-    resultLabel.textContent = 'HD Result ✦'; blurOverlay.style.display = 'none'; btnDownload.style.display = '';
-    showStatus('✅ Full HD restoration complete! Click Download to save your photo.','success');
-  } catch (e) {
-    document.getElementById('payError').textContent = e.message;
-    document.getElementById('payError').style.display = 'block';
-    btn.disabled = false; btn.innerHTML = 'Pay £1.49 &amp; Get HD Photo';
-  }
-}
+btnOrder.addEventListener('click', () => {
+  window.location.href = '/shop';
+});
 
 btnDownload.addEventListener('click', () => {
   if (!hdResultBase64) return;
