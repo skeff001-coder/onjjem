@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "What's Up Dog!",
+    "slug": "workspace",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.onjjem.canineencyclopedia",
+      "buildNumber": "19",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow What's Up Dog! to access your camera to scan and identify dog breeds.",
+        "NSMicrophoneUsageDescription": "Allow What's Up Dog! to access your microphone.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e4b0d15e-3254-475e-91ce-8da7284ee720"
+      }
+    }
+  }
+}

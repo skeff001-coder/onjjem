@@ -1,0 +1,306 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: shop
+    description: Merch shop operations
+  - name: storage
+    description: Object storage operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /shop/products:
+    get:
+      operationId: listShopProducts
+      tags: [shop]
+      summary: List all active shop products with prices
+      responses:
+        "200":
+          description: Product list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShopProduct"
+
+  /shop/products/{productId}:
+    get:
+      operationId: getShopProduct
+      tags: [shop]
+      summary: Get a single product by Stripe product ID
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShopProduct"
+        "404":
+          description: Not found
+
+  /shop/checkout:
+    post:
+      operationId: createShopCheckout
+      tags: [shop]
+      summary: Create a Stripe Checkout session for a merch order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckoutInput"
+      responses:
+        "200":
+          description: Checkout session URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutResult"
+        "400":
+          description: Bad request
+
+  /shop/orders/{orderId}:
+    get:
+      operationId: getShopOrder
+      tags: [shop]
+      summary: Get order by ID
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShopOrder"
+        "404":
+          description: Not found
+
+  /shop/orders/by-session/{sessionId}:
+    get:
+      operationId: getShopOrderBySession
+      tags: [shop]
+      summary: Get order by Stripe checkout session ID (used on success page)
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShopOrder"
+        "404":
+          description: Not found
+
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [storage]
+      summary: Request a presigned upload URL for a dog photo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadUrlInput"
+      responses:
+        "200":
+          description: Presigned URL and object path
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadUrlResult"
+
+  /storage/objects/{objectPath}:
+    get:
+      operationId: getStorageObject
+      tags: [storage]
+      summary: Serve a stored object
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Object data
+        "404":
+          description: Not found
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ShopProduct:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        images:
+          type: array
+          items:
+            type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        price:
+          $ref: "#/components/schemas/ShopPrice"
+      required:
+        - id
+        - name
+        - images
+        - metadata
+
+    ShopPrice:
+      type: object
+      properties:
+        id:
+          type: string
+        unitAmount:
+          type: integer
+        currency:
+          type: string
+      required:
+        - id
+        - unitAmount
+        - currency
+
+    CheckoutInput:
+      type: object
+      properties:
+        priceId:
+          type: string
+        productId:
+          type: string
+        photoObjectPath:
+          type: string
+        customerEmail:
+          type: string
+        shippingDetails:
+          type: object
+          additionalProperties: true
+        phoneModel:
+          type: string
+          description: >
+            For phone cases only — the display name of the phone model (e.g. "iPhone 15 Pro Max").
+            The server maps this to the correct Prodigi SKU.
+      required:
+        - priceId
+        - productId
+        - photoObjectPath
+        - customerEmail
+
+    CheckoutResult:
+      type: object
+      properties:
+        url:
+          type: string
+        sessionId:
+          type: string
+      required:
+        - url
+        - sessionId
+
+    ShopOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+        stripeSessionId:
+          type: string
+        productId:
+          type: string
+        priceId:
+          type: string
+        photoObjectPath:
+          type: string
+        customerEmail:
+          type: string
+        status:
+          type: string
+        prodigiOrderId:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - stripeSessionId
+        - productId
+        - priceId
+        - photoObjectPath
+        - customerEmail
+        - status
+        - createdAt
+
+    UploadUrlInput:
+      type: object
+      properties:
+        name:
+          type: string
+        size:
+          type: integer
+        contentType:
+          type: string
+      required:
+        - name
+        - size
+        - contentType
+
+    UploadUrlResult:
+      type: object
+      properties:
+        uploadURL:
+          type: string
+        objectPath:
+          type: string
+      required:
+        - uploadURL
+        - objectPath

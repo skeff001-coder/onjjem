@@ -1,0 +1,1 @@
+- [Expo audio & permissions gotchas](expo-audio-permissions.md) — SDK54 uses expo-audio (not expo-av); bare "expo-audio" plugin silently adds iOS mic permission → App Store rejection; undeclared native permission crashes iOS.

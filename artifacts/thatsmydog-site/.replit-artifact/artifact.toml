@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/thatsmydog-site/"
+title = "What's Up Dog! — Website"
+version = "1.0.0"
+id = "artifacts/thatsmydog-site"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/thatsmydog-site/" ]
+localPort = 20908
+
+[services.development]
+run = "pnpm --filter @workspace/thatsmydog-site run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/thatsmydog-site", "run", "build" ]
+publicDir = "artifacts/thatsmydog-site/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20908"
+BASE_PATH = "/thatsmydog-site/"

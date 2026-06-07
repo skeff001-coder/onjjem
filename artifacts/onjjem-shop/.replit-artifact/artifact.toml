@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/shop/"
+title = "onJJem — Dog Photo Merch Shop"
+version = "1.0.0"
+id = "artifacts/onjjem-shop"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/shop/" ]
+localPort = 20851
+
+[services.development]
+run = "pnpm --filter @workspace/onjjem-shop run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/onjjem-shop", "run", "build" ]
+publicDir = "artifacts/onjjem-shop/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20851"
+BASE_PATH = "/shop/"

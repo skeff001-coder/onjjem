@@ -1,0 +1,223 @@
+uploads = []
+
+[[generated]]
+id = "NYjCpA4Ph7ucUT9gbuJMS"
+uri = "file://artifacts/canine-encyclopedia/assets/images/icon.png"
+type = "image"
+title = "symmetrical cartoon dog teeth letters icon"
+
+[[generated]]
+id = "IKuE9nqjoaVofILfswtJ6"
+uri = "file://artifacts/canine-encyclopedia/assets/images/hero_scanner.png"
+type = "image"
+title = "dog scanner hero image"
+
+[[generated]]
+id = "Iroi63NrTzPLvTbpNFyyx"
+uri = "file://artifacts/canine-encyclopedia/assets/images/world_map.png"
+type = "image"
+title = "breed origins world map"
+
+[[generated]]
+id = "BR1uZfkaNylfNnfABCkKI"
+uri = "file://attached_assets/generated_images/whats_up_dog_icon.png"
+type = "image"
+title = "whats up dog icon"
+
+[[generated]]
+id = "Buu9FHtGXQTkHy6oW8obk"
+uri = "file://artifacts/thatsmydog-site/public/print-hero.png"
+type = "image"
+title = "Dog print merchandise flat lay"
+
+[[generated]]
+id = "mmVufs9SY79tqhxDwRztp"
+uri = "file://artifacts/onjjem-shop/public/coaster-set.png"
+type = "image"
+title = "wooden photo coasters product shot"
+
+[[generated]]
+id = "CUC9zI2OKfKnfl6VTtjA3"
+uri = "file://artifacts/onjjem-shop/public/jigsaw-puzzle.png"
+type = "image"
+title = "photo jigsaw puzzle product shot"
+
+[[generated]]
+id = "UP9nWOqygYnOfzN-RpnAl"
+uri = "file://artifacts/onjjem-shop/public/phone-case.png"
+type = "image"
+title = "custom photo phone case product shot"
+
+[[generated]]
+id = "SFrH1uPPpNpRRehPbxqxL"
+uri = "file://artifacts/onjjem-shop/public/temporary-tattoo.png"
+type = "image"
+title = "custom temporary tattoo product shot"
+
+[[generated]]
+id = "3DyNTA3ijSmRDuC0Gd6ue"
+uri = "file://artifacts/onjjem-shop/public/playing-cards.png"
+type = "image"
+title = "custom photo playing cards product shot"
+
+[[generated]]
+id = "vI_UteNIBj9NVvK9FRxc9"
+uri = "file://artifacts/onjjem-shop/public/assets/stretched-canvas.png"
+type = "image"
+title = "Stretched Canvas product mockup"
+
+[[generated]]
+id = "JlRcw0KOKkcWTyRkwrLvN"
+uri = "file://artifacts/onjjem-shop/public/assets/eco-canvas.png"
+type = "image"
+title = "Eco Canvas product mockup"
+
+[[generated]]
+id = "Hgp97Q3oq9kXrH37KbVEX"
+uri = "file://artifacts/onjjem-shop/public/assets/framed-print.png"
+type = "image"
+title = "Framed Print product mockup"
+
+[[generated]]
+id = "kuJme-Zn2rb3cFUSsyGFg"
+uri = "file://artifacts/onjjem-shop/public/assets/cushion.png"
+type = "image"
+title = "Canvas Cushion product mockup"
+
+[[generated]]
+id = "wtNCuARpc-24euFnsnwMC"
+uri = "file://artifacts/onjjem-shop/public/assets/coasters.png"
+type = "image"
+title = "Wooden Coasters product mockup"
+
+[[generated]]
+id = "iEmUS6D1rYBdcOe5rxbxN"
+uri = "file://artifacts/onjjem-shop/public/assets/playing-cards.png"
+type = "image"
+title = "Playing Cards product mockup"
+
+[[generated]]
+id = "nJ0H-q94r9k20Zu0HghcH"
+uri = "file://artifacts/onjjem-shop/public/assets/tattoo.png"
+type = "image"
+title = "Temporary Tattoo product mockup"
+
+[[generated]]
+id = "Eyn2VL3icd04B4dYy6riB"
+uri = "file://artifacts/onjjem-shop/public/assets/phone-case.png"
+type = "image"
+title = "Tough Phone Case product mockup"
+
+[[generated]]
+id = "mOWt-VmHeKBXf7lkPk7j5"
+uri = "file://artifacts/onjjem-shop/public/assets/jigsaw-252.png"
+type = "image"
+title = "252 piece Jigsaw product mockup"
+
+[[generated]]
+id = "f5x7foff9y7FTW-CTlz7y"
+uri = "file://artifacts/onjjem-shop/public/assets/jigsaw-30.png"
+type = "image"
+title = "30 piece Jigsaw product mockup"
+
+[[generated]]
+id = "iMt26nPdAhcBCKBdujDox"
+uri = "file://artifacts/onjjem-shop/public/assets/jigsaw-110.png"
+type = "image"
+title = "110 piece Jigsaw product mockup"
+
+[[generated]]
+id = "YI4p0ftSsgA5ljCZftwLF"
+uri = "file://artifacts/onjjem-shop/public/assets/jigsaw-500.png"
+type = "image"
+title = "500 piece Jigsaw product mockup"
+
+[[generated]]
+id = "G8y9j9kFnGHZlftrZwY-U"
+uri = "file://artifacts/onjjem-shop/public/assets/jigsaw-1000.png"
+type = "image"
+title = "1000 piece Jigsaw product mockup"
+
+[[generated]]
+id = "fBt4Y3LwCpDlISHZiLauk"
+uri = "file://artifacts/onjjem-shop/public/assets/photo-mug.png"
+type = "image"
+title = "Photo Mug product mockup"
+
+[[outputs]]
+id = "92MZ8sg2Fw05jIz-_wnEE"
+uri = "file://artifacts/byte2eat-ad/public/audio/bg_music.mp3"
+type = "audio"
+title = "byte2eat background music"
+
+[[outputs]]
+id = "M4n4HXIjHBeKdfBI6k6aF"
+uri = "file://attached_assets/stock_images/dog_canvas_1.jpg"
+type = "image"
+title = "dog canvas print product mockup"
+
+[[outputs]]
+id = "L1awVGzZIKg3anoESFOym"
+uri = "file://attached_assets/stock_images/dog_canvas_2.jpg"
+type = "image"
+title = "dog canvas print product mockup"
+
+[[outputs]]
+id = "_FFqceqmUUA2wN4TDahGC"
+uri = "file://attached_assets/stock_images/dog_canvas_3.jpg"
+type = "image"
+title = "dog canvas print product mockup"
+
+[[outputs]]
+id = "jxnVJ47fILZ_nUVYigrwU"
+uri = "file://attached_assets/stock_images/dog_bandana.jpg"
+type = "image"
+title = "dog bandana product mockup personalized"
+
+[[outputs]]
+id = "gijJXZokqGy3vkBk3pWV9"
+uri = "file://attached_assets/stock_images/pet_tag.jpg"
+type = "image"
+title = "pet ID tag metal personalized dog product"
+
+[[outputs]]
+id = "bfihEBJmjzLuCu1yEzlWQ"
+uri = "file://attached_assets/stock_images/coaster_set.jpg"
+type = "image"
+title = "coaster set personalized dog photo product mockup"
+
+[[outputs]]
+id = "SzgRuKuyVTl4T1CbDJvI_"
+uri = "file://attached_assets/stock_images/jigsaw_puzzle.jpg"
+type = "image"
+title = "jigsaw puzzle dog photo custom product mockup"
+
+[[outputs]]
+id = "3digRn74b1bRvwF2Xl0Nh"
+uri = "file://attached_assets/stock_images/bespoke_canvas.jpg"
+type = "image"
+title = "bespoke custom canvas print large dog photo product"
+
+[[outputs]]
+id = "r8zxpNn4efrTXvHUDzy6c"
+uri = "file://attached_assets/stock_images/classic_canvas.jpg"
+type = "image"
+title = "classic gallery wrap canvas small dog photo print product"
+
+[[outputs]]
+id = "XIzZDt_CZgCjkbB6gGUx8"
+uri = "file://artifacts/canine-encyclopedia/assets/sounds/bark_big.mp3"
+type = "audio"
+title = "dog_bark_big"
+
+[[outputs]]
+id = "U1n5wCs0_pPRD-QTQn7mJ"
+uri = "file://artifacts/canine-encyclopedia/assets/sounds/bark_small.mp3"
+type = "audio"
+title = "dog_bark_small"
+
+[[outputs]]
+id = "jU6L935xM8TAPr4_MGl2H"
+uri = "file://artifacts/canine-encyclopedia/assets/sounds/bark_playful.mp3"
+type = "audio"
+title = "dog_bark_playful"

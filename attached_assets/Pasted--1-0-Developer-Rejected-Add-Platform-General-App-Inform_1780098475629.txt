@@ -1,0 +1,167 @@
+
+1.0 Developer Rejected
+Add Platform
+General
+App Information
+App Review
+History
+App Store
+Trust & Safety
+App Privacy
+App Accessibility
+Ratings and Reviews
+Growth & Marketing
+In-App Events
+Custom Product Pages
+Product Page Optimization
+Promo Codes
+Game Center
+Monetization
+Pricing and Availability
+In-App Purchases
+Subscriptions
+Featuring
+Nominations
+iOS App Version 1.0
+Save
+Add for Review
+The assets and metadata below appear on your app’s product page, when users install your app, and will be used for web engine search results once you release your app.
+
+English (U.K.)
+?
+Previews and Screenshots
+?
+Adding accurate screenshots of your app on the newest devices can help you represent the app's user experience. Keep in mind that we'll use these screenshots for all display sizes and localizations. Screenshots are only required for iOS apps, and only the first 3 will be used on the app installation sheets.
+
+iPhone
+iPad
+Apple Watch
+View All Sizes in Media Manager
+
+iPhone
+6.5" Display
+
+
+
+
+
+
+0 of 3 App Previews
+
+3 of 10 Screenshots
+
+Choose File
+
+Delete All
+
+Promotional Text
+?
+170
+
+Description
+?
+Point your camera at any dog and find out exactly what breed it is in seconds. What's Up Dog! uses advanced AI to instantly identify hundreds of dog breeds from a single photo.
+FREE BREED SCANNER
+• Instant AI breed identification
+• Detailed breed encyclopedia — history, traits, grooming, health & fun facts
+• Save your scanned dogs to My Pack
+• Share results with friends and family
+PREMIUM SCANNERS — 99p each
+• Mixed Breed DNA — full ancestry breakdown for crossbreeds
+• Age Calculator — visual age estimate and life stage
+• Personality Matcher — traits, social style and energy level
+DOGGIE GIFTS BY ONJJEM
+• Turn your dog into a personalised canvas, mug, cushion, blanket and more
+• Museum-grade inks, gift-wrapped and delivered in 3–5 business days
+• Shop directly inside the app
+Whether you've spotted a dog in the park, just rescued a puppy, or simply want to learn more about your best friend — What's Up Dog! has everything you need.
+3,057
+
+Keywords
+?
+dog breed scanner,dog identifier,puppy breed,dog encyclopedia,dog scanner,pet breed,dog AI
+10
+
+Support URL
+?
+https://onjjem.com
+Marketing URL
+?
+https://onjjem.com
+Version
+?
+1.0
+Copyright
+?
+© 2026 ONJJEM Ltd
+183
+
+Routing App Coverage File
+?
+No file chosen
+Choose File
+
+App Clip
+
+iMessage App
+?
+Build
+Build
+Version
+Has App Clip
+1
+1.0.0
+No
+
+Included Assets
+
+
+App Icon
+
+In-App Purchases and Subscriptions
+Select the in-app purchases or subscriptions you want to add to this app version.
+
+(Optional)
+
+Select In-App Purchases or Subscriptions
+Game Center
+App Review Information
+Sign-In Information
+?
+Provide a user name and password so we can sign in to your app. We’ll need this to complete your app review.
+
+
+Sign-in required
+reviewer@thatsmydog.app
+Doggy123?
+Contact Information
+?
+Owen
+Skeffington
++447444319579
+Skeff001@yahoo.com
+Notes
+?
+Chinese law requires apps with news, religious, book, and magazine content to have relevant permits in order to be available on the App Store in China mainland. If applicable, enter information about your permits below. Learn More
+
+4,000
+
+Attachment
+?
+No file chosen
+Choose File (Optional)
+App Store Version Release
+To make your app available on the App Store, you can automatically release it after it’s been approved by App Review. You can also manually release it on the App Store at a later date.
+
+
+Manually release this version
+
+Automatically release this version
+
+Automatically release this version after App Review, no earlier than
+Your local date and time.
+
+May 30, 2026 01:00
+App Store Connect
+Copyright © 2026 Apple Inc. All rights reserved.
+Terms of Service

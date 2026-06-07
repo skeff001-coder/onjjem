@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///C:/Users/skeff/Downloads/thatsmydog.html#how -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>That's My Dog — Scan. Discover. Print.</title>
+<link href="./That&#39;s My Dog — Scan. Discover. Print._files/css2" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD600;
+    --orange: #FF6B35;
+    --pink: #FF4D8D;
+    --purple: #7C3AED;
+    --blue: #2563EB;
+    --teal: #0EA5E9;
+    --green: #16A34A;
+    --cream: #FFFBF0;
+    --dark: #1a1a2e;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 50px;
+    background: var(--white);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--orange); }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    color: white !important;
+    padding: 10px 24px;
+    border-radius: 50px;
+    font-weight: 700 !important;
+    font-size: 0.9rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+  }
+
+  .nav-cta:hover { transform: scale(1.04); box-shadow: 0 8px 25px rgba(255,107,53,0.4); }
+
+  /* HERO */
+  .hero {
+    min-height: 90vh;
+    background: linear-gradient(160deg, #fff9e6 0%, #fff0f5 50%, #f0f4ff 100%);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-blob1 {
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 65%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-blob2 {
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 65%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-paws {
+    position: absolute;
+    font-size: 4rem;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .hero-paws:nth-child(1) { top: 10%; left: 5%; transform: rotate(-20deg); }
+  .hero-paws:nth-child(2) { top: 60%; right: 8%; transform: rotate(15deg); font-size: 3rem; }
+  .hero-paws:nth-child(3) { bottom: 15%; left: 40%; transform: rotate(5deg); font-size: 2.5rem; }
+
+  .hero-text { position: relative; z-index: 2; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(255,107,53,0.12), rgba(255,77,141,0.12));
+    border: 1.5px solid rgba(255,107,53,0.25);
+    color: var(--orange);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 50px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 5rem;
+    line-height: 1.05;
+    margin-bottom: 8px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 .line1 { color: var(--dark); }
+  .hero h1 .line2 {
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: #555;
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .hero-free-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green);
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    border-radius: 50px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.75s ease both;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    color: white;
+    padding: 15px 36px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 6px 25px rgba(255,107,53,0.35);
+  }
+
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(255,107,53,0.45); }
+
+  .btn-ghost {
+    background: white;
+    color: var(--dark);
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 2px solid rgba(0,0,0,0.1);
+    transition: all 0.2s;
+  }
+
+  .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+
+  /* HERO VISUAL */
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    animation: floatIn 0.9s ease both;
+  }
+
+  .phone {
+    width: 260px;
+    height: 520px;
+    background: white;
+    border-radius: 44px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.15), 0 0 0 6px var(--orange);
+    overflow: hidden;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .phone-screen {
+    height: 100%;
+    background: linear-gradient(160deg, #fff9e6, #fff0f5);
+    padding: 28px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .phone-logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+  }
+
+  .phone-scan-area {
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+  }
+
+  .phone-scan-area .scan-icon { font-size: 2.5rem; margin-bottom: 8px; }
+  .phone-scan-area h3 { font-family: 'Fredoka One', cursive; font-size: 1.1rem; margin-bottom: 4px; }
+  .phone-scan-area p { font-size: 0.65rem; opacity: 0.9; }
+
+  .phone-result {
+    background: white;
+    border-radius: 16px;
+    padding: 14px;
+    border: 2px solid rgba(255,107,53,0.15);
+  }
+
+  .phone-breed {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    color: var(--orange);
+    margin-bottom: 4px;
+  }
+
+  .phone-facts { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .phone-fact {
+    background: #fff0f5;
+    color: var(--pink);
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 50px;
+  }
+
+  .phone-print {
+    background: var(--purple);
+    border-radius: 14px;
+    padding: 12px;
+    color: white;
+    text-align: center;
+  }
+
+  .phone-print p { font-size: 0.65rem; opacity: 0.85; margin-bottom: 6px; }
+  .phone-print-btn {
+    background: var(--yellow);
+    color: var(--dark);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 50px;
+    display: inline-block;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--dark);
+    padding: 24px 60px;
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.2rem;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+  /* HOW IT WORKS */
+  .how {
+    padding: 100px 60px;
+    background: white;
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 60px;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+
+  .section-title span {
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 44px;
+    left: 12%;
+    right: 12%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--orange), var(--pink), var(--purple), var(--blue));
+    border-radius: 2px;
+  }
+
+  .step { text-align: center; position: relative; }
+
+  .step-num {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  }
+
+  .step:nth-child(1) .step-num { background: linear-gradient(135deg, #FFE066, var(--yellow)); }
+  .step:nth-child(2) .step-num { background: linear-gradient(135deg, var(--orange), var(--pink)); }
+  .step:nth-child(3) .step-num { background: linear-gradient(135deg, var(--purple), #9333EA); }
+  .step:nth-child(4) .step-num { background: linear-gradient(135deg, var(--teal), var(--blue)); }
+
+  .step h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--dark);
+  }
+
+  .step p { font-size: 0.88rem; color: #666; line-height: 1.6; }
+
+  .free-tag {
+    display: inline-block;
+    background: var(--green);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 50px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 100px 60px;
+    background: linear-gradient(160deg, #fff9e6 0%, #fff0f5 100%);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: white;
+    border-radius: 24px;
+    padding: 34px 28px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .feature-card:nth-child(1)::before { background: linear-gradient(90deg, var(--yellow), var(--orange)); }
+  .feature-card:nth-child(2)::before { background: linear-gradient(90deg, var(--orange), var(--pink)); }
+  .feature-card:nth-child(3)::before { background: linear-gradient(90deg, var(--pink), var(--purple)); }
+  .feature-card:nth-child(4)::before { background: linear-gradient(90deg, var(--purple), var(--blue)); }
+  .feature-card:nth-child(5)::before { background: linear-gradient(90deg, var(--blue), var(--teal)); }
+  .feature-card:nth-child(6)::before { background: linear-gradient(90deg, var(--teal), var(--green)); }
+
+  .feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+  }
+
+  .feature-icon { font-size: 2.8rem; margin-bottom: 16px; display: block; }
+
+  .feature-card h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--dark);
+  }
+
+  .feature-card p { font-size: 0.9rem; color: #666; line-height: 1.65; }
+
+  /* BREED SHOWCASE */
+  .breeds {
+    padding: 80px 60px;
+    background: white;
+    text-align: center;
+  }
+
+  .breed-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 900px;
+    margin: 40px auto 0;
+  }
+
+  .breed-tag {
+    background: var(--cream);
+    border: 2px solid rgba(255,107,53,0.15);
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark);
+    transition: all 0.2s;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .breed-tag:hover {
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    color: white;
+    border-color: transparent;
+    transform: scale(1.05);
+  }
+
+  /* PRICING */
+  .pricing {
+    padding: 100px 60px;
+    background: linear-gradient(160deg, #f0f4ff, #fff0f5);
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .price-card {
+    background: white;
+    border-radius: 28px;
+    padding: 38px 28px;
+    text-align: center;
+    border: 2px solid rgba(0,0,0,0.06);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .price-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.1); }
+
+  .price-card.featured {
+    background: linear-gradient(160deg, var(--orange), var(--pink));
+    color: white;
+    border-color: transparent;
+    transform: scale(1.04);
+  }
+
+  .price-card.featured:hover { transform: scale(1.04) translateY(-4px); }
+
+  .price-emoji { font-size: 2.8rem; margin-bottom: 12px; display: block; }
+
+  .price-amount {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3.2rem;
+    color: var(--orange);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .price-card.featured .price-amount { color: var(--yellow); }
+
+  .price-period { font-size: 0.8rem; color: #999; margin-bottom: 14px; font-weight: 600; }
+  .price-card.featured .price-period { color: rgba(255,255,255,0.75); }
+
+  .price-name {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    color: var(--dark);
+    margin-bottom: 18px;
+  }
+
+  .price-card.featured .price-name { color: white; }
+
+  .price-list { list-style: none; text-align: left; margin-bottom: 26px; }
+
+  .price-list li {
+    font-size: 0.88rem;
+    padding: 6px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  .price-card.featured .price-list li { color: rgba(255,255,255,0.9); }
+  .price-list li::before { content: '🐾'; font-size: 0.75rem; flex-shrink: 0; margin-top: 2px; }
+
+  .price-btn {
+    display: block;
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    color: white;
+    padding: 13px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .price-card.featured .price-btn {
+    background: var(--yellow);
+    color: var(--dark);
+  }
+
+  .price-btn:hover { opacity: 0.9; transform: scale(1.02); }
+
+  .best-badge {
+    position: absolute;
+    top: 16px;
+    right: -22px;
+    background: var(--yellow);
+    color: var(--dark);
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 4px 32px;
+    transform: rotate(45deg);
+    text-transform: uppercase;
+  }
+
+  /* PRINT SECTION */
+  .print-section {
+    padding: 100px 60px;
+    background: var(--dark);
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .print-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(124,58,237,0.2) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(255,107,53,0.15) 0%, transparent 60%);
+  }
+
+  .print-section .section-label { color: var(--yellow); }
+
+  .print-section h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3.2rem;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .print-section h2 span { color: var(--yellow); }
+
+  .print-section p {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.75);
+    max-width: 580px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+    position: relative;
+    z-index: 2;
+  }
+
+  .print-products {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 44px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .print-product {
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 16px 22px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .print-product:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--yellow);
+    transform: translateY(-3px);
+  }
+
+  .onjjem-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, var(--purple), #9333EA);
+    color: white;
+    padding: 18px 48px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 35px rgba(124,58,237,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    z-index: 2;
+  }
+
+  .onjjem-btn:hover { transform: scale(1.04); box-shadow: 0 14px 50px rgba(124,58,237,0.55); }
+
+  .onjjem-note {
+    margin-top: 16px;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* FREE SCAN BANNER */
+  .free-banner {
+    background: linear-gradient(135deg, var(--green), #15803D);
+    padding: 28px 60px;
+    text-align: center;
+    color: white;
+  }
+
+  .free-banner h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+  }
+
+  .free-banner p { font-size: 1rem; opacity: 0.9; }
+
+  /* CROSS PROMO */
+  .crosspromo {
+    padding: 80px 60px;
+    background: linear-gradient(135deg, #fff9e6, #f0f4ff);
+    text-align: center;
+  }
+
+  .crosspromo h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.4rem;
+    margin-bottom: 16px;
+    color: var(--dark);
+  }
+
+  .crosspromo h2 span { color: var(--orange); }
+
+  .crosspromo p {
+    font-size: 1rem;
+    color: #666;
+    max-width: 540px;
+    margin: 0 auto 30px;
+    line-height: 1.7;
+  }
+
+  .app-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+
+  .app-chip {
+    padding: 12px 26px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 2px solid;
+  }
+
+  .app-chip.burn { border-color: #FF6B35; color: #FF6B35; background: rgba(255,107,53,0.08); }
+  .app-chip.byte { border-color: var(--green); color: var(--green); background: rgba(22,163,74,0.08); }
+  .app-chip.dog { border-color: var(--pink); color: var(--pink); background: rgba(255,77,141,0.08); }
+
+  .plus { font-size: 1.4rem; color: #ccc; display: flex; align-items: center; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    color: rgba(255,255,255,0.5);
+    padding: 50px 60px 30px;
+  }
+
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .footer-logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .footer-tagline { font-size: 0.85rem; color: rgba(255,255,255,0.4); }
+
+  .footer-links h4 {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .footer-links ul { list-style: none; }
+  .footer-links li { margin-bottom: 8px; }
+  .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--orange); }
+
+  .footer-bottom {
+    text-align: center;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 40px 24px; text-align: center; }
+    .hero h1 { font-size: 3.2rem; }
+    .hero-visual { display: none; }
+    .hero-buttons { justify-content: center; }
+    .stats-bar { padding: 24px; gap: 30px; }
+    .how { padding: 60px 24px; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .steps::before { display: none; }
+    .features { padding: 60px 24px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .breeds { padding: 60px 24px; }
+    .pricing { padding: 60px 24px; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .price-card.featured { transform: none; }
+    .print-section { padding: 60px 24px; }
+    .crosspromo { padding: 60px 24px; }
+    footer { padding: 40px 24px 24px; }
+    .footer-top { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">That's My Dog 🐾</div>
+  <ul class="nav-links">
+    <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#how">How It Works</a></li>
+    <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#features">Features</a></li>
+    <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#pricing">Pricing</a></li>
+    <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#print">Print It</a></li>
+    <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#pricing" class="nav-cta">📱 Free Scan</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob1"></div>
+  <div class="hero-blob2"></div>
+  <div class="hero-paws">🐾</div>
+  <div class="hero-paws">🐾</div>
+  <div class="hero-paws">🐾</div>
+
+  <div class="hero-text">
+    <div class="hero-badge">🐕 AI Dog Identification &amp; Print Studio</div>
+    <h1>
+      <span class="line1">That's</span>
+      <span class="line2">My Dog! 🐾</span>
+    </h1>
+    <p class="hero-sub">Point. Scan. Discover everything about your dog in seconds. Then turn their portrait into a stunning piece of art — printed on anything, delivered anywhere.</p>
+    <div class="hero-free-badge">✅ First scan completely FREE — no card needed</div>
+    <div class="hero-buttons">
+      <a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#pricing" class="btn-primary">🐾 Scan My Dog Free</a>
+      <a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#how" class="btn-ghost">How It Works ↓</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-logo">That's My Dog 🐾</div>
+        <div class="phone-scan-area">
+          <div class="scan-icon">📸</div>
+          <h3>Scan Your Dog</h3>
+          <p>AI identifies breed, personality &amp; health info instantly</p>
+        </div>
+        <div class="phone-result">
+          <div class="phone-breed">🐕 Golden Retriever</div>
+          <div class="phone-facts">
+            <div class="phone-fact">Friendly</div>
+            <div class="phone-fact">Energetic</div>
+            <div class="phone-fact">Family Dog</div>
+            <div class="phone-fact">Lives 10-12 yrs</div>
+          </div>
+        </div>
+        <div class="phone-print">
+          <p>🖼️ Love this photo? Print it!</p>
+          <div class="phone-print-btn">Order via ONJJEM →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">500+</div>
+    <div class="stat-label">Breeds on record</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">FREE</div>
+    <div class="stat-label">First scan always</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">AI powered</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Print products available</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-label">Simple as a tail wag</div>
+  <h2 class="section-title">Scan. <span>Discover.</span> Print. Love.</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">📸</div>
+      <div class="free-tag">Free</div>
+      <h3>Scan Your Dog</h3>
+      <p>Point your camera at your dog. Our AI scans their features and identifies their breed instantly. First scan is always free.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">🔍</div>
+      <h3>Discover Everything</h3>
+      <p>Get a full breed report — personality, health insights, exercise needs, diet tips, and fascinating breed history.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">🖼️</div>
+      <h3>Choose Your Print</h3>
+      <p>Love the photo? Send it straight to ONJJEM — our print partner — for stunning portraits, canvases, murals and more.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">📦</div>
+      <h3>Delivered to Your Door</h3>
+      <p>ONJJEM handles everything — printing, sizing, and delivery. Your dog's portrait arrives ready to hang and treasure forever.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">What you get</div>
+  <h2 class="section-title">Your dog deserves <span>to be known</span></h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">🧬</span>
+      <h3>Breed Identification</h3>
+      <p>Our AI recognises over 500 dog breeds from a single photo scan. Mixed breed? We'll tell you that too.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📖</span>
+      <h3>Full Breed Profile</h3>
+      <p>Every breed in our database comes with a rich profile — history, temperament, health considerations and care guide.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">❤️</span>
+      <h3>Personality Insights</h3>
+      <p>Find out why your dog does what it does. Understand their instincts, energy levels and what makes them tick.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🏥</span>
+      <h3>Health &amp; Diet Tips</h3>
+      <p>Breed-specific health advice, common conditions to watch for, and dietary recommendations tailored to your dog.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🖼️</span>
+      <h3>Print Anything</h3>
+      <p>Turn your scan into art. Canvas, mural, portrait, earrings, cushions — any size, any finish, via ONJJEM.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔒</span>
+      <h3>Private &amp; Ad-Free</h3>
+      <p>Your dog's photos stay yours. No adverts, no data selling. Just you, your dog, and the knowledge you need.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BREED SHOWCASE -->
+<section class="breeds">
+  <div class="section-label">Breed Database</div>
+  <h2 class="section-title">500+ breeds <span>on record</span></h2>
+  <div class="breed-tags">
+    <div class="breed-tag">🐕 Labrador Retriever</div>
+    <div class="breed-tag">🐩 French Bulldog</div>
+    <div class="breed-tag">🐕 Golden Retriever</div>
+    <div class="breed-tag">🐕‍🦺 German Shepherd</div>
+    <div class="breed-tag">🐾 Poodle</div>
+    <div class="breed-tag">🐕 Bulldog</div>
+    <div class="breed-tag">🐩 Dachshund</div>
+    <div class="breed-tag">🐕 Beagle</div>
+    <div class="breed-tag">🐾 Yorkshire Terrier</div>
+    <div class="breed-tag">🐕 Boxer</div>
+    <div class="breed-tag">🐩 Shih Tzu</div>
+    <div class="breed-tag">🐕 Husky</div>
+    <div class="breed-tag">🐕‍🦺 Border Collie</div>
+    <div class="breed-tag">🐾 Cocker Spaniel</div>
+    <div class="breed-tag">🐕 + 485 more breeds →</div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-label">Simple Pricing</div>
+  <h2 class="section-title">Start free. <span>Discover more.</span></h2>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <span class="price-emoji">🆓</span>
+      <div class="price-amount">Free</div>
+      <div class="price-period">No card needed</div>
+      <div class="price-name">First Sniff</div>
+      <ul class="price-list">
+        <li>1 free dog scan</li>
+        <li>Full breed identification</li>
+        <li>Basic breed profile</li>
+        <li>Connect to ONJJEM for printing</li>
+      </ul>
+      <a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#" class="price-btn">Scan My Dog Free</a>
+    </div>
+    <div class="price-card featured">
+      <div class="best-badge">Most Popular</div>
+      <span class="price-emoji">🐾</span>
+      <div class="price-amount">99p</div>
+      <div class="price-period">per additional scan</div>
+      <div class="price-name">Sniff &amp; Discover</div>
+      <ul class="price-list">
+        <li>Scan any dog, anytime</li>
+        <li>Full breed identification</li>
+        <li>Complete breed profile</li>
+        <li>Personality &amp; health insights</li>
+        <li>Printable breed certificate</li>
+      </ul>
+      <a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#" class="price-btn">Get Scanning</a>
+    </div>
+    <div class="price-card">
+      <span class="price-emoji">👑</span>
+      <div class="price-amount">£2.99</div>
+      <div class="price-period">one-time unlock</div>
+      <div class="price-name">Know Your Pack</div>
+      <ul class="price-list">
+        <li>Unlimited scans forever</li>
+        <li>Full breed database access</li>
+        <li>Deep health &amp; diet guides</li>
+        <li>Saved dog profiles</li>
+        <li>Priority print connection to ONJJEM</li>
+      </ul>
+      <a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#" class="price-btn">Unlock Everything</a>
+    </div>
+  </div>
+</section>
+
+<!-- FREE SCAN BANNER -->
+<div class="free-banner">
+  <h3>🐾 Your first scan is on us. Always.</h3>
+  <p>Download That's My Dog and discover your dog's breed, personality and history — completely free, no strings attached.</p>
+</div>
+
+<!-- PRINT SECTION -->
+<section class="print-section" id="print">
+  <div class="section-label">🖼️ Powered by ONJJEM</div>
+  <h2>Turn your dog into <span>a masterpiece</span></h2>
+  <p>Scan your dog in That's My Dog, then send their portrait straight to ONJJEM — our world-class print partner. Choose your product, your size, your finish. They handle everything from there.</p>
+  <div class="print-products">
+    <div class="print-product">🖼️ Canvas Prints</div>
+    <div class="print-product">🗺️ Murals</div>
+    <div class="print-product">🖼️ Framed Portraits</div>
+    <div class="print-product">💍 Earrings</div>
+    <div class="print-product">🛋️ Cushions</div>
+    <div class="print-product">👕 Clothing</div>
+    <div class="print-product">📐 Any Size</div>
+    <div class="print-product">🌍 Delivered Worldwide</div>
+  </div>
+  <a href="https://onjjem.com/" class="onjjem-btn">
+    🖨️ Visit ONJJEM to Print →
+  </a>
+  <p class="onjjem-note">Clicking "Print" in the app takes you directly to ONJJEM where all printing, sizing and ordering is handled.</p>
+</section>
+
+<!-- CROSS PROMO -->
+<section class="crosspromo">
+  <h2>Part of the <span>Effortless</span> Family 🐾</h2>
+  <p>That's My Dog is part of a family of smart, simple apps designed to make life better. Scan your dog, burn calories at your desk, and eat smarter from your fridge.</p>
+  <div class="app-row">
+    <div class="app-chip dog">That's My Dog 🐾</div>
+    <div class="plus">+</div>
+    <div class="app-chip burn">effortless BURN 🔥</div>
+    <div class="plus">+</div>
+    <div class="app-chip byte">Byte 2 Eat 🥗</div>
+  </div>
+  <a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#" class="btn-primary">Explore All Apps →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">That's My Dog 🐾</div>
+      <div class="footer-tagline">Scan. Discover. Print. Love.</div>
+    </div>
+    <div class="footer-links">
+      <h4>App</h4>
+      <ul>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Download Free</a></li>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">How It Works</a></li>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Breed Database</a></li>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Pricing</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Print</h4>
+      <ul>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Visit ONJJEM</a></li>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Canvas Prints</a></li>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Portraits</a></li>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">All Products</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Privacy Policy</a></li>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Support</a></li>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Contact</a></li>
+        <li><a href="file:///C:/Users/skeff/Downloads/thatsmydog.html#">Our Apps</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 That's My Dog. Available on the App Store. · Part of the Effortless Apps family.
+  </div>
+</footer>
+
+
+
+</body></html>

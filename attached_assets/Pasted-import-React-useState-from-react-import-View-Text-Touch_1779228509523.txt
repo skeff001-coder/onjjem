@@ -1,0 +1,99 @@
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image, Alert } from 'react-native';
+import * as Linking from 'expo-linking';
+
+export default function GimmickHub() {
+  const [unlocked, setUnlocked] = useState({
+    translator: false,
+    pawsport: false,
+    glowup: false,
+    badge: false,
+    barkoff: false,
+  });
+
+  const handleUnlock = (key, name) => {
+    Alert.alert(
+      "Unlock " + name,
+      "Get instant access for only 99p!",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Pay 99p", onPress: () => {
+          // In a real app, you'd trigger Apple In-App Purchase here
+          setUnlocked({...unlocked, [key]: true});
+          Alert.alert("Success!", name + " is now active in your Pack.");
+        }}
+      ]
+    );
+  };
+
+  const GimmickCard = ({ id, title, icon, description, status }) => (
+    <TouchableOpacity 
+      style={[styles.card, status && styles.unlockedCard]} 
+      onPress={() => !status && handleUnlock(id, title)}
+    >
+      <Text style={styles.icon}>{icon}</Text>
+      <View style={styles.cardContent}>
+        <Text style={styles.cardTitle}>{title} {status ? '✅' : '💎'}</Text>
+        <Text style={styles.cardDesc}>{description}</Text>
+      </View>
+      {!status && <Text style={styles.priceTag}>99p</Text>}
+    </TouchableOpacity>
+  );
+
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.header}>The Pup-Grade Shop</Text>
+      
+      <GimmickCard 
+        id="translator" title="Bark-Translator" icon="🗣️" 
+        description="AI turns barks into funny texts for WhatsApp/TikTok."
+        status={unlocked.translator}
+      />
+      
+      <GimmickCard 
+        id="pawsport" title="Digital Pawsport" icon="🆔" 
+        description="A premium ID card for your dog's profile."
+        status={unlocked.pawsport}
+      />
+
+      <GimmickCard 
+        id="glowup" title="AI Glow-Up" icon="🎨" 
+        description="Turn your dog photos into digital masterpieces."
+        status={unlocked.glowup}
+      />
+
+      <GimmickCard 
+        id="badge" title="Golden Bone Badge" icon="🦴" 
+        description="Show off your VIP status in the global feed."
+        status={unlocked.badge}
+      />
+
+      <GimmickCard 
+        id="barkoff" title="The Bark-Off Pack" icon="🔊" 
+        description="Secret sounds to get those cute head-tilt videos."
+        status={unlocked.barkoff}
+      />
+
+      <TouchableOpacity 
+        style={styles.onJJemButton} 
+        onPress={() => Linking.openURL('https://onjjem.shop')}
+      >
+        <Text style={styles.onJJemText}>GO TO ONJJEM SHOP 🛍️</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#121212', padding: 20 },
+  header: { fontSize: 28, fontWeight: 'bold', color: '#FFD700', marginBottom: 20, textAlign: 'center', marginTop: 40 },
+  card: { backgroundColor: '#1E1E1E', borderRadius: 15, padding: 15, marginBottom: 15, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#333' },
+  unlockedCard: { borderColor: '#FFD700', backgroundColor: '#252525' },
+  icon: { fontSize: 40, marginRight: 15 },
+  cardContent: { flex: 1 },
+  cardTitle: { color: '#FFF', fontSize: 18, fontWeight: 'bold' },
+  cardDesc: { color: '#AAA', fontSize: 12, marginTop: 4 },
+  priceTag: { color: '#FFD700', fontWeight: 'bold', fontSize: 16 },
+  onJJemButton: { backgroundColor: '#FFD700', padding: 20, borderRadius: 50, marginTop: 20, marginBottom: 40, alignItems: 'center' },
+  onJJemText: { color: '#000', fontWeight: 'bold', fontSize: 18 }
+});

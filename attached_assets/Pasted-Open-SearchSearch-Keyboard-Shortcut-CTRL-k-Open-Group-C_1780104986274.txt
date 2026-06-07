@@ -1,0 +1,380 @@
+Open SearchSearch
+Keyboard Shortcut:CTRL⌃ k
+
+Open Group
+Contrado Helix API Usage Guide
+
+Close Group
+Stores
+
+Get basic information about stores
+HTTP Method: GET
+
+Open Group
+Store Collections
+
+Open Group
+Store Products
+
+Open Group
+Store Orders
+
+Open Group
+Countries
+
+Open Group
+Models
+Powered by Scalar
+
+v1.0
+OAS 3.0.1
+Helix API
+
+Download OpenAPI Document
+
+Download OpenAPI Document
+Contrado Helix API Usage Guide
+Overview
+The Contrado Print on demand (Helix) API is a RESTful HTTP API that uses JSON request and response bodies.
+
+Supported HTTP methods:
+
+GET
+POST
+PUT
+DELETE
+Making Requests
+Request Format
+All requests must include:
+
+X-API-Key: <private_token>
+Content-Type: application/json
+Example Request
+curl -X GET "https://{base_url}/helix/v1/{request_path}" \
+  -H "Content-Type: application/json" \
+  -H X-API-Key: <private_token>
+Response Format
+Responses are returned in JSON format with appropriate HTTP status codes.
+
+Successful Response (200 OK)
+{
+  "success": true,
+  "message":"Request Successful",
+  "data": {//API Endpoint return data
+	//....
+  },
+   "error": null,
+    "timestamp": "2026-03-08T10:04:41.1512249Z",
+    "path": "/api/v1/stores",
+    "version": "1.0"
+}
+Error Response
+{
+  "success": false,
+  "message":"error messge ex: Invalid argument provided",
+  "data": null,
+   "error": {// error object},
+    "timestamp": "2026-03-08T10:04:41.1512249Z",
+    "path": "/api/v1/stores",
+    "version": "1.0"
+}
+Timestamps
+All timestamps are returned in UTC using ISO 8601 format.
+
+Localization
+The API supports the following culture codes:
+
+Culture Code
+en-GB
+en-US
+it-IT
+de-DE
+fr-FR
+ja-JP
+es-ES
+en-AU
+en-CA
+en-IE
+en-NZ
+sv-SE
+nl-NL
+HTTP Status Codes
+Status Code	Description
+200 OK	Request successful
+201 Created	Resource created successfully
+400 Bad Request	Invalid request data
+401 Unauthorized	Authentication required or invalid token
+403 Forbidden	Insufficient scope or permissions
+404 Not Found	Resource not found
+429 Too Many Requests	Rate limit exceeded
+500 Internal Server Error	Unexpected server error
+Rate Limiting
+The Helix API applies a general limit of 100 requests per minute.
+
+Authentication
+Private Tokens
+Private tokens are used for API authentication.
+
+Use a private token if you are building an integration for your own store and only your own services will call the API.
+
+Client Types
+There are two client types:
+
+Store: can access only one store.
+Account: can access all stores under the account. For store-specific endpoints, include X-Store-ID.
+Scopes
+Scope	Client Type	Description
+StoresRead	Store, Account	Read stores
+StoresCollectionRead	Store, Account	Read store collections
+StoreProductsRead	Store, Account	Read store products
+StoreOrdersRead	Store, Account	Read store orders
+StoreOrdersWrite	Store, Account	Create and manage store orders
+Using Private Tokens
+Private tokens can be generated in Contrado Store Account → API Integration.
+
+Notes:
+
+Tokens do not require refresh.
+Tokens remain valid until expiration or manual deletion.
+Copy the token when created; it cannot be viewed again.
+Store-Level Token Example
+curl --location \
+    --request GET 'https://{base_url}/helix/v1/{request_path}' \
+    --header 'X-API-Key: {private_token}'
+     --header 'X-Store-Id: {store_id}'
+Account-Level Token Example (with Store Context)
+curl --location \
+    --request GET 'https://{base_url}/helix/v1/{request_path}' \
+    --header 'X-API-Key: {private_token}' \  
+Order Creation Validation Rules (Required)
+For POST /orders/create, requests should be rejected when any of the following occurs:
+
+Missing shipping address (if required by product/order type)
+Invalid, deleted, or unsupported product
+Product does not belong to the authorized store/account
+Option/value mismatch for product configuration
+Empty line items
+Invalid quantity or pricing format
+Invalid culture code
+Product Images (API Reference)
+The store product endpoints return image payload , which provides various image formats and resolutions to be used across different areas of your storefront.
+
+JSON Response Example
+{
+  "productThumb": "https://static.rockycloud.co.uk/DesignTemplates/Thumb/591879_0_3d.jpeg?cache=2683125",
+  "productImages": [
+      {
+		  "thumbHighQuality": "https://static.rockycloud.co.uk/DesignTemplates/Thumb/591879_dd_0_1.jpeg?cache=-797712329",
+          "storeThumb800Quality": "https://static.rockycloud.co.uk/DesignTemplates/products/591879_dd_0.jpeg?cache=-797712329",
+          "storeThumb420Quality": "https://static.rockycloud.co.uk/DesignTemplates/Thumb/591879_dd_0.jpeg?cache=-797712329"
+      }
+  ],
+  "product3dImages": [
+     {
+          "thumbHighQuality": "https://static.contrado.com/DesignTemplates/HQ/591879_0_3d.jpeg?cache=8456518",
+          "storeThumb800Quality": "https://static.contrado.com/DesignTemplates/products/591879_0_3d.jpeg?cache=3738166",
+          "storeThumb420Quality": "https://static.contrado.com/DesignTemplates/Thumb/591879_0_3d.jpeg?cache=2683125"
+     }
+  ]
+}
+Field Descriptions
+Field Name	Type	Description
+productThumb	String	The primary, customer-facing thumbnail image (capped at 590px resolution). Intended Use: Product listing pages, grids, and catalogs.
+productImages	Array of Objects	Contains the 2D image views/design templates of the product. Includes High Quality (thumbHighQuality ), 800px (storeThumb800Quality) and 420px (storeThumb420Quality) resolutions. Intended Use: Product Detail Pages (PDP).
+product3dImages	Array of Objects	Contains fully rendered 3D product shots. Note: This array will only be populated if the product is 3D-enabled AND the internal 3D generation service has run successfully. Intended Use: Product Detail Pages (PDP).
+Implementation Best Practices
+To ensure the best user experience on your storefront, please follow these UI implementation guidelines:
+
+1. Listing Pages (Catalogs & Grids)
+
+Always use productThumb as the primary image for listing pages. Do not use this field for full-page hero images, as the resolution is optimized for thumbnails.
+2. Product Detail Pages (PDP) - Fallback Logic
+
+When rendering a Product Detail Page, you should implement the following fallback logic:
+Primary Attempt: Check if the product3dImages array contains data. If so, load these as the primary hero images.
+Fallback: If product3dImages is empty or null, fall back to loading the 2D templates from the productImages array.
+WebHook
+Overview
+Webhooks are an API feature that allows your system to receive real-time notifications about certain events - without needing to poll the API repeatedly.
+
+When an event occurs related to your store or data, the Helix server will make a POST request to your defined URL that will contain a JSON object in the request body. Your server has to respond with HTTP status 2xx OK, otherwise, the request will be retried in increasing intervals , max retires 3.
+
+ Helix Platform ──── Event occurs ────► POST your-endpoint.com/webhook
+                                        (JSON payload with event data)
+The JSON object will always contain these attributes:
+
+Field Name	Type	Description
+EntityId	Integer	The unique ID of the object associated with the event.
+EntityType	String	The category of the entity (e.g., order, product). See Entity Types for a full list.
+EntityAction	String	The specific action that triggered the event (e.g., created, updated). See Entity Actions for a full list.
+EventDateTime	TimeStamp	The timestamp indicating when the event was generated.
+Description	String	A brief, human-readable summary of the event.
+AdditionalData	Object	Context-specific metadata related to the event. The contents of this object depend on the EntityType and EntityAction combination.
+RetryCount	Integer	The number of times the system has attempted to deliver this webhook event. Starts at 0 for the initial attempt.
+StoreId	Integer	The unique ID of the store ,optional
+StoreProductId	Integer	The unique ID of the store product id(DesignTemplate).
+LatestStatus	String	Latest status of the order.
+How to Register Your Webhook
+To begin receiving event payloads, you must register your endpoint URL. Log in to your Contrado Store Account.
+
+Contrado Store Account → API Integration → Webhook and Domain Registration section.
+
+EntityTypes
+EntityType
+Store
+StoreCollection
+DesignTemplate
+DesignToStoreCollection
+StoreTemplateEntry
+DesignModified
+Product
+OptionValue
+Order
+EntityAction
+EntityAction	Description
+Added	Triggered when EntityType related information is added
+Modified	Triggered when EntityType related information is updated
+Deleted	Triggered when EntityType related information is deleted
+Rejected	Triggered when EntityType related information is rejected
+ProductDisContinue	Triggered when a base product is marked as discontinued.
+ProductRestored	Triggered when a base product is reactivated after being discontinued.
+ProductOutOfStock	Triggered when a product stock runs out.
+ProductInStock	Triggered when a product is back in stock.
+ProductOptionValueDiscontinue	Triggered when a base product option value is marked as discontinued.
+ProductOptionValueRestored	Triggered when a base product option value is reactivated after being discontinued.
+ProductOptionValueOutOfStock	Triggered when a product option value stock runs out.
+ProductOptionValueInStock	Triggered when a product option value is back in stock.
+Webhook Payload Structure
+Every webhook POST request includes a standard envelope:
+
+{
+   "EntityId":1,
+   "EntityType":"Product",
+   "EntityAction":"ProductDisContinue",
+   "EventDateTime":"2026-04-30T12:38:50.1257617Z",
+   "AdditionalData": {// Event-specific payload} ,
+   "Description":"Base product has been Discontinue. The associated store products are listed in AdditionalData. Please review and take the necessary action.",
+   "RetryCount":0,
+   "StoreId":"0",
+   "LatestStatus":"",
+   "StoreProductId" : 0
+}
+Support
+For issues or questions, please contact integrations@contrado.com
+
+Server
+Server:
+https://api.contrado.app
+
+Authentication
+Required
+Selected Auth Type:ApiKey
+Enter API Key
+Name
+:
+X-API-KEY
+Value
+:
+QUxMIFlPVVIgQkFTRSBBUkUgQkVMT05HIFRPIFVT
+Show Password
+Client Libraries
+Shell Curl
+Stores ​Copy link
+Provides API endpoints for retrieving and managing store information accessible to the current user.
+
+StoresOperations
+get
+/helix/v1/stores
+Get basic information about stores​Copy link
+Retrieves basic information about stores accessible to the current user. The returned data depends on the access level associated with the user's token. If no stores are found for the specified identifiers, the response contains an empty list and a message indicating that no stores were found. Access to this endpoint requires the StoresRead scope.
+
+Headers
+X-Store-IdCopy link to X-Store-Id
+Type:string
+Example
+Your Store Id
+
+Responses
+
+200
+OK
+
+403
+Forbidden
+
+404
+Not Found
+Request Example forget/helix/v1/stores
+Shell Curl
+
+curl https://api.contrado.app/helix/v1/stores \
+  --header 'X-Store-Id: 0' \
+  --header 'X-API-KEY: YOUR_SECRET_TOKEN'
+
+Test Request
+(get /helix/v1/stores)
+Status:200
+Status:403
+Status:404
+
+{
+  "storeName": null,
+  "storeShortName": null,
+  "shortDescription": null,
+  "longDescription": null,
+  "storeFooter": null,
+  "storeId": 1,
+  "storeURL": null,
+  "cultureCode": null
+}
+OK
+
+Store Collections (Collapsed)​Copy link
+Provides API endpoints for retrieving store collections and their associated products.
+
+This controller exposes operations to list store collections, retrieve a specific store collection by its identifier, and obtain products belonging to a particular store collection. All endpoints require appropriate authorization scopes and support pagination where applicable. Responses include standard HTTP status codes for success, not found, and forbidden access. This controller is intended to be used in the context of a store management system where users can browse and manage store collections and their products.
+
+Store CollectionsOperations
+get
+/helix/v1/stores/collections
+get
+/helix/v1/stores/collections/{collectionId}
+get
+/helix/v1/stores/collections/{collectionId}/products
+Show More
+Store Products (Collapsed)​Copy link
+Provides API endpoints for retrieving store products and their option variants for a custom store. Supports operations to list products, retrieve product details by ID, and obtain product options with variants.
+
+Store ProductsOperations
+get
+/helix/v1/stores/products
+get
+/helix/v1/stores/products/{storeProductId}
+get
+/helix/v1/stores/products/{storeProductId}/option-variants
+Show More
+Store Orders (Collapsed)​Copy link
+Provides API endpoints for creating and retrieving store orders and their statuses for authenticated customers. This controller supports operations such as creating new store orders, retrieving lists of orders, fetching order details by ID, and obtaining order status by order ID or reference ID. All endpoints require appropriate authorization scopes. Responses include standard HTTP status codes and may return detailed error messages in case of invalid requests or missing data.
+
+Store OrdersOperations
+post
+/helix/v1/orders/create
+get
+/helix/v1/orders
+get
+/helix/v1/orders/{orderId}
+get
+/helix/v1/orders/{orderId}/status
+get
+/helix/v1/orders/by-reference/{referenceId}/status
+get
+/helix/v1/orders/{orderId}/shipment/status
+Show More
+Countries (Collapsed)​Copy link
+Provides endpoints to retrieve country and state data This controller provides endpoints for retrieving country and state information. All routes are prefixed with 'countries'. Access to these endpoints may be restricted based on user permissions. See individual action methods for details on supported operations and response types.
+
+CountriesOperations
+get
+/helix/v1/countries
+Show More
+Models
