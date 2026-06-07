@@ -1,1 +1,1 @@
-{"name":"workspace","version":"0.0.0","private":true,"scripts":{"eas-build-pre-install":"pnpm install --no-frozen-lockfile --filter=./artifacts/canine-encyclopedia..."},"dependencies":{},"devDependencies":{}}
+{"name":"workspace","version":"0.0.0","private":true,"scripts":{"eas-build-pre-install":"pnpm install --no-frozen-lockfile --filter=./artifacts/canine-encyclopedia..."},"pnpm":{"public-hoist-pattern":["expo*","react*"]},"dependencies":{},"devDependencies":{}}
