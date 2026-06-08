@@ -1,20 +1,38 @@
 {
-  "name": "canine-encyclopedia",
-  "version": "1.0.0",
-  "private": true,
+  "name": "workspace",
+  "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
+    "build": "PORT=3000 BASE_PATH=/ pnpm -r --if-present run build",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
+    "eas-build-pre-install": "pnpm config set strict-peer-dependencies false && pnpm install --no-frozen-lockfile"
+  },
+  "private": true,
+  "main": "expo-router/entry",
+  "devDependencies": {
+    "eas-cli": "^20.0.0",
+    "prettier": "^3.8.3",
+    "typescript": "~5.9.3"
   },
   "dependencies": {
-    "expo": "~51.0.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-native": "0.74.5"
+    "stripe": "^22.2.0",
+    "stripe-replit-sync": "^1.0.0",
+    "expo-camera": "~16.0.0"
   },
-  "devDependencies": {
-    "@babel/core": "^7.20.0"
+  "pnpm": {
+    "overrides": {
+      "react": "19.1.0",
+      "react-dom": "19.1.0"
+    },
+    "onlyBuiltDependencies": [
+      "@google/genai",
+      "@swc/core",
+      "esbuild",
+      "msw",
+      "protobufjs",
+      "unrs-resolver"
+    ]
   }
 }

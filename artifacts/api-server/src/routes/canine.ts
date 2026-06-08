@@ -118,7 +118,7 @@ Do not include any text outside the JSON.`,
           ],
         },
       ],
-      config: { maxOutputTokens: 1024, responseMimeType: "application/json" },
+      config: { maxOutputTokens: 2048, responseMimeType: "application/json" },
     });
 
     const text = response.text ?? "{}";
