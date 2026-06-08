@@ -34,7 +34,7 @@ export const products: Product[] = [
     name: "Stretched Canvas",
     description:
       "Gallery-quality canvas wrapped around a sturdy wooden frame. Ready to hang straight out of the box.",
-    image: "/onjjem-website/products/stretched-canvas.webp",
+    image: "/products/stretched-canvas.webp",
     category: "wall-art",
     variants: [
       // cost £14.00 + £6.75 ship = £20.75 → 50% margin = £41.50
@@ -55,7 +55,7 @@ export const products: Product[] = [
     name: "Eco Canvas",
     description:
       "Environmentally friendly canvas prints on recycled materials. Beautiful colour reproduction, lighter on the planet.",
-    image: "/onjjem-website/products/eco-canvas.webp",
+    image: "/products/eco-canvas.webp",
     category: "wall-art",
     variants: [
       // cost £7.00 + £6.75 ship = £13.75 → 50% margin = £27.50
@@ -78,7 +78,7 @@ export const products: Product[] = [
     name: "Slim Canvas",
     description:
       "A thinner-profile canvas wrap for a sleek, contemporary look. Perfect for panoramic and portrait shots.",
-    image: "/onjjem-website/products/slim-canvas.webp",
+    image: "/products/slim-canvas.webp",
     category: "wall-art",
     variants: [
       // cost £15.00 + £6.85 ship = £21.85 → 50% margin = £43.70
@@ -99,7 +99,7 @@ export const products: Product[] = [
     name: "Box Frames",
     description:
       "Deep, beautiful black box frames that give your photos a striking three-dimensional presence on the wall.",
-    image: "/onjjem-website/products/box-frames.jpg",
+    image: "/products/box-frames.jpg",
     category: "frames",
     variants: [
       // cost £19.00 + £6.75 ship = £25.75 → 50% margin = £51.50
@@ -122,7 +122,7 @@ export const products: Product[] = [
     name: "Framed Photo Tiles",
     description:
       "Create a stunning gallery wall with these easy-to-hang black-framed tiles. Lightweight and ready to display.",
-    image: "/onjjem-website/products/framed-photo-tiles-02.webp",
+    image: "/products/framed-photo-tiles-02.webp",
     category: "frames",
     variants: [
       // cost £6.06 + £7.96 ship = £14.02 → 50% margin = £28.04
@@ -141,7 +141,7 @@ export const products: Product[] = [
     name: "Eco Rolled Canvas",
     description:
       "Unstretched eco-friendly canvas prints, ideal for custom framing or rolling and posting as a gift.",
-    image: "/onjjem-website/products/eco-rolled-canvas.jpg",
+    image: "/products/eco-rolled-canvas.jpg",
     category: "prints",
     variants: [
       // cost £5.00 + £3.45 ship = £8.45 → 50% margin = £16.90
@@ -162,7 +162,7 @@ export const products: Product[] = [
     name: "Rolled Canvas",
     description:
       "Premium artist-grade rolled canvas. Produced on museum-quality giclée canvas and posted in a protective tube.",
-    image: "/onjjem-website/products/rolled-canvas.webp",
+    image: "/products/rolled-canvas.webp",
     category: "prints",
     variants: [
       // cost £5.00 + £3.45 ship = £8.45 → 50% margin = £16.90
@@ -185,7 +185,7 @@ export const products: Product[] = [
     name: "Jigsaw Puzzles",
     description:
       "Your restored photo printed on a premium jigsaw puzzle and supplied in a beautiful metal presentation tin. The lid also features your photo.",
-    image: "/onjjem-website/products/jigsaw-puzzles.webp",
+    image: "/products/jigsaw-puzzles.webp",
     category: "gifts",
     variants: [
       // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £26.40
@@ -202,7 +202,7 @@ export const products: Product[] = [
     name: "Playing Cards",
     description:
       "A full standard deck of playing cards with your photo printed on the back of every card.",
-    image: "/onjjem-website/products/playing-cards.webp",
+    image: "/products/playing-cards.webp",
     category: "gifts",
     variants: [
       // cost £8.00 + £3.20 ship = £11.20 → price at £19.95
@@ -218,7 +218,7 @@ export const products: Product[] = [
     name: "Temporary Tattoos",
     description:
       "Custom temporary tattoos printed on skin-safe waterslide film. Quick and easy application — lasts up to one week, removes easily with no residue. Personalise with any photo for parties, events, or just for fun.",
-    image: "/onjjem-website/products/tattoo-arm.webp",
+    image: "/products/tattoo-arm.webp",
     category: "tattoos",
     variants: [
       // cost £2.95 + £3.20 = £6.15 → 50% margin = £9.22
@@ -242,7 +242,7 @@ export const products: Product[] = [
     name: "iPad Cases",
     description:
       "Vibrant snap-on iPad cases with edge-to-edge photo printing. Hard polycarbonate shell with water-based polyurethane coating for a lasting finish. Protects your device while keeping your memories close.",
-    image: "/onjjem-website/products/ipad-case.png",
+    image: "/products/ipad-case.png",
     category: "gifts",
     variants: [
       // cost £15.00 + £3.20 ship = £18.20 → 50% margin = £27.30
@@ -259,7 +259,7 @@ export const products: Product[] = [
     name: "Pet Tags",
     description:
       "Personalised aluminium pet tags with your photo or design, dye-sublimated for rich, long-lasting colour. Suitable for dogs and cats — attaches to any collar.",
-    image: "/onjjem-website/products/metal-pet-tags.jpg",
+    image: "/products/metal-pet-tags.jpg",
     category: "pets",
     variants: [
       // cost £5.00 + £2.25 ship = £7.25 → 50% margin = £14.50
@@ -276,7 +276,7 @@ export const products: Product[] = [
     name: "Tea Towels",
     description:
       "Custom all-over printed tea towels made from 100% cotton with hemmed edges and a corner hanging tab. Machine washable and fade-resistant.",
-    image: "/onjjem-website/products/tea-towels.png",
+    image: "/products/tea-towels.png",
     category: "kitchen",
     variants: [
       // cost £12.00 + £3.00 ship = £15.00 → 50% margin = £30.00
@@ -289,7 +289,7 @@ export const products: Product[] = [
     name: "Wooden Coasters",
     description:
       "Custom photo coasters made from 4mm MDF with a high-gloss finish and protective cork underside. Order individually or as a set.",
-    image: "/onjjem-website/products/wooden-coasters.png",
+    image: "/products/wooden-coasters.png",
     category: "kitchen",
     variants: [
       // cost £4.00 + £2.25 ship = £6.25 → 50% margin = £12.50
@@ -308,7 +308,7 @@ export const products: Product[] = [
     name: "Photo Mugs",
     description:
       "Your favourite photo printed on a dishwasher-safe ceramic mug. A thoughtful, everyday gift.",
-    image: "/onjjem-website/products/photo-mugs.png",
+    image: "/products/photo-mugs.png",
     category: "kitchen",
     variants: [
       // cost £4.25 + £3.30 ship = £7.55 → 50% margin = £15.10
@@ -325,7 +325,7 @@ export const products: Product[] = [
     name: "Photo Magnets",
     description:
       "Turn your favourite photo into a fridge magnet. Bright, crisp printing on durable magnetic stock — perfect for the kitchen or as a gift.",
-    image: "/onjjem-website/products/photo-magnets.webp",
+    image: "/products/photo-magnets.webp",
     category: "magnets",
     variants: [
       // cost £2.00 + £1.35 ship = £3.35 → 50% margin = £6.70
@@ -348,7 +348,7 @@ export const products: Product[] = [
     name: "Folio Wallet Cases",
     description:
       "Premium faux-leather folio wallet cases with custom photo printing. Features card slots, stand function, and a magnetic closure. Your photo on the cover, your cards inside.",
-    image: "/onjjem-website/products/folio-wallet.png",
+    image: "/products/folio-wallet.png",
     category: "phone-cases",
     variants: [
       // cost £10.00 + £3.20 ship = £13.20 → 50% margin = £19.80
@@ -375,7 +375,7 @@ export const products: Product[] = [
     name: "Tough Phone Cases",
     description:
       "Dual-layer tough phone cases with custom photo printing. A hard polycarbonate outer shell and soft TPU inner bumper provide serious drop protection while showing off your favourite photo.",
-    image: "/onjjem-website/products/tough-case.png",
+    image: "/products/tough-case.png",
     category: "phone-cases",
     variants: [
       // cost £8.00 + £3.20 ship = £11.20 → 50% margin = £16.80
@@ -410,7 +410,7 @@ export const products: Product[] = [
     name: "Glow in the Dark Posters",
     description:
       "Turn your favourite photo into a glow-in-the-dark poster. Charges under natural or artificial light, then glows softly for hours. Perfect for bedrooms, nurseries, and creative spaces.",
-    image: "/onjjem-website/products/glow-poster.png",
+    image: "/products/glow-poster.png",
     category: "glow-posters",
     variants: [
       // cost £4.00 + £3.20 ship = £7.20 → 50% margin = £10.80

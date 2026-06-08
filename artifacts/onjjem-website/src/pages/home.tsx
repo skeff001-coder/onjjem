@@ -112,7 +112,7 @@ export default function Home() {
           >
             <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent z-10" />
             <img
-              src="/onjjem-website/products/framed-canvas.webp"
+              src="/products/framed-canvas.webp"
               alt="Framed canvas resting against a wall"
               className="w-full h-full object-cover object-center"
             />
