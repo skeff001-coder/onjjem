@@ -11,11 +11,32 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "13",
+      "buildNumber": "14",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow What's Up Dog! to access your camera to scan and identify dog breeds."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow What's Up Dog! to access your photos to scan dog breeds."
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false
+        }
+      ],
+      "expo-updates"
+    ],
     "extra": {
       "eas": {
         "projectId": "e4b0d15e-3254-475e-91ce-8da7284ee720"

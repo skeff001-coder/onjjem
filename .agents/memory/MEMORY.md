@@ -1,2 +1,2 @@
 - [Expo audio & permissions gotchas](expo-audio-permissions.md) — SDK54 uses expo-audio (not expo-av); bare "expo-audio" plugin silently adds iOS mic permission → App Store rejection; undeclared native permission crashes iOS.
-- [RevenueCat sync init required](revenuecat-sync-init.md) — SubscriptionProvider calls Purchases.getCustomerInfo() on mount; must call initializeRevenueCat() synchronously at module scope BEFORE any component renders or the app crashes on iOS cold launch.
+- [Reanimated 4 plugin incompatibility](reanimated4-plugin.md) — react-native-reanimated 4.x has no app.plugin.js; adding it to app.json plugins crashes Expo start. It auto-links natively without any plugin entry.
