@@ -74,8 +74,6 @@ async function initStripe(): Promise<void> {
   }
 }
 
-await initStripe();
-
 const rawPort = process.env["PORT"];
 
 if (!rawPort) {
@@ -90,6 +88,7 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
+// Start listening immediately so healthchecks pass while Stripe initialises in the background.
 app.listen(port, (err) => {
   if (err) {
     logger.error({ err }, "Error listening on port");
@@ -97,4 +96,10 @@ app.listen(port, (err) => {
   }
 
   logger.info({ port }, "Server listening");
+
+  // Stripe init runs after the server is already accepting connections.
+  // A slow/failing webhook registration no longer blocks startup.
+  initStripe().catch((err) => {
+    logger.error({ err }, "Stripe background init failed");
+  });
 });
