@@ -21,6 +21,10 @@ path = "scripts/post-merge.sh"
 timeoutMs = 20000
 
 [[ports]]
+localPort = 3000
+externalPort = 5173
+
+[[ports]]
 localPort = 8080
 externalPort = 8080
 
@@ -58,9 +62,10 @@ externalPort = 5000
 
 [nix]
 channel = "stable-25_05"
-packages = ["eas-cli"]
+packages = ["eas-cli", "stripe-cli"]
 
 [userenv]
 
 [userenv.shared]
 PRODIGI_ENV = "live"
+run = "pnpm start --filter api-server"

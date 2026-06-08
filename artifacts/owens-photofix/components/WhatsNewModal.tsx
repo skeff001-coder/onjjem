@@ -32,6 +32,39 @@ interface VersionNotes {
  * The key must match the version string in app.json exactly.
  */
 export const CHANGELOG: Record<string, VersionNotes> = {
+  "1.0.39": {
+    headline: "What's New in v1.0.39",
+    items: [
+      {
+        icon: "sparkles-outline",
+        accent: "#C9960C",
+        title: "Improvements & Bug Fixes",
+        body: "Behind-the-scenes improvements and small fixes to keep your photo restorations running smoothly.",
+      },
+    ],
+  },
+  "1.0.38": {
+    headline: "What's New in v1.0.38",
+    items: [
+      {
+        icon: "sparkles-outline",
+        accent: "#C9960C",
+        title: "Improvements & Bug Fixes",
+        body: "Behind-the-scenes improvements and small fixes to keep your photo restorations running smoothly.",
+      },
+    ],
+  },
+  "1.0.37": {
+    headline: "What's New in v1.0.37",
+    items: [
+      {
+        icon: "sparkles-outline",
+        accent: "#C9960C",
+        title: "Improvements & Bug Fixes",
+        body: "Behind-the-scenes improvements and small fixes to keep your photo restorations running smoothly.",
+      },
+    ],
+  },
   "1.0.36": {
     headline: "What's New in v1.0.36",
     items: [
