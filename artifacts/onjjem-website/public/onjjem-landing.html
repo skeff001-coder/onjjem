@@ -56,7 +56,7 @@
     @media (max-width: 640px) { nav { padding: 14px 20px; } .nav-links { display: none; } }
 
     /* HERO */
-    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 110px 24px 64px; position: relative; overflow: hidden; }
+    .hero { min-height: 82vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 90px 24px 48px; position: relative; overflow: hidden; }
     .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 55% at 50% 0%,rgba(201,150,12,0.08) 0%,transparent 68%), radial-gradient(ellipse 40% 30% at 85% 85%,rgba(201,150,12,0.05) 0%,transparent 60%); }
     .hero-layout { display: grid; grid-template-columns: 1fr minmax(0,560px) 1fr; gap: 32px; align-items: center; width: 100%; max-width: 1340px; position: relative; }
     @media (max-width: 960px) { .hero-panel { display: none !important; } .hero-layout { grid-template-columns: 1fr; } }
@@ -341,7 +341,7 @@
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#how">How It Works</a></li>
     <li><a href="/shop" target="_blank" rel="noopener">Shop</a></li>
-    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#pricing-top">Pricing</a></li>
     <li><a href="#tool" class="nav-cta">Restore Now</a></li>
   </ul>
 </nav>
@@ -419,6 +419,50 @@
     <div class="trust-item"><span class="ti-icon">🔒</span><span>Photos Never Stored</span></div>
   </div>
 </div>
+
+<!-- PRICING TILES — visible immediately after hero -->
+<section style="background:var(--bg2);padding:56px 24px;border-bottom:1px solid rgba(201,150,12,0.12);" id="pricing-top">
+  <div style="max-width:860px;margin:0 auto;text-align:center;">
+    <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:10px;"><span>✦</span> Simple, Honest Pricing</div>
+    <h2 class="section-title" style="margin-bottom:8px;">One Free, Then Pay Only When You're Happy</h2>
+    <p class="section-sub" style="margin-bottom:36px;">See the result before you spend a penny. No account required.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;">
+
+      <!-- Free -->
+      <div style="background:var(--card);border:1px solid rgba(201,150,12,0.2);border-radius:18px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-size:32px;line-height:1;">🎁</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);">Free Preview</div>
+        <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--cream);line-height:1;">£0</div>
+        <div style="font-size:11px;color:var(--c55);margin-bottom:4px;">always free</div>
+        <p style="font-size:12px;color:var(--c55);line-height:1.6;text-align:center;">Upload any photo and get a free watermarked preview — see exactly what we can do before paying anything.</p>
+        <a href="#tool" style="margin-top:8px;width:100%;display:block;padding:12px;border-radius:10px;background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.35);color:var(--gold);font-size:13px;font-weight:700;text-align:center;text-decoration:none;">Try Free Now</a>
+      </div>
+
+      <!-- £1.49 -->
+      <div style="background:var(--card);border:2px solid var(--gold);border-radius:18px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;box-shadow:0 0 32px rgba(201,150,12,0.18);">
+        <div style="position:absolute;top:-13px;background:linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold));color:var(--bg);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 14px;border-radius:20px;">Most Popular</div>
+        <div style="font-size:32px;line-height:1;">📷</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);">One Photo</div>
+        <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--cream);line-height:1;">£1.49</div>
+        <div style="font-size:11px;color:var(--c55);margin-bottom:4px;">per photo</div>
+        <p style="font-size:12px;color:var(--c55);line-height:1.6;text-align:center;">Pay once, get one full HD restoration with no watermark. No subscription, no account needed.</p>
+        <button onclick="startSinglePhoto()" style="margin-top:8px;width:100%;padding:12px;border-radius:10px;background:linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold));border:none;color:var(--bg);font-size:13px;font-weight:700;cursor:pointer;">Buy One Photo — £1.49</button>
+      </div>
+
+      <!-- £12.99/month -->
+      <div style="background:var(--card);border:1px solid rgba(74,144,217,0.35);border-radius:18px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-size:32px;line-height:1;">∞</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4A90D9;">Monthly Unlimited</div>
+        <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--cream);line-height:1;">£12.99</div>
+        <div style="font-size:11px;color:var(--c55);margin-bottom:4px;">per month</div>
+        <p style="font-size:12px;color:var(--c55);line-height:1.6;text-align:center;">Unlimited full-quality restorations every month. Perfect for families with lots of photos. Cancel anytime.</p>
+        <button onclick="startSubscribe('monthly')" style="margin-top:8px;width:100%;padding:12px;border-radius:10px;background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.4);color:#4A90D9;font-size:13px;font-weight:700;cursor:pointer;">Subscribe — £12.99/month</button>
+      </div>
+
+    </div>
+    <p style="margin-top:20px;font-size:11px;color:rgba(250,247,242,0.25);line-height:1.7;">Subscriptions renew automatically. Cancel anytime — email <a href="mailto:hello@onjjem.com" style="color:rgba(201,150,12,0.5);">hello@onjjem.com</a></p>
+  </div>
+</section>
 
 <!-- ENHANCEMENT MODES -->
 <section class="enhancements-section">
