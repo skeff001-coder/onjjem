@@ -74,4 +74,22 @@ router.post("/restoration/free", async (req: Request, res: Response) => {
   }
 });
 
+// Lightweight email check — returns {alreadyUsed} without processing any image
+router.get("/restoration/check-email", async (req: Request, res: Response) => {
+  const email = ((req.query.email as string) ?? "").trim().toLowerCase();
+  if (!email || !email.includes("@")) {
+    res.json({ alreadyUsed: false });
+    return;
+  }
+  try {
+    await ensureSubscribersTable();
+    const existing = await db.execute(
+      sql`SELECT 1 FROM email_subscribers WHERE email = ${email} LIMIT 1`
+    );
+    res.json({ alreadyUsed: (existing.rowCount ?? 0) > 0 });
+  } catch {
+    res.json({ alreadyUsed: false }); // fail open — let them try
+  }
+});
+
 export default router;

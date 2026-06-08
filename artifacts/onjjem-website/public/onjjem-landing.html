@@ -513,21 +513,32 @@
     <div class="section-header">
       <div class="eyebrow"><span>✦</span> Try It Right Now</div>
       <h2 class="section-title">Restore Your Photo</h2>
-      <p class="section-sub">Upload any photo and see your free watermarked restoration instantly. Order a clean HD print from just £1.49.</p>
+      <p class="section-sub">Enter your email to unlock your one free watermarked restore — then see exactly what we can do before you pay anything.</p>
     </div>
     <div class="tool-card">
       <div class="tool-card-bar"></div>
       <div class="tool-card-inner">
-        <div class="upload-zone" id="uploadZone">
-          <input type="file" id="fileInput" accept="image/*" />
-          <span class="upload-icon">📷</span>
-          <div class="upload-title">Drop your photo here</div>
-          <p class="upload-hint">or tap to choose from your library &nbsp;·&nbsp; JPEG, PNG, WebP</p>
-        </div>
-        <div class="preview-area" id="previewArea">
 
-          <!-- Panel A: mode picker + email gate (shown first) -->
-          <div id="panelEmailGate">
+        <!-- STEP 1: Email gate (shown first — no upload visible yet) -->
+        <div id="panelEmail">
+          <div class="email-gate">
+            <div class="email-gate-title">✦ Enter your email to begin</div>
+            <div class="email-gate-sub">Every new email gets one free watermarked preview so you can see exactly what we can do. Clean HD (no watermark) from £1.49, or unlimited with a £12.99/month subscription.</div>
+            <input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email" />
+            <button class="btn-restore btn-restore-free" id="btnEmailContinue">Continue — Unlock Free Restore →</button>
+          </div>
+          <div class="status-msg" id="statusEmail"></div>
+        </div>
+
+        <!-- STEP 2: Upload zone (shown after email validated, free available) -->
+        <div id="panelUpload" style="display:none">
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="fileInput" accept="image/*" />
+            <span class="upload-icon">📷</span>
+            <div class="upload-title">Drop your photo here</div>
+            <p class="upload-hint">or tap to choose from your library &nbsp;·&nbsp; JPEG, PNG, WebP</p>
+          </div>
+          <div id="uploadPreview" style="display:none">
             <p class="mode-label">Choose Enhancement</p>
             <div class="mode-picker" id="modePicker">
               <button class="mode-btn active" data-mode="sharpen">⬡ Sharpen</button>
@@ -546,74 +557,89 @@
                 <span style="font-size:28px;opacity:0.18">✦</span>
               </div>
             </div>
-            <div class="email-gate">
-              <div class="email-gate-title">Enter your email to get your free restoration</div>
-              <div class="email-gate-sub">One free watermarked preview per email address — you can see exactly what we can do before paying anything. Clean HD (no watermark) from £1.49.</div>
-              <input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email" />
-              <button class="btn-restore btn-restore-free" id="btnGetFree">✦ Get My Free Restoration</button>
-            </div>
+            <button class="btn-restore btn-restore-free" id="btnGetFree">✦ Get My Free Restoration</button>
             <div class="status-msg" id="statusMsg"></div>
           </div>
+        </div>
 
-          <!-- Panel B: result (shown after processing) -->
-          <div id="panelResult" style="display:none">
-            <div class="preview-grid" style="margin-bottom:18px">
-              <div class="preview-slot">
-                <img id="originalImg2" src="" alt="Original photo" />
-                <span class="preview-label">Original</span>
-              </div>
-              <div class="preview-slot">
-                <img id="resultImg" src="" alt="Restored photo" />
-                <span class="preview-label after" id="resultLabel">✦ Restored</span>
-              </div>
+        <!-- STEP 3: Result (shown after free restore — no way back to free) -->
+        <div id="panelResult" style="display:none">
+          <div class="preview-grid" style="margin-bottom:18px">
+            <div class="preview-slot">
+              <img id="originalImg2" src="" alt="Original photo" />
+              <span class="preview-label">Original</span>
             </div>
-            <div class="status-msg" id="statusMsg2"></div>
-            <div id="upsellPanel" style="display:none">
-              <div class="upsell-panel">
-                <div class="upsell-title">Want it without the watermark?</div>
-                <div class="upsell-row">
-                  <button class="btn-upsell-149" id="btnPay149">⭐ Clean HD — £1.49</button>
-                  <button class="btn-upsell-sub" id="btnSubscribeUpsell">∞ Subscribe £12.99/mo</button>
-                </div>
-              </div>
-              <button class="btn-restore btn-download" id="btnDownload">⬇ Download Watermarked Preview</button>
+            <div class="preview-slot">
+              <img id="resultImg" src="" alt="Restored photo" />
+              <span class="preview-label after" id="resultLabel">✦ Restored</span>
             </div>
-            <div id="hdReadyPanel" style="display:none">
-              <button class="btn-restore btn-download" id="btnDownloadHD">⬇ Download Clean HD Photo</button>
-            </div>
-            <button class="btn-reset" id="btnReset">← Try a different photo</button>
-            <p class="tool-note">Paid restorations are full-resolution with Cinema-Grade AI. Your photos are never stored.</p>
           </div>
+          <div class="status-msg" id="statusMsg2"></div>
+          <div id="upsellPanel">
+            <div class="upsell-panel">
+              <div class="upsell-title">Your free preview is ready — want it without the watermark?</div>
+              <div class="upsell-row">
+                <button class="btn-upsell-149" id="btnPay149">⭐ Clean HD — £1.49</button>
+                <button class="btn-upsell-sub" id="btnSubscribeUpsell">∞ Subscribe £12.99/mo</button>
+              </div>
+            </div>
+            <button class="btn-restore btn-download" id="btnDownload">⬇ Download Watermarked Preview</button>
+          </div>
+          <div id="hdReadyPanel" style="display:none">
+            <button class="btn-restore btn-download" id="btnDownloadHD">⬇ Download Clean HD Photo</button>
+          </div>
+          <p class="tool-note">Paid restorations are full-resolution with Cinema-Grade AI. Your photos are never stored.</p>
+        </div>
 
-          <!-- Panel C: already used free (no result, straight to pay) -->
-          <div id="panelAlreadyUsed" style="display:none">
-            <div class="preview-grid" style="margin-bottom:18px">
+        <!-- STEP 4: Paywall (shown when free has been used — email or device) -->
+        <div id="panelPaywall" style="display:none">
+          <div style="text-align:center;padding:20px 0 16px;">
+            <div style="font-size:36px;margin-bottom:10px">🔒</div>
+            <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--cream);margin-bottom:6px;">Your Free Restore Has Been Used</div>
+            <p style="font-size:13px;color:var(--c55);line-height:1.6;max-width:360px;margin:0 auto 20px;">Upload your next photo below and choose a plan to get a full HD restoration with no watermark.</p>
+          </div>
+          <div class="upload-zone" id="uploadZone2">
+            <input type="file" id="fileInput2" accept="image/*" />
+            <span class="upload-icon">📷</span>
+            <div class="upload-title">Drop your next photo here</div>
+            <p class="upload-hint">or tap to choose &nbsp;·&nbsp; JPEG, PNG, WebP</p>
+          </div>
+          <div id="paywallPreview" style="display:none">
+            <div class="preview-grid" style="margin:16px 0">
               <div class="preview-slot">
                 <img id="originalImg3" src="" alt="Original photo" />
                 <span class="preview-label">Original</span>
               </div>
               <div class="preview-slot" style="display:flex;align-items:center;justify-content:center;background:var(--bg2);padding:20px;text-align:center;">
                 <div>
-                  <div style="font-size:28px;margin-bottom:8px">✦</div>
-                  <div style="font-size:12px;color:var(--c55);line-height:1.5">Your free restoration<br>has already been used</div>
+                  <div style="font-size:28px;margin-bottom:6px">🔒</div>
+                  <div style="font-size:11px;color:var(--c35);">Pay to restore</div>
                 </div>
               </div>
             </div>
-            <div class="upsell-panel">
-              <div class="upsell-title">Restore this photo for</div>
-              <div class="upsell-row">
-                <button class="btn-upsell-149" id="btnPay149b">⭐ One Photo — £1.49</button>
-                <button class="btn-upsell-sub" id="btnSubscribeb">∞ Subscribe £12.99/mo</button>
-              </div>
+            <p class="mode-label">Choose Enhancement</p>
+            <div class="mode-picker" id="modePicker2">
+              <button class="mode-btn2 active" data-mode="sharpen">⬡ Sharpen</button>
+              <button class="mode-btn2" data-mode="colorize">🎨 Colourize</button>
+              <button class="mode-btn2" data-mode="restore">⟳ Restore</button>
+              <button class="mode-btn2" data-mode="brighten">☀ Brighten</button>
+              <button class="mode-btn2" data-mode="denoise">✧ Denoise</button>
+              <button class="mode-btn2" data-mode="vivid">🌈 Vivid</button>
             </div>
-            <div class="status-msg" id="statusMsg3"></div>
-            <div id="hdReadyPanel2" style="display:none">
-              <button class="btn-restore btn-download" id="btnDownloadHD2">⬇ Download Clean HD Photo</button>
-            </div>
-            <button class="btn-reset" id="btnReset2">← Try a different photo</button>
           </div>
-
+          <div class="upsell-panel" style="margin-top:16px">
+            <div class="upsell-title">Choose your plan</div>
+            <div class="upsell-row">
+              <button class="btn-upsell-149" id="btnPay149b">⭐ One Photo — £1.49</button>
+              <button class="btn-upsell-sub" id="btnSubscribeb">∞ Subscribe £12.99/mo</button>
+            </div>
+          </div>
+          <div class="status-msg" id="statusMsg3"></div>
+          <div id="hdReadyPanel2" style="display:none">
+            <button class="btn-restore btn-download" id="btnDownloadHD2">⬇ Download Clean HD Photo</button>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -1068,36 +1094,64 @@ if (location.hash === '#order-success') {
   setTimeout(() => { banner.style.display = 'none'; history.replaceState(null,'',location.pathname); }, 8000);
 }
 
-// ── DOM refs ─────────────────────────────────────────────────────────────────
-const uploadZone = document.getElementById('uploadZone');
-const fileInput  = document.getElementById('fileInput');
-const previewArea = document.getElementById('previewArea');
+// ── State ─────────────────────────────────────────────────────────────────────
+const LS_USED  = 'onjjem_free_used';
+const LS_EMAIL = 'onjjem_email';
+let uploadedBase64Paywall = null;
+let selectedModesPaywall  = ['sharpen'];
 
 // ── Panels ───────────────────────────────────────────────────────────────────
 function showPanel(id) {
-  ['panelEmailGate','panelResult','panelAlreadyUsed'].forEach(p => {
+  ['panelEmail','panelUpload','panelResult','panelPaywall'].forEach(p => {
     document.getElementById(p).style.display = p === id ? '' : 'none';
   });
 }
 
-// ── Upload ───────────────────────────────────────────────────────────────────
+// ── On load: restore returning users from localStorage ───────────────────────
+(function checkReturningUser() {
+  if (localStorage.getItem(LS_USED)) {
+    showPanel('panelPaywall');
+  } else {
+    const saved = localStorage.getItem(LS_EMAIL);
+    if (saved) document.getElementById('emailInput').value = saved;
+  }
+})();
+
+// ── Email gate: Continue button ───────────────────────────────────────────────
+document.getElementById('btnEmailContinue').addEventListener('click', async () => {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) { setStatus('statusEmail','Please enter a valid email address.','error'); return; }
+  const btn = document.getElementById('btnEmailContinue');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Checking…';
+  clearStatus('statusEmail');
+  try {
+    const resp = await fetch('/api/restoration/check-email?email=' + encodeURIComponent(email));
+    const { alreadyUsed } = await resp.json();
+    localStorage.setItem(LS_EMAIL, email);
+    if (alreadyUsed) { localStorage.setItem(LS_USED,'1'); showPanel('panelPaywall'); }
+    else { showPanel('panelUpload'); }
+  } catch { localStorage.setItem(LS_EMAIL, email); showPanel('panelUpload'); }
+  finally { btn.disabled = false; btn.textContent = 'Continue — Unlock Free Restore →'; }
+});
+document.getElementById('emailInput').addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('btnEmailContinue').click(); });
+
+// ── Upload zone (free) ────────────────────────────────────────────────────────
+const uploadZone = document.getElementById('uploadZone');
+const fileInput  = document.getElementById('fileInput');
 uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
-fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) handleFileFree(f); });
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFileFree(fileInput.files[0]); });
 
-function handleFile(file) {
+function handleFileFree(file) {
   if (!file.type.startsWith('image/')) { setStatus('statusMsg','Please select an image file.','error'); return; }
   const reader = new FileReader();
   reader.onload = ev => {
     uploadedBase64 = ev.target.result.split(',')[1];
-    const dataUrl = ev.target.result;
-    document.getElementById('originalImg').src = dataUrl;
-    document.getElementById('originalImg2').src = dataUrl;
-    document.getElementById('originalImg3').src = dataUrl;
+    document.getElementById('originalImg').src = ev.target.result;
+    document.getElementById('originalImg2').src = ev.target.result;
     uploadZone.style.display = 'none';
-    previewArea.classList.add('active');
-    showPanel('panelEmailGate');
+    document.getElementById('uploadPreview').style.display = '';
     freeResultBase64 = null; hdResultBase64 = null;
     const btn = document.getElementById('btnGetFree');
     btn.textContent = '✦ Get My Free Restoration'; btn.disabled = false;
@@ -1106,7 +1160,7 @@ function handleFile(file) {
   reader.readAsDataURL(file);
 }
 
-// ── Mode picker ───────────────────────────────────────────────────────────────
+// ── Mode picker (free) ────────────────────────────────────────────────────────
 document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.dataset.mode;
@@ -1121,53 +1175,76 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
   });
 });
 
-// ── Email gate → free restore ─────────────────────────────────────────────────
+// ── Free restore button ────────────────────────────────────────────────────────
 document.getElementById('btnGetFree').addEventListener('click', async () => {
-  const email = document.getElementById('emailInput').value.trim();
-  if (!email || !email.includes('@')) { setStatus('statusMsg','Please enter a valid email address.','error'); return; }
+  const email = localStorage.getItem(LS_EMAIL) || '';
+  if (!email) { setStatus('statusMsg','Something went wrong — please refresh and try again.','error'); return; }
   if (!uploadedBase64) return;
-
   const btn = document.getElementById('btnGetFree');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Restoring…';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Restoring…';
   clearStatus('statusMsg');
-
   try {
     const resp = await fetch('/api/restoration/free', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, imageBase64: uploadedBase64, modes: selectedModes })
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || 'Something went wrong');
-
-    if (data.alreadyUsed) {
-      // Already had their free one — show payment panel
-      showPanel('panelAlreadyUsed');
-      return;
-    }
-
-    // Show watermarked result
+    if (data.alreadyUsed) { localStorage.setItem(LS_USED,'1'); showPanel('panelPaywall'); return; }
+    localStorage.setItem(LS_USED,'1');
     freeResultBase64 = data.resultBase64;
     document.getElementById('resultImg').src = 'data:image/jpeg;base64,' + data.resultBase64;
     document.getElementById('resultLabel').textContent = '✦ Restored (Watermarked)';
     document.getElementById('upsellPanel').style.display = '';
     document.getElementById('hdReadyPanel').style.display = 'none';
     showPanel('panelResult');
-
   } catch (e) {
     setStatus('statusMsg', e.message, 'error');
     btn.disabled = false; btn.textContent = '✦ Get My Free Restoration';
   }
 });
 
-// ── Download watermarked ───────────────────────────────────────────────────────
+// ── Upload zone (paywall) ─────────────────────────────────────────────────────
+const uploadZone2 = document.getElementById('uploadZone2');
+const fileInput2  = document.getElementById('fileInput2');
+uploadZone2.addEventListener('dragover', e => { e.preventDefault(); uploadZone2.classList.add('dragover'); });
+uploadZone2.addEventListener('dragleave', () => uploadZone2.classList.remove('dragover'));
+uploadZone2.addEventListener('drop', e => { e.preventDefault(); uploadZone2.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) handleFilePaywall(f); });
+fileInput2.addEventListener('change', () => { if (fileInput2.files[0]) handleFilePaywall(fileInput2.files[0]); });
+
+function handleFilePaywall(file) {
+  if (!file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    uploadedBase64Paywall = ev.target.result.split(',')[1];
+    document.getElementById('originalImg3').src = ev.target.result;
+    uploadZone2.style.display = 'none';
+    document.getElementById('paywallPreview').style.display = '';
+    hdResultBase64 = null; clearStatus('statusMsg3');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Mode picker (paywall) ─────────────────────────────────────────────────────
+document.querySelectorAll('.mode-btn2').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.mode;
+    const idx = selectedModesPaywall.indexOf(mode);
+    if (idx > -1) {
+      if (selectedModesPaywall.length === 1) return;
+      selectedModesPaywall.splice(idx, 1); btn.classList.remove('active');
+    } else {
+      if (selectedModesPaywall.length >= 3) return;
+      selectedModesPaywall.push(mode); btn.classList.add('active');
+    }
+  });
+});
+
+// ── Download watermarked ──────────────────────────────────────────────────────
 document.getElementById('btnDownload').addEventListener('click', () => {
   if (!freeResultBase64) return;
-  const a = document.createElement('a');
-  a.href = 'data:image/jpeg;base64,' + freeResultBase64;
-  a.download = 'onjjem-preview-watermarked-' + Date.now() + '.jpg';
-  a.click();
+  const a = document.createElement('a'); a.href = 'data:image/jpeg;base64,' + freeResultBase64;
+  a.download = 'onjjem-preview-watermarked-' + Date.now() + '.jpg'; a.click();
 });
 
 // ── Download clean HD ─────────────────────────────────────────────────────────
@@ -1175,19 +1252,18 @@ document.getElementById('btnDownloadHD').addEventListener('click', () => downloa
 document.getElementById('btnDownloadHD2').addEventListener('click', () => downloadHD(hdResultBase64));
 function downloadHD(b64) {
   if (!b64) return;
-  const a = document.createElement('a');
-  a.href = 'data:image/jpeg;base64,' + b64;
-  a.download = 'onjjem-hd-restored-' + Date.now() + '.jpg';
-  a.click();
+  const a = document.createElement('a'); a.href = 'data:image/jpeg;base64,' + b64;
+  a.download = 'onjjem-hd-restored-' + Date.now() + '.jpg'; a.click();
 }
 
-// ── £1.49 pay button (panel B upsell) ─────────────────────────────────────────
+// ── £1.49 pay buttons ─────────────────────────────────────────────────────────
 document.getElementById('btnPay149').addEventListener('click', () => openPayModal('panelResult'));
-// ── £1.49 pay button (panel C already-used) ───────────────────────────────────
-document.getElementById('btnPay149b').addEventListener('click', () => openPayModal('panelAlreadyUsed'));
+document.getElementById('btnPay149b').addEventListener('click', () => openPayModal('panelPaywall'));
 
 async function openPayModal(returnPanel) {
   if (!stripeJs) { alert('Payment unavailable. Please email hello@onjjem.com'); return; }
+  const img = returnPanel === 'panelPaywall' ? uploadedBase64Paywall : uploadedBase64;
+  if (!img) { setStatus(returnPanel==='panelPaywall'?'statusMsg3':'statusMsg2','Please upload a photo first.','error'); return; }
   document.getElementById('payModal').classList.add('open');
   document.getElementById('payError').style.display = 'none';
   document.getElementById('payment-element').innerHTML = '';
@@ -1218,28 +1294,25 @@ async function submitPayment() {
     if (confirmError) throw new Error(confirmError.message);
     if (!paymentIntent || paymentIntent.status !== 'succeeded') throw new Error('Payment did not complete. Please try again.');
     closePayModal();
-    setStatus(returnPanel === 'panelAlreadyUsed' ? 'statusMsg3' : 'statusMsg2', 'Payment confirmed! Processing your clean HD restoration…', 'success');
+    const statusId = returnPanel === 'panelPaywall' ? 'statusMsg3' : 'statusMsg2';
+    setStatus(statusId, 'Payment confirmed! Processing your clean HD restoration…', 'success');
 
-    const r2 = await fetch('/api/stripe/verify-process', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ paymentIntentId: paymentIntent.id, imageBase64: uploadedBase64, modes: selectedModes }) });
+    const imgToProcess = returnPanel === 'panelPaywall' ? uploadedBase64Paywall : uploadedBase64;
+    const modesToUse   = returnPanel === 'panelPaywall' ? selectedModesPaywall  : selectedModes;
+    const r2 = await fetch('/api/stripe/verify-process', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ paymentIntentId: paymentIntent.id, imageBase64: imgToProcess, modes: modesToUse }) });
     const data2 = await r2.json();
     if (!r2.ok || !data2.resultBase64) throw new Error(data2.error || 'Processing failed');
     hdResultBase64 = data2.resultBase64;
 
-    if (returnPanel === 'panelAlreadyUsed') {
-      document.getElementById('resultImg').src = 'data:image/jpeg;base64,' + hdResultBase64;
-      document.getElementById('resultLabel').textContent = '✦ Clean HD';
-      document.getElementById('originalImg2').src = document.getElementById('originalImg3').src;
-      document.getElementById('upsellPanel').style.display = 'none';
-      document.getElementById('hdReadyPanel').style.display = '';
-      showPanel('panelResult');
-      setStatus('statusMsg2', '✅ Full HD restoration complete! Click below to download.', 'success');
-    } else {
-      document.getElementById('resultImg').src = 'data:image/jpeg;base64,' + hdResultBase64;
-      document.getElementById('resultLabel').textContent = '✦ Clean HD';
-      document.getElementById('upsellPanel').style.display = 'none';
-      document.getElementById('hdReadyPanel').style.display = '';
-      setStatus('statusMsg2', '✅ Full HD restoration complete! Click below to download.', 'success');
-    }
+    document.getElementById('resultImg').src = 'data:image/jpeg;base64,' + hdResultBase64;
+    document.getElementById('resultLabel').textContent = '✦ Clean HD';
+    document.getElementById('originalImg2').src = returnPanel === 'panelPaywall'
+      ? document.getElementById('originalImg3').src
+      : document.getElementById('originalImg').src;
+    document.getElementById('upsellPanel').style.display = 'none';
+    document.getElementById('hdReadyPanel').style.display = '';
+    showPanel('panelResult');
+    setStatus('statusMsg2', '✅ Full HD restoration complete! Click below to download.', 'success');
   } catch (e) {
     document.getElementById('payError').textContent = e.message;
     document.getElementById('payError').style.display = 'block';
@@ -1262,17 +1335,6 @@ async function startSubscribeBtn(btn) {
   } catch (e) { btn.disabled = false; btn.textContent = orig; alert('Sorry, something went wrong. Please email hello@onjjem.com'); }
 }
 
-// ── Reset buttons ──────────────────────────────────────────────────────────────
-function resetTool() {
-  uploadZone.style.display = '';
-  previewArea.classList.remove('active');
-  uploadedBase64 = null; freeResultBase64 = null; hdResultBase64 = null;
-  fileInput.value = '';
-  document.getElementById('emailInput').value = '';
-  showPanel('panelEmailGate');
-}
-document.getElementById('btnReset').addEventListener('click', resetTool);
-document.getElementById('btnReset2').addEventListener('click', resetTool);
 
 // ── Status helpers ─────────────────────────────────────────────────────────────
 function setStatus(id, msg, type) {
