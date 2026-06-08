@@ -1,1 +1,2 @@
 - [Expo audio & permissions gotchas](expo-audio-permissions.md) — SDK54 uses expo-audio (not expo-av); bare "expo-audio" plugin silently adds iOS mic permission → App Store rejection; undeclared native permission crashes iOS.
+- [RevenueCat sync init required](revenuecat-sync-init.md) — SubscriptionProvider calls Purchases.getCustomerInfo() on mount; must call initializeRevenueCat() synchronously at module scope BEFORE any component renders or the app crashes on iOS cold launch.

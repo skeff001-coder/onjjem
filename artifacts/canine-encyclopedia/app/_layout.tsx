@@ -20,9 +20,19 @@ import { Platform } from "react-native";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AppProvider } from "@/context/AppContext";
-import { SubscriptionProvider, initializeRevenueCatAsync } from "@/lib/revenuecat";
+import { SubscriptionProvider, initializeRevenueCat, initializeRevenueCatAsync } from "@/lib/revenuecat";
 
 SplashScreen.preventAutoHideAsync();
+
+// Initialise RevenueCat synchronously at module load so it is configured
+// before SubscriptionProvider mounts and calls Purchases.getCustomerInfo().
+if (Platform.OS !== "web") {
+  try {
+    initializeRevenueCat();
+  } catch {
+    // Keys not available in this build environment — safe to skip
+  }
+}
 
 const queryClient = new QueryClient();
 
