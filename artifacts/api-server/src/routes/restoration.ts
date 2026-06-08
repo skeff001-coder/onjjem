@@ -39,11 +39,15 @@ router.post("/restoration/free", async (req: Request, res: Response) => {
   try {
     await ensureSubscribersTable();
 
-    const existing = await db.execute(sql`
-      SELECT email FROM email_subscribers WHERE email = ${email}
+    // Claim the slot atomically BEFORE processing.
+    // INSERT returns 0 rows if the email already exists — prevents any race
+    // condition where multiple concurrent requests all pass a SELECT check.
+    const claimed = await db.execute(sql`
+      INSERT INTO email_subscribers (email) VALUES (${email})
+      ON CONFLICT (email) DO NOTHING
     `);
 
-    if (existing.rows.length > 0) {
+    if ((claimed.rowCount ?? 0) === 0) {
       res.json({ alreadyUsed: true });
       return;
     }
@@ -51,6 +55,8 @@ router.post("/restoration/free", async (req: Request, res: Response) => {
     const validModes: EnhancementMode[] = ["sharpen", "brighten", "denoise", "restore", "vivid", "colorize"];
     const filtered = modes.filter((m) => validModes.includes(m)) as EnhancementMode[];
     if (!filtered.length) {
+      // Release the claimed slot so they can try again with valid modes
+      await db.execute(sql`DELETE FROM email_subscribers WHERE email = ${email}`);
       res.status(400).json({ error: "No valid modes provided." });
       return;
     }
@@ -58,11 +64,6 @@ router.post("/restoration/free", async (req: Request, res: Response) => {
     const inputBuffer = Buffer.from(imageBase64, "base64");
     const outputBuffer = await makeFreePreview(inputBuffer, filtered);
     const resultBase64 = outputBuffer.toString("base64");
-
-    await db.execute(sql`
-      INSERT INTO email_subscribers (email) VALUES (${email})
-      ON CONFLICT (email) DO NOTHING
-    `);
 
     req.log.info({ email }, "Free restoration used");
     res.json({ alreadyUsed: false, resultBase64 });
