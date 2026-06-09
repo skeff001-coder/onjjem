@@ -189,7 +189,9 @@ function buildStandalonePackageJson(pkgPath, catalog) {
   const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
 
   // Packages that must never be sent to EAS workers.
-  const EAS_WORKER_EXCLUDE = new Set(["eas-cli"]);
+  // - eas-cli: pulls in better-sqlite3 (native addon) that crashes npm ci on macOS
+  // - @expo/ngrok: postinstall downloads a platform binary that crashes npm on macOS Sequoia
+  const EAS_WORKER_EXCLUDE = new Set(["eas-cli", "@expo/ngrok"]);
 
   const missing = [];
 
@@ -618,14 +620,22 @@ async function main() {
     );
     console.log("Standalone package.json written.");
 
-    // Install dependencies so EAS can resolve Expo config plugins (like expo-router)
-    // locally before queuing the build. This also generates a package-lock.json
-    // for the EAS build servers to use.
+    // Install dependencies locally so EAS can verify the package list is valid.
+    // We pass --ignore-scripts to skip postinstall hooks (e.g. ngrok binary downloads)
+    // that would fail in the Replit environment. We then DELETE the generated
+    // package-lock.json so that EAS runs "npm install" (not "npm ci") on its Mac
+    // worker — this lets npm re-resolve platform-specific optional dependencies for
+    // macOS ARM64 rather than being locked to the Linux ones we just generated.
     console.log("Installing dependencies (this takes ~30s)…");
     execSync("npm install --ignore-scripts", {
       cwd: tmpDir,
       stdio: "inherit",
     });
+    const lockPath = path.join(tmpDir, "package-lock.json");
+    if (fs.existsSync(lockPath)) {
+      fs.unlinkSync(lockPath);
+      console.log("package-lock.json removed (EAS will run npm install, not npm ci).");
+    }
     console.log("Dependencies installed.");
 
     // ── Dry-run exit ───────────────────────────────────────────────────────────

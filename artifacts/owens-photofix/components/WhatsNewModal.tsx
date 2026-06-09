@@ -32,6 +32,39 @@ interface VersionNotes {
  * The key must match the version string in app.json exactly.
  */
 export const CHANGELOG: Record<string, VersionNotes> = {
+  "1.0.45": {
+    headline: "ONJJEM Print Shop",
+    items: [
+      {
+        icon: "bag-outline",
+        accent: "#C9960C",
+        title: "ONJJEM Print Shop",
+        body: "Turn your restored photos into beautiful prints — canvas, framed art, mugs, and more. Order directly from the app with secure Stripe checkout.",
+      },
+    ],
+  },
+  "1.0.44": {
+    headline: "What's New in v1.0.44",
+    items: [
+      {
+        icon: "sparkles-outline",
+        accent: "#C9960C",
+        title: "Improvements & Bug Fixes",
+        body: "Behind-the-scenes improvements and small fixes to keep your photo restorations running smoothly.",
+      },
+    ],
+  },
+  "1.0.43": {
+    headline: "What's New in v1.0.43",
+    items: [
+      {
+        icon: "sparkles-outline",
+        accent: "#C9960C",
+        title: "Improvements & Bug Fixes",
+        body: "Behind-the-scenes improvements and small fixes to keep your photo restorations running smoothly.",
+      },
+    ],
+  },
   "1.0.42": {
     headline: "What's New in v1.0.42",
     items: [
