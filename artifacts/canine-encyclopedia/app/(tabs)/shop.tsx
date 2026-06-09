@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -9,23 +9,15 @@ import {
   Platform,
   Linking,
   Dimensions,
-} from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withSequence,
-  withTiming,
-  withDelay,
+  Animated,
   Easing,
-} from "react-native-reanimated";
+} from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get("window");
-
 const ONJJEM_URL = "https://www.onjjem.com/shop/";
 
 const GIFTS = [
@@ -47,18 +39,18 @@ const GIFTS = [
 ];
 
 const PHOTO_CONFIGS = [
-  { x: 0.02, y: 0.01, size: 88, rot: -12, period: 3800, drift: 18 },
-  { x: 0.60, y: 0.00, size: 76, rot: 9,   period: 4200, drift: 14 },
-  { x: 0.76, y: 0.16, size: 100, rot: -6,  period: 3500, drift: 20 },
-  { x: -0.02, y: 0.28, size: 82, rot: 11,  period: 4600, drift: 16 },
-  { x: 0.68, y: 0.40, size: 74, rot: -15,  period: 3900, drift: 12 },
-  { x: 0.08, y: 0.55, size: 94, rot: 6,    period: 4100, drift: 22 },
-  { x: 0.62, y: 0.60, size: 84, rot: -8,   period: 3600, drift: 15 },
-  { x: 0.28, y: 0.70, size: 70, rot: 14,   period: 4400, drift: 10 },
-  { x: 0.74, y: 0.76, size: 90, rot: -10,  period: 4000, drift: 18 },
-  { x: -0.02, y: 0.82, size: 78, rot: 7,   period: 3700, drift: 13 },
-  { x: 0.44, y: 0.87, size: 86, rot: -5,   period: 4300, drift: 17 },
-  { x: 0.78, y: 0.90, size: 72, rot: 12,   period: 3950, drift: 11 },
+  { x: 0.02, y: 0.01, size: 88,  rot: "-12deg", period: 3800, drift: 18 },
+  { x: 0.60, y: 0.00, size: 76,  rot: "9deg",   period: 4200, drift: 14 },
+  { x: 0.74, y: 0.16, size: 100, rot: "-6deg",  period: 3500, drift: 20 },
+  { x: 0.00, y: 0.28, size: 82,  rot: "11deg",  period: 4600, drift: 16 },
+  { x: 0.68, y: 0.40, size: 74,  rot: "-15deg", period: 3900, drift: 12 },
+  { x: 0.08, y: 0.55, size: 94,  rot: "6deg",   period: 4100, drift: 22 },
+  { x: 0.62, y: 0.60, size: 84,  rot: "-8deg",  period: 3600, drift: 15 },
+  { x: 0.28, y: 0.70, size: 70,  rot: "14deg",  period: 4400, drift: 10 },
+  { x: 0.74, y: 0.76, size: 90,  rot: "-10deg", period: 4000, drift: 18 },
+  { x: 0.00, y: 0.82, size: 78,  rot: "7deg",   period: 3700, drift: 13 },
+  { x: 0.44, y: 0.87, size: 86,  rot: "-5deg",  period: 4300, drift: 17 },
+  { x: 0.78, y: 0.90, size: 72,  rot: "12deg",  period: 3950, drift: 11 },
 ];
 
 function FloatingPhoto({
@@ -70,70 +62,68 @@ function FloatingPhoto({
   config: (typeof PHOTO_CONFIGS)[0];
   index: number;
 }) {
-  const translateY = useSharedValue(0);
-  const translateX = useSharedValue(0);
-  const startDelay = index * 280;
+  const translateY = useRef(new Animated.Value(0)).current;
+  const translateX = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    translateY.value = withDelay(
-      startDelay,
-      withRepeat(
-        withSequence(
-          withTiming(-config.drift, {
-            duration: config.period,
-            easing: Easing.inOut(Easing.sin),
-          }),
-          withTiming(config.drift, {
-            duration: config.period,
-            easing: Easing.inOut(Easing.sin),
-          }),
-        ),
-        -1,
-        false,
-      ),
+    const yAnim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(translateY, {
+          toValue: -config.drift,
+          duration: config.period,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+          delay: index * 280,
+        }),
+        Animated.timing(translateY, {
+          toValue: config.drift,
+          duration: config.period,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ]),
     );
-    translateX.value = withDelay(
-      startDelay + 400,
-      withRepeat(
-        withSequence(
-          withTiming(-config.drift * 0.5, {
-            duration: config.period * 1.4,
-            easing: Easing.inOut(Easing.sin),
-          }),
-          withTiming(config.drift * 0.5, {
-            duration: config.period * 1.4,
-            easing: Easing.inOut(Easing.sin),
-          }),
-        ),
-        -1,
-        false,
-      ),
+    const xAnim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(translateX, {
+          toValue: -config.drift * 0.5,
+          duration: Math.round(config.period * 1.4),
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+          delay: index * 280 + 400,
+        }),
+        Animated.timing(translateX, {
+          toValue: config.drift * 0.5,
+          duration: Math.round(config.period * 1.4),
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ]),
     );
+    yAnim.start();
+    xAnim.start();
+    return () => {
+      yAnim.stop();
+      xAnim.stop();
+    };
   }, []);
-
-  const animStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateY: translateY.value },
-      { translateX: translateX.value },
-      { rotate: `${config.rot}deg` },
-    ],
-  }));
-
-  const left = config.x * SCREEN_W;
-  const top = config.y * SCREEN_H;
 
   return (
     <Animated.View
       style={[
         styles.floatingPhoto,
         {
-          left,
-          top,
+          left: config.x * SCREEN_W,
+          top: config.y * SCREEN_H,
           width: config.size,
           height: config.size,
           borderRadius: config.size * 0.18,
+          transform: [
+            { translateY },
+            { translateX },
+            { rotate: config.rot },
+          ],
         },
-        animStyle,
       ]}
     >
       <Image
