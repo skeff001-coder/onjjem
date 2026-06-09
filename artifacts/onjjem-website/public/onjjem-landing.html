@@ -1362,16 +1362,9 @@ async function startSubscribe(plan) {
   } catch (e) { if (btn) { btn.disabled = false; btn.textContent = orig; } alert('Sorry, something went wrong. Please email hello@onjjem.com to subscribe.'); }
 }
 
-async function startSinglePhoto() {
-  const btn = document.querySelector('[onclick="startSinglePhoto()"]');
-  const orig = btn ? btn.textContent : '';
-  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Loading…'; }
-  try {
-    const r = await fetch('/api/stripe/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ sku:'single' }) });
-    const { url, error } = await r.json();
-    if (error || !url) throw new Error(error || 'Could not start checkout');
-    window.location.href = url;
-  } catch (e) { if (btn) { btn.disabled = false; btn.textContent = orig; } openPayModal(); }
+function startSinglePhoto() {
+  const toolSection = document.getElementById('tool');
+  if (toolSection) toolSection.scrollIntoView({ behavior: 'smooth' });
 }
 
 (function() {

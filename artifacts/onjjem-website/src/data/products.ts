@@ -157,27 +157,6 @@ export const products: Product[] = [
     ],
   },
 
-  {
-    id: "rolled-canvas",
-    name: "Rolled Canvas",
-    description:
-      "Premium artist-grade rolled canvas. Produced on museum-quality giclée canvas and posted in a protective tube.",
-    image: "/products/rolled-canvas.webp",
-    category: "prints",
-    variants: [
-      // cost £5.00 + £3.45 ship = £8.45 → 50% margin = £16.90
-      { sku: "rolled-canvas-10x10", label: '10"×10"', pricePence: 1699 },
-      // cost £6.00 + £4.50 ship = £10.50 → 50% margin = £21.00
-      { sku: "rolled-canvas-12x16", label: '12"×16"', pricePence: 2099 },
-      // cost £10.00 + £4.50 ship = £14.50 → 50% margin = £29.00
-      { sku: "rolled-canvas-16x20", label: '16"×20"', pricePence: 2899 },
-      // cost £11.00 + £4.50 ship = £15.50 → 50% margin = £31.00
-      { sku: "rolled-canvas-18x24", label: '18"×24"', pricePence: 3099 },
-      // cost £14.00 + £4.85 ship = £18.85 → 50% margin = £37.70
-      { sku: "rolled-canvas-20x28", label: '20"×28"', pricePence: 3799 },
-    ],
-  },
-
   // ── Gifts ────────────────────────────────────────────────────────────────────
 
   {

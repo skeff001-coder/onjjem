@@ -66,15 +66,6 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "eco-rolled-16x20": { sku: "ECO-ROL-16X20", sizing: "fillPrintArea" },
   "eco-rolled-18x24": { sku: "ECO-ROL-18X24", sizing: "fillPrintArea" },
 
-  // ── Rolled Canvas ───────────────────────────────────────────────────────────
-  // Correct format: GLOBAL-CAN-ROL-SC-{W}X{H} (inches).
-  // NOTE: ROL-SC-* prefix is NOT valid in the Prodigi live catalog.
-  "rolled-canvas-10x10": { sku: "GLOBAL-CAN-ROL-SC-10X10", sizing: "fillPrintArea" },
-  "rolled-canvas-12x16": { sku: "GLOBAL-CAN-ROL-SC-12X16", sizing: "fillPrintArea" },
-  "rolled-canvas-16x20": { sku: "GLOBAL-CAN-ROL-SC-16X20", sizing: "fillPrintArea" },
-  "rolled-canvas-18x24": { sku: "GLOBAL-CAN-ROL-SC-18X24", sizing: "fillPrintArea" },
-  "rolled-canvas-20x28": { sku: "GLOBAL-CAN-ROL-SC-20X28", sizing: "fillPrintArea" },
-
   // ── Slim Canvas ─────────────────────────────────────────────────────────────
   // GLOBAL-SLIMCAN-* requires wrap attribute.
   "slim-canvas-8x16":  { sku: "GLOBAL-SLIMCAN-8X16",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
