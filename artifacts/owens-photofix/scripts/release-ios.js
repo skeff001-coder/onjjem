@@ -655,23 +655,36 @@ async function main() {
     // EAS_NO_VCS=1 tells EAS CLI to use a shallow file copy instead of a git
     // archive. This is required in the Replit environment where git commits are
     // restricted to the workspace main agent.
+    //
+    // We use execSync with stdio:"inherit" (not spawnSync with pipe) so that:
+    //  1. Build output streams to the terminal in real-time (no frozen screen).
+    //  2. There is no maxBuffer cap — large build logs won't kill the process.
+    //  3. System errors (ENOENT = eas not in PATH) are surfaced explicitly.
     console.log("\n=== Step 4: EAS build ===");
-    const { status: buildStatus, combined: buildOutput } = runCapture(
-      "eas",
-      ["build", "--platform", "ios", "--profile", "production", "--non-interactive"],
-      tmpDir,
-      { EAS_NO_VCS: "1" },
-    );
+    let buildExitCode = 0;
+    try {
+      execSync(
+        "eas build --platform ios --profile production --non-interactive",
+        {
+          cwd: tmpDir,
+          stdio: "inherit",
+          env: { ...process.env, EAS_NO_VCS: "1" },
+        },
+      );
+    } catch (err) {
+      buildExitCode = err.status ?? 1;
+      if (err.code) {
+        console.error(`\n[error] System error calling "eas": ${err.code} — ${err.message}`);
+      }
+    }
 
-    const buildUrl = extractBuildUrl(buildOutput);
-
-    if (buildStatus !== 0) {
+    if (buildExitCode !== 0) {
       await notify(
         `${APP_NAME} — Build failed ❌`,
-        `EAS build exited with code ${buildStatus}.\n\n${trimError(buildOutput)}`,
+        `EAS build exited with code ${buildExitCode}.`,
         { priority: "high", tags: ["rotating_light"] },
       );
-      process.exit(buildStatus);
+      process.exit(buildExitCode);
     }
 
     // ── Step 5: EAS submit ─────────────────────────────────────────────────────
@@ -688,34 +701,40 @@ async function main() {
     }
     // Run submit from ARTIFACT_DIR (not tmpDir) so the EAS project context is
     // correct and --latest picks up the build we just triggered.
-    const { status: submitStatus, combined: submitOutput } = runCapture(
-      "eas",
-      ["submit", "--platform", "ios", "--profile", "production", "--non-interactive", "--latest"],
-      ARTIFACT_DIR,
-      { EAS_NO_VCS: "1" },
-    );
+    let submitExitCode = 0;
+    try {
+      execSync(
+        "eas submit --platform ios --profile production --non-interactive --latest",
+        {
+          cwd: ARTIFACT_DIR,
+          stdio: "inherit",
+          env: { ...process.env, EAS_NO_VCS: "1" },
+        },
+      );
+    } catch (err) {
+      submitExitCode = err.status ?? 1;
+      if (err.code) {
+        console.error(`\n[error] System error calling "eas": ${err.code} — ${err.message}`);
+      }
+    }
 
-    if (submitStatus !== 0) {
+    if (submitExitCode !== 0) {
       await notify(
         `${APP_NAME} — Submit failed ❌`,
-        `Build succeeded but submission exited with code ${submitStatus}.\n\n${trimError(submitOutput)}`,
+        `Build succeeded but submission exited with code ${submitExitCode}.`,
         { priority: "high", tags: ["rotating_light"] },
       );
-      process.exit(submitStatus);
+      process.exit(submitExitCode);
     }
 
     // ── Success ────────────────────────────────────────────────────────────────
-    const successMsg = buildUrl
-      ? `New build submitted to App Store Connect.\n\nBuild URL:\n${buildUrl}`
-      : "New build submitted to App Store Connect. Check expo.dev for build details.";
-
-    await notify(`${APP_NAME} — Submitted ✅`, successMsg, {
+    await notify(`${APP_NAME} — Submitted ✅`, "New build submitted to App Store Connect. Check expo.dev for build details.", {
       priority: "default",
       tags: ["white_check_mark", "iphone"],
     });
 
     console.log("\n✅  Release pipeline complete — build submitted to App Store Connect.");
-    if (buildUrl) console.log(`    Build URL: ${buildUrl}`);
+    console.log("    Check https://expo.dev for build status and App Store Connect for the submission.");
   } finally {
     if (tmpDir) {
       console.log(`\n=== Cleaning up ${tmpDir} ===`);
