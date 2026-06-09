@@ -11,12 +11,13 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "18",
+      "buildNumber": "19",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "Allow What's Up Dog! to access your camera to scan and identify dog breeds.",
         "NSPhotoLibraryUsageDescription": "Allow What's Up Dog! to access your photos to scan dog breeds.",
-        "NSPhotoLibraryAddUsageDescription": "Allow What's Up Dog! to save photos."
+        "NSPhotoLibraryAddUsageDescription": "Allow What's Up Dog! to save photos.",
+        "NSMicrophoneUsageDescription": "Allow What's Up Dog! to access your microphone."
       }
     },
     "extra": {
