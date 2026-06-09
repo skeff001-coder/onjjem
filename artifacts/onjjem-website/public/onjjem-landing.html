@@ -1177,6 +1177,7 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
 
 // ── Free restore button ────────────────────────────────────────────────────────
 document.getElementById('btnGetFree').addEventListener('click', async () => {
+  if (localStorage.getItem(LS_USED)) { showPanel('panelPaywall'); return; }
   const email = localStorage.getItem(LS_EMAIL) || '';
   if (!email) { setStatus('statusMsg','Something went wrong — please refresh and try again.','error'); return; }
   if (!uploadedBase64) return;
