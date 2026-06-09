@@ -1,2 +1,3 @@
 - [Expo audio & permissions gotchas](expo-audio-permissions.md) — SDK54 uses expo-audio (not expo-av); bare "expo-audio" plugin silently adds iOS mic permission → App Store rejection; undeclared native permission crashes iOS.
 - [Reanimated 4 plugin incompatibility](reanimated4-plugin.md) — react-native-reanimated 4.x has no app.plugin.js; adding it to app.json plugins crashes Expo start. It auto-links natively without any plugin entry.
+- [Canine-encyclopedia build blockers](canine-encyclopedia-build-blockers.md) — Multiple compounding issues blocked EAS and web builds; critical lessons for this project's native/web pipeline.
