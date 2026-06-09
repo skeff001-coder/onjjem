@@ -57,9 +57,9 @@ export default function Home() {
   return (
     <div className="min-h-[100dvh] w-full flex flex-col font-sans selection:bg-primary selection:text-primary-foreground">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center bg-background/80 backdrop-blur-md border-b border-border/50">
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center bg-background/90 backdrop-blur-md border-b border-border/40">
         <div className="flex items-center gap-2">
-          <Link href="/" className="font-serif text-2xl font-bold tracking-tight text-primary" data-testid="link-home">
+          <Link href="/" className="font-serif text-3xl font-bold tracking-[0.2em] text-primary uppercase" data-testid="link-home">
             ONJJEM
           </Link>
         </div>
@@ -316,56 +316,56 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-foreground text-background py-16 px-6 md:px-12 mt-auto">
+      <footer className="bg-card border-t border-border/40 text-foreground py-16 px-6 md:px-12 mt-auto">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
-            <h4 className="font-serif text-2xl mb-4">ONJJEM</h4>
-            <p className="text-background/70 max-w-sm">
+            <h4 className="font-serif text-3xl tracking-[0.2em] text-primary uppercase mb-4">ONJJEM</h4>
+            <p className="text-muted-foreground max-w-sm">
               We believe photographs belong in your hands, not just on your phone. Dedicated to the craft of physical memories.
             </p>
           </div>
           <div>
-            <h5 className="font-medium mb-4 text-sm tracking-widest uppercase text-background/50">Shop</h5>
-            <ul className="space-y-2 text-background/80">
+            <h5 className="font-medium mb-4 text-sm tracking-widest uppercase text-muted-foreground">Shop</h5>
+            <ul className="space-y-2 text-muted-foreground">
               <li>
-                <button onClick={() => scrollToCollection("all")} className="hover:text-primary-foreground transition-colors text-left">All Products</button>
+                <button onClick={() => scrollToCollection("all")} className="hover:text-primary transition-colors text-left">All Products</button>
               </li>
               <li>
-                <button onClick={() => scrollToCollection("wall-art")} className="hover:text-primary-foreground transition-colors text-left">Wall Art</button>
+                <button onClick={() => scrollToCollection("wall-art")} className="hover:text-primary transition-colors text-left">Wall Art</button>
               </li>
               <li>
-                <button onClick={() => scrollToCollection("frames")} className="hover:text-primary-foreground transition-colors text-left">Frames</button>
+                <button onClick={() => scrollToCollection("frames")} className="hover:text-primary transition-colors text-left">Frames</button>
               </li>
               <li>
-                <button onClick={() => scrollToCollection("gifts")} className="hover:text-primary-foreground transition-colors text-left">Gifts</button>
+                <button onClick={() => scrollToCollection("gifts")} className="hover:text-primary transition-colors text-left">Gifts</button>
               </li>
               <li>
-                <button onClick={() => scrollToCollection("kitchen")} className="hover:text-primary-foreground transition-colors text-left">Kitchen</button>
+                <button onClick={() => scrollToCollection("kitchen")} className="hover:text-primary transition-colors text-left">Kitchen</button>
               </li>
               <li>
-                <button onClick={() => scrollToCollection("pets")} className="hover:text-primary-foreground transition-colors text-left">Pets</button>
+                <button onClick={() => scrollToCollection("pets")} className="hover:text-primary transition-colors text-left">Pets</button>
               </li>
               <li>
-                <button onClick={() => scrollToCollection("tattoos")} className="hover:text-primary-foreground transition-colors text-left">Tattoos</button>
+                <button onClick={() => scrollToCollection("tattoos")} className="hover:text-primary transition-colors text-left">Tattoos</button>
               </li>
             </ul>
           </div>
           <div>
-            <h5 className="font-medium mb-4 text-sm tracking-widest uppercase text-background/50">Support</h5>
-            <ul className="space-y-2 text-background/80">
+            <h5 className="font-medium mb-4 text-sm tracking-widest uppercase text-muted-foreground">Support</h5>
+            <ul className="space-y-2 text-muted-foreground">
               <li>
-                <Link href="/contact" className="hover:text-primary-foreground transition-colors">Contact Us</Link>
+                <Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link>
               </li>
               <li>
-                <button onClick={() => document.getElementById("shipping")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-primary-foreground transition-colors text-left">Shipping & Returns</button>
+                <button onClick={() => document.getElementById("shipping")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-primary transition-colors text-left">Shipping & Returns</button>
               </li>
               <li>
-                <button onClick={() => document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-primary-foreground transition-colors text-left">FAQ</button>
+                <button onClick={() => document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-primary transition-colors text-left">FAQ</button>
               </li>
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-background/10 text-sm text-background/40 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-border/30 text-sm text-muted-foreground/60 flex justify-between items-center">
           <p>© {new Date().getFullYear()} ONJJEM Studio. All rights reserved.</p>
         </div>
       </footer>
