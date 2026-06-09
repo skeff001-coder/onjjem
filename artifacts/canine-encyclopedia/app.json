@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "19",
+      "buildNumber": "20",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "Allow What's Up Dog! to access your camera to scan and identify dog breeds.",
