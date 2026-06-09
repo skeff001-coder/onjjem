@@ -79,8 +79,6 @@ export default function ProductDetailScreen() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sku: selectedVariant.sku,
-          amountPence: selectedVariant.pricePence,
-          name: `${product.name} ${selectedVariant.label}`,
           photoBase64,
           successUrl: "https://onjjem.co.uk/?order=success",
           cancelUrl: "https://onjjem.co.uk/shop",

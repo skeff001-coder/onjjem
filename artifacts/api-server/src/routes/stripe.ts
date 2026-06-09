@@ -10,6 +10,7 @@ import type { EnhancementMode } from "./process";
 import { storePhoto } from "../webhookHandlers";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
+import { SHOP_SKU_PRICES } from "../shopPrices";
 
 const router = Router();
 
@@ -85,15 +86,14 @@ router.post("/stripe/verify-process", async (req: Request, res: Response) => {
 });
 
 // ── Create Stripe checkout for physical products ───────────────────────────────
-// Accepts `sku` (product metadata.sku value) — looks up the real Stripe price ID.
+// Accepts `sku` only. Price is always looked up from the server-side catalog
+// (SHOP_SKU_PRICES) — client-supplied amounts are intentionally ignored to
+// prevent price-tampering attacks.
 
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
   const body = req.body as {
     sku?: string;
     photoBase64?: string;
-    name?: string;
-    amountPence?: number;
-    currency?: string;
     successUrl?: string;
     cancelUrl?: string;
   };
@@ -106,10 +106,9 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
   try {
     const stripe = await getUncachableStripeClient();
 
-    // Build the checkout line item. Prefer inline pricing (price_data) using the
-    // website's own product name + price — this avoids having to pre-create a
-    // Stripe product/price for every SKU. Fall back to a Stripe product lookup
-    // by metadata.sku if no amount was supplied.
+    // ── Resolve price from server-side catalog (trusted) ────────────────────
+    // Fall back to a Stripe product/price lookup only when the SKU is not yet
+    // in the local catalog (e.g. a newly-added product not yet deployed).
     let lineItem: {
       price?: string;
       price_data?: {
@@ -120,19 +119,22 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       quantity: number;
     };
 
-    if (typeof body.amountPence === "number" && body.amountPence > 0) {
+    const catalogEntry = SHOP_SKU_PRICES[body.sku];
+
+    if (catalogEntry) {
       lineItem = {
         price_data: {
-          currency: (body.currency || "gbp").toLowerCase(),
-          unit_amount: Math.round(body.amountPence),
+          currency: "gbp",
+          unit_amount: catalogEntry.pricePence,
           product_data: {
-            name: body.name || body.sku,
+            name: catalogEntry.name,
             metadata: { sku: body.sku },
           },
         },
         quantity: 1,
       };
     } else {
+      // SKU not in local catalog — try the Stripe product index as a fallback.
       // Try the search index first (fast). Newly-created products may not be
       // indexed yet, so fall back to a full paginated list scan if needed.
       let product:
