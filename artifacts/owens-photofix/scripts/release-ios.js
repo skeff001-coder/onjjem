@@ -129,6 +129,10 @@ function runCapture(cmd, args, cwd, extraEnv = {}) {
     stdio: ["inherit", "pipe", "pipe"],
     shell: true,
     encoding: "utf8",
+    // Default maxBuffer is 1 MB — EAS build streams many MB of logs, which
+    // causes spawnSync to kill the child (result.status → null → treated as
+    // failure). 200 MB is well above any real build output.
+    maxBuffer: 200 * 1024 * 1024,
     env: { ...process.env, ...extraEnv },
   });
 
