@@ -668,7 +668,14 @@ async function main() {
         {
           cwd: tmpDir,
           stdio: "inherit",
-          env: { ...process.env, EAS_NO_VCS: "1" },
+          env: {
+            ...process.env,
+            EAS_NO_VCS: "1",
+            // package-lock.json was deleted so EAS workers use "npm install"
+            // (resolves for macOS ARM64) instead of "npm ci" (uses Linux lock).
+            // EAS CLI refuses to upload without a lockfile unless we set this.
+            EAS_BUILD_SKIP_LOCKFILE_CHECK: "1",
+          },
         },
       );
     } catch (err) {
