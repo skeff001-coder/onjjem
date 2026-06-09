@@ -285,6 +285,8 @@ function RootLayoutNav() {
       <Stack.Screen name="contact" options={{ headerShown: false }} />
       <Stack.Screen name="my-photos" options={{ headerShown: false }} />
       <Stack.Screen name="dev-settings" options={{ headerShown: false }} />
+      <Stack.Screen name="shop/index" options={{ headerShown: false }} />
+      <Stack.Screen name="shop/[productId]" options={{ headerShown: false }} />
     </Stack>
   );
 }

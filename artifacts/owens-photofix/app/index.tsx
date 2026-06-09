@@ -1170,8 +1170,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
-              void Linking.openURL(`https://${domain}/onjjem-website/`);
+              router.push("/shop");
             }}
             style={s.shopHeaderBtn}
             activeOpacity={0.7}
@@ -1207,8 +1206,7 @@ export default function HomeScreen() {
             <TouchableOpacity
               style={s.shopCTA}
               onPress={() => {
-                const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
-                void Linking.openURL(`https://${domain}/onjjem-website/`);
+                router.push("/shop");
               }}
               activeOpacity={0.85}
             >
@@ -1589,6 +1587,20 @@ export default function HomeScreen() {
               activeOpacity={0.7}
             >
               <Text style={s.ghostBtnText}>Fix Another Photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={s.orderPrintBtn}
+              onPress={async () => {
+                if (resultBase64) {
+                  await AsyncStorage.setItem("onjjem:shop_photo", resultBase64);
+                }
+                router.push("/shop");
+              }}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="bag-handle-outline" size={18} color="#C9960C" />
+              <Text style={s.orderPrintBtnText}>Order as a Print</Text>
+              <Ionicons name="chevron-forward" size={14} color="rgba(201,150,12,0.5)" />
             </TouchableOpacity>
             <TouchableOpacity
               style={s.whatsappBtn}
@@ -2682,6 +2694,25 @@ function makeStyles(
       fontSize: 16,
       color: colors.mutedForeground,
       fontFamily: "Inter_500Medium",
+    },
+    orderPrintBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      borderWidth: 1,
+      borderColor: "rgba(201,150,12,0.35)",
+      borderRadius: 14,
+      paddingVertical: 14,
+      paddingHorizontal: 20,
+      backgroundColor: "rgba(201,150,12,0.07)",
+    },
+    orderPrintBtnText: {
+      fontSize: 16,
+      color: "#C9960C",
+      fontFamily: "Inter_600SemiBold",
+      flex: 1,
+      textAlign: "center",
     },
     reviewNudge: {
       flexDirection: "row",
