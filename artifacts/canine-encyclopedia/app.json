@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "15",
+      "buildNumber": "16",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -28,14 +28,7 @@
         {
           "photosPermission": "Allow What's Up Dog! to access your photos to scan dog breeds."
         }
-      ],
-      [
-        "expo-audio",
-        {
-          "microphonePermission": false
-        }
-      ],
-      "expo-updates"
+      ]
     ],
     "extra": {
       "eas": {
