@@ -182,9 +182,14 @@ function parseCatalog(yamlPath) {
  * Build a standalone package.json suitable for an isolated /tmp EAS build:
  *   - catalog: entries are resolved to real semver strings
  *   - workspace:* entries are dropped (not available outside the monorepo)
+ *   - eas-cli is dropped (it ships native deps like better-sqlite3 that crash
+ *     npm ci on the EAS Mac worker; EAS provides its own CLI infrastructure)
  */
 function buildStandalonePackageJson(pkgPath, catalog) {
   const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+
+  // Packages that must never be sent to EAS workers.
+  const EAS_WORKER_EXCLUDE = new Set(["eas-cli"]);
 
   const missing = [];
 
@@ -192,6 +197,10 @@ function buildStandalonePackageJson(pkgPath, catalog) {
     if (!deps) return {};
     const out = {};
     for (const [name, ver] of Object.entries(deps)) {
+      if (EAS_WORKER_EXCLUDE.has(name)) {
+        console.log(`[skip] "${name}" — excluded from EAS worker package.json`);
+        continue;
+      }
       if (ver === "catalog:" || ver.startsWith("catalog:")) {
         const resolved = catalog[name];
         if (resolved) {
