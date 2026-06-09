@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,169 +8,319 @@ import {
   Alert,
   Platform,
   Linking,
+  Dimensions,
 } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+  withDelay,
+  Easing,
+} from "react-native-reanimated";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { useColors } from "@/hooks/useColors";
+
+const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get("window");
 
 const ONJJEM_URL = "https://www.onjjem.com/shop/";
 
 const GIFTS = [
-  {
-    id: "canvas",
-    name: "Stretched Canvas Print",
-    hook: "Hang them on the wall forever",
-    desc: "A proper keepsake. Museum-grade inks on artist-grade canvas — the one gift they'll never throw away.",
-    icon: "image-outline" as const,
-  },
-  {
-    id: "jigsaw",
-    name: "Jigsaw Puzzle",
-    hook: "A fun afternoon for the whole family",
-    desc: "Their face in 110 or 500 pieces. Comes in a premium gift tin — ready to wrap.",
-    icon: "shapes-outline" as const,
-  },
-  {
-    id: "mug",
-    name: "Photo Mug",
-    hook: "Every morning coffee sorted",
-    desc: "Full wrap-around portrait on an 11oz ceramic mug. Dishwasher safe, smile guaranteed.",
-    icon: "cafe-outline" as const,
-  },
-  {
-    id: "coasters",
-    name: "Wooden Coasters",
-    hook: "The gift that lives on the coffee table",
-    desc: "Set of 4 cork-backed coasters with their face. High-gloss finish — subtle, beautiful, personal.",
-    icon: "disc-outline" as const,
-  },
-  {
-    id: "tag",
-    name: "Dog ID Tag",
-    hook: "Keep them safe in style",
-    desc: "Laser-engraved stainless steel tag with their photo and name. 3 sizes. Built to last.",
-    icon: "pricetag-outline" as const,
-  },
-  {
-    id: "more",
-    name: "Tote Bags, Cushions & More",
-    hook: "Something for everyone",
-    desc: "Over 20 personalised gifts at onjjem.com — all printed to order, all delivered gift-ready.",
-    icon: "gift-outline" as const,
-  },
+  { name: "Dog ID Tag", price: "£12.99" },
+  { name: "Temporary Tattoo", price: "£14.99" },
+  { name: "Photo Mug", price: "£17.99" },
+  { name: "Custom Playing Cards", price: "£19.99" },
+  { name: "Jigsaw Puzzle — 30 pieces", price: "£19.99" },
+  { name: "Jigsaw Puzzle — 110 pieces", price: "£22.99" },
+  { name: "Wooden Coasters", price: "£24.99" },
+  { name: "Tough Phone Case", price: "£24.99" },
+  { name: "Jigsaw Puzzle — 252 pieces", price: "£28.99" },
+  { name: "Jigsaw Puzzle — 500 pieces", price: "£32.99" },
+  { name: "Canvas Cushion", price: "£32.99" },
+  { name: "Eco Canvas", price: "£39.99" },
+  { name: "Jigsaw Puzzle — 1000 pieces", price: "£39.99" },
+  { name: "Classic Framed Print", price: "£44.99" },
+  { name: "Stretched Canvas", price: "£49.99" },
 ];
 
+const PHOTO_CONFIGS = [
+  { x: 0.02, y: 0.01, size: 88, rot: -12, period: 3800, drift: 18 },
+  { x: 0.60, y: 0.00, size: 76, rot: 9,   period: 4200, drift: 14 },
+  { x: 0.76, y: 0.16, size: 100, rot: -6,  period: 3500, drift: 20 },
+  { x: -0.02, y: 0.28, size: 82, rot: 11,  period: 4600, drift: 16 },
+  { x: 0.68, y: 0.40, size: 74, rot: -15,  period: 3900, drift: 12 },
+  { x: 0.08, y: 0.55, size: 94, rot: 6,    period: 4100, drift: 22 },
+  { x: 0.62, y: 0.60, size: 84, rot: -8,   period: 3600, drift: 15 },
+  { x: 0.28, y: 0.70, size: 70, rot: 14,   period: 4400, drift: 10 },
+  { x: 0.74, y: 0.76, size: 90, rot: -10,  period: 4000, drift: 18 },
+  { x: -0.02, y: 0.82, size: 78, rot: 7,   period: 3700, drift: 13 },
+  { x: 0.44, y: 0.87, size: 86, rot: -5,   period: 4300, drift: 17 },
+  { x: 0.78, y: 0.90, size: 72, rot: 12,   period: 3950, drift: 11 },
+];
+
+function FloatingPhoto({
+  url,
+  config,
+  index,
+}: {
+  url: string;
+  config: (typeof PHOTO_CONFIGS)[0];
+  index: number;
+}) {
+  const translateY = useSharedValue(0);
+  const translateX = useSharedValue(0);
+  const startDelay = index * 280;
+
+  useEffect(() => {
+    translateY.value = withDelay(
+      startDelay,
+      withRepeat(
+        withSequence(
+          withTiming(-config.drift, {
+            duration: config.period,
+            easing: Easing.inOut(Easing.sin),
+          }),
+          withTiming(config.drift, {
+            duration: config.period,
+            easing: Easing.inOut(Easing.sin),
+          }),
+        ),
+        -1,
+        false,
+      ),
+    );
+    translateX.value = withDelay(
+      startDelay + 400,
+      withRepeat(
+        withSequence(
+          withTiming(-config.drift * 0.5, {
+            duration: config.period * 1.4,
+            easing: Easing.inOut(Easing.sin),
+          }),
+          withTiming(config.drift * 0.5, {
+            duration: config.period * 1.4,
+            easing: Easing.inOut(Easing.sin),
+          }),
+        ),
+        -1,
+        false,
+      ),
+    );
+  }, []);
+
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: translateY.value },
+      { translateX: translateX.value },
+      { rotate: `${config.rot}deg` },
+    ],
+  }));
+
+  const left = config.x * SCREEN_W;
+  const top = config.y * SCREEN_H;
+
+  return (
+    <Animated.View
+      style={[
+        styles.floatingPhoto,
+        {
+          left,
+          top,
+          width: config.size,
+          height: config.size,
+          borderRadius: config.size * 0.18,
+        },
+        animStyle,
+      ]}
+    >
+      <Image
+        source={{ uri: url }}
+        style={{ width: "100%", height: "100%" }}
+        contentFit="cover"
+      />
+    </Animated.View>
+  );
+}
+
 export default function ShopScreen() {
-  const colors = useColors();
   const insets = useSafeAreaInsets();
   const isWeb = Platform.OS === "web";
   const topPad = isWeb ? 67 : insets.top;
+  const [dogPhotos, setDogPhotos] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("https://dog.ceo/api/breeds/image/random/12")
+      .then((r) => r.json())
+      .then((data: { message: unknown }) => {
+        if (Array.isArray(data.message)) setDogPhotos(data.message as string[]);
+      })
+      .catch(() => {});
+  }, []);
 
   const openShop = async () => {
-    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (Platform.OS !== "web")
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const ok = await Linking.canOpenURL(ONJJEM_URL);
     if (ok) Linking.openURL(ONJJEM_URL);
     else Alert.alert("Visit onjjem.com in your browser.");
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: topPad + 12, paddingBottom: isWeb ? 40 : insets.bottom + 100, paddingHorizontal: 20, gap: 14 }}
-      >
-        {/* Header */}
-        <View style={styles.headerBlock}>
-          <Text style={[styles.heading, { color: colors.foreground }]}>Doggie Gifts</Text>
-          <Text style={[styles.subheading, { color: colors.gold }]}>Personalised keepsakes for dog lovers</Text>
-        </View>
-
-        {/* Emotional hook */}
-        <View style={[styles.hookCard, { backgroundColor: colors.navyMid, borderColor: colors.gold + "44" }]}>
-          <Text style={[styles.hookTitle, { color: colors.foreground }]}>
-            Want to surprise someone?{"\n"}Or keep your dog's face forever?
-          </Text>
-          <Text style={[styles.hookBody, { color: colors.mutedForeground }]}>
-            Every gift is made to order with your dog's photo — printed, packed, and delivered gift-ready in 3–5 days.
-          </Text>
-          <TouchableOpacity onPress={openShop} activeOpacity={0.85} style={[styles.mainBtn, { backgroundColor: colors.gold }]}>
-            <Ionicons name="globe-outline" size={18} color={colors.navy} />
-            <Text style={[styles.mainBtnText, { color: colors.navy }]}>SEE PRICES AT ONJJEM.COM</Text>
-            <Ionicons name="chevron-forward" size={16} color={colors.navy} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Gift list */}
-        <Text style={[styles.listLabel, { color: colors.mutedForeground }]}>WHAT'S AVAILABLE</Text>
-
-        {GIFTS.map((gift) => (
-          <TouchableOpacity
-            key={gift.id}
-            onPress={openShop}
-            activeOpacity={0.8}
-            style={[styles.giftRow, { backgroundColor: colors.card, borderColor: colors.border }]}
-          >
-            <View style={[styles.iconWrap, { backgroundColor: colors.navyMid }]}>
-              <Ionicons name={gift.icon} size={22} color={colors.gold} />
-            </View>
-            <View style={styles.giftText}>
-              <Text style={[styles.giftName, { color: colors.foreground }]}>{gift.name}</Text>
-              <Text style={[styles.giftHook, { color: colors.gold }]}>{gift.hook}</Text>
-              <Text style={[styles.giftDesc, { color: colors.mutedForeground }]}>{gift.desc}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.mutedForeground} style={{ opacity: 0.5 }} />
-          </TouchableOpacity>
+    <View style={styles.container}>
+      {dogPhotos.length > 0 &&
+        PHOTO_CONFIGS.map((cfg, i) => (
+          <FloatingPhoto
+            key={i}
+            url={dogPhotos[i % dogPhotos.length]}
+            config={cfg}
+            index={i}
+          />
         ))}
 
-        {/* Bottom CTA */}
-        <TouchableOpacity onPress={openShop} activeOpacity={0.85} style={[styles.bottomBtn, { backgroundColor: colors.navyMid, borderColor: colors.gold + "55" }]}>
-          <Text style={[styles.bottomBtnLabel, { color: colors.mutedForeground }]}>All gifts, prices, and ordering at</Text>
-          <Text style={[styles.bottomBtnSite, { color: colors.gold }]}>onjjem.com</Text>
-          <Text style={[styles.bottomBtnSub, { color: colors.mutedForeground }]}>Tap to see everything →</Text>
-        </TouchableOpacity>
+      <View style={styles.overlay} />
 
-        {/* Trust strip */}
-        <View style={[styles.trustStrip, { backgroundColor: colors.navyMid, borderColor: colors.border }]}>
-          {[
-            { icon: "shield-checkmark-outline" as const, label: "Ethically\nmade" },
-            { icon: "car-outline" as const, label: "3–5 day\ndelivery" },
-            { icon: "refresh-outline" as const, label: "Hassle-free\nreturns" },
-            { icon: "leaf-outline" as const, label: "Print on\ndemand" },
-          ].map((t) => (
-            <View key={t.label} style={styles.trustItem}>
-              <Ionicons name={t.icon} size={20} color={colors.gold} />
-              <Text style={[styles.trustLabel, { color: colors.mutedForeground }]}>{t.label}</Text>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: topPad + 20,
+          paddingBottom: isWeb ? 40 : insets.bottom + 100,
+          paddingHorizontal: 22,
+        }}
+      >
+        <View style={styles.titleBlock}>
+          <Text style={styles.appTitleTop}>WHAT'S UP</Text>
+          <Text style={styles.appTitleDog}>DOG!</Text>
+          <Text style={styles.tagline}>Personalised gifts for dog lovers</Text>
+        </View>
+
+        <View style={styles.listCard}>
+          <Text style={styles.listHeading}>DOGGIE GIFTS</Text>
+          {GIFTS.map((gift, i) => (
+            <View
+              key={gift.name}
+              style={[
+                styles.giftRow,
+                i < GIFTS.length - 1 && styles.giftRowBorder,
+              ]}
+            >
+              <Text style={styles.giftName}>{gift.name}</Text>
+              <Text style={styles.giftPrice}>{gift.price}</Text>
             </View>
           ))}
         </View>
+
+        <TouchableOpacity
+          onPress={openShop}
+          activeOpacity={0.85}
+          style={styles.shopBtn}
+        >
+          <Ionicons name="globe-outline" size={18} color="#0A0E1A" />
+          <Text style={styles.shopBtnText}>ORDER AT ONJJEM.COM</Text>
+          <Ionicons name="chevron-forward" size={16} color="#0A0E1A" />
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  headerBlock: { gap: 4, marginBottom: 4 },
-  heading: { fontSize: 30, fontFamily: "Inter_700Bold", letterSpacing: -0.4 },
-  subheading: { fontSize: 13, fontFamily: "Inter_500Medium" },
-  hookCard: { borderRadius: 20, borderWidth: 1, padding: 20, gap: 12 },
-  hookTitle: { fontSize: 20, fontFamily: "Inter_700Bold", letterSpacing: -0.3, lineHeight: 28 },
-  hookBody: { fontSize: 14, fontFamily: "Inter_400Regular", lineHeight: 21 },
-  mainBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 15, borderRadius: 14 },
-  mainBtnText: { fontSize: 14, fontFamily: "Inter_700Bold", letterSpacing: 0.6, flex: 1, textAlign: "center" },
-  listLabel: { fontSize: 10, fontFamily: "Inter_600SemiBold", letterSpacing: 1.4, marginTop: 4 },
-  giftRow: { flexDirection: "row", alignItems: "flex-start", gap: 14, borderRadius: 16, borderWidth: 1, padding: 16 },
-  iconWrap: { width: 44, height: 44, borderRadius: 12, alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 },
-  giftText: { flex: 1, gap: 3 },
-  giftName: { fontSize: 16, fontFamily: "Inter_700Bold", letterSpacing: -0.2 },
-  giftHook: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
-  giftDesc: { fontSize: 12, fontFamily: "Inter_400Regular", lineHeight: 17, marginTop: 2 },
-  bottomBtn: { borderRadius: 20, borderWidth: 1, padding: 20, alignItems: "center", gap: 4 },
-  bottomBtnLabel: { fontSize: 12, fontFamily: "Inter_400Regular" },
-  bottomBtnSite: { fontSize: 24, fontFamily: "Inter_700Bold", letterSpacing: -0.3 },
-  bottomBtnSub: { fontSize: 12, fontFamily: "Inter_500Medium", marginTop: 2 },
-  trustStrip: { flexDirection: "row", justifyContent: "space-around", borderRadius: 16, borderWidth: 1, paddingVertical: 14, paddingHorizontal: 8 },
-  trustItem: { alignItems: "center", gap: 5 },
-  trustLabel: { fontSize: 9, fontFamily: "Inter_500Medium", textAlign: "center", lineHeight: 13 },
+  container: {
+    flex: 1,
+    backgroundColor: "#0A0E1A",
+  },
+  floatingPhoto: {
+    position: "absolute",
+    overflow: "hidden",
+    opacity: 0.65,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(10,14,26,0.52)",
+  },
+  titleBlock: {
+    alignItems: "center",
+    marginBottom: 28,
+    gap: 2,
+  },
+  appTitleTop: {
+    fontFamily: "Nunito_800ExtraBold",
+    fontSize: 38,
+    color: "#FFFFFF",
+    letterSpacing: 3,
+    textAlign: "center",
+  },
+  appTitleDog: {
+    fontFamily: "Nunito_900Black",
+    fontSize: 72,
+    color: "#c9a84c",
+    letterSpacing: 4,
+    textAlign: "center",
+    lineHeight: 76,
+  },
+  tagline: {
+    fontFamily: "Inter_400Regular",
+    fontSize: 13,
+    color: "rgba(255,255,255,0.55)",
+    textAlign: "center",
+    marginTop: 6,
+  },
+  listCard: {
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(201,168,76,0.3)",
+    backgroundColor: "rgba(10,14,26,0.88)",
+    paddingHorizontal: 20,
+    paddingBottom: 6,
+    marginBottom: 18,
+  },
+  listHeading: {
+    fontFamily: "Inter_700Bold",
+    fontSize: 10,
+    color: "#c9a84c",
+    letterSpacing: 2,
+    textAlign: "center",
+    paddingVertical: 16,
+  },
+  giftRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 13,
+  },
+  giftRowBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
+  },
+  giftName: {
+    fontFamily: "Inter_500Medium",
+    fontSize: 14,
+    color: "#FFFFFF",
+    flex: 1,
+  },
+  giftPrice: {
+    fontFamily: "Inter_700Bold",
+    fontSize: 14,
+    color: "#c9a84c",
+    marginLeft: 14,
+  },
+  shopBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "#c9a84c",
+    paddingVertical: 16,
+    borderRadius: 16,
+  },
+  shopBtnText: {
+    fontFamily: "Inter_700Bold",
+    fontSize: 13,
+    color: "#0A0E1A",
+    letterSpacing: 0.8,
+    flex: 1,
+    textAlign: "center",
+  },
 });
