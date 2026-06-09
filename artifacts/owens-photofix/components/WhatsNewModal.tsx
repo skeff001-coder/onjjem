@@ -32,6 +32,17 @@ interface VersionNotes {
  * The key must match the version string in app.json exactly.
  */
 export const CHANGELOG: Record<string, VersionNotes> = {
+  "1.0.41": {
+    headline: "What's New in v1.0.41",
+    items: [
+      {
+        icon: "bag-outline",
+        accent: "#C9960C",
+        title: "ONJJEM Print Shop",
+        body: "Order your restored photos as physical prints — canvases, mugs, jigsaws, magnets and more. Tap the bag icon to browse.",
+      },
+    ],
+  },
   "1.0.40": {
     headline: "What's New in v1.0.40",
     items: [
