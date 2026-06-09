@@ -17,7 +17,6 @@ import { SHOP_PRODUCTS, formatPrice, minPrice } from "@/lib/shopProducts";
 
 const GOLD = "#C9960C";
 const BG = "#0F0D09";
-const CARD_BG = "#1C1A14";
 const CARD_BORDER = "rgba(201,150,12,0.15)";
 const CREAM = "#FAF7F2";
 const MUTED = "#7A6E57";
@@ -48,7 +47,6 @@ export default function ShopScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: BG }]}>
-      {/* Header */}
       <LinearGradient
         colors={["#1C1A14", "#0F0D09"]}
         style={[styles.header, { paddingTop: insets.top + 8 }]}
@@ -72,7 +70,6 @@ export default function ShopScreen() {
         contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + 32 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Photo preview banner */}
         {hasPhoto && photoUri ? (
           <View style={styles.photoBanner}>
             <Image source={{ uri: photoUri }} style={styles.photoBannerImg} />
@@ -90,7 +87,6 @@ export default function ShopScreen() {
           </View>
         )}
 
-        {/* Shipping badge */}
         <View style={styles.shippingRow}>
           <View style={styles.shippingBadge}>
             <Ionicons name="airplane-outline" size={14} color={GOLD} />
@@ -102,7 +98,6 @@ export default function ShopScreen() {
           </View>
         </View>
 
-        {/* Product categories */}
         {grouped.map(({ category, products }) => (
           <View key={category} style={styles.section}>
             <Text style={styles.sectionTitle}>{category}</Text>
@@ -112,7 +107,9 @@ export default function ShopScreen() {
                   key={product.id}
                   style={styles.card}
                   activeOpacity={0.82}
-                  onPress={() => router.push(`/shop/${product.id}`)}
+                  onPress={() =>
+                    router.push({ pathname: "/product", params: { productId: product.id } })
+                  }
                 >
                   <LinearGradient
                     colors={["#241F14", "#1A1710"]}
@@ -138,7 +135,6 @@ export default function ShopScreen() {
           </View>
         ))}
 
-        {/* Bonus banner */}
         <LinearGradient
           colors={["#241F0A", "#1C1A08"]}
           style={styles.bonusBanner}

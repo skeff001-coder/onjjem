@@ -50,7 +50,7 @@ export default function ProductDetailScreen() {
 
   if (!product) {
     return (
-      <View style={[styles.root, { justifyContent: "center", alignItems: "center" }]}>
+      <View style={[styles.root, { justifyContent: "center", alignItems: "center", backgroundColor: BG }]}>
         <Text style={{ color: CREAM }}>Product not found</Text>
       </View>
     );
@@ -73,8 +73,7 @@ export default function ProductDetailScreen() {
 
     setLoading(true);
     try {
-      const domain =
-        process.env.EXPO_PUBLIC_DOMAIN ?? "photo-fix-ai.replit.app";
+      const domain = process.env.EXPO_PUBLIC_DOMAIN ?? "photo-fix-ai.replit.app";
       const resp = await fetch(`https://${domain}/api/stripe/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -115,7 +114,6 @@ export default function ProductDetailScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: BG }]}>
-      {/* Header */}
       <LinearGradient
         colors={["#1C1A14", "#0F0D09"]}
         style={[styles.header, { paddingTop: insets.top + 8 }]}
@@ -138,7 +136,6 @@ export default function ProductDetailScreen() {
         contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Photo preview */}
         <View style={styles.previewCard}>
           {photoUri ? (
             <Image source={{ uri: photoUri }} style={styles.previewImg} resizeMode="cover" />
@@ -163,7 +160,6 @@ export default function ProductDetailScreen() {
           )}
         </View>
 
-        {/* Product info */}
         <View style={styles.infoBlock}>
           <View style={styles.productHeader}>
             <Text style={styles.productEmoji}>{product.emoji}</Text>
@@ -175,10 +171,8 @@ export default function ProductDetailScreen() {
           <Text style={styles.productDesc}>{product.description}</Text>
         </View>
 
-        {/* Divider */}
         <View style={styles.divider} />
 
-        {/* Variant picker */}
         <View style={styles.variantBlock}>
           <Text style={styles.variantLabel}>Choose Size</Text>
           <View style={styles.variantGrid}>
@@ -191,20 +185,10 @@ export default function ProductDetailScreen() {
                   onPress={() => setSelectedVariant(v)}
                   activeOpacity={0.8}
                 >
-                  <Text
-                    style={[
-                      styles.variantPillLabel,
-                      selected && styles.variantPillLabelSelected,
-                    ]}
-                  >
+                  <Text style={[styles.variantPillLabel, selected && styles.variantPillLabelSelected]}>
                     {v.label}
                   </Text>
-                  <Text
-                    style={[
-                      styles.variantPillPrice,
-                      selected && styles.variantPillPriceSelected,
-                    ]}
-                  >
+                  <Text style={[styles.variantPillPrice, selected && styles.variantPillPriceSelected]}>
                     {formatPrice(v.pricePence)}
                   </Text>
                 </TouchableOpacity>
@@ -213,7 +197,6 @@ export default function ProductDetailScreen() {
           </View>
         </View>
 
-        {/* Trust badges */}
         <View style={styles.trustRow}>
           {[
             { icon: "airplane-outline", text: "UK & worldwide shipping" },
@@ -228,12 +211,9 @@ export default function ProductDetailScreen() {
         </View>
       </ScrollView>
 
-      {/* Sticky checkout bar */}
       <View style={[styles.checkoutBar, { paddingBottom: insets.bottom + 12 }]}>
         <View style={styles.checkoutPriceWrap}>
-          <Text style={styles.checkoutPriceLabel}>
-            {selectedVariant?.label ?? ""}
-          </Text>
+          <Text style={styles.checkoutPriceLabel}>{selectedVariant?.label ?? ""}</Text>
           <Text style={styles.checkoutPrice}>
             {selectedVariant ? formatPrice(selectedVariant.pricePence) : ""}
           </Text>
@@ -324,16 +304,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     padding: 10,
   },
-  previewBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-  },
-  previewBadgeText: {
-    fontSize: 12,
-    color: CREAM,
-    fontFamily: "Inter_500Medium",
-  },
+  previewBadge: { flexDirection: "row", alignItems: "center", gap: 5 },
+  previewBadgeText: { fontSize: 12, color: CREAM, fontFamily: "Inter_500Medium" },
 
   infoBlock: {
     backgroundColor: CARD_BG,
@@ -343,55 +315,17 @@ const styles = StyleSheet.create({
     borderColor: "rgba(201,150,12,0.12)",
     marginBottom: 16,
   },
-  productHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 10,
-  },
+  productHeader: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 10 },
   productEmoji: { fontSize: 32 },
-  productName: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: CREAM,
-    fontFamily: "Inter_700Bold",
-    marginBottom: 2,
-  },
-  productCategory: {
-    fontSize: 11,
-    color: MUTED,
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-    fontFamily: "Inter_500Medium",
-  },
-  productDesc: {
-    fontSize: 14,
-    color: "rgba(250,247,242,0.7)",
-    lineHeight: 21,
-    fontFamily: "Inter_400Regular",
-  },
+  productName: { fontSize: 20, fontWeight: "700", color: CREAM, fontFamily: "Inter_700Bold", marginBottom: 2 },
+  productCategory: { fontSize: 11, color: MUTED, letterSpacing: 1.2, textTransform: "uppercase", fontFamily: "Inter_500Medium" },
+  productDesc: { fontSize: 14, color: "rgba(250,247,242,0.7)", lineHeight: 21, fontFamily: "Inter_400Regular" },
 
-  divider: {
-    height: 1,
-    backgroundColor: "rgba(201,150,12,0.1)",
-    marginVertical: 4,
-    marginBottom: 20,
-  },
+  divider: { height: 1, backgroundColor: "rgba(201,150,12,0.1)", marginVertical: 4, marginBottom: 20 },
 
   variantBlock: { marginBottom: 20 },
-  variantLabel: {
-    fontSize: 13,
-    color: MUTED,
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-    fontFamily: "Inter_600SemiBold",
-    marginBottom: 12,
-  },
-  variantGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
+  variantLabel: { fontSize: 13, color: MUTED, letterSpacing: 1.2, textTransform: "uppercase", fontFamily: "Inter_600SemiBold", marginBottom: 12 },
+  variantGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   variantPill: {
     borderWidth: 1,
     borderColor: "rgba(201,150,12,0.2)",
@@ -402,41 +336,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     minWidth: 80,
   },
-  variantPillSelected: {
-    borderColor: GOLD,
-    backgroundColor: "rgba(201,150,12,0.12)",
-  },
-  variantPillLabel: {
-    fontSize: 13,
-    color: MUTED,
-    fontFamily: "Inter_500Medium",
-    marginBottom: 2,
-  },
+  variantPillSelected: { borderColor: GOLD, backgroundColor: "rgba(201,150,12,0.12)" },
+  variantPillLabel: { fontSize: 13, color: MUTED, fontFamily: "Inter_500Medium", marginBottom: 2 },
   variantPillLabelSelected: { color: CREAM },
-  variantPillPrice: {
-    fontSize: 12,
-    color: "rgba(122,110,87,0.7)",
-    fontFamily: "Inter_400Regular",
-  },
-  variantPillPriceSelected: {
-    color: GOLD,
-    fontFamily: "Inter_600SemiBold",
-  },
+  variantPillPrice: { fontSize: 12, color: "rgba(122,110,87,0.7)", fontFamily: "Inter_400Regular" },
+  variantPillPriceSelected: { color: GOLD, fontFamily: "Inter_600SemiBold" },
 
-  trustRow: {
-    gap: 6,
-    marginBottom: 8,
-  },
-  trustBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 7,
-  },
-  trustBadgeText: {
-    fontSize: 12,
-    color: MUTED,
-    fontFamily: "Inter_400Regular",
-  },
+  trustRow: { gap: 6, marginBottom: 8 },
+  trustBadge: { flexDirection: "row", alignItems: "center", gap: 7 },
+  trustBadgeText: { fontSize: 12, color: MUTED, fontFamily: "Inter_400Regular" },
 
   checkoutBar: {
     position: "absolute",
@@ -453,22 +361,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   checkoutPriceWrap: { flex: 1 },
-  checkoutPriceLabel: {
-    fontSize: 11,
-    color: MUTED,
-    fontFamily: "Inter_400Regular",
-  },
-  checkoutPrice: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: GOLD,
-    fontFamily: "Inter_700Bold",
-  },
-  checkoutBtn: {
-    borderRadius: 14,
-    overflow: "hidden",
-    flex: 1.4,
-  },
+  checkoutPriceLabel: { fontSize: 11, color: MUTED, fontFamily: "Inter_400Regular" },
+  checkoutPrice: { fontSize: 22, fontWeight: "700", color: GOLD, fontFamily: "Inter_700Bold" },
+  checkoutBtn: { borderRadius: 14, overflow: "hidden", flex: 1.4 },
   checkoutBtnLoading: { opacity: 0.7 },
   checkoutBtnGradient: {
     flexDirection: "row",
@@ -478,10 +373,5 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 14,
   },
-  checkoutBtnText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#0F0D09",
-    fontFamily: "Inter_700Bold",
-  },
+  checkoutBtnText: { fontSize: 16, fontWeight: "700", color: "#0F0D09", fontFamily: "Inter_700Bold" },
 });
