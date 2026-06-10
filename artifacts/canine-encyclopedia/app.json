@@ -1,5 +1,6 @@
 {
   "expo": {
+    "icon": "./assets/images/icon.png",
     "name": "What's Up Dog!",
     "slug": "workspace",
     "version": "1.0.0",
@@ -11,7 +12,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "20",
+      "buildNumber": "21",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "Allow What's Up Dog! to access your camera to scan and identify dog breeds.",

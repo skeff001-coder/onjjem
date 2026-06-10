@@ -1,0 +1,7 @@
+[?25l[36m?[39m [1mChoose which version to patch[22m [2m…[22m 
+[36m▸[39m [36m[4m0.81.5[24m[39m
+  0.81.5[2A[36G[2B[2K[F[2K[F[2K[1G[32m✔[39m [1mChoose which version to patch[22m [2m·[22m [36m0.81.5[39m[6D
+[?25h[?25l[36m?[39m [1mApply this patch to all versions?[22m [2m(y/N)[22m [2m‣[22m [36mfalse[39m[10D[2K[1G[32m✔[39m [1mApply this patch to all versions?[22m [2m(y/N)[22m [2m·[22m [32mfalse[39m[10D
+[?25h ERR_PNPM_EDIT_DIR_NOT_EMPTY  The directory /home/runner/workspace/node_modules/.pnpm_patches/react-native@0.81.5 is not empty
+
+Either run `pnpm patch-commit '/home/runner/workspace/node_modules/.pnpm_patches/react-native@0.81.5'` to commit or delete it then run `pnpm patch` to recreate it

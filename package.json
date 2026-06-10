@@ -17,9 +17,9 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
+    "expo-camera": "~16.0.0",
     "stripe": "^22.2.0",
-    "stripe-replit-sync": "^1.0.0",
-    "expo-camera": "~16.0.0"
+    "stripe-replit-sync": "^1.0.0"
   },
   "pnpm": {
     "overrides": {
@@ -33,6 +33,9 @@
       "msw",
       "protobufjs",
       "unrs-resolver"
-    ]
+    ],
+    "patchedDependencies": {
+      "react-native@0.81.5": "patches/react-native@0.81.5.patch"
+    }
   }
 }
