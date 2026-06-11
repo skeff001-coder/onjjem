@@ -20,8 +20,9 @@
       "distribution": "internal",
       "channel": "preview",
       "env": {
-        "EXPO_PUBLIC_REVENUECAT_TEST_API_KEY": "test_OGJMpwWspeprzlqFUWyeEQENXee",
-        "EXPO_PUBLIC_DOMAIN": "www.onjjem.com"
+        "EXPO_PUBLIC_DOMAIN": "www.onjjem.com",
+        "EXPO_PUBLIC_REVENUECAT_IOS_API_KEY": "appl_QlAKzSnABwsXylEXGysyHrvnJpx",
+        "EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY": "goog_PrynAABKWsJkuDGlYyEurZjjJGO"
       }
     },
     "production": {
