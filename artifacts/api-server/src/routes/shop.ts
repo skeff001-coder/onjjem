@@ -119,13 +119,13 @@ router.post("/shop/checkout", async (req, res) => {
         allowed_countries: [
           "GB", "US", "AU", "CA", "IE", "NZ", "DE", "FR", "IT", "ES", "NL", "SE", "JP",
         ],
-      },
-      metadata,
-      
-    });success_url: `${process.env.SITE_URL || host}/success?session_id={CHECKOUT_SESSION_ID}`,
+      },metadata,
+      success_url: `${process.env.SITE_URL || host}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.SITE_URL || host}/cancel`,
+    });
 
     return res.json({ url: session.url, sessionId: session.id });
+      
   } catch (err) {
     req.log.error({ err }, "Failed to create checkout session");
     return res.status(500).json({ error: "Failed to create checkout session" });
