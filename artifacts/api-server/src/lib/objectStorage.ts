@@ -231,3 +231,59 @@ export class ObjectStorageService {
       const idx = pathname.indexOf(marker);
       if (idx !== -1) {
         const key = decodeURIComponent(pathname.slice(idx + marker.length));
+return `/objects/${key}`;
+      }
+    }
+    return rawPath;
+  }
+
+  /** Server-side upload of raw bytes; returns the "/objects/<key>" path. */
+  async uploadBuffer(buffer: Buffer, contentType: string): Promise<string> {
+    const { url, serviceKey, bucket } = getSupabaseConfig();
+    const objectId = randomUUID();
+    const key = `uploads/${objectId}`;
+
+    const resp = await fetch(
+      `${url}/storage/v1/object/${bucket}/${encodeKey(key)}`,
+      {
+        method: "POST",
+        headers: {
+          ...authHeaders(serviceKey),
+          "Content-Type": contentType || "application/octet-stream",
+          "x-upsert": "false",
+        },
+        body: new Uint8Array(buffer),
+        signal: AbortSignal.timeout(120_000),
+      }
+    );
+
+    if (!resp.ok) {
+      const body = await resp.text();
+      throw new Error(`Failed to upload object: ${resp.status} ${body}`);
+    }
+
+    return `/objects/${key}`;
+  }
+
+  /**
+   * ACLs are no longer stored on object metadata. The bucket is private and
+   * everything is served through this API, so this is a safe no-op that
+   * preserves the previous return contract.
+   */
+  async trySetObjectEntityAclPolicy(
+    rawPath: string,
+    _aclPolicy: ObjectAclPolicy
+  ): Promise<string> {
+    const normalizedPath = this.normalizeObjectEntityPath(rawPath);
+    return normalizedPath;
+  }
+
+  /** Access control is handled at the route level; default allow. */
+  async canAccessObjectEntity(_args: {
+    userId?: string;
+    objectFile: StorageObject;
+    requestedPermission?: ObjectPermission;
+  }): Promise<boolean> {
+    return true;
+  }
+}
