@@ -26,6 +26,16 @@
         "projectId": "e4b0d15e-3254-475e-91ce-8da7284ee720"
       }
     },
-    "android": {}
+    "android": {},
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "buildReactNativeFromSource": true
+          }
+        }
+      ]
+    ]
   }
 }
