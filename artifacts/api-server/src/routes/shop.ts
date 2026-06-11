@@ -121,9 +121,9 @@ router.post("/shop/checkout", async (req, res) => {
         ],
       },
       metadata,
-      success_url: `${host}/shop/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${host}/shop/cancel`,
-    });
+      
+    });success_url: `${process.env.SITE_URL || host}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.SITE_URL || host}/cancel`,
 
     return res.json({ url: session.url, sessionId: session.id });
   } catch (err) {
