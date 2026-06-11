@@ -85,6 +85,11 @@ async function getStripeCredentials(): Promise<{ secretKey: string; webhookSecre
     logger.info('Using Stripe TEST mode (STRIPE_TEST_SECRET_KEY)');
     return { secretKey: testKey };
   }
+  const directKey = process.env.STRIPE_SECRET_KEY;
+  if (directKey) {
+    logger.info('Using Stripe LIVE key from STRIPE_SECRET_KEY env var');
+    return { secretKey: directKey, webhookSecret: process.env.STRIPE_WEBHOOK_SECRET };
+  }
   return getStripeCredentialsFromConnector();
 }
 
