@@ -115,6 +115,7 @@ router.post("/shop/checkout", async (req, res) => {
       payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: customerEmail,
+      allow_promotion_codes: true,
       shipping_address_collection: {
         allowed_countries: [
           "GB", "US", "AU", "CA", "IE", "NZ", "DE", "FR", "IT", "ES", "NL", "SE", "JP",
