@@ -203,13 +203,17 @@ export async function placeProdigiOrder(
   const body: Record<string, unknown> = {
     shippingMethod: "Budget",
     recipient: {
-      address: {
+     address: {
         line1: request.shippingAddress.line1,
-        line2: request.shippingAddress.line2 ?? "",
+        ...(request.shippingAddress.line2?.trim()
+          ? { line2: request.shippingAddress.line2.trim() }
+          : {}),
         postalOrZipCode: request.shippingAddress.postalOrZipCode,
         countryCode: request.shippingAddress.countryCode,
         townOrCity: request.shippingAddress.townOrCity,
-        stateOrCounty: request.shippingAddress.stateOrCounty ?? "",
+        stateOrCounty:
+          request.shippingAddress.stateOrCounty?.trim() ||
+          request.shippingAddress.townOrCity,
       },
       name: request.shippingAddress.name,
       email: request.customerEmail,
