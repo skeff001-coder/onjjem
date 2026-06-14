@@ -2,8 +2,23 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import sharp from "sharp";
 import Replicate from "replicate";
+import convert from "heic-convert";
 
-const router = Router();
+const router = Router();// Convert HEIC/HEIF photos to JPEG so sharp + Replicate can read them
+async function toJpegBuffer(buf: Buffer): Promise<Buffer> {
+  const header = buf.slice(4, 12).toString("ascii");
+  const isHeic = /heic|heif|mif1|hevc/i.test(header);
+  if (!isHeic) return buf;
+
+  const out = await convert({
+    buffer: buf as unknown as ArrayBuffer,
+    format: "JPEG",
+    quality: 0.92,
+  });
+  return Buffer.from(out);
+}
+
+
 
 export type EnhancementMode =
   | "sharpen"
@@ -134,7 +149,8 @@ export async function applyEnhancements(
   inputBuffer: Buffer,
   modes: EnhancementMode[],
 ): Promise<Buffer> {
-  let buf = await sharp(inputBuffer).rotate().toBuffer();
+  const jpegBuffer = await toJpegBuffer(inputBuffer);
+let buf = await sharp(jpegBuffer).rotate().toBuffer();
 
   for (const mode of modes) {
     if (mode === "brighten" || mode === "vivid") {
