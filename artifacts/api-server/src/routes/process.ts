@@ -176,7 +176,10 @@ export async function makeFreePreview(
   inputBuffer: Buffer,
   modes: EnhancementMode[],
 ): Promise<Buffer> {
-  const oriented = await sharp(inputBuffer).rotate().toBuffer();
+  const jpegBuffer = await toJpegBuffer(inputBuffer);
+  const oriented = await sharp(jpegBuffer).rotate().toBuffer();
+
+
   const meta = await sharp(oriented).metadata();
   const w = meta.width ?? 800;
   const h = meta.height ?? 800;
