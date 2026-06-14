@@ -1167,10 +1167,9 @@ export default function HomeScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="information-circle-outline" size={24} color="rgba(201,150,12,0.75)" />
-          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              router.push("/shop");
+              Linking.openURL("https://onjjem.com/shop");
             }}
             style={s.shopHeaderBtn}
             activeOpacity={0.7}
@@ -1206,7 +1205,7 @@ export default function HomeScreen() {
             <TouchableOpacity
               style={s.shopCTA}
               onPress={() => {
-                router.push("/shop");
+                Linking.openURL("https://onjjem.com/shop");
               }}
               activeOpacity={0.85}
             >
@@ -1588,13 +1587,11 @@ export default function HomeScreen() {
             >
               <Text style={s.ghostBtnText}>Fix Another Photo</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+                          
+              <TouchableOpacity
               style={s.orderPrintBtn}
-              onPress={async () => {
-                if (resultBase64) {
-                  await AsyncStorage.setItem("onjjem:shop_photo", resultBase64);
-                }
-                router.push("/shop");
+              onPress={() => {
+                Linking.openURL("https://onjjem.com/shop");
               }}
               activeOpacity={0.85}
             >
