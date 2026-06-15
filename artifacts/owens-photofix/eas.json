@@ -18,6 +18,7 @@
     },
     "production": {
       "credentialsSource": "local",
+      "autoIncrement": true,
       "ios": {
         "buildConfiguration": "Release"
       },
@@ -32,10 +33,7 @@
       "ios": {
         "appleId": "skeff001@yahoo.com",
         "ascAppId": "6770767370",
-        "appleTeamId": "J6N9GAHK44",
-        "ascApiKeyPath": "/tmp/asc_key.p8",
-        "ascApiKeyId": "LKZCCH49F7",
-        "ascApiKeyIssuerId": "48a98d11-f9f9-4c66-ac96-a4834a146201"
+        "appleTeamId": "J6N9GAHK44"
       }
     }
   }
