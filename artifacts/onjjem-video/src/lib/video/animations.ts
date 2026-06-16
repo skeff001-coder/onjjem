@@ -179,7 +179,7 @@ export const elementAnimations = {
 } as const;
 
 // Character-level animation variants for kinetic typography
-export const charVariants: Variants = {
+export const charVariants: any = {
   hidden: { opacity: 0, y: 40, rotateX: -40, transformPerspective: 800 },
   visible: {
     opacity: 1,
@@ -190,7 +190,7 @@ export const charVariants: Variants = {
   },
 };
 
-export const charContainerVariants: Variants = {
+export const charContainerVariants: any = {
   hidden: {},
   visible: {
     transition: { staggerChildren: 0.03, delayChildren: 0.1 },
@@ -198,7 +198,7 @@ export const charContainerVariants: Variants = {
 };
 
 // Stagger configs
-export const staggerConfigs = {
+export const staggerConfigs: any = {
   fast: { staggerChildren: 0.05, delayChildren: 0 },
   medium: { staggerChildren: 0.1, delayChildren: 0.1 },
   slow: { staggerChildren: 0.2, delayChildren: 0.2 },
@@ -216,7 +216,7 @@ export const containerVariants: Variants = {
   },
 };
 
-export const itemVariants: Variants = {
+export const itemVariants: any = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,

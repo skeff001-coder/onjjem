@@ -5,7 +5,13 @@ import * as Haptics from "expo-haptics";
 import * as StoreReview from "expo-store-review";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -41,15 +47,32 @@ import { TrustFooter } from "@/components/TrustFooter";
 import { RubyHeartIcon } from "@/components/RubyHeartIcon";
 import { AIConsentModal } from "@/components/AIConsentModal";
 import { WelcomeModal } from "@/components/WelcomeModal";
-import { WhatsNewModal, hasWhatsNewForVersion, getLatestChangelogVersion } from "@/components/WhatsNewModal";
+import {
+  WhatsNewModal,
+  hasWhatsNewForVersion,
+  getLatestChangelogVersion,
+} from "@/components/WhatsNewModal";
 import { EnhancementTipSheet } from "@/components/EnhancementTipSheet";
 import { ResultTipSheet } from "@/components/ResultTipSheet";
 import { pruneHistory, saveToHistory } from "@/lib/photoHistory";
 import { PaywallStatsModal } from "@/components/PaywallStatsModal";
 import { ProWelcomeBanner } from "@/components/ProWelcomeBanner";
 
-type EnhancementMode = "sharpen" | "brighten" | "denoise" | "restore" | "vivid" | "colorize";
-type AppState = "idle" | "selected" | "processing" | "done" | "batch-selected" | "batch-processing" | "batch-done";
+type EnhancementMode =
+  | "sharpen"
+  | "brighten"
+  | "denoise"
+  | "restore"
+  | "vivid"
+  | "colorize";
+type AppState =
+  | "idle"
+  | "selected"
+  | "processing"
+  | "done"
+  | "batch-selected"
+  | "batch-processing"
+  | "batch-done";
 
 type BatchItem = {
   id: string;
@@ -70,12 +93,60 @@ const ENHANCEMENTS: {
   icon: React.ComponentProps<typeof Ionicons>["name"];
   accent: string;
 }[] = [
-  { id: "sharpen",   title: "Sharpen",   subtitle: "Fix soft &\nblurry photos",    description: "Uses AI upscaling to recover lost detail in soft, out-of-focus, or low-resolution photos. Great for old prints that have gone fuzzy over time.",          icon: "aperture-outline",       accent: "#4A90D9" },
-  { id: "brighten",  title: "Brighten",  subtitle: "Lift dark &\nunderexposed",     description: "Intelligently lifts shadows and recovers detail in underexposed shots without blowing out bright areas. Perfect for indoor or poorly lit photos.",          icon: "sunny-outline",          accent: "#F5A623" },
-  { id: "denoise",   title: "Denoise",   subtitle: "Remove grain\n& film noise",    description: "Cleans up digital noise, grain, and ISO artefacts while preserving fine detail. Ideal for high-ISO shots or scanned film photographs.",                   icon: "water-outline",          accent: "#9B59B6" },
-  { id: "restore",   title: "Restore",   subtitle: "Full old photo\nrestoration",   description: "A full-strength treatment for damaged, faded, or scratched old photos. Repairs creases and marks, sharpens faces, and brings lost tones back to life.",    icon: "time-outline",           accent: "#27AE60" },
-  { id: "vivid",     title: "Vivid",     subtitle: "Bold colours\n& contrast",      description: "Boosts colour saturation and contrast to make flat or washed-out photos pop. Best used on colour prints that have faded or look lifeless.",                icon: "color-filter-outline",   accent: "#E74C3C" },
-  { id: "colorize",  title: "Colorize",  subtitle: "Black & white\nto colour",     description: "Add vivid, natural colour to old black-and-white photos. Perfect for family portraits, wedding photos, and vintage memories.",                            icon: "color-palette-outline",  accent: "#C9960C" },
+  {
+    id: "sharpen",
+    title: "Sharpen",
+    subtitle: "Fix soft &\nblurry photos",
+    description:
+      "Uses AI upscaling to recover lost detail in soft, out-of-focus, or low-resolution photos. Great for old prints that have gone fuzzy over time.",
+    icon: "aperture-outline",
+    accent: "#4A90D9",
+  },
+  {
+    id: "brighten",
+    title: "Brighten",
+    subtitle: "Lift dark &\nunderexposed",
+    description:
+      "Intelligently lifts shadows and recovers detail in underexposed shots without blowing out bright areas. Perfect for indoor or poorly lit photos.",
+    icon: "sunny-outline",
+    accent: "#F5A623",
+  },
+  {
+    id: "denoise",
+    title: "Denoise",
+    subtitle: "Remove grain\n& film noise",
+    description:
+      "Cleans up digital noise, grain, and ISO artefacts while preserving fine detail. Ideal for high-ISO shots or scanned film photographs.",
+    icon: "water-outline",
+    accent: "#9B59B6",
+  },
+  {
+    id: "restore",
+    title: "Restore",
+    subtitle: "Full old photo\nrestoration",
+    description:
+      "A full-strength treatment for damaged, faded, or scratched old photos. Repairs creases and marks, sharpens faces, and brings lost tones back to life.",
+    icon: "time-outline",
+    accent: "#27AE60",
+  },
+  {
+    id: "vivid",
+    title: "Vivid",
+    subtitle: "Bold colours\n& contrast",
+    description:
+      "Boosts colour saturation and contrast to make flat or washed-out photos pop. Best used on colour prints that have faded or look lifeless.",
+    icon: "color-filter-outline",
+    accent: "#E74C3C",
+  },
+  {
+    id: "colorize",
+    title: "Colorize",
+    subtitle: "Black & white\nto colour",
+    description:
+      "Add vivid, natural colour to old black-and-white photos. Perfect for family portraits, wedding photos, and vintage memories.",
+    icon: "color-palette-outline",
+    accent: "#C9960C",
+  },
 ];
 
 const GALLERY_POOL = [
@@ -113,7 +184,9 @@ export default function HomeScreen() {
   const [referralVisible, setReferralVisible] = useState(false);
   const [subscribeVisible, setSubscribeVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
-  const [descModalMode, setDescModalMode] = useState<EnhancementMode | null>(null);
+  const [descModalMode, setDescModalMode] = useState<EnhancementMode | null>(
+    null,
+  );
   const versionTapCountRef = useRef(0);
   const versionTapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [reviewNudgeCount, setReviewNudgeCount] = useState<number | null>(null);
@@ -122,7 +195,14 @@ export default function HomeScreen() {
   const wasSubscribedRef = useRef(false);
   const [aiConsentVisible, setAiConsentVisible] = useState(false);
   const pendingProcessRef = useRef<"single" | "batch" | null>(null);
-  const { perPhotoPackage, purchase: purchaseSubscription, isSubscribed, isLoading: isSubscriptionLoading, photoCredits, consumePhotoCredit } = useSubscription();
+  const {
+    perPhotoPackage,
+    purchase: purchaseSubscription,
+    isSubscribed,
+    isLoading: isSubscriptionLoading,
+    photoCredits,
+    consumePhotoCredit,
+  } = useSubscription();
 
   const buyOnePhoto = async () => {
     if (!perPhotoPackage) {
@@ -140,7 +220,10 @@ export default function HomeScreen() {
       );
     } catch (err: any) {
       if (err?.userCancelled) return;
-      Alert.alert("Purchase Failed", err?.message ?? "Unable to complete the purchase.");
+      Alert.alert(
+        "Purchase Failed",
+        err?.message ?? "Unable to complete the purchase.",
+      );
     }
   };
   const [hasUsedFreeTrial, setHasUsedFreeTrial] = useState(false);
@@ -150,13 +233,17 @@ export default function HomeScreen() {
   const originalBase64Ref = useRef<string | null>(null);
   const [resultBase64, setResultBase64] = useState<string | null>(null);
   const [resultLocalUri, setResultLocalUri] = useState<string | null>(null);
-  const [selectedModes, setSelectedModes] = useState<Set<EnhancementMode>>(new Set(["sharpen"]));
+  const [selectedModes, setSelectedModes] = useState<Set<EnhancementMode>>(
+    new Set(["sharpen"]),
+  );
   const [statusMessage, setStatusMessage] = useState("Preparing...");
   const msgIndexRef = useRef(0);
   const cancelledRef = useRef(false);
   const [batchItems, setBatchItems] = useState<BatchItem[]>([]);
   const [batchCurrentIndex, setBatchCurrentIndex] = useState(0);
-  const [perPhotoPickerItemId, setPerPhotoPickerItemId] = useState<string | null>(null);
+  const [perPhotoPickerItemId, setPerPhotoPickerItemId] = useState<
+    string | null
+  >(null);
 
   // Pinch-to-zoom discovery hint
   const [showPinchHint, setShowPinchHint] = useState(false);
@@ -193,7 +280,7 @@ export default function HomeScreen() {
       await AsyncStorage.setItem("enhancementCount", String(next));
       // Trigger when the count crosses the 3-enhancement threshold for the
       // first time (handles single-photo and batch cases uniformly).
-      if (prev < 3 && next >= 3 && await StoreReview.hasAction()) {
+      if (prev < 3 && next >= 3 && (await StoreReview.hasAction())) {
         await StoreReview.requestReview();
       }
       // Keep the nudge in sync — hide permanently once review triggers
@@ -362,7 +449,7 @@ export default function HomeScreen() {
     const currentVersion = Constants.expoConfig?.version ?? "";
     const displayVersion = hasWhatsNewForVersion(currentVersion)
       ? currentVersion
-      : getLatestChangelogVersion() ?? currentVersion;
+      : (getLatestChangelogVersion() ?? currentVersion);
     if (!displayVersion) return;
     setWhatsNewManualVersion(displayVersion);
     setWhatsNewManualVisible(true);
@@ -432,7 +519,10 @@ export default function HomeScreen() {
           setProWelcomeVisible(true);
         }
 
-        await AsyncStorage.setItem("onjjem_last_subscribed", isSubscribed ? "1" : "0");
+        await AsyncStorage.setItem(
+          "onjjem_last_subscribed",
+          isSubscribed ? "1" : "0",
+        );
       } catch {
         // Non-critical — skip silently
       }
@@ -444,11 +534,16 @@ export default function HomeScreen() {
     if (isSubscriptionLoading) return;
     const justSubscribed = isSubscribed && !wasSubscribedRef.current;
     wasSubscribedRef.current = isSubscribed;
-    if (justSubscribed && resultWasPreview && appState === "done" && originalBase64Ref.current) {
+    if (
+      justSubscribed &&
+      resultWasPreview &&
+      appState === "done" &&
+      originalBase64Ref.current
+    ) {
       setResultWasPreview(false);
       void processPhoto();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubscribed, isSubscriptionLoading]);
 
   // Prune old gallery entries on every launch
@@ -487,128 +582,129 @@ export default function HomeScreen() {
 
   const pickImage = async () => {
     try {
-    const permission =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const permission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    const canProceed =
-      permission.granted || (permission.status as string) === "limited";
+      const canProceed =
+        permission.granted || (permission.status as string) === "limited";
 
-    if (!canProceed) {
-      if (!permission.canAskAgain) {
-        Alert.alert(
-          "Photos Access Blocked",
-          "ONJJEM needs access to your photo library. Please go to iPhone Settings → Privacy & Security → Photos → ONJJEM and choose 'All Photos'.",
-          [
-            { text: "Open Settings", onPress: () => Linking.openSettings() },
-            { text: "Cancel", style: "cancel" },
-          ],
-        );
-      } else {
-        Alert.alert(
-          "Permission Needed",
-          "Please allow ONJJEM to access your photos so you can choose a photo to restore.",
-        );
-      }
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: false,
-      allowsMultipleSelection: true,
-      quality: 0.92,
-      base64: true,
-    });
-
-    // ── Multi-select: start batch flow ───────────────────────────────────────
-    if (!result.canceled && result.assets.length > 1) {
-      const BATCH_CAP = 10;
-      if (result.assets.length > BATCH_CAP) {
-        const confirmed = await new Promise<boolean>((resolve) => {
+      if (!canProceed) {
+        if (!permission.canAskAgain) {
           Alert.alert(
-            "Too Many Photos",
-            `You selected ${result.assets.length} photos. ONJJEM can process up to ${BATCH_CAP} photos at a time to keep things fast and reliable.\n\nWould you like to restore the first ${BATCH_CAP} photos?`,
+            "Photos Access Blocked",
+            "ONJJEM needs access to your photo library. Please go to iPhone Settings → Privacy & Security → Photos → ONJJEM and choose 'All Photos'.",
             [
-              {
-                text: `Process First ${BATCH_CAP}`,
-                onPress: () => resolve(true),
-              },
-              {
-                text: "Cancel",
-                style: "cancel",
-                onPress: () => resolve(false),
-              },
+              { text: "Open Settings", onPress: () => Linking.openSettings() },
+              { text: "Cancel", style: "cancel" },
             ],
           );
-        });
-        if (!confirmed) return;
-        result.assets.splice(BATCH_CAP);
-      }
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      const defaultModes = new Set(selectedModes);
-      const items: BatchItem[] = result.assets.map((asset) => ({
-        id: `${Date.now()}_${Math.random().toString(36).slice(2)}`,
-        uri: asset.uri,
-        base64: asset.base64 ?? null,
-        resultBase64: null,
-        resultLocalUri: null,
-        status: "pending" as const,
-        modes: new Set(defaultModes),
-      }));
-      setBatchItems(items);
-      setBatchCurrentIndex(0);
-      setOriginalUri(null);
-      originalBase64Ref.current = null;
-      setResultBase64(null);
-      setResultLocalUri(null);
-      setSelectedModes(new Set(["sharpen"]));
-      setAppState("batch-selected");
-      return;
-    }
-
-    if (!result.canceled && result.assets.length > 0) {
-      const asset = result.assets[0];
-
-      const commitPhoto = async () => {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        originalBase64Ref.current = asset.base64 ?? null;
-        setOriginalUri(asset.uri);
-        setResultBase64(null);
-        setResultLocalUri(null);
-        setAppState("selected");
-
-        // Show the enhancement tip sheet the very first time a photo is picked
-        try {
-          const seen = await AsyncStorage.getItem("hasSeenPickerTip");
-          if (seen !== "1") {
-            setTipSheetVisible(true);
-          }
-        } catch {
-          // Non-critical — skip tip if storage is unavailable
+        } else {
+          Alert.alert(
+            "Permission Needed",
+            "Please allow ONJJEM to access your photos so you can choose a photo to restore.",
+          );
         }
-      };
-
-      // Hard-stop quality gate: 200 DPI minimum for a 4-inch minimum print dimension
-      const imgW = asset.width ?? 0;
-      const imgH = asset.height ?? 0;
-      const MIN_PX = 800; // 200 DPI × 4 inches
-      if (imgW > 0 && imgH > 0 && Math.min(imgW, imgH) < MIN_PX) {
-        Alert.alert(
-          "Low Quality Photo",
-          `This image is only ${imgW}×${imgH} pixels.\n\nFor print-quality results at 200 DPI we recommend at least 1600×1200 pixels. At this resolution the maximum print size is approximately ${(imgW / 200).toFixed(1)}″ × ${(imgH / 200).toFixed(1)}″.\n\nFor the best prints, please choose a higher-resolution photo.`,
-          [
-            { text: "Choose Different Photo", style: "cancel" },
-            { text: "Use Anyway", onPress: commitPhoto },
-          ],
-          { cancelable: false },
-        );
         return;
       }
 
-      await commitPhoto();
-    }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: false,
+        allowsMultipleSelection: true,
+        quality: 0.92,
+        base64: true,
+      });
+
+      // ── Multi-select: start batch flow ───────────────────────────────────────
+      if (!result.canceled && result.assets.length > 1) {
+        const BATCH_CAP = 10;
+        if (result.assets.length > BATCH_CAP) {
+          const confirmed = await new Promise<boolean>((resolve) => {
+            Alert.alert(
+              "Too Many Photos",
+              `You selected ${result.assets.length} photos. ONJJEM can process up to ${BATCH_CAP} photos at a time to keep things fast and reliable.\n\nWould you like to restore the first ${BATCH_CAP} photos?`,
+              [
+                {
+                  text: `Process First ${BATCH_CAP}`,
+                  onPress: () => resolve(true),
+                },
+                {
+                  text: "Cancel",
+                  style: "cancel",
+                  onPress: () => resolve(false),
+                },
+              ],
+            );
+          });
+          if (!confirmed) return;
+          result.assets.splice(BATCH_CAP);
+        }
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        const defaultModes = new Set(selectedModes);
+        const items: BatchItem[] = result.assets.map((asset) => ({
+          id: `${Date.now()}_${Math.random().toString(36).slice(2)}`,
+          uri: asset.uri,
+          base64: asset.base64 ?? null,
+          resultBase64: null,
+          resultLocalUri: null,
+          status: "pending" as const,
+          modes: new Set(defaultModes),
+        }));
+        setBatchItems(items);
+        setBatchCurrentIndex(0);
+        setOriginalUri(null);
+        originalBase64Ref.current = null;
+        setResultBase64(null);
+        setResultLocalUri(null);
+        setSelectedModes(new Set(["sharpen"]));
+        setAppState("batch-selected");
+        return;
+      }
+
+      if (!result.canceled && result.assets.length > 0) {
+        const asset = result.assets[0];
+
+        const commitPhoto = async () => {
+          await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          originalBase64Ref.current = asset.base64 ?? null;
+          setOriginalUri(asset.uri);
+          setResultBase64(null);
+          setResultLocalUri(null);
+          setAppState("selected");
+
+          // Show the enhancement tip sheet the very first time a photo is picked
+          try {
+            const seen = await AsyncStorage.getItem("hasSeenPickerTip");
+            if (seen !== "1") {
+              setTipSheetVisible(true);
+            }
+          } catch {
+            // Non-critical — skip tip if storage is unavailable
+          }
+        };
+
+        // Hard-stop quality gate: 200 DPI minimum for a 4-inch minimum print dimension
+        const imgW = asset.width ?? 0;
+        const imgH = asset.height ?? 0;
+        const MIN_PX = 800; // 200 DPI × 4 inches
+        if (imgW > 0 && imgH > 0 && Math.min(imgW, imgH) < MIN_PX) {
+          Alert.alert(
+            "Low Quality Photo",
+            `This image is only ${imgW}×${imgH} pixels.\n\nFor print-quality results at 200 DPI we recommend at least 1600×1200 pixels. At this resolution the maximum print size is approximately ${(imgW / 200).toFixed(1)}″ × ${(imgH / 200).toFixed(1)}″.\n\nFor the best prints, please choose a higher-resolution photo.`,
+            [
+              { text: "Choose Different Photo", style: "cancel" },
+              { text: "Use Anyway", onPress: commitPhoto },
+            ],
+            { cancelable: false },
+          );
+          return;
+        }
+
+        await commitPhoto();
+      }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Could not open photo library";
+      const msg =
+        err instanceof Error ? err.message : "Could not open photo library";
       Alert.alert("Unable to Open Photos", msg, [{ text: "OK" }]);
     }
   };
@@ -677,7 +773,8 @@ export default function HomeScreen() {
       //   3. file:// URIs — FileSystem.readAsStringAsync
       const isWebUri =
         originalUri.startsWith("blob:") ||
-        (originalUri.startsWith("http") && !originalUri.startsWith("https://localhost"));
+        (originalUri.startsWith("http") &&
+          !originalUri.startsWith("https://localhost"));
       let base64: string;
 
       if (originalBase64Ref.current) {
@@ -702,7 +799,7 @@ export default function HomeScreen() {
           });
         } catch {
           throw new Error(
-            "Could not read the selected photo. Please try a different photo or restart the app."
+            "Could not read the selected photo. Please try a different photo or restart the app.",
           );
         }
       }
@@ -713,7 +810,8 @@ export default function HomeScreen() {
 
       if (cancelledRef.current) return;
 
-      const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
+      const domain =
+        process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
       const apiUrl = `https://${domain}/api/process`;
 
       const wasFreePreview = !(isSubscribed || photoCredits > 0);
@@ -749,18 +847,24 @@ export default function HomeScreen() {
       // Save to local filesystem on native only
       if (!isWebUri) {
         const ts = Date.now();
-        const resultPath = (FileSystem.documentDirectory ?? "") + `photofix_result_${ts}.jpg`;
+        const resultPath =
+          (FileSystem.documentDirectory ?? "") + `photofix_result_${ts}.jpg`;
         await FileSystem.writeAsStringAsync(resultPath, b64, {
           encoding: FileSystem.EncodingType.Base64,
         });
         setResultLocalUri(resultPath);
 
         // Also persist the original so the gallery can show a before/after comparison
-        const origPath = (FileSystem.documentDirectory ?? "") + `photofix_original_${ts}.jpg`;
+        const origPath =
+          (FileSystem.documentDirectory ?? "") + `photofix_original_${ts}.jpg`;
         if (originalBase64Ref.current) {
-          await FileSystem.writeAsStringAsync(origPath, originalBase64Ref.current, {
-            encoding: FileSystem.EncodingType.Base64,
-          });
+          await FileSystem.writeAsStringAsync(
+            origPath,
+            originalBase64Ref.current,
+            {
+              encoding: FileSystem.EncodingType.Base64,
+            },
+          );
         } else {
           // Fall back: copy the picked file URI if it's a local file
           try {
@@ -791,13 +895,17 @@ export default function HomeScreen() {
         setAppState("done");
         setResultWasPreview(wasFreePreview);
         // Show result tip sheet on first successful enhancement
-        AsyncStorage.getItem("hasSeenResultTip").then((seen) => {
-          if (!seen) setResultTipVisible(true);
-        }).catch(() => setResultTipVisible(true));
+        AsyncStorage.getItem("hasSeenResultTip")
+          .then((seen) => {
+            if (!seen) setResultTipVisible(true);
+          })
+          .catch(() => setResultTipVisible(true));
         // Mark free trial as used — persisted so it survives app restarts
         await AsyncStorage.setItem("freeTrialUsed", "1");
         setHasUsedFreeTrial(true);
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success,
+        );
         void maybeRequestReview();
       }
     } catch (error) {
@@ -824,7 +932,11 @@ export default function HomeScreen() {
       if (cancelledRef.current) break;
 
       // Skip items already completed from a previous (cancelled) batch run
-      if (updatedItems[i].status === "done" || updatedItems[i].status === "error") continue;
+      if (
+        updatedItems[i].status === "done" ||
+        updatedItems[i].status === "error"
+      )
+        continue;
 
       setBatchCurrentIndex(i);
       updatedItems[i] = { ...updatedItems[i], status: "processing" };
@@ -837,7 +949,8 @@ export default function HomeScreen() {
         if (!base64) {
           const isWebUri =
             item.uri.startsWith("blob:") ||
-            (item.uri.startsWith("http") && !item.uri.startsWith("https://localhost"));
+            (item.uri.startsWith("http") &&
+              !item.uri.startsWith("https://localhost"));
           if (isWebUri) {
             const resp = await fetch(item.uri);
             const blob = await resp.blob();
@@ -855,7 +968,7 @@ export default function HomeScreen() {
               });
             } catch {
               throw new Error(
-                "Could not read one of the selected photos. Please try different photos or restart the app."
+                "Could not read one of the selected photos. Please try different photos or restart the app.",
               );
             }
           }
@@ -897,7 +1010,8 @@ export default function HomeScreen() {
 
         const isWebUri =
           item.uri.startsWith("blob:") ||
-          (item.uri.startsWith("http") && !item.uri.startsWith("https://localhost"));
+          (item.uri.startsWith("http") &&
+            !item.uri.startsWith("https://localhost"));
         if (!isWebUri) {
           const ts = Date.now() + i;
           const resultPath =
@@ -908,7 +1022,8 @@ export default function HomeScreen() {
           resultLocalUri = resultPath;
 
           const origPath =
-            (FileSystem.documentDirectory ?? "") + `photofix_original_${ts}.jpg`;
+            (FileSystem.documentDirectory ?? "") +
+            `photofix_original_${ts}.jpg`;
           if (item.base64) {
             await FileSystem.writeAsStringAsync(origPath, item.base64, {
               encoding: FileSystem.EncodingType.Base64,
@@ -955,7 +1070,9 @@ export default function HomeScreen() {
       await AsyncStorage.setItem("freeTrialUsed", "1");
       setHasUsedFreeTrial(true);
       // Consume photo credits for each successfully processed item
-      const successCount = updatedItems.filter((it) => it.status === "done").length;
+      const successCount = updatedItems.filter(
+        (it) => it.status === "done",
+      ).length;
       if (!isSubscribed && photoCredits > 0) {
         const creditsToConsume = Math.min(successCount, photoCredits);
         for (let i = 0; i < creditsToConsume; i++) {
@@ -969,7 +1086,10 @@ export default function HomeScreen() {
 
   const saveLocalUri = async (localUri: string) => {
     if (Platform.OS === "web") {
-      Alert.alert("Not supported", "Saving to Photos is only available on iPhone.");
+      Alert.alert(
+        "Not supported",
+        "Saving to Photos is only available on iPhone.",
+      );
       return;
     }
     try {
@@ -984,7 +1104,10 @@ export default function HomeScreen() {
       }
       await MediaLibrary.saveToLibraryAsync(localUri);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert("Saved!", "Your enhanced photo has been saved to your Photos library.");
+      Alert.alert(
+        "Saved!",
+        "Your enhanced photo has been saved to your Photos library.",
+      );
     } catch {
       Alert.alert("Error", "Could not save to Photos. Please try again.");
     }
@@ -999,7 +1122,10 @@ export default function HomeScreen() {
       }
       const isAvailable = await Sharing.isAvailableAsync();
       if (!isAvailable) {
-        Alert.alert("Sharing unavailable", "Sharing is not supported on this device.");
+        Alert.alert(
+          "Sharing unavailable",
+          "Sharing is not supported on this device.",
+        );
         return;
       }
       await Sharing.shareAsync(localUri, {
@@ -1016,7 +1142,10 @@ export default function HomeScreen() {
     if (!resultLocalUri) return;
 
     if (Platform.OS === "web") {
-      Alert.alert("Not supported", "Saving to Photos is only available on iPhone.");
+      Alert.alert(
+        "Not supported",
+        "Saving to Photos is only available on iPhone.",
+      );
       return;
     }
 
@@ -1033,7 +1162,10 @@ export default function HomeScreen() {
 
       await MediaLibrary.saveToLibraryAsync(resultLocalUri);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert("Saved!", "Your enhanced photo has been saved to your Photos library.");
+      Alert.alert(
+        "Saved!",
+        "Your enhanced photo has been saved to your Photos library.",
+      );
     } catch {
       Alert.alert("Error", "Could not save to Photos. Please try again.");
     }
@@ -1091,11 +1223,28 @@ export default function HomeScreen() {
         initialIndex={welcomeInitialIndex}
         onIndexChange={setLastWelcomeIndex}
       />
-      <WhatsNewModal visible={whatsNewVisible} version={whatsNewVersion} onDismiss={handleWhatsNewDismiss} />
-      <WhatsNewModal visible={whatsNewManualVisible} version={whatsNewManualVersion} onDismiss={() => setWhatsNewManualVisible(false)} />
-      <EnhancementTipSheet visible={tipSheetVisible} onDismiss={handleTipSheetDismiss} />
-      <ResultTipSheet visible={resultTipVisible} onDismiss={handleResultTipDismiss} />
-      <ProWelcomeBanner visible={proWelcomeVisible} onDismiss={handleProWelcomeDismiss} />
+      <WhatsNewModal
+        visible={whatsNewVisible}
+        version={whatsNewVersion}
+        onDismiss={handleWhatsNewDismiss}
+      />
+      <WhatsNewModal
+        visible={whatsNewManualVisible}
+        version={whatsNewManualVersion}
+        onDismiss={() => setWhatsNewManualVisible(false)}
+      />
+      <EnhancementTipSheet
+        visible={tipSheetVisible}
+        onDismiss={handleTipSheetDismiss}
+      />
+      <ResultTipSheet
+        visible={resultTipVisible}
+        onDismiss={handleResultTipDismiss}
+      />
+      <ProWelcomeBanner
+        visible={proWelcomeVisible}
+        onDismiss={handleProWelcomeDismiss}
+      />
       <AIConsentModal
         visible={aiConsentVisible}
         onAccept={handleConsentAccept}
@@ -1112,17 +1261,48 @@ export default function HomeScreen() {
             animationType="slide"
             onRequestClose={() => setDescModalMode(null)}
           >
-            <Pressable style={s.descBackdrop} onPress={() => setDescModalMode(null)}>
+            <Pressable
+              style={s.descBackdrop}
+              onPress={() => setDescModalMode(null)}
+            >
               <Pressable style={s.descSheet} onPress={() => {}}>
                 {activeEnh && (
                   <>
-                    <View style={[s.descIconCircle, { backgroundColor: `${activeEnh.accent}26`, borderColor: `${activeEnh.accent}66` }]}>
-                      <Ionicons name={activeEnh.icon} size={34} color={activeEnh.accent} />
+                    <View
+                      style={[
+                        s.descIconCircle,
+                        {
+                          backgroundColor: `${activeEnh.accent}26`,
+                          borderColor: `${activeEnh.accent}66`,
+                        },
+                      ]}
+                    >
+                      <Ionicons
+                        name={activeEnh.icon}
+                        size={34}
+                        color={activeEnh.accent}
+                      />
                     </View>
-                    <Text style={[s.descTitle, { color: activeEnh.accent }]}>{activeEnh.title}</Text>
+                    <Text style={[s.descTitle, { color: activeEnh.accent }]}>
+                      {activeEnh.title}
+                    </Text>
                     <Text style={s.descBody}>{activeEnh.description}</Text>
-                    <TouchableOpacity style={[s.descDismissBtn, { borderColor: activeEnh.accent }]} onPress={() => setDescModalMode(null)} activeOpacity={0.8}>
-                      <Text style={[s.descDismissBtnText, { color: activeEnh.accent }]}>Got it</Text>
+                    <TouchableOpacity
+                      style={[
+                        s.descDismissBtn,
+                        { borderColor: activeEnh.accent },
+                      ]}
+                      onPress={() => setDescModalMode(null)}
+                      activeOpacity={0.8}
+                    >
+                      <Text
+                        style={[
+                          s.descDismissBtnText,
+                          { color: activeEnh.accent },
+                        ]}
+                      >
+                        Got it
+                      </Text>
                     </TouchableOpacity>
                   </>
                 )}
@@ -1151,11 +1331,17 @@ export default function HomeScreen() {
         <View style={s.header}>
           <View style={s.headerCenter}>
             <GraffitiTitle fontSize={52} letterSpacing={8} />
-            <Text style={s.headerTagline}>Bringing your Gems of Love to Life</Text>
+            <Text style={s.headerTagline}>
+              Bringing your Gems of Love to Life
+            </Text>
           </View>
           {appState !== "idle" && (
             <TouchableOpacity onPress={resetApp} style={s.resetBtn}>
-              <Ionicons name="refresh" size={22} color={colors.mutedForeground} />
+              <Ionicons
+                name="refresh"
+                size={22}
+                color={colors.mutedForeground}
+              />
             </TouchableOpacity>
           )}
           <TouchableOpacity
@@ -1166,7 +1352,12 @@ export default function HomeScreen() {
             style={s.infoBtn}
             activeOpacity={0.7}
           >
-            <Ionicons name="information-circle-outline" size={24} color="rgba(201,150,12,0.75)" />
+            <Ionicons
+              name="information-circle-outline"
+              size={24}
+              color="rgba(201,150,12,0.75)"
+            />
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               Linking.openURL("https://onjjem.com/shop");
@@ -1174,7 +1365,11 @@ export default function HomeScreen() {
             style={s.shopHeaderBtn}
             activeOpacity={0.7}
           >
-            <Ionicons name="bag-handle-outline" size={22} color="rgba(201,150,12,0.75)" />
+            <Ionicons
+              name="bag-handle-outline"
+              size={22}
+              color="rgba(201,150,12,0.75)"
+            />
           </TouchableOpacity>
         </View>
 
@@ -1193,7 +1388,13 @@ export default function HomeScreen() {
                   <Text style={s.uploadSub}>Tap to restore your memories</Text>
                 </View>
               </View>
-              <View style={{ alignItems: "center", paddingVertical: 10, paddingBottom: 6 }}>
+              <View
+                style={{
+                  alignItems: "center",
+                  paddingVertical: 10,
+                  paddingBottom: 6,
+                }}
+              >
                 <Image
                   source={require("@/assets/images/icon.png")}
                   style={{ width: 80, height: 80, borderRadius: 18 }}
@@ -1213,12 +1414,17 @@ export default function HomeScreen() {
                 <Ionicons name="bag-outline" size={20} color="#C9960C" />
                 <View style={s.shopCTAText}>
                   <Text style={s.shopCTATitle}>Print Shop</Text>
-                  <Text style={s.shopCTASub}>Canvas, jigsaws & gifts from your photos</Text>
+                  <Text style={s.shopCTASub}>
+                    Canvas, jigsaws & gifts from your photos
+                  </Text>
                 </View>
-                <Ionicons name="chevron-forward" size={16} color="rgba(201,150,12,0.6)" />
+                <Ionicons
+                  name="chevron-forward"
+                  size={16}
+                  color="rgba(201,150,12,0.6)"
+                />
               </View>
             </TouchableOpacity>
-
           </>
         )}
 
@@ -1249,7 +1455,11 @@ export default function HomeScreen() {
                   }}
                   activeOpacity={0.75}
                 >
-                  <Image source={{ uri: item.uri }} style={s.batchThumb} resizeMode="cover" />
+                  <Image
+                    source={{ uri: item.uri }}
+                    style={s.batchThumb}
+                    resizeMode="cover"
+                  />
                   <View style={s.batchThumbBadge}>
                     <Text style={s.batchThumbNum}>{idx + 1}</Text>
                   </View>
@@ -1261,7 +1471,10 @@ export default function HomeScreen() {
                       return (
                         <View
                           key={modeId}
-                          style={[s.batchThumbModeDot, { backgroundColor: enh.accent }]}
+                          style={[
+                            s.batchThumbModeDot,
+                            { backgroundColor: enh.accent },
+                          ]}
                         />
                       );
                     })}
@@ -1297,7 +1510,8 @@ export default function HomeScreen() {
             <Text style={s.processingText}>{statusMessage}</Text>
             <View style={s.processingDivider} />
             <Text style={s.processingNote}>
-              Our Cinema-Grade AI is working on your photograph with the care it deserves.
+              Our Cinema-Grade AI is working on your photograph with the care it
+              deserves.
             </Text>
             {appState === "batch-processing" && (
               <Text style={s.batchProgressLabel}>
@@ -1309,7 +1523,13 @@ export default function HomeScreen() {
               activeOpacity={0.7}
               style={{ marginTop: 20 }}
             >
-              <Text style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, textAlign: "center" }}>
+              <Text
+                style={{
+                  color: "rgba(255,255,255,0.4)",
+                  fontSize: 13,
+                  textAlign: "center",
+                }}
+              >
                 Cancel
               </Text>
             </TouchableOpacity>
@@ -1326,7 +1546,11 @@ export default function HomeScreen() {
                 </View>
               )}
               <Text style={s.imageLabel}>
-                {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")} — drag to compare
+                {Array.from(selectedModes)
+                  .map((m) => ENHANCEMENTS.find((e) => e.id === m)?.title)
+                  .filter(Boolean)
+                  .join(" + ")}{" "}
+                — drag to compare
               </Text>
             </View>
             <View style={s.zoomWrapper}>
@@ -1337,7 +1561,10 @@ export default function HomeScreen() {
                 <BeforeAfterSlider
                   beforeUri={originalUri}
                   afterBase64={resultBase64}
-                  modeName={Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).filter(Boolean).join(" + ")}
+                  modeName={Array.from(selectedModes)
+                    .map((m) => ENHANCEMENTS.find((e) => e.id === m)?.title)
+                    .filter(Boolean)
+                    .join(" + ")}
                 />
               </PinchZoomView>
               {showPinchHint && (
@@ -1357,7 +1584,9 @@ export default function HomeScreen() {
                 style={s.imageTapHint}
               >
                 <Ionicons name="sparkles" size={12} color="#C9960C" />
-                <Text style={s.imageTapHintText}>Tap here to unlock full quality</Text>
+                <Text style={s.imageTapHintText}>
+                  Tap here to unlock full quality
+                </Text>
                 <Ionicons name="sparkles" size={12} color="#C9960C" />
               </TouchableOpacity>
             )}
@@ -1376,20 +1605,36 @@ export default function HomeScreen() {
                   activeOpacity={0.7}
                   hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
-                  <Ionicons name="information-circle-outline" size={20} color="rgba(201,150,12,0.75)" />
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={20}
+                    color="rgba(201,150,12,0.75)"
+                  />
                 </TouchableOpacity>
               </View>
-              <Text style={s.enhanceSub}>Select up to 3 — they stack together</Text>
+              <Text style={s.enhanceSub}>
+                Select up to 3 — they stack together
+              </Text>
             </View>
 
             {/* Pricing strip — Pro active or purchase options */}
             <View style={s.pricingTileRow}>
               {isSubscribed ? (
                 <TouchableOpacity
-                  style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60", flex: 1 }]}
+                  style={[
+                    s.pricingTile,
+                    {
+                      backgroundColor: "#0E1A0E",
+                      borderColor: "#27AE60",
+                      flex: 1,
+                    },
+                  ]}
                   onPress={() => {
                     if (selectedModes.size === 0) {
-                      Alert.alert("Pick an Enhancement", "Select one of the enhancement types below, then tap Enhance.");
+                      Alert.alert(
+                        "Pick an Enhancement",
+                        "Select one of the enhancement types below, then tap Enhance.",
+                      );
                     } else {
                       appState === "batch-selected"
                         ? void handleProcessWithConsent("batch")
@@ -1399,46 +1644,138 @@ export default function HomeScreen() {
                   activeOpacity={0.8}
                 >
                   <Ionicons name="sparkles" size={20} color="#27AE60" />
-                  <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>Enhance</Text>
-                  <Text style={[s.pricingTileLabel, { color: "rgba(39,174,96,0.7)" }]}>Pro Active</Text>
+                  <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>
+                    Enhance
+                  </Text>
+                  <Text
+                    style={[
+                      s.pricingTileLabel,
+                      { color: "rgba(39,174,96,0.7)" },
+                    ]}
+                  >
+                    Pro Active
+                  </Text>
                 </TouchableOpacity>
               ) : hasUsedFreeTrial ? (
                 <>
-                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#1A1408", borderColor: "#E8A020" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                  <TouchableOpacity
+                    style={[
+                      s.pricingTile,
+                      { backgroundColor: "#1A1408", borderColor: "#E8A020" },
+                    ]}
+                    onPress={() => setSubscribeVisible(true)}
+                    activeOpacity={0.8}
+                  >
                     <Ionicons name="camera" size={20} color="#E8A020" />
-                    <Text style={[s.pricingTilePrice, { color: "#E8A020" }]}>{PRICING.perPhoto.amount}</Text>
-                    <Text style={[s.pricingTileLabel, { color: "rgba(232,160,32,0.7)" }]}>per photo</Text>
+                    <Text style={[s.pricingTilePrice, { color: "#E8A020" }]}>
+                      {PRICING.perPhoto.amount}
+                    </Text>
+                    <Text
+                      style={[
+                        s.pricingTileLabel,
+                        { color: "rgba(232,160,32,0.7)" },
+                      ]}
+                    >
+                      per photo
+                    </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1828", borderColor: "#4A90D9" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                  <TouchableOpacity
+                    style={[
+                      s.pricingTile,
+                      { backgroundColor: "#0E1828", borderColor: "#4A90D9" },
+                    ]}
+                    onPress={() => setSubscribeVisible(true)}
+                    activeOpacity={0.8}
+                  >
                     <Ionicons name="calendar" size={20} color="#4A90D9" />
-                    <Text style={[s.pricingTilePrice, { color: "#4A90D9" }]}>{PRICING.monthly.amount}</Text>
-                    <Text style={[s.pricingTileLabel, { color: "rgba(74,144,217,0.7)" }]}>per month</Text>
+                    <Text style={[s.pricingTilePrice, { color: "#4A90D9" }]}>
+                      {PRICING.monthly.amount}
+                    </Text>
+                    <Text
+                      style={[
+                        s.pricingTileLabel,
+                        { color: "rgba(74,144,217,0.7)" },
+                      ]}
+                    >
+                      per month
+                    </Text>
                   </TouchableOpacity>
                 </>
               ) : (
                 <>
-                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1A0E", borderColor: "#27AE60" }]} onPress={() => {
-                    if (selectedModes.size === 0) {
-                      Alert.alert("Pick an Enhancement", "Select one of the enhancement types below, then tap Enhance Free.");
-                    } else {
-                      appState === "batch-selected"
-                        ? void handleProcessWithConsent("batch")
-                        : void handleProcessWithConsent("single");
-                    }
-                  }} activeOpacity={0.8}>
+                  <TouchableOpacity
+                    style={[
+                      s.pricingTile,
+                      { backgroundColor: "#0E1A0E", borderColor: "#27AE60" },
+                    ]}
+                    onPress={() => {
+                      if (selectedModes.size === 0) {
+                        Alert.alert(
+                          "Pick an Enhancement",
+                          "Select one of the enhancement types below, then tap Enhance Free.",
+                        );
+                      } else {
+                        appState === "batch-selected"
+                          ? void handleProcessWithConsent("batch")
+                          : void handleProcessWithConsent("single");
+                      }
+                    }}
+                    activeOpacity={0.8}
+                  >
                     <Ionicons name="sparkles" size={20} color="#27AE60" />
-                    <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>Free</Text>
-                    <Text style={[s.pricingTileLabel, { color: "rgba(39,174,96,0.7)" }]}>1 sample</Text>
+                    <Text style={[s.pricingTilePrice, { color: "#27AE60" }]}>
+                      Free
+                    </Text>
+                    <Text
+                      style={[
+                        s.pricingTileLabel,
+                        { color: "rgba(39,174,96,0.7)" },
+                      ]}
+                    >
+                      1 sample
+                    </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#1A1408", borderColor: "#E8A020" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                  <TouchableOpacity
+                    style={[
+                      s.pricingTile,
+                      { backgroundColor: "#1A1408", borderColor: "#E8A020" },
+                    ]}
+                    onPress={() => setSubscribeVisible(true)}
+                    activeOpacity={0.8}
+                  >
                     <Ionicons name="camera" size={20} color="#E8A020" />
-                    <Text style={[s.pricingTilePrice, { color: "#E8A020" }]}>{PRICING.perPhoto.amount}</Text>
-                    <Text style={[s.pricingTileLabel, { color: "rgba(232,160,32,0.7)" }]}>per photo</Text>
+                    <Text style={[s.pricingTilePrice, { color: "#E8A020" }]}>
+                      {PRICING.perPhoto.amount}
+                    </Text>
+                    <Text
+                      style={[
+                        s.pricingTileLabel,
+                        { color: "rgba(232,160,32,0.7)" },
+                      ]}
+                    >
+                      per photo
+                    </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[s.pricingTile, { backgroundColor: "#0E1828", borderColor: "#4A90D9" }]} onPress={() => setSubscribeVisible(true)} activeOpacity={0.8}>
+                  <TouchableOpacity
+                    style={[
+                      s.pricingTile,
+                      { backgroundColor: "#0E1828", borderColor: "#4A90D9" },
+                    ]}
+                    onPress={() => setSubscribeVisible(true)}
+                    activeOpacity={0.8}
+                  >
                     <Ionicons name="calendar" size={20} color="#4A90D9" />
-                    <Text style={[s.pricingTilePrice, { color: "#4A90D9" }]}>{PRICING.monthly.amount}</Text>
-                    <Text style={[s.pricingTileLabel, { color: "rgba(74,144,217,0.7)" }]}>per month</Text>
+                    <Text style={[s.pricingTilePrice, { color: "#4A90D9" }]}>
+                      {PRICING.monthly.amount}
+                    </Text>
+                    <Text
+                      style={[
+                        s.pricingTileLabel,
+                        { color: "rgba(74,144,217,0.7)" },
+                      ]}
+                    >
+                      per month
+                    </Text>
                   </TouchableOpacity>
                 </>
               )}
@@ -1483,15 +1820,26 @@ export default function HomeScreen() {
                       style={s.enhanceCardGradient}
                     >
                       {isSelected && (
-                        <View style={[s.enhanceCheckBadge, { backgroundColor: enh.accent }]}>
+                        <View
+                          style={[
+                            s.enhanceCheckBadge,
+                            { backgroundColor: enh.accent },
+                          ]}
+                        >
                           <Ionicons name="checkmark" size={11} color="#fff" />
                         </View>
                       )}
                       <View
                         style={[
                           s.enhanceIconCircle,
-                          { backgroundColor: `${enh.accent}26`, borderColor: `${enh.accent}66` },
-                          isSelected && { backgroundColor: `${enh.accent}44`, borderColor: enh.accent },
+                          {
+                            backgroundColor: `${enh.accent}26`,
+                            borderColor: `${enh.accent}66`,
+                          },
+                          isSelected && {
+                            backgroundColor: `${enh.accent}44`,
+                            borderColor: enh.accent,
+                          },
                         ]}
                       >
                         <Ionicons
@@ -1515,31 +1863,50 @@ export default function HomeScreen() {
               <View style={s.comboLabel}>
                 <Ionicons name="layers-outline" size={14} color="#C9960C" />
                 <Text style={s.comboLabelText}>
-                  Combo: {Array.from(selectedModes).map(m => ENHANCEMENTS.find(e => e.id === m)?.title).join(" + ")}
+                  Combo:{" "}
+                  {Array.from(selectedModes)
+                    .map((m) => ENHANCEMENTS.find((e) => e.id === m)?.title)
+                    .join(" + ")}
                 </Text>
               </View>
             )}
 
             {/* Main CTA */}
             <TouchableOpacity
-              style={[s.processBtn, selectedModes.size === 0 && { opacity: 0.45 }]}
-              onPress={selectedModes.size > 0
-                ? (hasUsedFreeTrial && !isSubscribed && photoCredits === 0
+              style={[
+                s.processBtn,
+                selectedModes.size === 0 && { opacity: 0.45 },
+              ]}
+              onPress={
+                selectedModes.size > 0
+                  ? hasUsedFreeTrial && !isSubscribed && photoCredits === 0
                     ? () => setSubscribeVisible(true)
                     : appState === "batch-selected"
                       ? () => void handleProcessWithConsent("batch")
-                      : () => void handleProcessWithConsent("single"))
-                : undefined}
+                      : () => void handleProcessWithConsent("single")
+                  : undefined
+              }
               activeOpacity={0.85}
             >
               <LinearGradient
-                colors={hasUsedFreeTrial && !isSubscribed && photoCredits === 0
-                  ? ["#A67C00", "#C9960C", "#E8B422", "#C9960C"]
-                  : ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]}
-                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                colors={
+                  hasUsedFreeTrial && !isSubscribed && photoCredits === 0
+                    ? ["#A67C00", "#C9960C", "#E8B422", "#C9960C"]
+                    : ["#1A8C40", "#27AE60", "#2ECC71", "#27AE60"]
+                }
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
                 style={s.processBtnGradient}
               >
-                <Ionicons name={hasUsedFreeTrial && !isSubscribed && photoCredits === 0 ? "sparkles" : "sparkles"} size={24} color="#fff" />
+                <Ionicons
+                  name={
+                    hasUsedFreeTrial && !isSubscribed && photoCredits === 0
+                      ? "sparkles"
+                      : "sparkles"
+                  }
+                  size={24}
+                  color="#fff"
+                />
                 <Text style={s.processBtnText}>
                   {hasUsedFreeTrial && !isSubscribed && photoCredits === 0
                     ? "Subscribe to Enhance"
@@ -1549,7 +1916,6 @@ export default function HomeScreen() {
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
-
           </>
         )}
 
@@ -1568,8 +1934,14 @@ export default function HomeScreen() {
               style={s.resultInfoBtn}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              <Ionicons name="information-circle-outline" size={16} color="rgba(201,150,12,0.75)" />
-              <Text style={s.resultInfoBtnText}>What can I do with this photo?</Text>
+              <Ionicons
+                name="information-circle-outline"
+                size={16}
+                color="rgba(201,150,12,0.75)"
+              />
+              <Text style={s.resultInfoBtnText}>
+                What can I do with this photo?
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={s.myPhotosLinkBtn}
@@ -1578,7 +1950,11 @@ export default function HomeScreen() {
             >
               <Ionicons name="images-outline" size={16} color="#4A90D9" />
               <Text style={s.myPhotosLinkBtnText}>View in My Restorations</Text>
-              <Ionicons name="chevron-forward" size={14} color="rgba(74,144,217,0.5)" />
+              <Ionicons
+                name="chevron-forward"
+                size={14}
+                color="rgba(74,144,217,0.5)"
+              />
             </TouchableOpacity>
             <TouchableOpacity
               style={s.ghostBtn}
@@ -1587,8 +1963,8 @@ export default function HomeScreen() {
             >
               <Text style={s.ghostBtnText}>Fix Another Photo</Text>
             </TouchableOpacity>
-                          
-              <TouchableOpacity
+
+            <TouchableOpacity
               style={s.orderPrintBtn}
               onPress={() => {
                 Linking.openURL("https://onjjem.com/shop");
@@ -1597,7 +1973,11 @@ export default function HomeScreen() {
             >
               <Ionicons name="bag-handle-outline" size={18} color="#C9960C" />
               <Text style={s.orderPrintBtnText}>Order as a Print</Text>
-              <Ionicons name="chevron-forward" size={14} color="rgba(201,150,12,0.5)" />
+              <Ionicons
+                name="chevron-forward"
+                size={14}
+                color="rgba(201,150,12,0.5)"
+              />
             </TouchableOpacity>
             <TouchableOpacity
               style={s.whatsappBtn}
@@ -1609,7 +1989,11 @@ export default function HomeScreen() {
             </TouchableOpacity>
             {reviewNudgeCount !== null && reviewNudgeCount > 0 && (
               <View style={s.reviewNudge}>
-                <Ionicons name="star-outline" size={13} color="rgba(255,214,0,0.45)" />
+                <Ionicons
+                  name="star-outline"
+                  size={13}
+                  color="rgba(255,214,0,0.45)"
+                />
                 <Text style={s.reviewNudgeText}>
                   {reviewNudgeCount === 1
                     ? "One more restoration unlocks a surprise"
@@ -1624,7 +2008,8 @@ export default function HomeScreen() {
           <>
             <View style={s.batchDoneHeader}>
               <Text style={s.batchDoneTitle}>
-                {batchItems.filter((it) => it.status === "done").length} of {batchItems.length} Photos Restored
+                {batchItems.filter((it) => it.status === "done").length} of{" "}
+                {batchItems.length} Photos Restored
               </Text>
               <Text style={s.batchDoneSub}>
                 Each photo has been saved to your Restorations gallery.
@@ -1644,10 +2029,18 @@ export default function HomeScreen() {
                         : "Skipped"}
                   </Text>
                   {item.status === "done" && (
-                    <Ionicons name="checkmark-circle" size={16} color="#27AE60" />
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={16}
+                      color="#27AE60"
+                    />
                   )}
                   {item.status === "error" && (
-                    <Ionicons name="warning-outline" size={16} color="#E74C3C" />
+                    <Ionicons
+                      name="warning-outline"
+                      size={16}
+                      color="#E74C3C"
+                    />
                   )}
                 </View>
                 {item.resultBase64 ? (
@@ -1659,7 +2052,11 @@ export default function HomeScreen() {
                 ) : (
                   <View style={s.batchCardPlaceholder}>
                     <Ionicons
-                      name={item.status === "error" ? "warning-outline" : "hourglass-outline"}
+                      name={
+                        item.status === "error"
+                          ? "warning-outline"
+                          : "hourglass-outline"
+                      }
                       size={32}
                       color={item.status === "error" ? "#E74C3C" : "#555"}
                     />
@@ -1681,7 +2078,11 @@ export default function HomeScreen() {
                         colors={["#1E3A5F", "#2C5282"]}
                         style={s.batchActionGradient}
                       >
-                        <Ionicons name="download-outline" size={16} color="#fff" />
+                        <Ionicons
+                          name="download-outline"
+                          size={16}
+                          color="#fff"
+                        />
                         <Text style={s.batchActionText}>Save to Photos</Text>
                       </LinearGradient>
                     </TouchableOpacity>
@@ -1711,7 +2112,11 @@ export default function HomeScreen() {
             </TouchableOpacity>
             {reviewNudgeCount !== null && reviewNudgeCount > 0 && (
               <View style={s.reviewNudge}>
-                <Ionicons name="star-outline" size={13} color="rgba(255,214,0,0.45)" />
+                <Ionicons
+                  name="star-outline"
+                  size={13}
+                  color="rgba(255,214,0,0.45)"
+                />
                 <Text style={s.reviewNudgeText}>
                   {reviewNudgeCount === 1
                     ? "One more restoration unlocks a surprise"
@@ -1730,7 +2135,11 @@ export default function HomeScreen() {
           onPress={() => router.push("/contact")}
           activeOpacity={0.8}
         >
-          <Ionicons name="headset-outline" size={18} color={colors.mutedForeground} />
+          <Ionicons
+            name="headset-outline"
+            size={18}
+            color={colors.mutedForeground}
+          />
           <Text style={s.contactSupportText}>Contact Support</Text>
         </TouchableOpacity>
 
@@ -1740,7 +2149,11 @@ export default function HomeScreen() {
           onPress={() => void handleRateApp()}
           activeOpacity={0.8}
         >
-          <Ionicons name="star-outline" size={18} color={colors.mutedForeground} />
+          <Ionicons
+            name="star-outline"
+            size={18}
+            color={colors.mutedForeground}
+          />
           <Text style={s.contactSupportText}>Rate ONJJEM on the App Store</Text>
         </TouchableOpacity>
 
@@ -1750,7 +2163,11 @@ export default function HomeScreen() {
           onPress={handleShowWhatsNewManually}
           activeOpacity={0.8}
         >
-          <Ionicons name="sparkles-outline" size={18} color={colors.mutedForeground} />
+          <Ionicons
+            name="sparkles-outline"
+            size={18}
+            color={colors.mutedForeground}
+          />
           <Text style={s.contactSupportText}>What's New</Text>
         </TouchableOpacity>
 
@@ -1761,10 +2178,13 @@ export default function HomeScreen() {
           delayLongPress={800}
           onPress={() => {
             versionTapCountRef.current += 1;
-            if (versionTapTimerRef.current) clearTimeout(versionTapTimerRef.current);
+            if (versionTapTimerRef.current)
+              clearTimeout(versionTapTimerRef.current);
             if (versionTapCountRef.current >= 5) {
               versionTapCountRef.current = 0;
-              void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              void Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Success,
+              );
               router.push("/dev-settings" as Parameters<typeof router.push>[0]);
             } else {
               versionTapTimerRef.current = setTimeout(() => {
@@ -1792,17 +2212,35 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      <ProPaywall visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
-      <ContactExpertsModal visible={contactVisible} onClose={() => setContactVisible(false)} />
-      <ReferralModal visible={referralVisible} onClose={() => setReferralVisible(false)} />
-      <SubscribeModal visible={subscribeVisible} onClose={() => setSubscribeVisible(false)} />
-      <PaywallStatsModal visible={statsVisible} onClose={() => setStatsVisible(false)} />
+      <ProPaywall
+        visible={paywallVisible}
+        onClose={() => setPaywallVisible(false)}
+      />
+      <ContactExpertsModal
+        visible={contactVisible}
+        onClose={() => setContactVisible(false)}
+      />
+      <ReferralModal
+        visible={referralVisible}
+        onClose={() => setReferralVisible(false)}
+      />
+      <SubscribeModal
+        visible={subscribeVisible}
+        onClose={() => setSubscribeVisible(false)}
+      />
+      <PaywallStatsModal
+        visible={statsVisible}
+        onClose={() => setStatsVisible(false)}
+      />
 
       {/* Per-photo enhancement picker bottom sheet */}
       {(() => {
-        const pickerItem = batchItems.find((it) => it.id === perPhotoPickerItemId) ?? null;
+        const pickerItem =
+          batchItems.find((it) => it.id === perPhotoPickerItemId) ?? null;
         if (!pickerItem) return null;
-        const itemIdx = batchItems.findIndex((it) => it.id === perPhotoPickerItemId);
+        const itemIdx = batchItems.findIndex(
+          (it) => it.id === perPhotoPickerItemId,
+        );
         return (
           <Modal
             visible={!!pickerItem}
@@ -1815,7 +2253,12 @@ export default function HomeScreen() {
               style={s.perPhotoBackdrop}
               onPress={() => setPerPhotoPickerItemId(null)}
             >
-              <Pressable style={[s.perPhotoSheet, { paddingBottom: Math.max(insets.bottom, 24) }]}>
+              <Pressable
+                style={[
+                  s.perPhotoSheet,
+                  { paddingBottom: Math.max(insets.bottom, 24) },
+                ]}
+              >
                 {/* Handle */}
                 <View style={s.perPhotoHandle} />
 
@@ -1833,11 +2276,19 @@ export default function HomeScreen() {
                       end={{ x: 1, y: 0 }}
                       style={s.perPhotoBadge}
                     >
-                      <Ionicons name="options-outline" size={10} color="#0A0804" />
-                      <Text style={s.perPhotoBadgeText}>PHOTO {itemIdx + 1} OF {batchItems.length}</Text>
+                      <Ionicons
+                        name="options-outline"
+                        size={10}
+                        color="#0A0804"
+                      />
+                      <Text style={s.perPhotoBadgeText}>
+                        PHOTO {itemIdx + 1} OF {batchItems.length}
+                      </Text>
                     </LinearGradient>
                     <Text style={s.perPhotoTitle}>Choose Enhancements</Text>
-                    <Text style={s.perPhotoSub}>Select up to 3 for this photo</Text>
+                    <Text style={s.perPhotoSub}>
+                      Select up to 3 for this photo
+                    </Text>
                   </View>
                 </View>
 
@@ -1851,7 +2302,10 @@ export default function HomeScreen() {
                         key={enh.id}
                         style={[
                           s.perPhotoCard,
-                          isSelected && { borderColor: enh.accent, borderWidth: 2 },
+                          isSelected && {
+                            borderColor: enh.accent,
+                            borderWidth: 2,
+                          },
                           atLimit && { opacity: 0.4 },
                         ]}
                         activeOpacity={0.8}
@@ -1869,7 +2323,7 @@ export default function HomeScreen() {
                                 next.add(enh.id);
                               }
                               return { ...it, modes: next };
-                            })
+                            }),
                           );
                         }}
                       >
@@ -1882,20 +2336,43 @@ export default function HomeScreen() {
                           style={s.perPhotoCardGradient}
                         >
                           {isSelected && (
-                            <View style={[s.perPhotoCheckBadge, { backgroundColor: enh.accent }]}>
-                              <Ionicons name="checkmark" size={10} color="#fff" />
+                            <View
+                              style={[
+                                s.perPhotoCheckBadge,
+                                { backgroundColor: enh.accent },
+                              ]}
+                            >
+                              <Ionicons
+                                name="checkmark"
+                                size={10}
+                                color="#fff"
+                              />
                             </View>
                           )}
                           <View
                             style={[
                               s.perPhotoIconCircle,
-                              { backgroundColor: `${enh.accent}26`, borderColor: `${enh.accent}66` },
-                              isSelected && { backgroundColor: `${enh.accent}44`, borderColor: enh.accent },
+                              {
+                                backgroundColor: `${enh.accent}26`,
+                                borderColor: `${enh.accent}66`,
+                              },
+                              isSelected && {
+                                backgroundColor: `${enh.accent}44`,
+                                borderColor: enh.accent,
+                              },
                             ]}
                           >
-                            <Ionicons name={enh.icon} size={24} color={enh.accent} />
+                            <Ionicons
+                              name={enh.icon}
+                              size={24}
+                              color={enh.accent}
+                            />
                           </View>
-                          <Text style={[s.perPhotoCardTitle, { color: enh.accent }]}>{enh.title}</Text>
+                          <Text
+                            style={[s.perPhotoCardTitle, { color: enh.accent }]}
+                          >
+                            {enh.title}
+                          </Text>
                           <Text style={s.perPhotoCardSub}>{enh.subtitle}</Text>
                         </LinearGradient>
                       </TouchableOpacity>

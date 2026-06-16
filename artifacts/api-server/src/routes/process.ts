@@ -4,21 +4,19 @@ import sharp from "sharp";
 import Replicate from "replicate";
 import convert from "heic-convert";
 
-const router = Router();// Convert HEIC/HEIF photos to JPEG so sharp + Replicate can read them
+const router = Router(); // Convert HEIC/HEIF photos to JPEG so sharp + Replicate can read them
 async function toJpegBuffer(buf: Buffer): Promise<Buffer> {
   const header = buf.slice(4, 12).toString("ascii");
   const isHeic = /heic|heif|mif1|hevc/i.test(header);
   if (!isHeic) return buf;
 
   const out = await convert({
-    buffer: buf as unknown as ArrayBuffer,
+    buffer: buf as any,
     format: "JPEG",
     quality: 0.92,
   });
   return Buffer.from(out);
 }
-
-
 
 export type EnhancementMode =
   | "sharpen"
@@ -29,7 +27,9 @@ export type EnhancementMode =
   | "colorize";
 
 const REPLICATE_TOKEN = process.env.REPLICATE_API_TOKEN;
-const replicate = REPLICATE_TOKEN ? new Replicate({ auth: REPLICATE_TOKEN }) : null;
+const replicate = REPLICATE_TOKEN
+  ? new Replicate({ auth: REPLICATE_TOKEN })
+  : null;
 
 // Replicate models for each AI mode
 const AI_MODELS: Record<
@@ -111,10 +111,7 @@ async function applyVivid(buf: Buffer): Promise<Buffer> {
 
 // ── AI fallback (if Replicate fails) ─────────────────────────────────────────
 
-async function aiFallback(
-  buf: Buffer,
-  mode: EnhancementMode,
-): Promise<Buffer> {
+async function aiFallback(buf: Buffer, mode: EnhancementMode): Promise<Buffer> {
   switch (mode) {
     case "sharpen":
       return sharp(buf)
@@ -150,18 +147,21 @@ export async function applyEnhancements(
   modes: EnhancementMode[],
 ): Promise<Buffer> {
   const jpegBuffer = await toJpegBuffer(inputBuffer);
-let buf = await sharp(jpegBuffer).rotate().toBuffer();
+  let buf = await sharp(jpegBuffer).rotate().toBuffer();
 
   for (const mode of modes) {
     if (mode === "brighten" || mode === "vivid") {
-      buf = mode === "brighten" ? await applyBrighten(buf) : await applyVivid(buf);
+      buf =
+        mode === "brighten" ? await applyBrighten(buf) : await applyVivid(buf);
     } else {
       // AI mode
       try {
         buf = await runReplicateAI(buf, mode);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Unknown error";
-        console.warn(`AI processing failed for ${mode}: ${msg}. Falling back to sharp.`);
+        console.warn(
+          `AI processing failed for ${mode}: ${msg}. Falling back to sharp.`,
+        );
         buf = await aiFallback(buf, mode);
       }
     }
@@ -178,7 +178,6 @@ export async function makeFreePreview(
 ): Promise<Buffer> {
   const jpegBuffer = await toJpegBuffer(inputBuffer);
   const oriented = await sharp(jpegBuffer).rotate().toBuffer();
-
 
   const meta = await sharp(oriented).metadata();
   const w = meta.width ?? 800;
@@ -244,20 +243,24 @@ export async function makeFreePreview(
 
   const fontSize = Math.max(18, Math.round(imgW * 0.045));
   const lineH = Math.round(fontSize * 1.6);
-  const lines = ['© ONJJEM.COM', 'WATERMARKED PREVIEW'];
+  const lines = ["© ONJJEM.COM", "WATERMARKED PREVIEW"];
   const svgH = lines.length * lineH + 16;
 
   const svgText = `<svg width="${imgW}" height="${svgH}" xmlns="http://www.w3.org/2000/svg">
     <rect width="${imgW}" height="${svgH}" fill="rgba(0,0,0,0.45)"/>
-    ${lines.map((line, i) => `<text
+    ${lines
+      .map(
+        (line, i) => `<text
       x="${imgW / 2}" y="${16 + lineH * i + fontSize}"
       font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="bold"
       fill="rgba(255,255,255,0.85)" text-anchor="middle" letter-spacing="3"
-    >${line}</text>`).join('')}
+    >${line}</text>`,
+      )
+      .join("")}
   </svg>`;
 
   return sharp(processed)
-    .composite([{ input: Buffer.from(svgText), gravity: 'south' }])
+    .composite([{ input: Buffer.from(svgText), gravity: "south" }])
     .jpeg({ quality: 72 })
     .toBuffer();
 }
@@ -282,16 +285,29 @@ router.post("/process", async (req: Request, res: Response) => {
         ? ["sharpen"]
         : [];
 
-  const validModes = ["sharpen", "brighten", "denoise", "restore", "vivid", "colorize"];
-  const filtered = modes.filter((m) => validModes.includes(m)) as EnhancementMode[];
+  const validModes = [
+    "sharpen",
+    "brighten",
+    "denoise",
+    "restore",
+    "vivid",
+    "colorize",
+  ];
+  const filtered = modes.filter((m) =>
+    validModes.includes(m),
+  ) as EnhancementMode[];
 
   if (!imageBase64 || filtered.length === 0) {
-    res.status(400).json({ error: "imageBase64 and at least one valid mode are required" });
+    res
+      .status(400)
+      .json({ error: "imageBase64 and at least one valid mode are required" });
     return;
   }
 
   if (filtered.length > 3) {
-    res.status(400).json({ error: "A maximum of 3 enhancements can be combined" });
+    res
+      .status(400)
+      .json({ error: "A maximum of 3 enhancements can be combined" });
     return;
   }
 
