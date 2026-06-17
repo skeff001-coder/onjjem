@@ -5,9 +5,6 @@
   "build": {
     "production": {
       "node": "18.0.0",
-      "env": {
-        "EAS_BUILD_RUNNER": "local"
-      },
       "workingDirectory": "artifacts/owens-photofix"
     }
   }
