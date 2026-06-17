@@ -83,7 +83,7 @@ export default function AdminScreen() {
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
-    const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
+    const domain = process.env.EXPO_PUBLIC_DOMAIN || "onjjem-production-5ef8.up.railway.app";
     const planKeys = ["monthly", "perpic"] as const;
     const reasonKeys = ["cancel", "billing_error"] as const;
     const churnKeys = [

@@ -73,7 +73,7 @@ export default function ProductDetailScreen() {
 
     setLoading(true);
     try {
-      const domain = process.env.EXPO_PUBLIC_DOMAIN ?? "photo-fix-ai.replit.app";
+      const domain = process.env.EXPO_PUBLIC_DOMAIN ?? "onjjem-production-5ef8.up.railway.app";
       const resp = await fetch(`https://${domain}/api/stripe/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

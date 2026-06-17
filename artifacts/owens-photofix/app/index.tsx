@@ -811,7 +811,7 @@ export default function HomeScreen() {
       if (cancelledRef.current) return;
 
       const domain =
-        process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
+        process.env.EXPO_PUBLIC_DOMAIN || "onjjem-production-5ef8.up.railway.app";
       const apiUrl = `https://${domain}/api/process`;
 
       const wasFreePreview = !(isSubscribed || photoCredits > 0);
@@ -923,7 +923,7 @@ export default function HomeScreen() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     setAppState("batch-processing");
 
-    const domain = process.env.EXPO_PUBLIC_DOMAIN || "photo-fix-ai.replit.app";
+    const domain = process.env.EXPO_PUBLIC_DOMAIN || "onjjem-production-5ef8.up.railway.app";
     const apiUrl = `https://${domain}/api/process`;
 
     const updatedItems = batchItems.map((it) => ({ ...it }));

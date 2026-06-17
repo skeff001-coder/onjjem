@@ -28,7 +28,7 @@ const SECTIONS = [
   },
   {
     title: "AI Processing Service",
-    body: "To enhance your photos, the image you select is transmitted over an encrypted HTTPS connection to ONJJEM's processing server (photo-fix-ai.replit.app), operated by ONJJEM and hosted in the United Kingdom.\n\nFor free-tier previews, processing happens entirely on ONJJEM's own infrastructure. For paid HD photo processing, ONJJEM uses Replicate AI (a third-party AI service) to apply AI-based image enhancement (sharpening, colour restoration, noise removal, etc.). Your photo is encrypted during transmission and permanently deleted from the server as soon as processing is complete — it is never stored, retained, or shared.\n\nYour permission is requested before your photo is sent for the first time. You may withdraw consent at any time by uninstalling the app.",
+    body: "To enhance your photos, the image you select is transmitted over an encrypted HTTPS connection to ONJJEM's processing server (onjjem-production-5ef8.up.railway.app), operated by ONJJEM and hosted in the United Kingdom.\n\nFor free-tier previews, processing happens entirely on ONJJEM's own infrastructure. For paid HD photo processing, ONJJEM uses Replicate AI (a third-party AI service) to apply AI-based image enhancement (sharpening, colour restoration, noise removal, etc.). Your photo is encrypted during transmission and permanently deleted from the server as soon as processing is complete — it is never stored, retained, or shared.\n\nYour permission is requested before your photo is sent for the first time. You may withdraw consent at any time by uninstalling the app.",
   },
   {
     title: "Face Data",
