@@ -1,0 +1,9 @@
+.git
+node_modules
+**/*.mp4
+**/*.mov
+**/*.zip
+ios
+android
+.expo
+dist

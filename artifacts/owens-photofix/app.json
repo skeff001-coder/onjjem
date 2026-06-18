@@ -1,0 +1,83 @@
+{
+  "expo": {
+    "name": "ONJJEM Photo Restoration",
+    "slug": "owens-photofix",
+    "version": "1.0.52",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "owens-photofix",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1C1A14"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.onjjem.photorestoration",
+      "buildNumber": "67",
+      "privacyPolicyUrl": "https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "ONJJEM needs access to your photos so you can choose a photo to restore.",
+        "NSPhotoLibraryAddUsageDescription": "Allow ONJJEM to save your enhanced photo to your Photos library.",
+        "NSCameraUsageDescription": "ONJJEM can use your camera to take a photo for restoration.",
+        "CFBundleLocalizations": [
+          "en-GB"
+        ],
+        "CFBundleDevelopmentRegion": "en_GB"
+      }
+    },
+    "android": {
+      "package": "com.onjjem.photorestoration",
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/images/icon.png"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://onjjem.co.uk/"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "ONJJEM needs access to your photos so you can choose a photo to restore.",
+          "cameraPermission": "ONJJEM can use your camera to take a photo for restoration."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow ONJJEM to save your enhanced photos to your library.",
+          "savePhotosPermission": "Allow ONJJEM to save your enhanced photos to your library.",
+          "isAccessMediaLocationEnabled": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "baseUrl": "/mobile"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8c029b42-97fc-4a11-97b4-5dd2ed450605"
+      }
+    },
+    "owner": "skeff001"
+  }
+}

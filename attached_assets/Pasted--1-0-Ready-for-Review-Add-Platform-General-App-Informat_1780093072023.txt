@@ -1,0 +1,214 @@
+
+1.0 Ready for Review
+Add Platform
+General
+App Information
+App Review
+History
+App Store
+Trust & Safety
+App Privacy
+App Accessibility
+Ratings and Reviews
+Growth & Marketing
+In-App Events
+Custom Product Pages
+Product Page Optimization
+Promo Codes
+Game Center
+Monetization
+Pricing and Availability
+In-App Purchases
+Subscriptions
+Featuring
+Nominations
+iOS App Version 1.0
+Save
+This app version has been added for review. To submit a different one, you must first remove this version.
+
+The assets and metadata below appear on your app’s product page, when users install your app, and will be used for web engine search results once you release your app.
+
+English (U.K.)
+?
+Previews and Screenshots
+?
+Adding accurate screenshots of your app on the newest devices can help you represent the app's user experience. Keep in mind that we'll use these screenshots for all display sizes and localizations. Screenshots are only required for iOS apps, and only the first 3 will be used on the app installation sheets.
+
+iPhone
+iPad
+Apple Watch
+View All Sizes in Media Manager
+
+iPhone
+6.5" Display
+
+
+
+
+
+
+0 of 3 App Previews
+
+3 of 10 Screenshots
+
+Choose File
+
+Delete All
+
+Promotional Text
+?
+Restore old, blurry, and black-and-white photos with AI. Bring your memories back to life in seconds.
+69
+
+Description
+?
+ONJJEM restores your old, blurry, and black-and-white photographs into stunning, sharp, full-colour images using cutting-edge AI.
+
+PERFECT FOR:
+• Reviving faded family heirlooms
+• Sharpening blurry holiday snaps
+• Bringing colour to vintage black-and-white photos
+• Restoring damaged or low-resolution images
+• Preserving precious memories for future generations
+
+TWO POWERFUL TOOLS:
+• Sharpen — Fix blurry or low-resolution photos with AI super-resolution
+• Colourise — Add natural, realistic colour to old black-and-white photographs
+
+HOW IT WORKS:
+1. Pick a photo from your library
+2. Choose Sharpen or Colourise
+3. Wait a moment while our AI works its magic
+4. Save the restored image or share it directly to WhatsApp, Messages, or anywhere else
+
+PREMIUM RESTORATION:
+Unlock unlimited restorations with an ONJJEM subscription. Cancel anytime.
+
+PRIVACY:
+Your photos are processed securely and never stored. We respect your privacy completely.
+
+Transform your memories with ONJJEM Photo Restoration today.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+2,926
+
+Keywords
+?
+photo,restore,sharpen,colourise,colorize,blurry,old,vintage,AI,enhance,restoration
+18
+
+Support URL
+?
+https://sites.google.com/view/onjjem-help/home
+Marketing URL
+?
+https://onjjem.com
+Version
+?
+1.0
+Copyright
+?
+© 2026 Owen Skeffington
+177
+
+Routing App Coverage File
+?
+No file chosen
+Choose File
+
+App Clip
+
+iMessage App
+?
+Build
+Build
+Version
+Has App Clip
+36
+1.0.28
+No
+Included Assets
+
+
+App Icon
+
+In-App Purchases and Subscriptions
+Edit
+
+Reference Name
+Product ID
+Type
+Monthly Plan
+com.onjjem.photorestoration.pro.monthly2
+
+Auto-Renewable Subscription
+
+One Photo Enhancement
+com.onjjem.photorestoration.onephoto
+
+Consumable
+
+Game Center
+App Review Information
+Sign-In Information
+?
+Provide a user name and password so we can sign in to your app. We’ll need this to complete your app review.
+
+
+Sign-in required
+skeff001@yahoo.com
+Onjjem123?
+Contact Information
+?
+Owen
+skeffington
++44 7444 319579
+skeff001@yahoo.com
+Notes
+?
+Chinese law requires apps with news, religious, book, and magazine content to have relevant permits in order to be available on the App Store in China mainland. If applicable, enter information about your permits below. Learn More
+
+Business model clarification (Guideline 2.1b):
+
+This app does NOT use any third-party AI service. All photo enhancements (sharpening, colour restoration, denoising) are performed with Sharp, an open-source image library running entirely on ONJJEM's own server. No photo or user data is ever sent to OpenAI, Replicate, Google, or any external provider. Privacy policy: https://onjjem.com/privacy
+
+1. Who uses the paid purchases?
+People restoring family photographs — sharpening blurry/low-resolution photos and adding colour to black-and-white images. The app gives one free photo to evaluate quality. After that there are two ways to pay, both via Apple In-App Purchase:
+• One Photo Enhancement — £1.49 one-time (Consumable). Product ID: com.onjjem.photorestoration.onephoto
+• Monthly Unlimited — £12.99/month auto-renewable subscription (group "ONJJEM Pro Access"). Product ID: com.onjjem.photorestoration.pro.monthly2
+
+To reach the paywall: tap "Enhance Photo" → pick a photo → run an enhancement. Once the free photo is used, the paywall appears (gold "Get Pro Access" button).
+
+2. Where can users purchase?
+Exclusively through Apple In-App Purchase, inside the app. No purchases are made outside the app.
+
+3. What does a purchase unlock?
+The monthly subscription unlocks unlimited restorations (Sharpen and Colourise). The £1.49 one-time purchase unlocks a single restoration. The first photo is free.
+
+4. Any paid digital features NOT using In-App Purchase?
+None. All digital features requiring payment use Apple In-App Purchase exclusively.
+The app also shows a catalogue of physical goods (canvas prints, cushions, candles). That screen is an order ENQUIRY only — no payment is taken in-app and no card details are entered ("No Payment Taken Here"). Our team contacts the customer to arrange payment and delivery offline.
+
+5. Can users buy physical goods together with digital content?
+No. The digital purchases (Apple IAP) and the physical-goods catalogue are completely separate. There is no bundled purchase.
+1,982
+
+Attachment
+?
+No file chosen
+Choose File (Optional)
+App Store Version Release
+To make your app available on the App Store, you can automatically release it after it’s been approved by App Review. You can also manually release it on the App Store at a later date.
+
+
+Manually release this version
+
+Automatically release this version
+
+Automatically release this version after App Review, no earlier than
+Your local date and time.
+
+May 30, 2026 00:00
+Draft Submissions (1)
+App Store Connect
+Copyright © 2026 Apple Inc. All rights reserved.

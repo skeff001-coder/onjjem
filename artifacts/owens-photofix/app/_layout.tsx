@@ -1,0 +1,330 @@
+import { BebasNeue_400Regular } from "@expo-google-fonts/bebas-neue";
+import {
+  Cinzel_400Regular,
+  Cinzel_700Bold,
+} from "@expo-google-fonts/cinzel";
+import { PlayfairDisplay_900Black } from "@expo-google-fonts/playfair-display";
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  useFonts,
+} from "@expo-google-fonts/inter";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { GraffitiTitle } from "@/components/GraffitiTitle";
+import React, { useEffect, useRef } from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
+import {
+  initializeRevenueCat,
+  trackAppInstall,
+  trackSubscriptionChurn,
+  planIdFromProductIdentifier,
+  REVENUECAT_ENTITLEMENT_IDENTIFIER,
+  SubscriptionProvider,
+} from "@/lib/revenuecat";
+import Purchases, { type CustomerInfo } from "react-native-purchases";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+
+SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
+
+try {
+  initializeRevenueCat();
+  // Record the install event (no-op after the very first cold-start)
+  void trackAppInstall();
+} catch (err: any) {
+  // Surfaced once on cold-start if RevenueCat keys are missing/invalid.
+  // Purchases will throw at call time too, so paywalls remain usable in dev.
+  console.warn("RevenueCat init failed:", err?.message ?? err);
+}
+
+function AppSplash() {
+  return (
+    <View style={splash.root}>
+      {/* Centre content */}
+      <View style={splash.centre}>
+        {/* Icon */}
+        <View style={splash.iconWrap}>
+          <Image
+            source={require("@/assets/images/icon_refined.png")}
+            style={splash.icon}
+            resizeMode="cover"
+          />
+          <View style={splash.iconGoldRing} />
+        </View>
+
+        {/* Thin gold rule above brand */}
+        <View style={splash.rule} />
+
+        {/* Brand name */}
+        <GraffitiTitle fontSize={60} letterSpacing={8} />
+        <Text style={splash.subtitle}>Bringing your Gems of Love to Life</Text>
+
+
+        {/* Thin divider */}
+        <View style={splash.divider} />
+
+        {/* Tagline */}
+        <Text style={splash.tagline}>Turning Memories into Masterpieces</Text>
+      </View>
+
+      {/* London badge — pinned to bottom */}
+      <View style={splash.londonBadge}>
+        <View style={splash.londonLine} />
+        <View style={splash.londonRow}>
+          <Text style={splash.londonFlag}>🇬🇧</Text>
+          <Text style={splash.londonText}>Expertly Restored in London</Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const splash = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: "#0F0D09",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  /* Centre block */
+  centre: {
+    alignItems: "center",
+    gap: 0,
+  },
+
+  /* Icon */
+  iconWrap: {
+    position: "relative",
+    width: 152,
+    height: 152,
+    borderRadius: 38,
+    overflow: "hidden",
+    marginBottom: 30,
+    shadowColor: "#C9960C",
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.55,
+    shadowRadius: 28,
+    elevation: 20,
+  },
+  icon: {
+    width: "100%",
+    height: "100%",
+  },
+  iconGoldRing: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    borderRadius: 38,
+    borderWidth: 2,
+    borderColor: "rgba(201,150,12,0.65)",
+  },
+
+  /* Gold rule above brand */
+  rule: {
+    width: 48,
+    height: 1,
+    backgroundColor: "#C9960C",
+    opacity: 0.55,
+    marginBottom: 14,
+  },
+
+  /* Brand */
+  brand: {
+    fontSize: 54,
+    fontFamily: "BebasNeue_400Regular",
+    color: "#F5EDD8",
+    letterSpacing: 10,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    fontStyle: "italic" as const,
+    color: "#7A5500",
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  awardRow: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 6,
+    backgroundColor: "rgba(201,150,12,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(201,150,12,0.4)",
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+    marginTop: 6,
+    marginBottom: 20,
+  },
+  awardTrophy: {
+    fontSize: 14,
+  },
+  awardText: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    color: "#C9960C",
+    letterSpacing: 0.4,
+  },
+
+  /* Divider */
+  divider: {
+    width: 32,
+    height: 1,
+    backgroundColor: "rgba(201,150,12,0.3)",
+    marginBottom: 16,
+  },
+
+  /* Tagline */
+  tagline: {
+    fontSize: 14,
+    color: "rgba(245,237,216,0.6)",
+    fontStyle: "italic",
+    letterSpacing: 0.4,
+  },
+
+  /* London badge */
+  londonBadge: {
+    position: "absolute",
+    bottom: 44,
+    alignItems: "center",
+    gap: 10,
+  },
+  londonLine: {
+    width: 40,
+    height: 1,
+    backgroundColor: "rgba(201,150,12,0.25)",
+    marginBottom: 2,
+  },
+  londonRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
+  londonFlag: {
+    fontSize: 14,
+  },
+  londonText: {
+    fontSize: 11,
+    color: "rgba(201,150,12,0.7)",
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+  },
+});
+
+/**
+ * Listens to RevenueCat's customerInfoUpdated event and calls
+ * trackSubscriptionChurn whenever the pro entitlement transitions from
+ * active to inactive (cancelled or billing failure).
+ *
+ * Mounted once inside SubscriptionProvider so it has access to the same
+ * QueryClient context, though it uses the Purchases listener API directly
+ * to catch updates that may arrive before React Query re-fetches.
+ */
+function ChurnTracker() {
+  const prevCustomerInfo = useRef<CustomerInfo | null>(null);
+
+  useEffect(() => {
+    const handleUpdate = (customerInfo: CustomerInfo) => {
+      const prev = prevCustomerInfo.current;
+      prevCustomerInfo.current = customerInfo;
+
+      if (!prev) return;
+
+      const wasActive =
+        prev.entitlements.active[REVENUECAT_ENTITLEMENT_IDENTIFIER] !== undefined;
+      const isNowActive =
+        customerInfo.entitlements.active[REVENUECAT_ENTITLEMENT_IDENTIFIER] !== undefined;
+
+      if (wasActive && !isNowActive) {
+        // Subscription just lapsed — derive the plan from the previously active entitlement
+        const prevEntitlement = prev.entitlements.all[REVENUECAT_ENTITLEMENT_IDENTIFIER];
+        const planId = prevEntitlement?.productIdentifier
+          ? planIdFromProductIdentifier(prevEntitlement.productIdentifier)
+          : undefined;
+
+        // If willRenew was true when last seen but subscription is now gone,
+        // the renewal payment likely failed. If willRenew was false, the user
+        // had already cancelled and the period simply ran out.
+        const reason: "cancel" | "billing_error" =
+          prevEntitlement?.willRenew ? "billing_error" : "cancel";
+
+        void trackSubscriptionChurn(reason, planId);
+      }
+    };
+
+    Purchases.addCustomerInfoUpdateListener(handleUpdate);
+
+    return () => {
+      Purchases.removeCustomerInfoUpdateListener(handleUpdate);
+    };
+  }, []);
+
+  return null;
+}
+
+function RootLayoutNav() {
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="success" options={{ headerShown: false }} />
+      <Stack.Screen name="admin" options={{ headerShown: false }} />
+      <Stack.Screen name="gallery" options={{ headerShown: false }} />
+      <Stack.Screen name="contact" options={{ headerShown: false }} />
+      <Stack.Screen name="my-photos" options={{ headerShown: false }} />
+      <Stack.Screen name="dev-settings" options={{ headerShown: false }} />
+      <Stack.Screen name="shop" options={{ headerShown: false }} />
+      <Stack.Screen name="product" options={{ headerShown: false }} />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    BebasNeue_400Regular,
+    Cinzel_400Regular,
+    Cinzel_700Bold,
+    PlayfairDisplay_900Black,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) return <AppSplash />;
+
+  return (
+    <SafeAreaProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <SubscriptionProvider>
+            <ChurnTracker />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <KeyboardProvider>
+                <RootLayoutNav />
+              </KeyboardProvider>
+            </GestureHandlerRootView>
+          </SubscriptionProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </SafeAreaProvider>
+  );
+}

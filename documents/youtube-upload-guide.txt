@@ -1,0 +1,59 @@
+YOUTUBE UPLOAD — COPY AND PASTE
+================================
+
+Step 1: Open your video in a new browser tab
+--------------------------------------------
+Go to: https://photo-fix-ai.replit.app/onjjem-video/
+
+Wait 18 seconds. The MP4 file will automatically download to your Downloads folder.
+
+If it doesn't download, press F12, click Console, type: window.stopRecording() and press Enter.
+
+
+Step 2: Upload to YouTube
+-------------------------
+Go to youtube.com and sign in.
+Click the camera icon (top right) → "Create a Short"
+Select your downloaded MP4 file.
+
+
+Step 3: Copy and paste these exactly
+------------------------------------
+
+TITLE:
+4 Apps I Built — From Photos to Fitness to Dogs
+
+DESCRIPTION:
+I built 4 apps. This video shows them all in 18 seconds.
+
+ONJJEM — Restore old photos and turn them into prints, mugs, cushions, and jigsaws.
+Byte2Eat — Scan your fridge with AI and get instant recipes.
+Effortless Burn — Workouts that actually feel doable.
+What's Up Dog — Clothes for people who love their dogs more than most humans.
+
+Links:
+ONJJEM: https://photo-fix-ai.replit.app/onjjem-website/
+What's Up Dog: https://photo-fix-ai.replit.app/whatsupdog/
+
+
+TAGS (copy all of these):
+#apps #AI #developer #photo restoration #recipe scanner #fitness #dogs #smallbusiness #tech #startup
+
+
+THUMBNAIL:
+Screenshot the "LIFE'S MOMENTS" title card from the video. It's bold white text on a dark background — perfect for a thumbnail.
+
+
+Step 4: Click Upload
+--------------------
+That's it. YouTube will push your Short to people for free. No money needed.
+
+
+What happens next?
+------------------
+YouTube Shorts get shown to thousands of people even if you have zero subscribers.
+The algorithm finds people who watch similar videos and shows them yours.
+If people watch to the end, YouTube shows it to more people.
+
+Post this same video to TikTok and Instagram Reels using the same title and description.
+One video. Three platforms. Free reach everywhere.

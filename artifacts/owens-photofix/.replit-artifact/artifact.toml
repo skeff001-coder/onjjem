@@ -1,0 +1,24 @@
+kind = "mobile"
+  previewPath = "/mobile"
+  title = "Owens Photofix"
+  version = "1.0.0"
+  id = "artifacts/owens-photofix"
+  router = "expo-domain"
+
+  [[integratedSkills]]
+  name = "expo"
+  version = "1.0.0"
+
+  [[services]]
+  ensurePreviewReachable = "/status"
+  name = "expo"
+  paths = [ "/mobile" ]
+  localPort = 21626
+
+  [services.development]
+  run = "pnpm --filter @workspace/owens-photofix run dev"
+
+  [services.env]
+  PORT = "21626"
+  BASE_PATH = "/mobile"
+  

@@ -1,0 +1,110 @@
+Error: Calling the 'constructor' function has failed
+→ Caused by: Received 3 arguments, but 2 was expected and at least 0 is required
+
+This error is located at:
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1714:135)
+    at RCTView (<anonymous>)
+    at View (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:296:1246)
+    at z (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1690:1201)
+    at Suspense (<anonymous>)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:794:383)
+    at s (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:803:3681)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:741:455)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:670:230)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:739:127)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:703:325)
+    at RNSScreenContentWrapper (<anonymous>)
+    at l (<anonymous>)
+    at u (<anonymous>)
+    at RNSScreen (<anonymous>)
+    at Animated(Anonymous) (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:418:466)
+    at t (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:909:329)
+    at Suspense (<anonymous>)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:909:119)
+    at c (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:908:296)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:906:894)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:906:4288)
+    at y (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:929:790)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:703:325)
+    at S (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:969:2450)
+    at RNSScreenStack (<anonymous>)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:926:400)
+    at G (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:925:831)
+    at RCTView (<anonymous>)
+    at View (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:296:1246)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:868:379)
+    at v (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:887:650)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:969:132)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:728:189)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:747:390)
+    at t (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:736:696)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:736:227)
+    at m (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:966:1240)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:793:1115)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:649:4509)
+    at b (<anonymous>)
+    at KeyboardControllerView (<anonymous>)
+    at Animated(Anonymous) (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:418:466)
+    at AnimatedComponent(Animated(Anonymous)) (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1312:237)
+    at Animated(Anonymous) (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1312:605)
+    at T (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1555:1433)
+    at RCTView (<anonymous>)
+    at View (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:296:1246)
+    at o (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1479:330)
+    at o (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1119:804)
+    at s (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1587:360)
+    at RNCSafeAreaProvider (<anonymous>)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:860:477)
+    at v (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1059:3240)
+    at Suspense (<anonymous>)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:794:383)
+    at s (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:803:3681)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:741:455)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:670:230)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:739:127)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:703:325)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:728:189)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:747:390)
+    at t (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:736:696)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:736:227)
+    at U (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1047:2992)
+    at RNCSafeAreaProvider (<anonymous>)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:860:477)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:977:202)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1047:1058)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:676:126)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:670:230)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:653:1023)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1051:552)
+    at L (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1047:1840)
+    at anonymous (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:1047:961)
+    at RCTView (<anonymous>)
+    at View (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:296:1246)
+    at c (https://photo-fix-ai.replit.app/1778433574417-135/_expo/static/js/ios/bundle.js:295:340)
+
+VideoPlayer
+    :1:67
+anonymous
+    bundle.js:1720:355
+anonymous
+    bundle.js:617:222
+anonymous
+    bundle.js:1720:312
+anonymous
+    bundle.js:1714:261
+Gl
+    bundle.js:181:37629
+Ga
+    bundle.js:181:67567
+hi
+    bundle.js:181:77271
+io
+    bundle.js:181:102943
+lo
+    bundle.js:181:101968
+to
+    bundle.js:181:101810
+$u
+    bundle.js:181:99092
+Qt
+    bundle.js:181:29260

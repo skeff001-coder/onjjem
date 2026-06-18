@@ -1,0 +1,33 @@
+Submission ID: 8881f6c8-474d-474c-8fa0-553e451d322a
+Review date: May 26, 2026
+Review Device: iPhone 17 Pro Max
+Version reviewed: 1.0 (27)
+
+Guideline 5.1.1(i) - Legal - Privacy - Data Collection and Storage
+
+Issue Description
+
+We noticed the app includes features and functionality that use face data but the provided privacy policy does not include the following required information: 
+
+- An explicit statement that face data is not retained. 
+- Your reasons for storing face data.
+- The length of time face data is stored and why you store it this specific length of time. Note that it is not appropriate to store face data indefinitely. 
+- Which third parties you share face data with.
+- Your reasons for sharing face data with third parties. 
+- Whether or not the third parties you share face data with also store face data. If they do store face data, your privacy policy must describe the privacy practices of these third parties, including why they store face data, the length of time the face data will be stored, and why the face data will be stored for this length of time. 
+
+To protect the user's security and privacy, developers must provide privacy policies that thoroughly explain their app's data collection and storage practices.
+
+Next Steps
+
+To resolve this issue, update your privacy policy to include all the required information and then provide a link to your updated privacy policy in the App Privacy section for this app in App Store Connect. If your privacy policy already includes this information, respond to this message with the relevant sections quoted in your reply.
+
+Resources
+
+- Learn how to update your privacy policy in App Store Connect. 
+- Learn more about requirements for privacy policies in guideline 5.1.1.
+Support
+- Reply to this message in your preferred language if you need assistance. If you need additional support, use the Contact Us module.
+- Consult with fellow developers and Apple engineers on the Apple Developer Forums.
+- Request an App Review Appointment at Meet with Apple to discuss your app's review. Appointments subject to availability during your local business hours on Tuesdays and Thursdays.
+- Provide feedback on this message and your review experience by completing a short survey.
