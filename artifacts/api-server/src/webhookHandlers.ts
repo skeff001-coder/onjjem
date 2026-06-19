@@ -53,7 +53,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   // (the typed SDK Response<Session> omits some fields; cast to any for access)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const session = (await stripe.checkout.sessions.retrieve(sessionId, {
-    expand: ["line_items", "line_items.data.price.product", "shipping_details"],
+    expand: ["line_items", "line_items.data.price.product"],
   })) as unknown as Record<string, unknown>;
 
   const details = session["customer_details"] as Record<string, unknown> | undefined;
