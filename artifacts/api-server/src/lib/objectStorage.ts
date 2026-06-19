@@ -1,6 +1,8 @@
 import { Storage, File } from "@google-cloud/storage";
 import { Readable } from "stream";
 import { randomUUID } from "crypto";
+import { db } from "@workspace/db";
+import { sql } from "drizzle-orm";
 import {
   ObjectAclPolicy,
   ObjectPermission,
