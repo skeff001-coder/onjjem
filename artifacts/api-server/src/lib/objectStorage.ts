@@ -130,30 +130,37 @@ export class ObjectStorageService {
     });
   }
 
-  // Upload a buffer to the private object dir and return a publicly-downloadable
-  // signed GET URL. Used to hand the customer's restored photo to a print
-  // provider (e.g. Prodigi) which downloads the image from the URL.
+  // Upload a buffer and return a publicly-downloadable URL. Stores the image
+  // in the prodigi_photos DB table and returns a URL served by our own
+  // /api/photo/:id route, which the print provider (Prodigi) downloads from.
   async uploadBufferAndGetSignedUrl(
     buffer: Buffer,
     opts?: { contentType?: string; ttlSec?: number; prefix?: string },
   ): Promise<string> {
-    const privateObjectDir = this.getPrivateObjectDir();
-    const objectId = randomUUID();
-    const prefix = opts?.prefix ?? "prodigi";
-    const fullPath = `${privateObjectDir}/${prefix}/${objectId}`;
-    const { bucketName, objectName } = parseObjectPath(fullPath);
-    const bucket = objectStorageClient.bucket(bucketName);
-    const file = bucket.file(objectName);
-    await file.save(buffer, {
-      contentType: opts?.contentType ?? "image/jpeg",
-      resumable: false,
-    });
-    return signObjectURL({
-      bucketName,
-      objectName,
-      method: "GET",
-      ttlSec: opts?.ttlSec ?? 60 * 60 * 24 * 14, // 14 days
-    });
+    const id = randomUUID();
+    const contentType = opts?.contentType ?? "image/jpeg";
+    const photoB64 = buffer.toString("base64");
+
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS prodigi_photos (
+        id           TEXT PRIMARY KEY,
+        photo_b64    TEXT NOT NULL,
+        content_type TEXT NOT NULL DEFAULT 'image/jpeg',
+        created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `);
+    await db.execute(sql`
+      DELETE FROM prodigi_photos WHERE created_at < NOW() - INTERVAL '30 days'
+    `);
+    await db.execute(sql`
+      INSERT INTO prodigi_photos (id, photo_b64, content_type)
+      VALUES (${id}, ${photoB64}, ${contentType})
+    `);
+
+    const base =
+      process.env.PUBLIC_API_BASE_URL ||
+      "https://onjjem-production-5ef8.up.railway.app";
+    return `${base}/api/photo/${id}`;
   }
 
   async getObjectEntityFile(objectPath: string): Promise<File> {
