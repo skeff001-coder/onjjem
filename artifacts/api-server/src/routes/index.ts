@@ -7,6 +7,8 @@ import emailSignupRouter from "./emailSignup";
 import photoUploadRouter from "./photoUpload";
 import contactRouter from "./contact";
 import restorationRouter from "./restoration";
+import photoRouter from "./photo";
+
 
 const router: IRouter = Router();
 
@@ -18,5 +20,6 @@ router.use(emailSignupRouter);
 router.use(photoUploadRouter);
 router.use(contactRouter);
 router.use(restorationRouter);
+router.use(photoRouter);
 
 export default router;
