@@ -80,7 +80,7 @@ export default function ProductDetail() {
           amountPence: selectedVariant.pricePence,
           currency: "gbp",
           photoBase64: photoBase64,
-          successUrl: `${origin}/onjjem-website/?order=success`,
+          successUrl: `${origin}/?order=success`,
           cancelUrl: `${origin}/onjjem-website/product/${product.id}`,
         }),
       });
