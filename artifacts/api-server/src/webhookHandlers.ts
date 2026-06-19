@@ -59,7 +59,8 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   const details = session["customer_details"] as Record<string, unknown> | undefined;
   const email = (details?.["email"] as string | undefined) ?? (session["customer_email"] as string | undefined) ?? "";
 
-  const shippingDetails = session["shipping_details"] as Record<string, unknown> | undefined;
+  const collectedInfo = session["collected_information"] as Record<string, unknown> | undefined;
+  const shippingDetails = (session["shipping_details"] ?? collectedInfo?.["shipping_details"]) as Record<string, unknown> | undefined;
   const addr = shippingDetails?.["address"] as Record<string, unknown> | undefined;
 
   if (!addr) {
