@@ -190,6 +190,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       payment_method_types: ["card"],
       line_items: [lineItem],
       mode: "payment",
+      allow_promotion_codes: true,
       shipping_address_collection: {
         allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK"],
       },
