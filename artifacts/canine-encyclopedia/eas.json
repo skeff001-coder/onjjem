@@ -1,0 +1,46 @@
+{
+  "cli": {
+    "version": ">= 13.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "EXPO_PUBLIC_REVENUECAT_TEST_API_KEY": "test_OGJMpwWspeprzlqFUWyeEQENXee",
+        "EXPO_PUBLIC_DOMAIN": "canine-encyclopedia.replit.app"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview",
+      "env": {
+        "EXPO_PUBLIC_REVENUECAT_TEST_API_KEY": "test_OGJMpwWspeprzlqFUWyeEQENXee",
+        "EXPO_PUBLIC_DOMAIN": "canine-encyclopedia.replit.app"
+      }
+    },
+    "production": {
+      "channel": "production",
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "env": {
+        "EXPO_PUBLIC_REVENUECAT_TEST_API_KEY": "test_OGJMpwWspeprzlqFUWyeEQENXee",
+        "EXPO_PUBLIC_REVENUECAT_IOS_API_KEY": "appl_QlAKzSnABwsXylEXGysyHrvnJpx",
+        "EXPO_PUBLIC_DOMAIN": "canine-encyclopedia.replit.app"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "skeff001@yahoo.com",
+        "ascAppId": "6771118261"
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "NYjCpA4Ph7ucUT9gbuJMS"
+uri = "file://artifacts/canine-encyclopedia/assets/images/icon.png"
+type = "image"
+title = "canine encyclopedia icon"
+
+[[generated]]
+id = "IKuE9nqjoaVofILfswtJ6"
+uri = "file://artifacts/canine-encyclopedia/assets/images/hero_scanner.png"
+type = "image"
+title = "dog scanner hero image"
+
+[[generated]]
+id = "Iroi63NrTzPLvTbpNFyyx"
+uri = "file://artifacts/canine-encyclopedia/assets/images/world_map.png"
+type = "image"
+title = "breed origins world map"

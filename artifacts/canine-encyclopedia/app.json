@@ -1,0 +1,77 @@
+{
+  "expo": {
+    "name": "That's My Dog!",
+    "slug": "canine-encyclopedia",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "canine-encyclopedia",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a0e1a"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.onjjem.canineencyclopedia",
+      "infoPlist": {
+        "NSCameraUsageDescription": "That's My Dog! uses your camera to scan and identify your dog's breed using AI.",
+        "NSPhotoLibraryUsageDescription": "That's My Dog! accesses your photos so you can choose a dog image for breed identification.",
+        "NSPhotoLibraryAddUsageDescription": "That's My Dog! saves identified dog portraits to your photo library.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.onjjem.canineencyclopedia",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/images/icon.png"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://replit.com/"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "What's Up Dog! uses your camera to scan and identify your dog's breed using AI."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "What's Up Dog! accesses your photos so you can choose a dog image for breed identification."
+        }
+      ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/62b4eb54-c51c-4b4a-8655-f467dd74d938",
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD"
+    },
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "62b4eb54-c51c-4b4a-8655-f467dd74d938"
+      }
+    },
+    "owner": "skeff001"
+  }
+}
