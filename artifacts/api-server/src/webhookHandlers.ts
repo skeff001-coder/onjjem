@@ -1,15 +1,12 @@
-import { getStripeSync, getUncachableStripeClient } from "./stripeClient";
+import { getUncachableStripeClient } from "./stripeClient";
 import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
-// NOTE: old bagsOfLove.ts provider removed — Prodigi is now the sole fulfilment partner.
 import { sendOrderConfirmation, sendAdminNotification } from "./email/mailer";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
+import Stripe from "stripe";
 
 // ── Photo store ───────────────────────────────────────────────────────────────
-// Photos are temporarily stored in the DB (keyed by a token written into
-// the Stripe session metadata) so the webhook can retrieve them after payment.
-// They are deleted immediately after the fulfilment order is placed.
 
 async function ensurePhotoStore(): Promise<void> {
   await db.execute(sql`
@@ -19,7 +16,7 @@ async function ensurePhotoStore(): Promise<void> {
       created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `);
-  // Auto-expire photos older than 2 hours (in case webhook never fires)
+
   await db.execute(sql`
     DELETE FROM pending_photos WHERE created_at < NOW() - INTERVAL '2 hours'
   `);
@@ -45,41 +42,40 @@ async function retrieveAndDeletePhoto(token: string): Promise<string | null> {
   return (rows.rows[0]?.photo_b64 as string) ?? null;
 }
 
-// ── Checkout completed → place Bags of Love order ────────────────────────────
+// ── Checkout completed → fulfilment ───────────────────────────────────────────
 
 async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   const stripe = await getUncachableStripeClient();
-  // Retrieve the raw session JSON so we can access shipping_details
-  // (the typed SDK Response<Session> omits some fields; cast to any for access)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const session = (await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ["line_items", "line_items.data.price.product"],
   })) as unknown as Record<string, unknown>;
 
   const details = session["customer_details"] as Record<string, unknown> | undefined;
-  const email = (details?.["email"] as string | undefined) ?? (session["customer_email"] as string | undefined) ?? "";
+  const email =
+    (details?.["email"] as string | undefined) ??
+    (session["customer_email"] as string | undefined) ??
+    "";
 
   const collectedInfo = session["collected_information"] as Record<string, unknown> | undefined;
-  const shippingDetails = (session["shipping_details"] ?? collectedInfo?.["shipping_details"]) as Record<string, unknown> | undefined;
+  const shippingDetails = (session["shipping_details"] ??
+    collectedInfo?.["shipping_details"]) as Record<string, unknown> | undefined;
+
   const addr = shippingDetails?.["address"] as Record<string, unknown> | undefined;
 
   if (!addr) {
-    logger.warn(
-      { sessionId },
-      "Checkout session has no shipping address — skipping fulfilment",
-    );
+    logger.warn({ sessionId }, "Checkout session has no shipping address — skipping fulfilment");
     return;
   }
 
-  // Retrieve photo stored before checkout redirect
   const meta = session["metadata"] as Record<string, string> | undefined;
   const photoToken = meta?.["photo_token"] ?? null;
+
   let photoBase64 = "";
   if (photoToken) {
     photoBase64 = (await retrieveAndDeletePhoto(photoToken)) ?? "";
   }
 
-  // Determine SKU — prefer session metadata (set at checkout creation), fall back to line item
   let sku = meta?.["sku"] ?? "";
   if (!sku) {
     const lineItems = session["line_items"] as { data?: unknown[] } | undefined;
@@ -91,10 +87,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   }
 
   if (!sku) {
-    logger.warn(
-      { sessionId },
-      "Could not determine SKU from checkout session — skipping fulfilment",
-    );
+    logger.warn({ sessionId }, "Could not determine SKU — skipping fulfilment");
     return;
   }
 
@@ -104,6 +97,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   const amountPaid = (session["amount_total"] as number | undefined) ?? 0;
   const currency = (session["currency"] as string | undefined) ?? "gbp";
   const bonusCard = amountPaid >= 5000;
+
   const customerName =
     (shippingDetails?.["name"] as string | undefined) ??
     (details?.["name"] as string | undefined) ??
@@ -118,14 +112,13 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     country: (addr["country"] as string | undefined) ?? "GB",
   };
 
-  // Look up a human-readable product name from Stripe metadata/line items
   let productName = sku;
   try {
     const lineItems2 = session["line_items"] as { data?: unknown[] } | undefined;
     const li = lineItems2?.data?.[0] as Record<string, unknown> | undefined;
     const desc = li?.["description"] as string | undefined;
     if (desc) productName = desc;
-  } catch { /* non-fatal */ }
+  } catch {}
 
   await fulfilOrder({
     stripeSessionId: sessionId,
@@ -138,7 +131,6 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     currency,
   });
 
-  // ── Send customer confirmation + admin notification ───────────────────────
   const bolOrderId = await getBolOrderId(sessionId);
   const fulfilmentStatus = bolOrderId ? "auto" : "queued";
 
@@ -182,7 +174,7 @@ async function getBolOrderId(stripeSessionId: string): Promise<string | null> {
   }
 }
 
-// ── Stripe webhook processor ──────────────────────────────────────────────────
+// ── Stripe webhook processor (FINAL, FIXED VERSION) ───────────────────────────
 
 export class WebhookHandlers {
   static async processWebhook(
@@ -190,26 +182,21 @@ export class WebhookHandlers {
     signature: string,
   ): Promise<void> {
     if (!Buffer.isBuffer(payload)) {
-      throw new Error(
-        "STRIPE WEBHOOK ERROR: Payload must be a Buffer. " +
-          "Received type: " +
-          typeof payload +
-          ". " +
-          "This usually means express.json() parsed the body before reaching this handler. " +
-          "FIX: Ensure webhook route is registered BEFORE app.use(express.json()).",
-      );
+      throw new Error("Payload must be a Buffer");
     }
 
-    // Let stripe-replit-sync handle product/price/customer sync
-    const sync = await getStripeSync();
-    await sync.processWebhook(payload, signature);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-    // Parse the event ourselves for fulfilment handling
-    // (signature has already been verified above by StripeSync)
-    const event = JSON.parse(payload.toString()) as {
-      type: string;
-      data: { object: { id: string } };
-    };
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      throw new Error("Invalid Stripe signature: " + (err as Error).message);
+    }
 
     logger.info(
       { type: event.type, objectId: event.data?.object?.id },
@@ -221,7 +208,6 @@ export class WebhookHandlers {
       try {
         await handleCheckoutCompleted(sessionId);
       } catch (err) {
-        // Log but don't throw — Stripe must receive 200 or it will retry
         logger.error(
           { err: err instanceof Error ? err.message : String(err), sessionId },
           "Fulfilment error after checkout.session.completed",
