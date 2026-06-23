@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -7,12 +7,9 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
-  Modal,
   Linking,
   Dimensions,
   Image,
-  Animated,
-  ActivityIndicator,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -21,82 +18,61 @@ import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
 import { useApp, type GalleryEntry } from "@/context/AppContext";
 import { BreedCard } from "@/components/BreedCard";
-import { PUPGRADE_PRODUCT_IDS, purchasePupgrade } from "@/lib/revenuecat";
-import { getGlowup, type GlowupResult } from "@/lib/gemini";
 
 const { width } = Dimensions.get("window");
 
-const BARK_TRANSLATIONS = [
-  "Feed me immediately. This is not a drill. 🍗",
-  "There is a SUSPICIOUS leaf outside. Investigate at once.",
-  "I love you more than squirrels. That's a lot.",
-  "Why are you looking at your phone? Look at ME.",
-  "The postman has disrespected us again. I handled it.",
-  "Walkies? WALKIES? I heard walkies?! LET'S GO.",
-  "That other dog looked at my ball. My ball. MINE.",
-  "I have sat on this spot for 0.3 seconds and need attention.",
+const FACTS = [
+  "A dog's nose print is as unique as a human fingerprint.",
+  "Dogs can smell about 100,000 times better than humans.",
+  "The Basenji is the only breed that doesn't bark — it yodels.",
+  "Greyhounds can reach speeds of up to 45 mph.",
+  "A dog's heart beats between 60 and 140 times per minute.",
+  "Puppies are born blind, deaf, and toothless.",
+  "The oldest known dog lived to 29 years and 5 months.",
+  "Dogs dream, just like humans — you can see their eyes move during REM sleep.",
+  "A dog's sense of smell is so powerful it can detect certain cancers.",
+  "Dalmatians are born completely white — their spots appear as they age.",
 ];
 
-const GLOWUP_STYLES = [
-  { label: "Van Gogh", emoji: "🌻", desc: "Swirling impressionist brushstrokes" },
-  { label: "Watercolour", emoji: "🎨", desc: "Soft pastel wash portrait" },
-  { label: "Neon Pop", emoji: "⚡", desc: "Bold neon graphic art style" },
-  { label: "Pencil Sketch", emoji: "✏️", desc: "Fine charcoal line drawing" },
-  { label: "Studio Portrait", emoji: "📸", desc: "Professional headshot lighting" },
-  { label: "Royal Portrait", emoji: "👑", desc: "17th century oil painting" },
+const HOW_IT_WORKS = [
+  {
+    icon: "camera-outline" as const,
+    title: "Take a photo",
+    body: "Point your camera at any dog — your own, a friend's, or one you meet on a walk.",
+  },
+  {
+    icon: "sparkles" as const,
+    title: "AI identifies the breed",
+    body: "Our AI analyses the photo and identifies the breed within seconds, with a confidence score.",
+  },
+  {
+    icon: "paw-outline" as const,
+    title: "Explore breed facts",
+    body: "Get a full profile — temperament, history, health traits, exercise needs, and more.",
+  },
+  {
+    icon: "albums-outline" as const,
+    title: "Build your pack",
+    body: "Save every dog you scan. Name them, revisit their profiles, and grow your collection.",
+  },
 ];
 
-const BARKOFF_SOUNDS = [
-  { label: "Head Tilt", emoji: "🐕", desc: "High-pitched mystery squeak" },
-  { label: "Freeze", emoji: "🧊", desc: "Ultrasonic attention tone" },
-  { label: "Play Bow", emoji: "🎾", desc: "Puppy excitement chirp" },
-  { label: "Zoomies", emoji: "💨", desc: "Chaotic energy activator" },
-  { label: "Nap Time", emoji: "😴", desc: "Calm, low frequency hum" },
-];
-
-type PupgradeKey = "bark_translator" | "digital_pawsport" | "ai_glowup" | "golden_badge" | "barkoff_pack";
-
-const GIMMICKS: Array<{
-  id: PupgradeKey;
-  title: string;
-  icon: string;
-  description: string;
-  color: string;
-}> = [
+const TIPS = [
   {
-    id: "bark_translator",
-    title: "Bark Translator",
-    icon: "🗣️",
-    description: "AI decodes your dog's barks into hilarious WhatsApp-ready texts.",
-    color: "#FF2D78",
+    icon: "sunny-outline" as const,
+    tip: "Scan in good lighting for the most accurate results.",
   },
   {
-    id: "digital_pawsport",
-    title: "Digital Pawsport",
-    icon: "🆔",
-    description: "A premium ID card for your dog — breed, name, and all their stats.",
-    color: "#00F5FF",
+    icon: "eye-outline" as const,
+    tip: "A clear view of the face gives the best breed match.",
   },
   {
-    id: "ai_glowup",
-    title: "AI Glow-Up",
-    icon: "🎨",
-    description: "Transform your dog's photo into a stunning digital masterpiece.",
-    color: "#B24BF3",
+    icon: "phone-portrait-outline" as const,
+    tip: "Hold the phone steady — blurry photos reduce accuracy.",
   },
   {
-    id: "golden_badge",
-    title: "Golden Bone Badge",
-    icon: "🦴",
-    description: "Show off your VIP dog owner status with a glowing golden badge.",
-    color: "#c9a84c",
-  },
-  {
-    id: "barkoff_pack",
-    title: "The Bark-Off Pack",
-    icon: "🔊",
-    description: "Secret sounds that trigger adorable head-tilts and zoomies.",
-    color: "#00FF9D",
+    icon: "refresh-outline" as const,
+    tip: "Try multiple angles if you're not happy with the first result.",
   },
 ];
 
@@ -109,22 +85,7 @@ export default function GalleryScreen() {
   const isWeb = Platform.OS === "web";
   const topPad = isWeb ? 67 : insets.top;
 
-  const [unlocked, setUnlocked] = useState<Record<PupgradeKey, boolean>>({
-    bark_translator: false,
-    digital_pawsport: false,
-    ai_glowup: false,
-    golden_badge: false,
-    barkoff_pack: false,
-  });
-  const [purchasing, setPurchasing] = useState<PupgradeKey | null>(null);
-  const [activeFeature, setActiveFeature] = useState<PupgradeKey | null>(null);
-  const [barkResult, setBarkResult] = useState("");
-  const [glowupResult, setGlowupResult] = useState<GlowupResult | null>(null);
-  const [glowupLoading, setGlowupLoading] = useState(false);
-  const [glowupStyle, setGlowupStyle] = useState<string | null>(null);
-  const [barkoffActive, setBarkoffActive] = useState<string | null>(null);
-  const [barkoffDone, setBarkoffDone] = useState(false);
-  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const namedCount = gallery.filter((g) => g.dogName).length;
 
   const handlePress = (entry: GalleryEntry) => {
     const cachedKnowledge = knowledgeCache[entry.breed];
@@ -143,116 +104,7 @@ export default function GalleryScreen() {
     ]);
   };
 
-  const handleUnlock = async (id: PupgradeKey, title: string) => {
-    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    if (Platform.OS === "web") {
-      Alert.alert(
-        "Download the App",
-        "Pup-Grade features are unlocked in the That's My Dog! iOS app. Download it free from the App Store.",
-        [
-          { text: "Not Now", style: "cancel" },
-          { text: "App Store", onPress: () => Linking.openURL("https://apps.apple.com/app/id6771118261") },
-        ]
-      );
-      return;
-    }
-    Alert.alert(
-      `Unlock ${title}`,
-      "Get instant access for only £0.99!",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Pay £0.99",
-          onPress: async () => {
-            setPurchasing(id);
-            try {
-              await purchasePupgrade(PUPGRADE_PRODUCT_IDS[id]);
-              setUnlocked((prev) => ({ ...prev, [id]: true }));
-              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-              Alert.alert("Unlocked! 🎉", `${title} is now active in your Pack.`);
-            } catch (e: any) {
-              if (!e?.userCancelled) Alert.alert("Payment failed", e?.message ?? "Please try again.");
-            } finally {
-              setPurchasing(null);
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, { toValue: 1.25, duration: 600, useNativeDriver: Platform.OS !== "web" }),
-        Animated.timing(pulseAnim, { toValue: 1, duration: 600, useNativeDriver: Platform.OS !== "web" }),
-      ])
-    );
-    if (barkoffActive && !barkoffDone) loop.start();
-    else { loop.stop(); pulseAnim.setValue(1); }
-    return () => loop.stop();
-  }, [barkoffActive, barkoffDone]);
-
-  const fireBarkoff = (sound: typeof BARKOFF_SOUNDS[0]) => {
-    if (barkoffActive) return;
-    setBarkoffActive(sound.label);
-    setBarkoffDone(false);
-    if (Platform.OS !== "web") {
-      const patterns: Haptics.ImpactFeedbackStyle[] = [
-        Haptics.ImpactFeedbackStyle.Heavy,
-        Haptics.ImpactFeedbackStyle.Medium,
-        Haptics.ImpactFeedbackStyle.Light,
-      ];
-      let i = 0;
-      const interval = setInterval(() => {
-        Haptics.impactAsync(patterns[i % patterns.length]);
-        i++;
-        if (i >= 5) clearInterval(interval);
-      }, 400);
-    }
-    setTimeout(() => {
-      setBarkoffDone(true);
-      setBarkoffActive(null);
-    }, 3000);
-  };
-
-  const triggerGlowup = async (style: string) => {
-    if (glowupLoading) return;
-    setGlowupStyle(style);
-    setGlowupResult(null);
-    setGlowupLoading(true);
-    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    try {
-      const breed = firstDog?.breed ?? "Dog";
-      const dogName = firstDog ? (gallery[0]?.dogName ?? undefined) : undefined;
-      const result = await getGlowup(breed, style, dogName);
-      setGlowupResult(result);
-    } catch {
-      Alert.alert("Glow-Up failed", "Please check your connection and try again.");
-      setGlowupStyle(null);
-    } finally {
-      setGlowupLoading(false);
-    }
-  };
-
-  const openFeature = (id: PupgradeKey) => {
-    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (id === "bark_translator") {
-      setBarkResult(BARK_TRANSLATIONS[Math.floor(Math.random() * BARK_TRANSLATIONS.length)]);
-    }
-    if (id === "ai_glowup") {
-      setGlowupResult(null);
-      setGlowupStyle(null);
-    }
-    if (id === "barkoff_pack") {
-      setBarkoffActive(null);
-      setBarkoffDone(false);
-    }
-    setActiveFeature(id);
-  };
-
-  const firstDog = gallery[0];
-  const namedCount = gallery.filter((g) => g.dogName).length;
+  const randomFact = FACTS[Math.floor(Math.random() * FACTS.length)];
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -260,33 +112,39 @@ export default function GalleryScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: isWeb ? 34 + insets.bottom : insets.bottom + 100 }}
       >
-        {/* Header */}
+        {/* ── Header ── */}
         <View style={[styles.header, { paddingTop: topPad + 12 }]}>
           <View>
             <Text style={[styles.title, { color: colors.foreground }]}>My Pack</Text>
-            <Text style={[styles.count, { color: colors.mutedForeground }]}>
-              {gallery.length} {gallery.length === 1 ? "dog" : "dogs"}
-              {namedCount > 0 ? ` · ${namedCount} named` : ""}
+            <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
+              {gallery.length === 0
+                ? "No dogs scanned yet"
+                : `${gallery.length} ${gallery.length === 1 ? "dog" : "dogs"}${namedCount > 0 ? ` · ${namedCount} named` : ""}`}
             </Text>
           </View>
-          {unlocked.golden_badge && (
-            <View style={[styles.goldBadge, { backgroundColor: "#c9a84c22", borderColor: "#c9a84c55" }]}>
-              <Text style={{ fontSize: 20 }}>🦴</Text>
-              <Text style={[styles.goldBadgeText, { color: colors.gold }]}>VIP</Text>
-            </View>
-          )}
+          <View style={[styles.pawBadge, { backgroundColor: colors.gold + "22", borderColor: colors.gold + "44" }]}>
+            <Ionicons name="paw" size={20} color={colors.gold} />
+          </View>
         </View>
 
-        {/* Dog gallery grid */}
+        {/* ── Dog Gallery Grid ── */}
         {gallery.length === 0 ? (
-          <View style={styles.empty}>
-            <View style={[styles.emptyIcon, { borderColor: colors.border }]}>
+          <View style={[styles.emptyState, { borderColor: colors.border }]}>
+            <View style={[styles.emptyIconWrap, { borderColor: colors.border }]}>
               <Ionicons name="paw-outline" size={40} color={colors.border} />
             </View>
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Your pack is empty</Text>
-            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-              Scan your dog on the Scanner tab to add them here
+            <Text style={[styles.emptyBody, { color: colors.mutedForeground }]}>
+              Head to the Scanner tab and point your camera at any dog to get started.
             </Text>
+            <TouchableOpacity
+              onPress={() => router.replace("/")}
+              style={[styles.scanNowBtn, { backgroundColor: colors.gold }]}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="camera-outline" size={18} color={colors.navy} />
+              <Text style={[styles.scanNowText, { color: colors.navy }]}>Scan a Dog Now</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.grid}>
@@ -301,262 +159,107 @@ export default function GalleryScreen() {
           </View>
         )}
 
-        {/* Pup-Grade Shop */}
-        <View style={[styles.shopSection, { borderTopColor: colors.border }]}>
-          <View style={styles.shopHeader}>
-            <Text style={{ fontSize: 20 }}>💎</Text>
-            <View>
-              <Text style={[styles.shopTitle, { color: colors.foreground }]}>Pup-Grade Shop</Text>
-              <Text style={[styles.shopSub, { color: colors.mutedForeground }]}>Fun extras · £0.99 each · unlock forever</Text>
-            </View>
+        {gallery.length > 0 && (
+          <Text style={[styles.hintText, { color: colors.mutedForeground }]}>
+            Tap a dog to view their breed profile · Hold to remove
+          </Text>
+        )}
+
+        {/* ── Did You Know ── */}
+        <View style={[styles.factCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.factHeader}>
+            <Ionicons name="bulb-outline" size={16} color={colors.gold} />
+            <Text style={[styles.factLabel, { color: colors.gold }]}>DID YOU KNOW?</Text>
           </View>
+          <Text style={[styles.factText, { color: colors.foreground }]}>{randomFact}</Text>
+        </View>
 
-          {GIMMICKS.map((g) => {
-            const isUnlocked = unlocked[g.id];
-            const isBuying = purchasing === g.id;
-            return (
-              <View key={g.id} style={[styles.gimmickCard, { backgroundColor: colors.card, borderColor: isUnlocked ? g.color + "55" : colors.border }]}>
-                <View style={styles.gimmickTop}>
-                  <View style={[styles.gimmickIconWrap, { backgroundColor: g.color + "18" }]}>
-                    <Text style={styles.gimmickEmoji}>{g.icon}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[styles.gimmickTitle, { color: colors.foreground }]}>
-                      {g.title}{" "}
-                      <Text style={{ fontSize: 14 }}>{isUnlocked ? "✅" : "💎"}</Text>
-                    </Text>
-                    <Text style={[styles.gimmickDesc, { color: colors.mutedForeground }]}>{g.description}</Text>
-                  </View>
-                  {isUnlocked ? (
-                    <TouchableOpacity
-                      onPress={() => openFeature(g.id)}
-                      style={[styles.openBtn, { backgroundColor: g.color }]}
-                    >
-                      <Text style={styles.openBtnText}>Open</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => handleUnlock(g.id, g.title)}
-                      disabled={isBuying}
-                      style={[styles.priceBtn, { borderColor: g.color, backgroundColor: g.color + "18" }]}
-                    >
-                      <Text style={[styles.priceBtnText, { color: g.color }]}>
-                        {isBuying ? "…" : "£0.99"}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
+        {/* ── How It Works ── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>How It Works</Text>
+          <Text style={[styles.sectionBody, { color: colors.mutedForeground }]}>
+            What's Up Dog! uses advanced AI to identify dog breeds from a single photo — no account needed, no data stored.
+          </Text>
+          {HOW_IT_WORKS.map((step, i) => (
+            <View key={i} style={[styles.stepRow, { borderColor: colors.border }]}>
+              <View style={[styles.stepIconWrap, { backgroundColor: colors.gold + "18", borderColor: colors.gold + "33" }]}>
+                <Ionicons name={step.icon} size={22} color={colors.gold} />
               </View>
-            );
-          })}
+              <View style={styles.stepText}>
+                <Text style={[styles.stepTitle, { color: colors.foreground }]}>{step.title}</Text>
+                <Text style={[styles.stepBody, { color: colors.mutedForeground }]}>{step.body}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
 
-          <TouchableOpacity
-            onPress={() => Linking.openURL("https://onjjem.com")}
-            style={[styles.onjjemBtn, { backgroundColor: colors.gold }]}
-          >
-            <Ionicons name="globe-outline" size={18} color={colors.navy} />
-            <Text style={[styles.onjjemBtnText, { color: colors.navy }]}>SHOP AT ONJJEM.COM 🛍️</Text>
+        {/* ── Scanning Tips ── */}
+        <View style={[styles.tipsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Text style={[styles.tipsTitle, { color: colors.foreground }]}>Tips for Better Scans</Text>
+          {TIPS.map((t, i) => (
+            <View key={i} style={styles.tipRow}>
+              <Ionicons name={t.icon} size={16} color={colors.gold} />
+              <Text style={[styles.tipText, { color: colors.mutedForeground }]}>{t.tip}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* ── About the App ── */}
+        <View style={[styles.aboutCard, { backgroundColor: colors.navyMid, borderColor: colors.gold + "33" }]}>
+          <Text style={[styles.aboutLabel, { color: colors.gold }]}>ABOUT WHAT'S UP DOG!</Text>
+          <Text style={[styles.aboutTitle, { color: colors.foreground }]}>Built for dog lovers</Text>
+          <Text style={[styles.aboutBody, { color: colors.mutedForeground }]}>
+            Whether you've spotted an interesting dog on a walk or want to learn more about your own breed, What's Up Dog! gives you instant, accurate breed information at your fingertips.
+          </Text>
+          <Text style={[styles.aboutBody, { color: colors.mutedForeground }]}>
+            Our AI has been trained on thousands of breeds and mixes, covering everything from the most common family pets to rare working breeds from around the world.
+          </Text>
+          <View style={[styles.aboutDivider, { backgroundColor: colors.gold + "33" }]} />
+          <View style={styles.aboutStats}>
+            {[
+              { value: "350+", label: "Breeds recognised" },
+              { value: "AI", label: "Powered scanner" },
+              { value: "Free", label: "No account needed" },
+            ].map((stat, i) => (
+              <View key={i} style={styles.statItem}>
+                <Text style={[styles.statValue, { color: colors.gold }]}>{stat.value}</Text>
+                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* ── Visit ONJJEM ── */}
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://onjjem.com")}
+          style={[styles.onjjemBtn, { backgroundColor: colors.gold }]}
+          activeOpacity={0.85}
+        >
+          <Ionicons name="globe-outline" size={18} color={colors.navy} />
+          <Text style={[styles.onjjemBtnText, { color: colors.navy }]}>SHOP AT ONJJEM.COM 🛍️</Text>
+        </TouchableOpacity>
+
+        {/* ── Legal Footer ── */}
+        <View style={styles.footer}>
+          <TouchableOpacity onPress={() => router.push("/privacy" as any)} activeOpacity={0.7}>
+            <Text style={[styles.footerLink, { color: colors.mutedForeground }]}>Privacy Policy</Text>
+          </TouchableOpacity>
+          <Text style={[styles.footerDot, { color: colors.mutedForeground }]}>·</Text>
+          <TouchableOpacity onPress={() => router.push("/terms" as any)} activeOpacity={0.7}>
+            <Text style={[styles.footerLink, { color: colors.mutedForeground }]}>Terms & Conditions</Text>
           </TouchableOpacity>
         </View>
+        <Text style={[styles.footerCopy, { color: colors.mutedForeground }]}>
+          © 2025 ONJJEM Ltd · What's Up Dog! · All rights reserved
+        </Text>
       </ScrollView>
-
-      {/* Feature Modals */}
-      <Modal visible={activeFeature !== null} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setActiveFeature(null)}>
-        <View style={[styles.modal, { backgroundColor: colors.background }]}>
-          <View style={[styles.modalHandle, { backgroundColor: colors.border }]} />
-          <TouchableOpacity onPress={() => setActiveFeature(null)} style={[styles.modalClose, { backgroundColor: colors.navyMid }]}>
-            <Ionicons name="close" size={20} color={colors.mutedForeground} />
-          </TouchableOpacity>
-
-          {activeFeature === "bark_translator" && (
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              <Text style={styles.modalEmoji}>🗣️</Text>
-              <Text style={[styles.modalTitle, { color: colors.foreground }]}>Bark Translator</Text>
-              <Text style={[styles.modalSub, { color: colors.mutedForeground }]}>What is your dog actually saying?</Text>
-              <View style={[styles.translationBox, { backgroundColor: colors.navyMid, borderColor: "#FF2D7855" }]}>
-                <Text style={[styles.translationText, { color: "#FF2D78" }]}>{barkResult}</Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => setBarkResult(BARK_TRANSLATIONS[Math.floor(Math.random() * BARK_TRANSLATIONS.length)])}
-                style={[styles.featureBtn, { backgroundColor: "#FF2D78" }]}
-              >
-                <Text style={styles.featureBtnText}>Translate Again 🔄</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          )}
-
-          {activeFeature === "digital_pawsport" && (
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              <Text style={styles.modalEmoji}>🆔</Text>
-              <Text style={[styles.modalTitle, { color: colors.foreground }]}>Digital Pawsport</Text>
-              {firstDog ? (
-                <View style={[styles.pawsportCard, { backgroundColor: colors.navyMid, borderColor: "#00F5FF44" }]}>
-                  <View style={styles.pawsportTop}>
-                    {firstDog.uri ? (
-                      <Image source={{ uri: firstDog.uri }} style={styles.pawsportPhoto} resizeMode="cover" />
-                    ) : (
-                      <View style={[styles.pawsportPhoto, { backgroundColor: colors.card, alignItems: "center", justifyContent: "center" }]}>
-                        <Text style={{ fontSize: 32 }}>🐕</Text>
-                      </View>
-                    )}
-                    <View style={{ flex: 1, gap: 4 }}>
-                      <Text style={[styles.pawsportName, { color: "#00F5FF" }]}>{firstDog.dogName || "Unknown"}</Text>
-                      <Text style={[styles.pawsportBreed, { color: colors.foreground }]}>{firstDog.breed}</Text>
-                      {firstDog.isMix && <Text style={[styles.pawsportMix, { color: colors.mutedForeground }]}>Mixed breed</Text>}
-                    </View>
-                  </View>
-                  <View style={[styles.pawsportDivider, { backgroundColor: "#00F5FF22" }]} />
-                  <View style={styles.pawsportRow}>
-                    <Text style={[styles.pawsportLabel, { color: colors.mutedForeground }]}>STATUS</Text>
-                    <Text style={[styles.pawsportValue, { color: "#00FF9D" }]}>Very Good Boy ✅</Text>
-                  </View>
-                  <View style={styles.pawsportRow}>
-                    <Text style={[styles.pawsportLabel, { color: colors.mutedForeground }]}>SCANNED BY</Text>
-                    <Text style={[styles.pawsportValue, { color: colors.foreground }]}>What's Up Dog! AI</Text>
-                  </View>
-                  <View style={styles.pawsportRow}>
-                    <Text style={[styles.pawsportLabel, { color: colors.mutedForeground }]}>PACK</Text>
-                    <Text style={[styles.pawsportValue, { color: colors.gold }]}>{gallery.length} member{gallery.length !== 1 ? "s" : ""}</Text>
-                  </View>
-                  <View style={[styles.pawsportStamp, { borderColor: "#00F5FF44" }]}>
-                    <Text style={[styles.pawsportStampText, { color: "#00F5FF44" }]}>CERTIFIED 🐾</Text>
-                  </View>
-                </View>
-              ) : (
-                <Text style={[styles.modalSub, { color: colors.mutedForeground, textAlign: "center" }]}>
-                  Scan a dog first to generate their Pawsport!
-                </Text>
-              )}
-            </ScrollView>
-          )}
-
-          {activeFeature === "ai_glowup" && (
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              <Text style={styles.modalEmoji}>🎨</Text>
-              <Text style={[styles.modalTitle, { color: colors.foreground }]}>AI Glow-Up</Text>
-              <Text style={[styles.modalSub, { color: colors.mutedForeground }]}>
-                {glowupResult ? glowupResult.title : "Choose a style — AI will paint your dog's portrait"}
-              </Text>
-
-              {glowupResult ? (
-                <View style={{ width: "100%", gap: 12 }}>
-                  <View style={{ flexDirection: "row", gap: 8, justifyContent: "center" }}>
-                    {glowupResult.palette.map((hex, i) => (
-                      <View key={i} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: hex, borderWidth: 2, borderColor: "#ffffff22" }} />
-                    ))}
-                  </View>
-                  <View style={[styles.translationBox, { backgroundColor: colors.navyMid, borderColor: "#B24BF355" }]}>
-                    <Text style={[styles.translationText, { color: "#B24BF3", fontSize: 15, lineHeight: 22 }]}>{glowupResult.vision}</Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => { setGlowupResult(null); setGlowupStyle(null); }}
-                    style={[styles.featureBtn, { backgroundColor: "#B24BF3" }]}
-                  >
-                    <Text style={styles.featureBtnText}>Try Another Style 🎨</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : glowupLoading ? (
-                <View style={{ alignItems: "center", gap: 14, paddingVertical: 30 }}>
-                  <ActivityIndicator size="large" color="#B24BF3" />
-                  <Text style={[styles.modalSub, { color: "#B24BF3" }]}>Painting {glowupStyle} portrait…</Text>
-                </View>
-              ) : (
-                <View style={styles.glowupGrid}>
-                  {GLOWUP_STYLES.map((s) => (
-                    <TouchableOpacity
-                      key={s.label}
-                      onPress={() => triggerGlowup(s.label)}
-                      style={[styles.glowupCard, { backgroundColor: colors.navyMid, borderColor: "#B24BF355" }]}
-                    >
-                      <Text style={{ fontSize: 30 }}>{s.emoji}</Text>
-                      <Text style={[styles.glowupLabel, { color: colors.foreground }]}>{s.label}</Text>
-                      <Text style={[styles.glowupDesc, { color: colors.mutedForeground }]}>{s.desc}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </ScrollView>
-          )}
-
-          {activeFeature === "golden_badge" && (
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              <Text style={styles.modalEmoji}>🦴</Text>
-              <Text style={[styles.modalTitle, { color: colors.foreground }]}>Golden Bone Badge</Text>
-              <View style={[styles.badgeShowcase, { backgroundColor: colors.navyMid, borderColor: "#c9a84c55" }]}>
-                <Text style={{ fontSize: 72 }}>🦴</Text>
-                <Text style={[styles.badgeTitle, { color: colors.gold }]}>VIP Dog Owner</Text>
-                <Text style={[styles.badgeSub, { color: colors.mutedForeground }]}>
-                  Your golden badge is active and displayed on your Pack header.
-                  You're officially a top-tier dog parent. 🐾
-                </Text>
-              </View>
-            </ScrollView>
-          )}
-
-          {activeFeature === "barkoff_pack" && (
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              <Text style={styles.modalEmoji}>🔊</Text>
-              <Text style={[styles.modalTitle, { color: colors.foreground }]}>The Bark-Off Pack</Text>
-              <Text style={[styles.modalSub, { color: colors.mutedForeground }]}>
-                Point your phone at your dog · Tap to transmit
-              </Text>
-
-              {barkoffDone && (
-                <View style={[styles.translationBox, { backgroundColor: colors.navyMid, borderColor: "#00FF9D55" }]}>
-                  <Text style={{ fontSize: 32, textAlign: "center" }}>🐕</Text>
-                  <Text style={[styles.translationText, { color: "#00FF9D", textAlign: "center" }]}>
-                    Transmitted! Watch your dog's reaction…
-                  </Text>
-                </View>
-              )}
-
-              {barkoffActive && !barkoffDone && (
-                <View style={{ alignItems: "center", gap: 10, paddingVertical: 10 }}>
-                  <Animated.Text style={{ fontSize: 48, transform: [{ scale: pulseAnim }] }}>📡</Animated.Text>
-                  <Text style={[styles.modalSub, { color: "#00FF9D" }]}>Transmitting {barkoffActive}…</Text>
-                </View>
-              )}
-
-              <View style={{ gap: 10, width: "100%" }}>
-                {BARKOFF_SOUNDS.map((s) => {
-                  const isActive = barkoffActive === s.label;
-                  return (
-                    <TouchableOpacity
-                      key={s.label}
-                      onPress={() => fireBarkoff(s)}
-                      disabled={!!barkoffActive}
-                      style={[
-                        styles.soundBtn,
-                        {
-                          backgroundColor: isActive ? "#00FF9D18" : colors.navyMid,
-                          borderColor: isActive ? "#00FF9D" : "#00FF9D44",
-                          opacity: barkoffActive && !isActive ? 0.45 : 1,
-                        },
-                      ]}
-                    >
-                      <Text style={{ fontSize: 28 }}>{s.emoji}</Text>
-                      <View style={{ flex: 1 }}>
-                        <Text style={[styles.soundLabel, { color: isActive ? "#00FF9D" : colors.foreground }]}>{s.label}</Text>
-                        <Text style={[styles.soundDesc, { color: colors.mutedForeground }]}>{s.desc}</Text>
-                      </View>
-                      {isActive
-                        ? <ActivityIndicator size="small" color="#00FF9D" />
-                        : <Ionicons name="play-circle" size={28} color="#00FF9D" />
-                      }
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </ScrollView>
-          )}
-        </View>
-      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+
   header: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -565,18 +268,16 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   title: { fontSize: 30, fontFamily: "Inter_700Bold", letterSpacing: -0.3 },
-  count: { fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 2 },
-  goldBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+  subtitle: { fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 2 },
+  pawBadge: {
+    width: 40,
+    height: 40,
     borderRadius: 20,
     borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 4,
   },
-  goldBadgeText: { fontSize: 12, fontFamily: "Inter_700Bold", letterSpacing: 1 },
 
   grid: {
     flexDirection: "row",
@@ -585,172 +286,148 @@ const styles = StyleSheet.create({
     gap: 0,
   },
 
-  empty: {
+  emptyState: {
     alignItems: "center",
-    gap: 14,
-    paddingHorizontal: 40,
-    paddingVertical: 32,
-  },
-  emptyIcon: {
-    width: 80, height: 80, borderRadius: 40, borderWidth: 2,
-    alignItems: "center", justifyContent: "center",
-  },
-  emptyTitle: { fontSize: 20, fontFamily: "Inter_600SemiBold" },
-  emptyText: { fontSize: 14, fontFamily: "Inter_400Regular", textAlign: "center", lineHeight: 21 },
-
-  shopSection: {
-    marginTop: 24,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    paddingTop: 24,
-    paddingHorizontal: 16,
+    marginHorizontal: 20,
+    marginTop: 8,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderRadius: 20,
+    borderStyle: "dashed",
+    paddingVertical: 36,
+    paddingHorizontal: 28,
     gap: 12,
   },
-  shopHeader: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 4 },
-  shopTitle: { fontSize: 22, fontFamily: "Inter_700Bold", letterSpacing: -0.3 },
-  shopSub: { fontSize: 12, fontFamily: "Inter_400Regular", marginTop: 2 },
+  emptyIconWrap: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 4,
+  },
+  emptyTitle: { fontSize: 20, fontFamily: "Inter_600SemiBold", textAlign: "center" },
+  emptyBody: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+    lineHeight: 21,
+  },
+  scanNowBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 14,
+    marginTop: 4,
+  },
+  scanNowText: { fontSize: 15, fontFamily: "Inter_700Bold" },
 
-  gimmickCard: {
+  hintText: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+    marginTop: 8,
+    marginBottom: 4,
+  },
+
+  factCard: {
+    marginHorizontal: 16,
+    marginTop: 20,
     borderRadius: 16,
     borderWidth: 1,
-    padding: 14,
+    padding: 16,
+    gap: 8,
   },
-  gimmickTop: { flexDirection: "row", alignItems: "center", gap: 12 },
-  gimmickIconWrap: {
-    width: 52, height: 52, borderRadius: 14,
-    alignItems: "center", justifyContent: "center",
+  factHeader: { flexDirection: "row", alignItems: "center", gap: 6 },
+  factLabel: { fontSize: 10, fontFamily: "Inter_700Bold", letterSpacing: 1.5 },
+  factText: { fontSize: 14, fontFamily: "Inter_400Regular", lineHeight: 21 },
+
+  section: {
+    marginTop: 28,
+    paddingHorizontal: 20,
+    gap: 0,
   },
-  gimmickEmoji: { fontSize: 26 },
-  gimmickTitle: { fontSize: 15, fontFamily: "Inter_700Bold", letterSpacing: -0.1 },
-  gimmickDesc: { fontSize: 12, fontFamily: "Inter_400Regular", lineHeight: 17, marginTop: 3 },
-  priceBtn: {
-    paddingHorizontal: 12, paddingVertical: 7,
-    borderRadius: 20, borderWidth: 1.5,
-    alignItems: "center", justifyContent: "center",
-    minWidth: 48,
+  sectionTitle: { fontSize: 20, fontFamily: "Inter_700Bold", letterSpacing: -0.2, marginBottom: 6 },
+  sectionBody: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 20, marginBottom: 18 },
+
+  stepRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 14,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  priceBtnText: { fontSize: 14, fontFamily: "Inter_700Bold" },
-  openBtn: {
-    paddingHorizontal: 14, paddingVertical: 7,
+  stepIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  stepText: { flex: 1, paddingTop: 2, gap: 3 },
+  stepTitle: { fontSize: 15, fontFamily: "Inter_700Bold" },
+  stepBody: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 19 },
+
+  tipsCard: {
+    marginHorizontal: 16,
+    marginTop: 24,
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 18,
+    gap: 12,
+  },
+  tipsTitle: { fontSize: 16, fontFamily: "Inter_700Bold", marginBottom: 2 },
+  tipRow: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
+  tipText: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 19, flex: 1 },
+
+  aboutCard: {
+    marginHorizontal: 16,
+    marginTop: 24,
     borderRadius: 20,
-    alignItems: "center", justifyContent: "center",
+    borderWidth: 1,
+    padding: 22,
+    gap: 10,
   },
-  openBtnText: { fontSize: 13, fontFamily: "Inter_700Bold", color: "#0a0e1a" },
+  aboutLabel: { fontSize: 10, fontFamily: "Inter_700Bold", letterSpacing: 2 },
+  aboutTitle: { fontSize: 20, fontFamily: "Inter_700Bold", letterSpacing: -0.2 },
+  aboutBody: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 20 },
+  aboutDivider: { height: 1, marginVertical: 4 },
+  aboutStats: { flexDirection: "row", justifyContent: "space-around" },
+  statItem: { alignItems: "center", gap: 3 },
+  statValue: { fontSize: 20, fontFamily: "Inter_700Bold" },
+  statLabel: { fontSize: 11, fontFamily: "Inter_400Regular", textAlign: "center" },
 
   onjjemBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
+    marginHorizontal: 16,
+    marginTop: 24,
     paddingVertical: 16,
     borderRadius: 50,
-    marginTop: 8,
-    marginBottom: 8,
   },
   onjjemBtnText: { fontSize: 15, fontFamily: "Inter_700Bold" },
 
-  modal: { flex: 1, paddingTop: 12 },
-  modalHandle: { width: 36, height: 4, borderRadius: 2, alignSelf: "center", marginBottom: 8 },
-  modalClose: {
-    position: "absolute", top: 16, right: 16,
-    width: 32, height: 32, borderRadius: 16,
-    alignItems: "center", justifyContent: "center", zIndex: 10,
-  },
-  modalContent: {
+  footer: {
+    flexDirection: "row",
     alignItems: "center",
-    padding: 24,
-    paddingTop: 40,
-    gap: 16,
-    width: "100%",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: 28,
   },
-  modalEmoji: { fontSize: 56 },
-  modalTitle: { fontSize: 24, fontFamily: "Inter_700Bold", letterSpacing: -0.3, textAlign: "center" },
-  modalSub: { fontSize: 14, fontFamily: "Inter_400Regular", lineHeight: 21 },
-
-  translationBox: {
-    width: "100%",
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 20,
-  },
-  translationText: {
-    fontSize: 18,
-    fontFamily: "Inter_600SemiBold",
-    lineHeight: 26,
+  footerLink: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  footerDot: { fontSize: 12 },
+  footerCopy: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
     textAlign: "center",
+    marginTop: 6,
+    marginBottom: 8,
   },
-  featureBtn: {
-    paddingVertical: 14,
-    paddingHorizontal: 28,
-    borderRadius: 14,
-    alignItems: "center",
-    width: "100%",
-  },
-  featureBtnText: { fontSize: 15, fontFamily: "Inter_700Bold", color: "#fff" },
-
-  pawsportCard: {
-    width: "100%",
-    borderRadius: 20,
-    borderWidth: 1.5,
-    padding: 20,
-    gap: 12,
-    position: "relative",
-    overflow: "hidden",
-  },
-  pawsportTop: { flexDirection: "row", alignItems: "center", gap: 14 },
-  pawsportPhoto: { width: 72, height: 72, borderRadius: 14 },
-  pawsportName: { fontSize: 22, fontFamily: "Inter_700Bold", letterSpacing: -0.3 },
-  pawsportBreed: { fontSize: 14, fontFamily: "Inter_500Medium" },
-  pawsportMix: { fontSize: 12, fontFamily: "Inter_400Regular" },
-  pawsportDivider: { height: 1, width: "100%" },
-  pawsportRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  pawsportLabel: { fontSize: 10, fontFamily: "Inter_600SemiBold", letterSpacing: 1, textTransform: "uppercase" },
-  pawsportValue: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
-  pawsportStamp: {
-    position: "absolute", bottom: 16, right: 16,
-    borderWidth: 2, borderRadius: 8,
-    paddingHorizontal: 8, paddingVertical: 4,
-    transform: [{ rotate: "-12deg" }],
-  },
-  pawsportStampText: { fontSize: 11, fontFamily: "Inter_700Bold", letterSpacing: 2 },
-
-  glowupGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    width: "100%",
-    justifyContent: "space-between",
-  },
-  glowupCard: {
-    width: (width - 60) / 2,
-    borderRadius: 14,
-    borderWidth: 1,
-    padding: 14,
-    alignItems: "center",
-    gap: 6,
-  },
-  glowupLabel: { fontSize: 14, fontFamily: "Inter_700Bold" },
-  glowupDesc: { fontSize: 11, fontFamily: "Inter_400Regular", textAlign: "center", lineHeight: 15 },
-
-  badgeShowcase: {
-    width: "100%",
-    borderRadius: 20,
-    borderWidth: 1.5,
-    padding: 32,
-    alignItems: "center",
-    gap: 12,
-  },
-  badgeTitle: { fontSize: 22, fontFamily: "Inter_700Bold" },
-  badgeSub: { fontSize: 14, fontFamily: "Inter_400Regular", textAlign: "center", lineHeight: 21 },
-
-  soundBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    padding: 16,
-    borderRadius: 16,
-    borderWidth: 1,
-    width: "100%",
-  },
-  soundLabel: { fontSize: 15, fontFamily: "Inter_700Bold" },
-  soundDesc: { fontSize: 12, fontFamily: "Inter_400Regular", marginTop: 2 },
 });
