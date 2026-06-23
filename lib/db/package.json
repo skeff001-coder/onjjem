@@ -19,7 +19,12 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+<<<<<<< HEAD
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10"
+=======
+    "@types/pg": "^8.18.0",
+    "drizzle-kit": "^0.31.9"
+>>>>>>> b109f47ebaf9b84ca071eddfc4cb8f901854ddcc
   }
 }

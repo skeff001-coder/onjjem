@@ -1,4 +1,5 @@
 uploads = []
+<<<<<<< HEAD
 outputs = []
 
 [[generated]]
@@ -18,3 +19,659 @@ id = "Iroi63NrTzPLvTbpNFyyx"
 uri = "file://artifacts/canine-encyclopedia/assets/images/world_map.png"
 type = "image"
 title = "breed origins world map"
+=======
+
+[[generated]]
+id = "EaWpjHgoh8CEXN55Wqw6q"
+uri = "file://artifacts/owens-photofix/assets/images/icon.png"
+type = "image"
+title = "onjjem luxury icon"
+
+[[generated]]
+id = "Ebjb8mylKIKo22H-x8iEV"
+uri = "file://artifacts/owens-photofix/assets/leather/wallet_ai.png"
+type = "image"
+title = "luxury leather mens wallet studio"
+
+[[generated]]
+id = "I6S5U0MKZsPfdgwTITZzf"
+uri = "file://artifacts/owens-photofix/assets/gallery/portrait_before.png"
+type = "image"
+title = "1920s damaged portrait before"
+
+[[generated]]
+id = "zWONlXfweNnkpN-GWHa2s"
+uri = "file://artifacts/owens-photofix/assets/gallery/portrait_after.png"
+type = "image"
+title = "1920s restored portrait after"
+
+[[generated]]
+id = "ViX5ndykAFfv-uL4SidYl"
+uri = "file://artifacts/owens-photofix/assets/gallery/wedding_before.png"
+type = "image"
+title = "faded wedding photo before"
+
+[[generated]]
+id = "ruTjSRpEMqzAQ0ghPoMy-"
+uri = "file://artifacts/owens-photofix/assets/gallery/wedding_after.png"
+type = "image"
+title = "colorized wedding photo after"
+
+[[generated]]
+id = "sEMglzd6VwGFSVPwifHsf"
+uri = "file://artifacts/owens-photofix/assets/gallery/childhood_before.png"
+type = "image"
+title = "torn childhood photo before"
+
+[[generated]]
+id = "T6RInhGQ3bxu-_8FJKCJ8"
+uri = "file://artifacts/owens-photofix/assets/gallery/grandma_before.png"
+type = "image"
+title = "blurry grandma portrait before"
+
+[[generated]]
+id = "Al-sGJDXlgxuvB41Dlgmf"
+uri = "file://artifacts/owens-photofix/assets/gallery/grandma_after.png"
+type = "image"
+title = "sharpened grandma portrait after"
+
+[[generated]]
+id = "vNvpn54te47JJSv5pXdgJ"
+uri = "file://artifacts/owens-photofix/assets/gallery/victorian_before.png"
+type = "image"
+title = "Victorian daguerreotype before"
+
+[[generated]]
+id = "mrrJJd2JbDh8uhyyi_qYJ"
+uri = "file://artifacts/owens-photofix/assets/gallery/victorian_after.png"
+type = "image"
+title = "Victorian portrait colorized after"
+
+[[generated]]
+id = "frh7GKidLqCWRnnciQ_r8"
+uri = "file://attached_assets/icon_option_a.png"
+type = "image"
+title = "luxury gold O navy icon option A"
+
+[[generated]]
+id = "50R80OqOGeG4aquzuRNVJ"
+uri = "file://attached_assets/icon_option_b.png"
+type = "image"
+title = "before after split photo restoration icon option B"
+
+[[generated]]
+id = "E5nrn456FMwHhblts9dxO"
+uri = "file://attached_assets/icon_refined.png"
+type = "image"
+title = "refined app icon gold O on before/after split restoration photo"
+
+[[generated]]
+id = "4_oIVt71ODkpHrGs9zm56"
+uri = "file://artifacts/owens-photofix/assets/gallery/childhood_after.png"
+type = "image"
+title = "childhood after restored color"
+
+[[generated]]
+id = "WjAfPeMAnFIMEPhz0w4CU"
+uri = "file://artifacts/owens-photofix/assets/gallery/mural_anniversary.png"
+type = "image"
+title = "anniversary wall mural function room"
+
+[[generated]]
+id = "f5mFqxSwJVCWK_kR3izwj"
+uri = "file://artifacts/owens-photofix/assets/gallery/mural_living_room.png"
+type = "image"
+title = "victorian portrait living room mural"
+
+[[generated]]
+id = "EcEYMFiD_is-RPqbPbnjm"
+uri = "file://artifacts/owens-photofix/assets/gallery/mural_hallway.png"
+type = "image"
+title = "family portrait hallway mural"
+
+[[generated]]
+id = "NMRRLJ3Upa2pTfGY9thyV"
+uri = "file://documents/assets/product-canvas-print.png"
+type = "image"
+title = "heritage canvas print"
+
+[[generated]]
+id = "PnSVVn-WlC4LINTPetiPO"
+uri = "file://documents/assets/product-cushion.png"
+type = "image"
+title = "photo cushion"
+
+[[generated]]
+id = "05aj8xlQOUsjE0p0vDgY4"
+uri = "file://documents/assets/product-mug.png"
+type = "image"
+title = "heritage mug"
+
+[[generated]]
+id = "0AwmjlpjZtz0iAbpm_mF6"
+uri = "file://documents/assets/product-jigsaw.png"
+type = "image"
+title = "heritage jigsaw"
+
+[[generated]]
+id = "tWsftXXG80xq_A6V-blra"
+uri = "file://documents/assets/product-wall-mural.png"
+type = "image"
+title = "wall mural"
+
+[[generated]]
+id = "OkHO0bHNXejlICLIno1XY"
+uri = "file://documents/assets/product-gift-collection.png"
+type = "image"
+title = "anniversary gift collection"
+
+[[generated]]
+id = "atSgLhJZj1oBw0PMyt40E"
+uri = "file://documents/assets/product-fine-art-print.png"
+type = "image"
+title = "fine art portrait print"
+
+[[generated]]
+id = "4AhFcpeOM_064xrLTegA0"
+uri = "file://documents/assets/product-tea-towel.png"
+type = "image"
+title = "photo tea towel"
+
+[[generated]]
+id = "WhuaqitlKPZRnl6x9jvPC"
+uri = "file://attached_assets/product_images/jubilee-collection.png"
+type = "image"
+title = "jubilee collection gift set"
+
+[[generated]]
+id = "7v5_Csxe-9VI46Hh7oOQj"
+uri = "file://attached_assets/product_images/cushion-velvet.png"
+type = "image"
+title = "velvet photo cushion"
+
+[[generated]]
+id = "Yr5-cdJoFuKPKh3X9g6VM"
+uri = "file://attached_assets/product_images/blanket-fleece.png"
+type = "image"
+title = "fleece photo blanket"
+
+[[generated]]
+id = "ofvWLr7j2ow338Z9rtbSi"
+uri = "file://attached_assets/product_images/jigsaw-puzzle.png"
+type = "image"
+title = "photo jigsaw puzzle"
+
+[[generated]]
+id = "B2IXe4T3TVW_XNjM-yRcE"
+uri = "file://attached_assets/product_images/canvas-print.png"
+type = "image"
+title = "gallery canvas print"
+
+[[generated]]
+id = "Mg05zneM5UUzvG8pstoL-"
+uri = "file://attached_assets/product_images/photo-mug.png"
+type = "image"
+title = "photo mug"
+
+[[generated]]
+id = "UbiTaiNV5y1RiMPhv1ViI"
+uri = "file://attached_assets/product_images/tea-set.png"
+type = "image"
+title = "bone china tea set"
+
+[[generated]]
+id = "6H5BhxCw25zyZxvOPIgjF"
+uri = "file://attached_assets/product_images/duvet-cover.png"
+type = "image"
+title = "photo duvet cover"
+
+[[generated]]
+id = "6pxTfDVmX2kmmeA4djd4l"
+uri = "file://attached_assets/product_images/wall-mural.png"
+type = "image"
+title = "wall mural"
+
+[[generated]]
+id = "3Rlrnwf5meRM4bC56yBbG"
+uri = "file://attached_assets/product_images/leather-tote.png"
+type = "image"
+title = "leather tote bag"
+
+[[generated]]
+id = "3eiGXJOeFVmEi7MCcnWea"
+uri = "file://attached_assets/product_images/silk-scarf.png"
+type = "image"
+title = "silk scarf"
+
+[[generated]]
+id = "Oug1vte-cancrqO44vaiR"
+uri = "file://attached_assets/product_images/organic-duvet.png"
+type = "image"
+title = "organic cotton duvet"
+
+[[generated]]
+id = "D30gAzzRFRSbEM6x1Fx8F"
+uri = "file://attached_assets/product_images/photo-calendar.png"
+type = "image"
+title = "photo calendar"
+
+[[generated]]
+id = "6nV5C03yBVMkzISBI8qT3"
+uri = "file://attached_assets/product_images/storage-trunk.png"
+type = "image"
+title = "heritage storage trunk"
+
+[[generated]]
+id = "zJ9weG_7ffYQzXfBn8no2"
+uri = "file://attached_assets/product_images/footstool.png"
+type = "image"
+title = "photo footstool"
+
+[[generated]]
+id = "Ni4Najizg0R-AVr869IZI"
+uri = "file://attached_assets/product_images/custom-rug.png"
+type = "image"
+title = "custom photo rug"
+
+[[generated]]
+id = "0C__RnA5sgNQRvOJpJINo"
+uri = "file://attached_assets/product_images/leather-wallet.png"
+type = "image"
+title = "leather wallet"
+
+[[generated]]
+id = "_MF8EkpnLIK6SIeYaYrKV"
+uri = "file://attached_assets/product_images/wooden-jigsaw.png"
+type = "image"
+title = "wooden jigsaw puzzle"
+
+[[generated]]
+id = "-IjQp6Be-jKoUuoT8faM0"
+uri = "file://attached_assets/product_images/heart-ornament.png"
+type = "image"
+title = "heart ornament"
+
+[[generated]]
+id = "4LplqIyV-RkGJkhQ98PWl"
+uri = "file://attached_assets/product_images/velvet-throw.png"
+type = "image"
+title = "velvet photo throw"
+
+[[generated]]
+id = "A0SNtDaMNrhd0yQjMLNmv"
+uri = "file://attached_assets/product_images/photo-apron.png"
+type = "image"
+title = "photo apron"
+
+[[generated]]
+id = "whtuM-B1BeQ9l7sGTNskY"
+uri = "file://attached_assets/product_images/chopping-board.png"
+type = "image"
+title = "photo chopping board"
+
+[[generated]]
+id = "SiXLx7sS-C8yZQQW1_zbf"
+uri = "file://attached_assets/product_images/travel-mug.png"
+type = "image"
+title = "thermal travel mug"
+
+[[generated]]
+id = "yBYHMegoN_0cAdkaPhxn2"
+uri = "file://attached_assets/product_images/tea-caddy.png"
+type = "image"
+title = "photo tea caddy"
+
+[[generated]]
+id = "fDuYWxdAEQ5pSOfRGlsU2"
+uri = "file://attached_assets/product_images/photo-umbrella.png"
+type = "image"
+title = "photo umbrella"
+
+[[generated]]
+id = "bcFX9yIV04TTRbRCOGTpw"
+uri = "file://attached_assets/product_images/cufflinks.png"
+type = "image"
+title = "heritage cufflinks"
+
+[[generated]]
+id = "r4cpnMxUd1vGENSfMK3CQ"
+uri = "file://attached_assets/product_images/face-socks.png"
+type = "image"
+title = "face socks"
+
+[[generated]]
+id = "0ryr6TG3oBKReofMidAp-"
+uri = "file://attached_assets/product_images/gift-wrap.png"
+type = "image"
+title = "gift wrap roll"
+
+[[generated]]
+id = "I-Cze4_pg0rcndrslKOOV"
+uri = "file://attached_assets/product_images/glass-vase.png"
+type = "image"
+title = "glass photo vase"
+
+[[generated]]
+id = "8LOOVTc4NRLXJ0FOs5cQP"
+uri = "file://attached_assets/product_images/scented-candle.png"
+type = "image"
+title = "scented photo candle"
+
+[[generated]]
+id = "dHeFYoTm58dkd4Rhfw_wI"
+uri = "file://attached_assets/product_images/mouse-mat.png"
+type = "image"
+title = "photo mouse mat"
+
+[[generated]]
+id = "RBL9gPVGGUb4qmHoRJVeJ"
+uri = "file://attached_assets/product_images/notebook.png"
+type = "image"
+title = "handmade notebook"
+
+[[generated]]
+id = "dF7qs1ig0YRB0r-N3kNm3"
+uri = "file://attached_assets/product_images/drawstring-bag.png"
+type = "image"
+title = "drawstring bag"
+
+[[generated]]
+id = "46v5U3OLKfsdNWse2hM8A"
+uri = "file://attached_assets/product_images/fabric-labels.png"
+type = "image"
+title = "fabric labels"
+
+[[generated]]
+id = "iNcdR0V2r284BiNA7rv_z"
+uri = "file://attached_assets/product_images/leather-keyring.png"
+type = "image"
+title = "leather keyring"
+
+[[generated]]
+id = "-djeNujHNKG5aJzd6XvtQ"
+uri = "file://attached_assets/product_images/tea-towel.png"
+type = "image"
+title = "tea towel"
+
+[[generated]]
+id = "bllI6K7ULM0nPedBZq8FG"
+uri = "file://attached_assets/product_images/sunglasses.png"
+type = "image"
+title = "photo sunglasses"
+
+[[generated]]
+id = "jy8u2hCw0emH63Smy_d6h"
+uri = "file://attached_assets/product_images/hair-brush.png"
+type = "image"
+title = "photo hair brush"
+
+[[generated]]
+id = "WAfr_KC3WouyL0AybO3iQ"
+uri = "file://attached_assets/product_images/hip-flask.png"
+type = "image"
+title = "hip flask"
+
+[[generated]]
+id = "AiYPVHghVAYTk1y1rfcCw"
+uri = "file://attached_assets/product_images/junior-sports.png"
+type = "image"
+title = "junior sports bedroom"
+
+[[generated]]
+id = "_gw5IxAfm79_m9zD-XHQS"
+uri = "file://attached_assets/product_images/dinner-plates.png"
+type = "image"
+title = "photo dinner plates"
+
+[[generated]]
+id = "r3bSsySBBEsKNwM7zQrwq"
+uri = "file://attached_assets/product_images/beer-coasters.png"
+type = "image"
+title = "beer coasters"
+
+[[generated]]
+id = "JMob8HOSM3eZuQ9i-zmlP"
+uri = "file://attached_assets/product_images/oven-gloves.png"
+type = "image"
+title = "double oven gloves"
+
+[[generated]]
+id = "tTaq2hxpbqsKWG-sLVcPe"
+uri = "file://attached_assets/product_images/table-runner.png"
+type = "image"
+title = "photo table runner"
+
+[[generated]]
+id = "XWBwQoyRRw6mocmSAFhJB"
+uri = "file://attached_assets/product_images/wine-cooler.png"
+type = "image"
+title = "wine bottle cooler"
+
+[[generated]]
+id = "4nMwIkq3EWIN3HNS7ItiG"
+uri = "file://attached_assets/product_images/snack-bowl.png"
+type = "image"
+title = "photo snack bowl"
+
+[[generated]]
+id = "cVPPeCpE8UTRrpN0BXA1C"
+uri = "file://attached_assets/product_images/stickers.png"
+type = "image"
+title = "photo stickers"
+
+[[generated]]
+id = "1Fzyx4fLotpH92QdS-h4q"
+uri = "file://attached_assets/product_images/fridge-magnets.png"
+type = "image"
+title = "fridge magnets"
+
+[[generated]]
+id = "5lfac5GYY6NwKfEJnnS1j"
+uri = "file://attached_assets/product_images/leather-purse.png"
+type = "image"
+title = "leather purse"
+
+[[generated]]
+id = "FE8k5z4mmy8R3trxb42lK"
+uri = "file://attached_assets/product_images/wrap-belt.png"
+type = "image"
+title = "photo wrap belt"
+
+[[generated]]
+id = "Q2R29-X9qCBQcAR3e8QoY"
+uri = "file://artifacts/onjjem-website/public/products/photo-mugs.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "YIgCJLd8ed_PZ4-ng9uFC"
+uri = "file://artifacts/onjjem-website/public/products/tea-towels.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "4fRK1-Hpa7oW7eMwLuDoj"
+uri = "file://artifacts/onjjem-website/public/products/wooden-coasters.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "sDxcnddmWUbV_uQmLYHou"
+uri = "file://artifacts/whatsupdog/src/assets/hero.png"
+type = "image"
+title = "cheeky dog stealing sock"
+
+[[generated]]
+id = "SGB1VLdqVh-LSwNuiTc5V"
+uri = "file://artifacts/whatsupdog/src/assets/shirt1.png"
+type = "image"
+title = "t-shirt mockup ask me"
+
+[[generated]]
+id = "UTcCAFww_9tdXTWvsmvQU"
+uri = "file://artifacts/whatsupdog/src/assets/hoodie.png"
+type = "image"
+title = "hoodie mockup introvert"
+
+[[generated]]
+id = "p6Gy6J5cB4ppVS1ZOgfF_"
+uri = "file://artifacts/whatsupdog/src/assets/mug.png"
+type = "image"
+title = "mug mockup dog hair"
+
+[[generated]]
+id = "-kRl95u1-SnBkdx61w0tp"
+uri = "file://artifacts/whatsupdog/src/assets/about.png"
+type = "image"
+title = "pile of cute dogs"
+
+[[generated]]
+id = "iri43pYBAW0zw3dWUFcnW"
+uri = "file://artifacts/onjjem-website/public/products/ipad-case.png"
+type = "image"
+title = "iPad case product photo"
+
+[[generated]]
+id = "YfrRrVUEKoRs6CYTQGHhO"
+uri = "file://artifacts/onjjem-website/public/products/folio-wallet.png"
+type = "image"
+title = "Folio wallet case product photo"
+
+[[generated]]
+id = "EZHUzjCt4bgXy-b7wMCSi"
+uri = "file://artifacts/onjjem-website/public/products/tough-case.png"
+type = "image"
+title = "Tough phone case product photo"
+
+[[generated]]
+id = "KZpqH_GO_gaW3nKSrJm2w"
+uri = "file://artifacts/onjjem-website/public/products/glow-poster.png"
+type = "image"
+title = "Glow in the dark poster product photo"
+
+[[outputs]]
+id = "j6Xw8ttANGRRRiH61iMoB"
+uri = "file://artifacts/owens-photofix/assets/images/icon.png"
+type = "image"
+title = "ONJJEM App Icon — 1024×1024px"
+
+[[outputs]]
+id = "qpQ7hHs7X8LJs4kMX3-sl"
+uri = "file://artifacts/owens-photofix/assets/leather/wallet.jpg"
+type = "image"
+title = "Men's Luxury Leather Wallet — ANTORINI, off-white"
+
+[[outputs]]
+id = "r9Q9ouAvlObky58xHBEQ1"
+uri = "file://attached_assets/icon_option_a.png"
+type = "image"
+title = "Icon Option A (original first draft)"
+
+[[outputs]]
+id = "ERx-89G4QGl2G0DBH2M3C"
+uri = "file://attached_assets/icon_option_b.png"
+type = "image"
+title = "Icon Option B (second variant)"
+
+[[outputs]]
+id = "3JuNP48gqEVZ-anlPslVL"
+uri = "file://attached_assets/icon_refined.png"
+type = "image"
+title = "Refined Icon — Gold O on Before & After Restoration Background"
+
+[[outputs]]
+id = "BuP_Dn9Kva8IjN-NqHqcH"
+uri = "file://expo-go-qr.png"
+type = "image"
+title = "Expo Go QR Code — ONJJEM"
+
+[[outputs]]
+id = "tvVvnPlaRi8htwDdF2Z3C"
+uri = "file://artifacts/owens-photofix/app-store-listing.md"
+type = "text"
+title = "App Store Listing — ready to paste into App Store Connect"
+
+[[outputs]]
+id = "xtTRt1WYbchmrDl-pAWkB"
+uri = "file://screenshots/home-screen.jpg"
+type = "image"
+title = "Home Screen"
+
+[[outputs]]
+id = "RqEUHlTUbXz5ne8shAsLW"
+uri = "file://screenshots/gift-shop.jpg"
+type = "image"
+title = "Gift Shop"
+
+[[outputs]]
+id = "dnR10STGMTBHetyeHQFA6"
+uri = "file://screenshots/canvas-prints.jpg"
+type = "image"
+title = "Canvas Prints"
+
+[[outputs]]
+id = "Ke_jYKSxcDB1LylJIKf-4"
+uri = "file://screenshots/gallery.jpg"
+type = "image"
+title = "Masterpiece Gallery"
+
+[[outputs]]
+id = "fcjalT7BpA5GAj7OxVoSN"
+uri = "file://artifacts/owens-photofix/assets/images/icon_refined.png"
+type = "image"
+title = "Icon Refined (final version — currently in the app)"
+
+[[outputs]]
+id = "qQ5dMyLnQxEr_H9K3DsYZ"
+uri = "file://attached_assets/expo-qr.png"
+type = "image"
+title = "Scan with Expo Go on your iPhone"
+
+[[outputs]]
+id = "mkSg-9t2q3IiooozXuFH_"
+uri = "file://artifacts/owens-photofix/assets/one_photo_enhancement_iap.png"
+type = "image"
+title = "One Photo Enhancement — IAP Image (1024×1024)"
+
+[[outputs]]
+id = "A47GfWJf8oqwGnESqkzmP"
+uri = "file://artifacts/owens-photofix/assets/SubscriptionKey_LKZCCH49F7.tar.gz"
+type = "unspecified"
+title = "App Store Connect P8 Key (extract to get .p8 file)"
+
+[[outputs]]
+id = "Ju4s4rfN8A2h9vYAgTwVz"
+uri = "file://attached_assets/product_images.tar.gz"
+type = "unspecified"
+title = "All 50 Product Images (tar.gz)"
+
+[[outputs]]
+id = "N2fF5Ef0YeXaTmcRn9GXN"
+uri = "file://exports/onjjem-shop-setup-checklist.md"
+type = "text"
+title = "ONJJEM Shop — Setup Checklist (Shopify + Contrado)"
+
+[[outputs]]
+id = "ZuOnGGjvpIlMiYsV5Q5d6"
+uri = "file://artifacts/onjjem-video/public/audio/bg_music.mp3"
+type = "audio"
+title = "background music"
+
+[[outputs]]
+id = "qWTxqusPRFknzu9-ny0SI"
+uri = "file://artifacts/onjjem-video/public/images/byte2eat.jpg"
+type = "image"
+title = "delicious gourmet burger and fries professional food photography dark background"
+
+[[outputs]]
+id = "lX1sY2M5lu_ZsHy2Z4kHh"
+uri = "file://artifacts/onjjem-video/public/images/effortless.jpg"
+type = "image"
+title = "athletic person running fitness cinematic lighting urban"
+
+[[outputs]]
+id = "v5-D7bBq92-3CIx-rTuF1"
+uri = "file://artifacts/onjjem-video/public/images/whatsupdog.jpg"
+type = "image"
+title = "cool dog wearing clothes looking at camera urban setting"
+>>>>>>> b109f47ebaf9b84ca071eddfc4cb8f901854ddcc

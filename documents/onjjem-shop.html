@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ONJJEM — Photo Restoration Shop. Coming soon with a brand-new curated collection." />
+  <title>Shop — ONJJEM Photo Restoration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #0E0C08;
+      --bg2:     #1C1A14;
+      --bg3:     #12100B;
+      --card:    #1A1610;
+      --gold:    #C9960C;
+      --gold-lt: #F5D78E;
+      --gold-dk: #A67C00;
+      --cream:   #FAF7F2;
+      --c55:     rgba(250,247,242,0.55);
+      --c35:     rgba(250,247,242,0.35);
+      --gb:      rgba(201,150,12,0.28);
+      --gbg:     rgba(201,150,12,0.10);
+      --r:       16px;
+      --r-lg:    20px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--cream); overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
+    .gold-bar { height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold)); }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 14px 40px; background: rgba(14,12,8,0.96); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(201,150,12,0.18); }
+    .nav-brand { font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px,3.5vw,44px); letter-spacing: clamp(5px,0.8vw,10px); background: linear-gradient(135deg,#7A5500,var(--gold) 25%,var(--gold-lt) 50%,#E8B84B 72%,var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none; }
+    .nav-back { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: rgba(250,247,242,0.45); text-decoration: none; transition: color 0.2s; }
+    .nav-back:hover { color: var(--gold); }
+    @media (max-width: 640px) { nav { padding: 12px 18px; } }
+
+    /* SHOP HEADER */
+    .shop-header { background: var(--bg3); border-bottom: 1px solid rgba(201,150,12,0.14); padding: 52px 24px 40px; text-align: center; }
+    .shop-eyebrow { display: inline-flex; align-items: center; gap: 7px; background: var(--gbg); border: 1px solid rgba(201,150,12,0.3); color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 40px; margin-bottom: 18px; }
+    .shop-title { font-family: 'Cinzel', serif; font-size: clamp(44px,7vw,88px); letter-spacing: clamp(5px,1.2vw,14px); font-weight: 700; background: linear-gradient(160deg,#5C3A00 0%,#C9960C 12%,#F5E098 40%,#E8B84B 62%,#C9960C 82%,#7A5500 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 0 rgba(80,40,0,0.95)) drop-shadow(4px 4px 0 rgba(60,30,0,0.75)) drop-shadow(6px 6px 0 rgba(40,20,0,0.5)) drop-shadow(0 14px 32px rgba(201,150,12,0.45)); line-height: 1; margin-bottom: 12px; }
+    .shop-sub { font-family: 'Playfair Display', serif; font-size: clamp(13px,1.6vw,18px); color: var(--gold-lt); font-style: italic; font-weight: 400; letter-spacing: 1.5px; margin-bottom: 16px; text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
+    .shop-desc { font-size: 14px; color: var(--c55); max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+    /* BLANK STATE */
+    .blank-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 64px 24px; text-align: center; }
+    .blank-icon { font-size: 56px; margin-bottom: 20px; }
+    .blank-title { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 600; color: var(--cream); margin-bottom: 12px; }
+    .blank-sub { font-size: 14px; color: var(--c55); max-width: 420px; line-height: 1.7; margin-bottom: 28px; }
+    .blank-cta { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg,var(--gold-dk),var(--gold)); color: var(--bg); font-size: 13px; font-weight: 700; padding: 12px 24px; border-radius: 40px; text-decoration: none; border: none; cursor: pointer; }
+    .blank-cta:hover { opacity: 0.85; }
+
+    footer { background: var(--bg); border-top: 1px solid rgba(201,150,12,0.12); padding: 48px 40px 32px; margin-top: auto; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 10px; background: linear-gradient(135deg, var(--gold-dk), var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-tagline { font-size: 11px; color: rgba(250,247,242,0.28); letter-spacing: 1.5px; font-family: 'Cinzel', serif; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; justify-content: center; }
+    .footer-links a { font-size: 11px; color: rgba(250,247,242,0.3); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { font-size: 10px; color: rgba(250,247,242,0.18); }
+    @media (max-width: 640px) { footer { padding: 36px 20px 24px; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/">ONJJEM</a>
+  <a class="nav-back" href="/">← Back to Home</a>
+</nav>
+
+<div class="shop-header">
+  <div class="shop-eyebrow">✦ &nbsp;ONJJEM Shop</div>
+  <div class="shop-title">The Shop</div>
+  <div class="shop-sub">Our new curated collection is being prepared</div>
+  <p class="shop-desc">We're curating a brand-new selection of products that you can order directly from your restored photo — automatically printed and shipped to you with zero manual work.</p>
+</div>
+
+<div class="blank-state">
+  <div class="blank-icon">🎨</div>
+  <div class="blank-title">New Collection Coming Soon</div>
+  <div class="blank-sub">We're building a fresh product line with our new print partner. Once it's ready, you'll be able to choose your product, upload your restored photo, pay securely, and receive it at your door — all automatically, with no emailing or manual work required.</div>
+  <a class="blank-cta" href="/">Go Back to Restore Your Photo →</a>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">ONJJEM</div>
+    <div class="footer-tagline">Bringing your Gems of Love to Life</div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <div class="footer-copy">© ONJJEM. All rights reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>

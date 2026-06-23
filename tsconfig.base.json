@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "isolatedModules": true,
+<<<<<<< HEAD
     "lib": ["es2022"],
+=======
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+>>>>>>> b109f47ebaf9b84ca071eddfc4cb8f901854ddcc
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmitOnError": true,

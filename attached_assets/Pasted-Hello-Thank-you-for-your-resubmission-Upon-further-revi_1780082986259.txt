@@ -1,0 +1,111 @@
+Hello,
+
+Thank you for your resubmission. Upon further review, we identified additional issues that need your attention. See below for more information.
+
+If you have any questions, we are here to help. Reply to this message in App Store Connect and let us know.
+
+Review Environment
+Submission ID: 24b7d6e3-5671-4dab-a03f-693790aa6d05
+Review date: May 29, 2026
+Review Device: iPad Air 11-inch (M3)
+Version reviewed: 1.0 (35)
+
+Guideline 5.1.1(i) - Legal - Privacy - Data Collection and Storage
+
+Issue Description
+
+We noticed the app collects and uses face data but does not include a privacy policy or the provided privacy policy link is not functional. Specifically, the current link led to a non-functioning page.
+
+To protect the user's security and privacy, developers must provide privacy policies that thoroughly explain their app's data collection and storage practices.
+
+Next Steps
+
+To resolve this issue, navigate to the App Privacy section for this app in App Store Connect and provide a functional link to your privacy policy. Ensure the privacy policy includes all the required information described in guideline 5.1.1(i).
+
+Guideline 3.1.2(c) - Business - Payments - Subscriptions
+Issue Description
+
+The submission still did not include all the required information for apps offering auto-renewable subscriptions.
+
+The following information needs to be included within the app: a functional link to the privacy policy. Specifically, the current link led to a non-functioning page.
+
+You can use SubscriptionStoreView to easily include all of the required information in the app's purchase flow.
+
+The following information needs to be included in the App Store metadata: a functional link to the privacy policy in the Privacy Policy field in App Store Connect. Specifically, the current link led to a non-functioning page.
+
+Next Steps
+
+Update the app and App Store metadata to include the information specified above.
+
+Once the app and metadata includes all of the required information, or if they already do, reply to this message with a screen recording to confirm. Include this information in the Notes field of the App Review Information section in App Store Connect for future submissions.
+
+Guideline 2.1(b) - Performance - App Completeness
+Issue Description
+
+In-app purchase products associated with the app version submitted for review, such as ONJJEM Pro Annual, could not be found in the submitted binary. 
+
+Next Steps
+
+If these In-App Purchase products are not intended to be available at this time, remove them from App Store Connect before resubmitting.
+
+If these In-App Purchase products are intended to be available in the app, complete these steps:
+
+1. Ensure the products are active and that StoreKit is implemented in the app. If not, submit a new binary with these changes.
+2. Resubmit any In-App Purchase products in the Developer Action Required state. You must edit the detail information or cancel the request to change the detail information before they can be reviewed again.
+3. Test your In-App Purchase products in the sandbox environment using the Sandbox Apple Account configured in App Store Connect to confirm they are active, correctly implemented, and completing successfully before resubmitting.
+
+After completing these steps, resubmit the app for review and attach a screen recording captured on a physical device in the Notes field of the App Review Information section in App Store Connect. The recording must: 
+
+- Begin from the Home Screen, launch the app, and demonstrate the complete user flow through the app's core features using the demo account you provided in App Review Information. 
+- Show a successful sandbox purchase demonstrating that the In-App Purchase products are active and completing as expected
+- Demonstrate all other purchase flows to access paid digital goods or services 
+
+Resources
+
+- Learn how to implement In-App Purchase in the app in the In-App Purchase Programming Guide.
+- Learn more about offering In-App Purchases in App Store Connect Help.
+- Learn more about testing In-App Purchases in the sandbox environment.
+Guideline 2.1(a) - Performance - App Completeness
+Issue Description
+
+The app exhibited one or more bugs that would negatively impact users.
+
+Bug description: The app displayed an error when we attempted to restore a photo.
+
+Review device details:
+
+- Device type: iPad Air 11-inch (M3) 
+- OS version: iPadOS 26.5
+- Internet Connection: Active
+
+Next Steps
+
+Test the app on supported devices to identify and resolve bugs and stability issues before submitting for review.
+
+If the bug cannot be reproduced, try the following:
+
+- For new apps, uninstall all previous versions of the app from a device, then install and follow the steps to reproduce.
+- For app updates, install the new version as an update to the previous version, then follow the steps to reproduce.
+
+Note that users expect apps they download to function on all the devices where they are available. For example, apps that may be downloaded onto iPad devices should function as expected for iPad users. 
+
+Resources
+
+- For information about testing apps and preparing them for review, see Testing a Release Build.
+- To learn about troubleshooting networking issues, see Networking Overview.
+
+
+Support
+- Reply to this message in your preferred language if you need assistance. If you need additional support, use the Contact Us module.
+- Consult with fellow developers and Apple engineers on the Apple Developer Forums.
+- Request an App Review Appointment at Meet with Apple to discuss your app's review. Appointments subject to availability during your local business hours on Tuesdays and Thursdays.
+- Provide feedback on this message and your review experience by completing a short survey.
+
+Request a phone call from App Review
+
+At your request, we can arrange for an Apple Representative to call you within the next three to five business days to discuss your App Review issue.
+
+Request a call to discuss your app's review
+
+owen skeffingtonToday 5:25 PM
+https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/

@@ -1,0 +1,278 @@
+/*
+  ONJJEM — Shopify Theme CSS
+  ──────────────────────────
+  HOW TO APPLY:
+  1. Go to your Shopify Admin → Online Store → Themes
+  2. Click "Customise" on your active theme
+  3. At the bottom left click "Theme settings"
+  4. Scroll down to "Custom CSS" and paste everything below
+  5. Click Save
+
+  FONTS (paste this into Shopify Admin → Themes → Edit code →
+  layout/theme.liquid, inside the <head> tag):
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+*/
+
+/* ── COLOUR VARIABLES ── */
+:root {
+  --bg:      #0E0C08;
+  --bg2:     #1C1A14;
+  --card:    #1A1610;
+  --gold:    #C9960C;
+  --gold-lt: #F5D78E;
+  --gold-dk: #A67C00;
+  --cream:   #FAF7F2;
+  --muted:   rgba(250,247,242,0.55);
+  --border:  rgba(201,150,12,0.25);
+}
+
+/* ── BASE ── */
+body,
+.shopify-section,
+main {
+  background-color: var(--bg) !important;
+  color: var(--cream) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* ── HEADER / NAV ── */
+header,
+.header,
+.site-header,
+.header__wrapper {
+  background: rgba(14,12,8,0.96) !important;
+  border-bottom: 1px solid var(--border) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.header__heading-link,
+.header__menu-item,
+nav a,
+.header a {
+  color: var(--cream) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+
+.header__heading-link:hover,
+.header__menu-item:hover,
+nav a:hover {
+  color: var(--gold) !important;
+}
+
+/* Store name / logo text */
+.header__heading,
+.site-header__logo {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 36px !important;
+  letter-spacing: 8px !important;
+  background: linear-gradient(135deg, #7A5500, var(--gold) 30%, var(--gold-lt) 55%, var(--gold)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* ── PRODUCT CARDS ── */
+.card,
+.card-wrapper,
+.product-card,
+.card__inner {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+}
+
+.card:hover,
+.card-wrapper:hover {
+  border-color: var(--gold) !important;
+  transform: translateY(-2px) !important;
+  transition: all 0.2s ease !important;
+}
+
+.card__heading,
+.card__heading a,
+.product-card__title {
+  font-family: 'Playfair Display', serif !important;
+  color: var(--cream) !important;
+  font-size: 16px !important;
+}
+
+.price,
+.price__regular,
+.price-item,
+.card__price {
+  color: var(--gold-lt) !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+}
+
+/* ── BUTTONS ── */
+.button,
+.btn,
+button[type="submit"],
+.product-form__submit,
+.cart__checkout-button {
+  background: linear-gradient(135deg, #8B6200, var(--gold), var(--gold-lt), var(--gold)) !important;
+  color: var(--bg) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  border: none !important;
+  border-radius: 50px !important;
+  padding: 14px 28px !important;
+  box-shadow: 0 8px 24px rgba(201,150,12,0.35) !important;
+  cursor: pointer !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.button:hover,
+.btn:hover,
+button[type="submit"]:hover,
+.product-form__submit:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 32px rgba(201,150,12,0.5) !important;
+}
+
+/* Secondary / outline buttons */
+.button--secondary,
+.btn--secondary {
+  background: transparent !important;
+  border: 1px solid var(--border) !important;
+  color: var(--cream) !important;
+  box-shadow: none !important;
+}
+
+/* ── PRODUCT PAGE ── */
+.product__title,
+h1.product__title {
+  font-family: 'Playfair Display', serif !important;
+  color: var(--cream) !important;
+  font-size: clamp(24px, 3vw, 38px) !important;
+}
+
+.product__description,
+.product-description {
+  color: var(--muted) !important;
+  line-height: 1.7 !important;
+  font-size: 15px !important;
+}
+
+.product__price,
+.product-price {
+  color: var(--gold-lt) !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+}
+
+/* ── CART ── */
+.cart-item,
+.cart__items,
+.cart-drawer {
+  background: var(--bg2) !important;
+  border-color: var(--border) !important;
+  color: var(--cream) !important;
+}
+
+.cart-item__name,
+.cart-item__title {
+  font-family: 'Playfair Display', serif !important;
+  color: var(--cream) !important;
+}
+
+.totals__total-value,
+.cart__total {
+  color: var(--gold-lt) !important;
+  font-weight: 700 !important;
+}
+
+/* ── INPUTS & SELECTS ── */
+input,
+select,
+textarea,
+.field__input,
+.select__select {
+  background: var(--bg2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--cream) !important;
+  border-radius: 8px !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--gold) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(201,150,12,0.2) !important;
+}
+
+/* ── FOOTER ── */
+footer,
+.footer,
+.site-footer {
+  background: var(--bg) !important;
+  border-top: 1px solid var(--border) !important;
+  color: var(--muted) !important;
+}
+
+footer a,
+.footer a {
+  color: var(--muted) !important;
+}
+
+footer a:hover,
+.footer a:hover {
+  color: var(--gold) !important;
+}
+
+/* ── PAGE HEADINGS ── */
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif !important;
+  color: var(--cream) !important;
+}
+
+/* ── COLLECTION / SECTION TITLES ── */
+.collection__title,
+.section-header h2,
+.featured-collection h2 {
+  font-family: 'Playfair Display', serif !important;
+  color: var(--cream) !important;
+}
+
+/* ── BREADCRUMBS ── */
+.breadcrumb,
+nav.breadcrumb a {
+  color: var(--muted) !important;
+  font-size: 11px !important;
+}
+
+/* ── BADGES / TAGS ── */
+.badge,
+.product-badge {
+  background: rgba(201,150,12,0.15) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--gold-lt) !important;
+  border-radius: 20px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+}
+
+/* ── SCROLLBAR (Chrome/Edge) ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold-dk); border-radius: 3px; }

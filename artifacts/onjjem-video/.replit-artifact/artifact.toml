@@ -1,0 +1,31 @@
+kind = "video"
+previewPath = "/onjjem-video/"
+title = "ONJJEM Shop Advertisement"
+version = "1.0.0"
+id = "artifacts/onjjem-video"
+router = "path"
+
+[[integratedSkills]]
+name = "video-js"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/onjjem-video/" ]
+localPort = 25416
+
+[services.development]
+run = "pnpm --filter @workspace/onjjem-video run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/onjjem-video", "run", "build" ]
+publicDir = "artifacts/onjjem-video/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25416"
+BASE_PATH = "/onjjem-video/"

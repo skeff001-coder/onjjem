@@ -1,0 +1,44 @@
+AppleToday 3:05 AM
+Hello,
+
+The issues we previously identified still need your attention.
+
+If you have any questions, we are here to help. Reply to this message in App Store Connect and let us know.
+
+Review Environment
+Submission ID: 8881f6c8-474d-474c-8fa0-553e451d322a
+Review date: May 28, 2026
+Review Device: iPhone 17 Pro Max and iPad Air 11-inch (M3)
+Version reviewed: 1.0 (33)
+
+Guideline 5.1.1(i) - Legal - Privacy - Data Collection and Storage
+
+Issue Description
+
+We noticed the app still includes features and functionality that use face data but the provided privacy policy does not include the following required information: 
+
+- An explicit statement that face data is not retained. 
+
+To protect the user's security and privacy, developers must provide privacy policies that thoroughly explain their app's data collection and storage practices.
+
+Next Steps
+
+To resolve this issue, update your privacy policy to include all the required information and then provide a link to your updated privacy policy in the App Privacy section for this app in App Store Connect. If your privacy policy already includes this information, respond to this message with the relevant sections quoted in your reply.
+
+Guideline 2.1(b) - Information Needed
+
+We have started the review of the app, but we are still not able to continue because we cannot locate the In-App Purchases, such as ONJJEM Pro Annual, within the app at this time.
+
+Next Steps
+
+To help us proceed with the review of the app, please reply to this message providing the steps for locating the In-App Purchases in the app.
+
+Note that In-App Purchases are reviewed in an Apple-provided sandbox environment. Make sure they have been appropriately configured for review in the Apple-provided sandbox environment.
+
+If you are restricting access to In-App Purchases based on factors such as storefront or device configurations, please include this information in your reply along with steps to enable the In-App Purchases for our review. 
+
+Additionally, note that the Account Holder must accept the Paid Apps Agreement in the Business section of App Store Connect before paid In-App Purchases will function.
+
+Support
+- Reply to this message in your preferred language if you need assistance. If you need additional support, use the Contact Us module.
+- Consult with fellow developers and Apple engineers on the Apple Developer Forums.

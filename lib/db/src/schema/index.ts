@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Export your models here. Add one export per file
 // export * from "./posts";
 //
@@ -18,3 +19,6 @@
 //   export type Post = typeof postsTable.$inferSelect;
 
 export {}
+=======
+export {};
+>>>>>>> b109f47ebaf9b84ca071eddfc4cb8f901854ddcc

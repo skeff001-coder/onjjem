@@ -4,6 +4,16 @@
       "eas": {
         "projectId": "e4b0d15e-3254-475e-91ce-8da7284ee720"
       }
+<<<<<<< HEAD
+=======
+      "apiUrl": "https://onjjem-production-5ef8.up.railway.app",
+    },
+    "ios": {
+      "bundleIdentifier": "com.skeff001.workspace",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+>>>>>>> b109f47ebaf9b84ca071eddfc4cb8f901854ddcc
     }
   }
 }

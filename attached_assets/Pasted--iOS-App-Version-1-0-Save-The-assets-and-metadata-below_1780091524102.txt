@@ -1,0 +1,135 @@
+
+iOS App Version 1.0
+Save
+The assets and metadata below appear on your app’s product page, when users install your app, and will be used for web engine search results once you release your app.
+
+English (U.K.)
+?
+Previews and Screenshots
+?
+Adding accurate screenshots of your app on the newest devices can help you represent the app's user experience. Keep in mind that we'll use these screenshots for all display sizes and localizations. Screenshots are only required for iOS apps, and only the first 3 will be used on the app installation sheets.
+
+iPhone
+iPad
+Apple Watch
+View All Sizes in Media Manager
+
+iPhone
+6.5" Display
+
+
+
+
+
+
+0 of 3 App Previews
+
+3 of 10 Screenshots
+
+Choose File
+
+Delete All
+
+Promotional Text
+?
+Restore old, blurry, and black-and-white photos with AI. Bring your memories back to life in seconds.
+69
+
+Description
+?
+ONJJEM restores your old, blurry, and black-and-white photographs into stunning, sharp, full-colour images using cutting-edge AI.
+
+PERFECT FOR:
+• Reviving faded family heirlooms
+• Sharpening blurry holiday snaps
+• Bringing colour to vintage black-and-white photos
+• Restoring damaged or low-resolution images
+• Preserving precious memories for future generations
+
+TWO POWERFUL TOOLS:
+• Sharpen — Fix blurry or low-resolution photos with AI super-resolution
+• Colourise — Add natural, realistic colour to old black-and-white photographs
+
+HOW IT WORKS:
+1. Pick a photo from your library
+2. Choose Sharpen or Colourise
+3. Wait a moment while our AI works its magic
+4. Save the restored image or share it directly to WhatsApp, Messages, or anywhere else
+
+PREMIUM RESTORATION:
+Unlock unlimited restorations with an ONJJEM subscription. Cancel anytime.
+
+PRIVACY:
+Your photos are processed securely and never stored. We respect your privacy completely.
+
+Transform your memories with ONJJEM Photo Restoration today.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+2,926
+
+Keywords
+?
+photo,restore,sharpen,colourise,colorize,blurry,old,vintage,AI,enhance,restoration
+18
+
+Support URL
+?
+https://sites.google.com/view/onjjem-help/home
+Marketing URL
+?
+https://onjjem.com
+Version
+?
+1.0
+Copyright
+?
+© 2026 Owen Skeffington
+177
+
+Routing App Coverage File
+?
+No file chosen
+Choose File
+
+App Clip
+
+iMessage App
+?
+Screenshots are only required for apps using the Messages framework. Learn More
+
+View All Sizes in Media Manager
+
+
+iPhone
+6.5" Display
+
+iPad
+13" Display
+Drag up to 10 screenshots here.
+
+(1242 × 2688px, 2688 × 1242px, 1284 × 2778px or 2778 × 1284px)
+
+0 of 10 Screenshots
+
+Choose File
+
+Delete All
+
+Build
+Build
+Version
+Has App Clip
+36
+1.0.28
+No
+Included Assets
+
+
+App Icon
+
+In-App Purchases and Subscriptions
+Select the in-app purchases or subscriptions you want to add to this app version.
+
+(Optional)
+
+Game Center
