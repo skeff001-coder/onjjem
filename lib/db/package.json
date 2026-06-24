@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "@workspace/db",
   "version": "0.0.0",
   "private": true,
@@ -12,19 +12,16 @@
     "push-force": "drizzle-kit push --force --config ./drizzle.config.ts"
   },
   "dependencies": {
-    "drizzle-orm": "catalog:",
+    "drizzle-orm": "^0.30.0",
     "drizzle-zod": "^0.8.3",
     "pg": "^8.20.0",
-    "zod": "catalog:"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
-<<<<<<< HEAD
+    "@types/node": "^20.0.0",
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10"
-=======
-    "@types/pg": "^8.18.0",
-    "drizzle-kit": "^0.31.9"
->>>>>>> b109f47ebaf9b84ca071eddfc4cb8f901854ddcc
   }
 }
+
+

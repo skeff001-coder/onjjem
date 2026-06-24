@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "@workspace/mockup-sandbox",
   "version": "2.0.0",
   "type": "module",
@@ -34,11 +34,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
-<<<<<<< HEAD
     "@radix-ui/react-toast": "^1.2.15",
-=======
-    "@radix-ui/react-toast": "^1.2.7",
->>>>>>> b109f47ebaf9b84ca071eddfc4cb8f901854ddcc
     "@radix-ui/react-toggle": "^1.1.10",
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
@@ -61,15 +57,9 @@
     "lucide-react": "catalog:",
     "next-themes": "^0.4.6",
     "react": "catalog:",
-<<<<<<< HEAD
     "react-day-picker": "^9.14.0",
     "react-dom": "catalog:",
     "react-hook-form": "^7.75.0",
-=======
-    "react-day-picker": "^9.11.1",
-    "react-dom": "catalog:",
-    "react-hook-form": "^7.66.0",
->>>>>>> b109f47ebaf9b84ca071eddfc4cb8f901854ddcc
     "react-resizable-panels": "^2.1.9",
     "recharts": "^2.15.4",
     "sonner": "^2.0.7",
@@ -82,3 +72,4 @@
     "zod": "catalog:"
   }
 }
+

@@ -1,3 +1,4 @@
 ﻿packages:
-  - 'artifacts/*'
+  - 'artifacts/canine-encyclopedia'
+  - 'artifacts/api-server'
   - 'lib/*'
