@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- v2026-06-02 -->
-  <meta name="description" content="ONJJEM — Restore your family memories with Cinema-Grade AI. Sharpen blurry photos, colourize black-and-white images. Order as luxury canvas prints, jigsaws, cushions and more." />
-  <title>ONJJEM — Cinema-Grade AI Photo Restoration</title>
+  <meta name="description" content="ONJJEM — Turn your favourite photos into beautiful gifts. Upload any picture and we print it on premium canvas, framed prints, cushions, mugs, jigsaws and more. Made in Britain, delivered to your door." />
+  <title>ONJJEM — Personalised Photo Gifts, Printed in Britain</title>
   <script src="https://js.stripe.com/v3/"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -72,7 +72,7 @@
     .hero-panel-foot-tag { font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); background: var(--gbg); padding: 3px 9px; border-radius: 20px; border: 1px solid var(--gb); }
     .hero-center { display: flex; flex-direction: column; align-items: center; text-align: center; }
     .hero-eyebrow-pill { display: inline-flex; align-items: center; gap: 7px; background: var(--gbg); border: 1px solid rgba(201,150,12,0.35); color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 7px 16px; border-radius: 40px; margin-bottom: 22px; }
-    .hero-onjjem { font-family: 'Cinzel', serif; font-size: clamp(64px,10vw,128px); letter-spacing: clamp(8px,1.8vw,20px); font-weight: 700; background: linear-gradient(160deg,#5C3A00 0%,#C9960C 12%,#F5E098 40%,#E8B84B 62%,#C9960C 82%,#7A5500 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 0 rgba(80,40,0,0.95)) drop-shadow(4px 4px 0 rgba(60,30,0,0.75)) drop-shadow(6px 6px 0 rgba(40,20,0,0.5)) drop-shadow(0 14px 32px rgba(201,150,12,0.45)); line-height: 1; margin-bottom: 14px; }
+    .hero-onjjem { font-family: 'Cinzel', serif; font-size: clamp(80px,14vw,180px); letter-spacing: clamp(12px,3vw,36px); font-weight: 700; background: linear-gradient(160deg,#5C3A00 0%,#C9960C 12%,#F5E098 40%,#E8B84B 62%,#C9960C 82%,#7A5500 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(3px 3px 0 rgba(80,40,0,0.95)) drop-shadow(6px 6px 0 rgba(60,30,0,0.85)) drop-shadow(9px 9px 0 rgba(40,20,0,0.65)) drop-shadow(12px 12px 0 rgba(30,15,0,0.4)) drop-shadow(0 20px 48px rgba(201,150,12,0.55)); line-height: 1; margin-bottom: 14px; }
     .hero-tagline { font-family: 'Playfair Display', serif; font-size: clamp(13px,1.8vw,19px); font-style: italic; font-weight: 400; color: var(--gold-lt); letter-spacing: 1.5px; margin-bottom: 6px; text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
     .hero-gems { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 20px; }
     .hero-gems span { font-size: 9px; color: rgba(201,150,12,0.7); }
@@ -330,540 +330,181 @@
     @media (max-width: 640px) { footer { padding: 36px 20px 24px; } }
 
     .section { padding: 88px 24px; max-width: 1100px; margin: 0 auto; }
+  
+    /* SHIMMER on hero */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 30%, rgba(201,150,12,0.06) 38%, rgba(201,150,12,0.12) 50%, rgba(201,150,12,0.06) 62%, transparent 70%);
+      background-size: 200% 100%;
+      animation: shimmer 6s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero > * { position: relative; z-index: 2; }
+
+  
+    /* Floating gift icons in hero */
+    .float-gift {
+      position: absolute;
+      font-size: 28px;
+      opacity: 0.12;
+      animation: floatUp 12s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.08; }
+      50% { transform: translateY(-40px) rotate(15deg); opacity: 0.18; }
+    }
+
+  
+    /* HERO MARQUEE */
+    .hero-marquee-wrap {
+      width: 100%;
+      max-width: 700px;
+      overflow: hidden;
+      margin-top: 12px;
+      border-top: 1px solid rgba(201,150,12,0.25);
+      border-bottom: 1px solid rgba(201,150,12,0.25);
+      padding: 14px 0;
+    }
+    .hero-marquee {
+      display: flex;
+      gap: 60px;
+      white-space: nowrap;
+      animation: heroMarq 18s linear infinite;
+    }
+    .hero-marquee span {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(15px,2.2vw,22px);
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @keyframes heroMarq {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
   </style>
 </head>
 <body>
 
 <nav>
-  <a class="nav-brand" href="/">ONJJEM</a>
+  
   <ul class="nav-links">
-    <li><a href="#tool">Try Free</a></li>
-    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#gifts">Gifts</a></li>
+    <li><a href="#reviews">Reviews</a></li>
     <li><a href="#how">How It Works</a></li>
     <li><a href="/shop" target="_blank" rel="noopener">Shop</a></li>
-    <li><a href="#pricing-top">Pricing</a></li>
-    <li><a href="#tool" class="nav-cta">Restore Now</a></li>
+    <li><a href="/shop" target="_blank" rel="noopener" class="nav-cta">Shop Gifts</a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
-  <div class="hero-layout">
-    <div class="hero-panel">
-      <div class="gold-bar"></div>
-      <div class="hero-panel-slot">
-        <img src="/api/gallery/wedding_before.png" alt="Wedding photo before restoration" loading="eager" />
-        <span class="hero-panel-lbl before">Before</span>
-      </div>
-      <div style="height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
-      <div class="hero-panel-slot">
-        <img src="/api/gallery/wedding_after.png" alt="Wedding photo after restoration" loading="eager" />
-        <span class="hero-panel-lbl after">After</span>
-      </div>
-      <div class="hero-panel-foot">
-        <span class="hero-panel-foot-name">Wedding Day</span>
-        <span class="hero-panel-foot-tag">Colourised</span>
-      </div>
-    </div>
+
+    <div class="float-gift" style="top:15%;left:8%;animation-delay:0s;">🖼️</div>
+    <div class="float-gift" style="top:45%;right:5%;animation-delay:2s;font-size:24px;">☕</div>
+    <div class="float-gift" style="bottom:20%;left:15%;animation-delay:4s;">🧩</div>
+    <div class="float-gift" style="top:25%;right:18%;animation-delay:6s;font-size:32px;">🎁</div>
+    <div class="float-gift" style="bottom:35%;right:12%;animation-delay:8s;">🛋️</div>
+
+  <div class="hero-layout" style="grid-template-columns:1fr;max-width:800px;">
+    
     <div class="hero-center">
-      <div class="hero-eyebrow-pill">✦ &nbsp;Britain's Premier Photo Restoration Studio · London</div>
       <div class="hero-onjjem">ONJJEM</div>
-      <div class="hero-tagline">Masters of Photographic Restoration &amp; Specialist Consultants</div>
-      <div class="hero-gems">
-        <span>💎</span><span style="font-size:7px;opacity:0.5">◆</span>
-        <span>✦</span><span style="font-size:7px;opacity:0.5">◆</span>
-        <span>💎</span>
+      <div class="hero-marquee-wrap">
+        <div class="hero-marquee">
+          <span>✦ Personalised Photo Gifts · Made in Britain ✦</span>
+          <span>💎 Luxury Keepsakes · Crafted With Care 💎</span>
+          <span>✦ Personalised Photo Gifts · Made in Britain ✦</span>
+          <span>💎 Luxury Keepsakes · Crafted With Care 💎</span>
+        </div>
       </div>
-      <a href="#gallery" class="hero-gallery-btn">
-        <span class="hero-gallery-gem">◆</span>
-        <span>The Art of Restoration &nbsp;·&nbsp; Masterpiece Gallery</span>
-        <span class="hero-gallery-arrow">›</span>
-      </a>
-      <p class="hero-sub">Your faded, blurry, or black-and-white photographs restored to cinematic perfection — then crafted into museum-quality prints, canvases and heirloom keepsakes by our London master artisans.</p>
+      <p class="hero-sub" style="margin-top:28px;font-family:'Playfair Display',serif;font-size:clamp(16px,2vw,21px);font-style:italic;color:var(--gold-lt);letter-spacing:0.5px;">Your memories, beautifully crafted into luxury gifts.</p>
       <div class="hero-buttons">
-        <a href="#tool" class="btn-primary"><span>✦</span> Restore a Photo Free</a>
-        <a href="/shop" target="_blank" rel="noopener" class="btn-secondary"><span>🎁</span> Shop Gifts</a>
+        <a href="/shop" target="_blank" rel="noopener" class="btn-primary"><span>✦</span> Create Your Gift</a>
+        <a href="#gifts" class="btn-secondary"><span>💎</span> Explore the Collection</a>
       </div>
       <div class="scroll-hint">
         <div class="scroll-line"></div>
         <span>Scroll</span>
       </div>
     </div>
-    <div class="hero-panel">
-      <div class="gold-bar"></div>
-      <div class="hero-panel-slot">
-        <img src="/api/gallery/victorian_before.png" alt="Victorian portrait before restoration" loading="eager" />
-        <span class="hero-panel-lbl before">Before</span>
-      </div>
-      <div style="height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
-      <div class="hero-panel-slot">
-        <img src="/api/gallery/victorian_after.png" alt="Victorian portrait after restoration" loading="eager" />
-        <span class="hero-panel-lbl after">After</span>
-      </div>
-      <div class="hero-panel-foot">
-        <span class="hero-panel-foot-name">Victorian Era</span>
-        <span class="hero-panel-foot-tag">Colourised</span>
-      </div>
-    </div>
+    
   </div>
 </section>
 
 <!-- TRUST BAR -->
 <div class="trust-bar">
   <div class="trust-inner">
-    <div class="trust-item"><span class="ti-icon">🇬🇧</span><span>Expertly Restored in London</span></div>
+    <div class="trust-item"><span class="ti-icon">🇬🇧</span><span>Made in Britain</span></div>
     <div class="trust-item"><span class="ti-icon">✓</span><span>Verified Apple Developer</span></div>
-    <div class="trust-item"><span class="ti-icon">✦</span><span>Cinema-Grade AI</span></div>
+    <div class="trust-item"><span class="ti-icon">✦</span><span>Premium Quality Print</span></div>
     <div class="trust-item"><span class="ti-icon">🖼</span><span>Luxury Prints Delivered</span></div>
-    <div class="trust-item"><span class="ti-icon">🔒</span><span>Photos Never Stored</span></div>
+    <div class="trust-item"><span class="ti-icon">🔒</span><span>Your Photos Kept Private</span></div>
   </div>
 </div>
 
-<!-- PRICING TILES — visible immediately after hero -->
-<section style="background:var(--bg2);padding:56px 24px;border-bottom:1px solid rgba(201,150,12,0.12);" id="pricing-top">
-  <div style="max-width:860px;margin:0 auto;text-align:center;">
-    <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:10px;"><span>✦</span> Simple, Honest Pricing</div>
-    <h2 class="section-title" style="margin-bottom:8px;">One Free, Then Pay Only When You're Happy</h2>
-    <p class="section-sub" style="margin-bottom:36px;">See the result before you spend a penny. No account required.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;">
-
-      <!-- Free -->
-      <div style="background:var(--card);border:1px solid rgba(201,150,12,0.2);border-radius:18px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;">
-        <div style="font-size:32px;line-height:1;">🎁</div>
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);">Free Preview</div>
-        <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--cream);line-height:1;">£0</div>
-        <div style="font-size:11px;color:var(--c55);margin-bottom:4px;">always free</div>
-        <p style="font-size:12px;color:var(--c55);line-height:1.6;text-align:center;">Upload any photo and get a free watermarked preview — see exactly what we can do before paying anything.</p>
-        <a href="#tool" style="margin-top:8px;width:100%;display:block;padding:12px;border-radius:10px;background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.35);color:var(--gold);font-size:13px;font-weight:700;text-align:center;text-decoration:none;">Try Free Now</a>
-      </div>
-
-      <!-- £1.49 -->
-      <div style="background:var(--card);border:2px solid var(--gold);border-radius:18px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;box-shadow:0 0 32px rgba(201,150,12,0.18);">
-        <div style="position:absolute;top:-13px;background:linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold));color:var(--bg);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 14px;border-radius:20px;">Most Popular</div>
-        <div style="font-size:32px;line-height:1;">📷</div>
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);">One Photo</div>
-        <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--cream);line-height:1;">£1.49</div>
-        <div style="font-size:11px;color:var(--c55);margin-bottom:4px;">per photo</div>
-        <p style="font-size:12px;color:var(--c55);line-height:1.6;text-align:center;">Pay once, get one full HD restoration with no watermark. No subscription, no account needed.</p>
-        <button onclick="startSinglePhoto()" style="margin-top:8px;width:100%;padding:12px;border-radius:10px;background:linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold));border:none;color:var(--bg);font-size:13px;font-weight:700;cursor:pointer;">Buy One Photo — £1.49</button>
-      </div>
-
-      <!-- £12.99/month -->
-      <div style="background:var(--card);border:1px solid rgba(74,144,217,0.35);border-radius:18px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;">
-        <div style="font-size:32px;line-height:1;">∞</div>
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4A90D9;">Monthly Unlimited</div>
-        <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--cream);line-height:1;">£12.99</div>
-        <div style="font-size:11px;color:var(--c55);margin-bottom:4px;">per month</div>
-        <p style="font-size:12px;color:var(--c55);line-height:1.6;text-align:center;">Unlimited full-quality restorations every month. Perfect for families with lots of photos. Cancel anytime.</p>
-        <button onclick="startSubscribe('monthly')" style="margin-top:8px;width:100%;padding:12px;border-radius:10px;background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.4);color:#4A90D9;font-size:13px;font-weight:700;cursor:pointer;">Subscribe — £12.99/month</button>
-      </div>
-
-    </div>
-    <p style="margin-top:20px;font-size:11px;color:rgba(250,247,242,0.25);line-height:1.7;">Subscriptions renew automatically. Cancel anytime — email <a href="mailto:hello@onjjem.com" style="color:rgba(201,150,12,0.5);">hello@onjjem.com</a></p>
-  </div>
-</section>
-
-<!-- ENHANCEMENT MODES -->
-<section class="enhancements-section">
-  <div class="enhancements-inner">
-    <div class="section-header">
-      <div class="eyebrow"><span>✦</span> Six Ways to Restore Your Photos</div>
-      <h2 class="section-title">Choose Your Enhancement</h2>
-      <p class="section-sub">Select one or combine up to three — our Cinema-Grade AI handles the rest.</p>
-    </div>
-    <div class="enh-card-grid">
-      <div class="enh-card">
-        <div class="enh-icon-ring" style="background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.4);">⬡</div>
-        <div class="enh-label" style="color:#4A90D9">Sharpen</div>
-        <div class="enh-sub">Fix soft &amp; blurry photos with AI upscaling</div>
-      </div>
-      <div class="enh-card">
-        <div class="enh-icon-ring" style="background:rgba(245,166,35,0.14);border:1px solid rgba(245,166,35,0.4);">☀</div>
-        <div class="enh-label" style="color:#F5A623">Brighten</div>
-        <div class="enh-sub">Lift dark &amp; underexposed photos intelligently</div>
-      </div>
-      <div class="enh-card">
-        <div class="enh-icon-ring" style="background:rgba(155,89,182,0.14);border:1px solid rgba(155,89,182,0.4);">✧</div>
-        <div class="enh-label" style="color:#9B59B6">Denoise</div>
-        <div class="enh-sub">Remove grain &amp; film noise while preserving detail</div>
-      </div>
-      <div class="enh-card">
-        <div class="enh-icon-ring" style="background:rgba(39,174,96,0.14);border:1px solid rgba(39,174,96,0.4);">⟳</div>
-        <div class="enh-label" style="color:#27AE60">Restore</div>
-        <div class="enh-sub">Full old photo restoration — faded, scratched, torn</div>
-      </div>
-      <div class="enh-card">
-        <div class="enh-icon-ring" style="background:rgba(231,76,60,0.14);border:1px solid rgba(231,76,60,0.4);">🌈</div>
-        <div class="enh-label" style="color:#E74C3C">Vivid</div>
-        <div class="enh-sub">Bold colours &amp; contrast for washed-out prints</div>
-      </div>
-      <div class="enh-card">
-        <div class="enh-icon-ring" style="background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.4);">🎨</div>
-        <div class="enh-label" style="color:#C9960C">Colourize</div>
-        <div class="enh-sub">Add natural colour to black-and-white photos</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- LIVE TOOL -->
-<section class="tool-section" id="tool">
-  <div class="tool-inner">
-    <div class="section-header">
-      <div class="eyebrow"><span>✦</span> Try It Right Now</div>
-      <h2 class="section-title">Restore Your Photo</h2>
-      <p class="section-sub">Enter your email to unlock your one free watermarked restore — then see exactly what we can do before you pay anything.</p>
-    </div>
-    <div class="tool-card">
-      <div class="tool-card-bar"></div>
-      <div class="tool-card-inner">
-
-        <!-- STEP 1: Email gate (shown first — no upload visible yet) -->
-        <div id="panelEmail">
-          <div class="email-gate">
-            <div class="email-gate-title">✦ Enter your email to begin</div>
-            <div class="email-gate-sub">Every new email gets one free watermarked preview so you can see exactly what we can do. Clean HD (no watermark) from £1.49, or unlimited with a £12.99/month subscription.</div>
-            <input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email" />
-            <button class="btn-restore btn-restore-free" id="btnEmailContinue">Continue — Unlock Free Restore →</button>
-          </div>
-          <div class="status-msg" id="statusEmail"></div>
-        </div>
-
-        <!-- STEP 2: Upload zone (shown after email validated, free available) -->
-        <div id="panelUpload" style="display:none">
-          <div class="upload-zone" id="uploadZone">
-            <input type="file" id="fileInput" accept="image/*" />
-            <span class="upload-icon">📷</span>
-            <div class="upload-title">Drop your photo here</div>
-            <p class="upload-hint">or tap to choose from your library &nbsp;·&nbsp; JPEG, PNG, WebP</p>
-          </div>
-          <div id="uploadPreview" style="display:none">
-            <p class="mode-label">Choose Enhancement</p>
-            <div class="mode-picker" id="modePicker">
-              <button class="mode-btn active" data-mode="sharpen">⬡ Sharpen</button>
-              <button class="mode-btn" data-mode="colorize">🎨 Colourize</button>
-              <button class="mode-btn" data-mode="restore">⟳ Restore</button>
-              <button class="mode-btn" data-mode="brighten">☀ Brighten</button>
-              <button class="mode-btn" data-mode="denoise">✧ Denoise</button>
-              <button class="mode-btn" data-mode="vivid">🌈 Vivid</button>
-            </div>
-            <div class="preview-grid" style="margin-bottom:18px">
-              <div class="preview-slot">
-                <img id="originalImg" src="" alt="Original photo" />
-                <span class="preview-label">Original</span>
-              </div>
-              <div class="preview-slot" style="display:flex;align-items:center;justify-content:center;background:var(--bg2);">
-                <span style="font-size:28px;opacity:0.18">✦</span>
-              </div>
-            </div>
-            <button class="btn-restore btn-restore-free" id="btnGetFree">✦ Get My Free Restoration</button>
-            <div class="status-msg" id="statusMsg"></div>
-          </div>
-        </div>
-
-        <!-- STEP 3: Result (shown after free restore — no way back to free) -->
-        <div id="panelResult" style="display:none">
-          <div class="preview-grid" style="margin-bottom:18px">
-            <div class="preview-slot">
-              <img id="originalImg2" src="" alt="Original photo" />
-              <span class="preview-label">Original</span>
-            </div>
-            <div class="preview-slot">
-              <img id="resultImg" src="" alt="Restored photo" />
-              <span class="preview-label after" id="resultLabel">✦ Restored</span>
-            </div>
-          </div>
-          <div class="status-msg" id="statusMsg2"></div>
-          <div id="upsellPanel">
-            <div class="upsell-panel">
-              <div class="upsell-title">Your free preview is ready — want it without the watermark?</div>
-              <div class="upsell-row">
-                <button class="btn-upsell-149" id="btnPay149">⭐ Clean HD — £1.49</button>
-                <button class="btn-upsell-sub" id="btnSubscribeUpsell">∞ Subscribe £12.99/mo</button>
-              </div>
-            </div>
-            <button class="btn-restore btn-download" id="btnDownload">⬇ Download Watermarked Preview</button>
-          </div>
-          <div id="hdReadyPanel" style="display:none">
-            <button class="btn-restore btn-download" id="btnDownloadHD">⬇ Download Clean HD Photo</button>
-          </div>
-          <p class="tool-note">Paid restorations are full-resolution with Cinema-Grade AI. Your photos are never stored.</p>
-        </div>
-
-        <!-- STEP 4: Paywall (shown when free has been used — email or device) -->
-        <div id="panelPaywall" style="display:none">
-          <div style="text-align:center;padding:20px 0 16px;">
-            <div style="font-size:36px;margin-bottom:10px">🔒</div>
-            <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--cream);margin-bottom:6px;">Your Free Restore Has Been Used</div>
-            <p style="font-size:13px;color:var(--c55);line-height:1.6;max-width:360px;margin:0 auto 20px;">Upload your next photo below and choose a plan to get a full HD restoration with no watermark.</p>
-          </div>
-          <div class="upload-zone" id="uploadZone2">
-            <input type="file" id="fileInput2" accept="image/*" />
-            <span class="upload-icon">📷</span>
-            <div class="upload-title">Drop your next photo here</div>
-            <p class="upload-hint">or tap to choose &nbsp;·&nbsp; JPEG, PNG, WebP</p>
-          </div>
-          <div id="paywallPreview" style="display:none">
-            <div class="preview-grid" style="margin:16px 0">
-              <div class="preview-slot">
-                <img id="originalImg3" src="" alt="Original photo" />
-                <span class="preview-label">Original</span>
-              </div>
-              <div class="preview-slot" style="display:flex;align-items:center;justify-content:center;background:var(--bg2);padding:20px;text-align:center;">
-                <div>
-                  <div style="font-size:28px;margin-bottom:6px">🔒</div>
-                  <div style="font-size:11px;color:var(--c35);">Pay to restore</div>
-                </div>
-              </div>
-            </div>
-            <p class="mode-label">Choose Enhancement</p>
-            <div class="mode-picker" id="modePicker2">
-              <button class="mode-btn2 active" data-mode="sharpen">⬡ Sharpen</button>
-              <button class="mode-btn2" data-mode="colorize">🎨 Colourize</button>
-              <button class="mode-btn2" data-mode="restore">⟳ Restore</button>
-              <button class="mode-btn2" data-mode="brighten">☀ Brighten</button>
-              <button class="mode-btn2" data-mode="denoise">✧ Denoise</button>
-              <button class="mode-btn2" data-mode="vivid">🌈 Vivid</button>
-            </div>
-          </div>
-          <div class="upsell-panel" style="margin-top:16px">
-            <div class="upsell-title">Choose your plan</div>
-            <div class="upsell-row">
-              <button class="btn-upsell-149" id="btnPay149b">⭐ One Photo — £1.49</button>
-              <button class="btn-upsell-sub" id="btnSubscribeb">∞ Subscribe £12.99/mo</button>
-            </div>
-          </div>
-          <div class="status-msg" id="statusMsg3"></div>
-          <div id="hdReadyPanel2" style="display:none">
-            <button class="btn-restore btn-download" id="btnDownloadHD2">⬇ Download Clean HD Photo</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- BEFORE / AFTER GALLERY -->
-<section class="section" id="gallery">
-  <div class="section-header">
-    <div class="eyebrow"><span>👑</span> Masterpiece Gallery</div>
-    <h2 class="section-title">The Art of Restoration</h2>
-    <p class="section-sub">Every image below is a real restoration — no composites, no stock photography. The transformation you see is precisely what we can do for your treasured memories.</p>
-  </div>
-
-  <!-- Hero intro -->
-  <div class="mg-hero">
-    <div class="mg-crown">👑</div>
-    <div class="mg-gold-bar"></div>
-    <p class="mg-hero-body">At ONJJEM, we believe every photograph deserves to be seen at its very best — not locked away in a drawer, faded beyond recognition. Our Master Restorers combine Cinema-Grade AI with years of hand-finishing expertise to return your photographs to a standard no darkroom could ever achieve. We do not simply "fix" photos. We resurrect them.</p>
-  </div>
-
-  <!-- Guide note -->
-  <div class="mg-guide">
-    <div class="mg-guide-head">
-      <span style="font-size:15px">ℹ️</span>
-      <span class="mg-guide-title">How to Read This Gallery</span>
-    </div>
-    <p class="mg-guide-body">Each card below describes the specific challenge we faced and the technique used to overcome it — from colour science to structural repair. Every restoration shown is real: no composites, no stock photography, no tricks.</p>
-  </div>
-
-  <!-- Five restoration cards -->
-  <div class="ba-grid">
-
-    <div class="ba-card">
-      <div class="mg-card-header">
-        <div class="mg-card-num">01</div>
-        <div>
-          <div class="mg-card-label">1920s Family Portrait</div>
-          <div class="mg-card-tag">✦ &nbsp;Damage Restored</div>
-        </div>
-      </div>
-      <div class="gold-bar"></div>
-      <div class="ba-images">
-        <img src="/api/gallery/portrait_before.png" alt="1920s family portrait before restoration" loading="lazy" />
-        <img src="/api/gallery/portrait_after.png" alt="1920s family portrait after restoration" loading="lazy" />
-        <span class="ba-label left">Before</span><span class="ba-label right">After</span>
-        <div class="ba-divider"></div><div class="ba-handle">⟷</div>
-      </div>
-      <p class="mg-card-desc">Heavy scratches, water stains and torn edges erased. Every face brought back with remarkable clarity — as sharp and vivid as the day it was taken.</p>
-    </div>
-
-    <div class="ba-card">
-      <div class="mg-card-header">
-        <div class="mg-card-num">02</div>
-        <div>
-          <div class="mg-card-label">Faded Wedding Photo</div>
-          <div class="mg-card-tag">✦ &nbsp;Colourised</div>
-        </div>
-      </div>
-      <div class="gold-bar"></div>
-      <div class="ba-images">
-        <img src="/api/gallery/wedding_before.png" alt="Wedding photo before restoration" loading="lazy" />
-        <img src="/api/gallery/wedding_after.png" alt="Wedding photo after restoration" loading="lazy" />
-        <span class="ba-label left">Before</span><span class="ba-label right">After</span>
-        <div class="ba-divider"></div><div class="ba-handle">⟷</div>
-      </div>
-      <p class="mg-card-desc">A black-and-white 1960s ceremony brought to life with warm, natural colour — exactly as it looked on the day. Every shade chosen with meticulous care.</p>
-    </div>
-
-    <div class="ba-card">
-      <div class="mg-card-header">
-        <div class="mg-card-num">03</div>
-        <div>
-          <div class="mg-card-label">Torn Childhood Memory</div>
-          <div class="mg-card-tag">✦ &nbsp;Tears Repaired</div>
-        </div>
-      </div>
-      <div class="gold-bar"></div>
-      <div class="ba-images">
-        <img src="/api/gallery/childhood_before.png" alt="Torn childhood photo before restoration" loading="lazy" />
-        <img src="/api/gallery/childhood_after.png" alt="Torn childhood photo after restoration" loading="lazy" />
-        <span class="ba-label left">Before</span><span class="ba-label right">After</span>
-        <div class="ba-divider"></div><div class="ba-handle">⟷</div>
-      </div>
-      <p class="mg-card-desc">Torn in two and held together with tape for decades — now seamlessly restored as if it never happened. Not a trace of damage remains.</p>
-    </div>
-
-    <div class="ba-card">
-      <div class="mg-card-header">
-        <div class="mg-card-num">04</div>
-        <div>
-          <div class="mg-card-label">Blurry Grandmother Portrait</div>
-          <div class="mg-card-tag">✦ &nbsp;AI Sharpened</div>
-        </div>
-      </div>
-      <div class="gold-bar"></div>
-      <div class="ba-images">
-        <img src="/api/gallery/grandma_before.png" alt="Grandmother portrait before sharpening" loading="lazy" />
-        <img src="/api/gallery/grandma_after.png" alt="Grandmother portrait after sharpening" loading="lazy" />
-        <span class="ba-label left">Before</span><span class="ba-label right">After</span>
-        <div class="ba-divider"></div><div class="ba-handle">⟷</div>
-      </div>
-      <p class="mg-card-desc">A cherished but out-of-focus portrait made razor sharp — preserving every gentle detail of her expression for the generations that follow.</p>
-    </div>
-
-    <div class="ba-card">
-      <div class="mg-card-header">
-        <div class="mg-card-num">05</div>
-        <div>
-          <div class="mg-card-label">Victorian Era Daguerreotype</div>
-          <div class="mg-card-tag">✦ &nbsp;Colourised &amp; Restored</div>
-        </div>
-      </div>
-      <div class="gold-bar"></div>
-      <div class="ba-images">
-        <img src="/api/gallery/victorian_before.png" alt="Victorian portrait before restoration" loading="lazy" />
-        <img src="/api/gallery/victorian_after.png" alt="Victorian portrait after restoration" loading="lazy" />
-        <span class="ba-label left">Before</span><span class="ba-label right">After</span>
-        <div class="ba-divider"></div><div class="ba-handle">⟷</div>
-      </div>
-      <p class="mg-card-desc">An 1890s family portrait rescued from near-total decay and colourised to show them as the world once saw them — proud, vivid, and timeless.</p>
-    </div>
-
-  </div>
-
-  <!-- How it's made -->
-  <div class="mg-process">
-    <p class="mg-process-eyebrow">Our Craft</p>
-    <h3 class="mg-process-title">How Every Restoration Is Made</h3>
-    <div class="mg-gold-bar" style="margin:0 auto;"></div>
-    <div class="mg-process-steps">
-      <div class="mg-process-step">
-        <div class="mg-process-icon">📤</div>
-        <div class="mg-process-text">
-          <h4>You send us your photo</h4>
-          <p>Any format, any condition. A cracked print, a faded scan, a blurry snapshot — we have seen it all.</p>
-        </div>
-      </div>
-      <div class="mg-process-step">
-        <div class="mg-process-icon">✨</div>
-        <div class="mg-process-text">
-          <h4>Our masters go to work</h4>
-          <p>Cinema-Grade AI restoration guided by our expert team — colour, detail, and emotion restored with human judgement at every step.</p>
-        </div>
-      </div>
-      <div class="mg-process-step">
-        <div class="mg-process-icon">🎁</div>
-        <div class="mg-process-text">
-          <h4>You receive a masterpiece</h4>
-          <p>A full-resolution digital file and, if you wish, a museum-quality print delivered straight to your door.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Why ONJJEM -->
-  <div class="mg-why">
-    <p class="mg-why-eyebrow">For Personal &amp; Business Clients</p>
-    <h3 class="mg-why-title">Why Organisations Choose ONJJEM</h3>
-    <div class="mg-gold-bar"></div>
-    <p class="mg-why-body">Our work does not stop at family memories. Funeral homes, heritage societies, museums, publishers, and luxury brands commission us for projects ranging from single portraits to entire historical archives. We offer dedicated account management, volume pricing, NDA agreements, and delivery guaranteed to your timeline. Every restoration carries our Certificate of Authenticity.</p>
-    <div class="mg-why-features">
-      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> 10-Year Quality Guarantee on every print</div>
-      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> Rush 24-hour turnaround available</div>
-      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> Business accounts with volume pricing</div>
-      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> Certificate of Authenticity included</div>
-      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> NDA &amp; confidentiality agreements available</div>
-      <div class="mg-why-feature"><span class="mg-why-tick">✦</span> Dedicated account manager for commissions</div>
-    </div>
-  </div>
-
-  <!-- CTA -->
-  <div class="mg-cta">
-    <a href="/shop" class="mg-cta-btn">✨ &nbsp;Browse the Gift Shop</a>
-    <p class="mg-cta-note">No account required &nbsp;·&nbsp; Every restoration is private and confidential</p>
-  </div>
-
-</section>
-
-<!-- PRINT YOUR MEMORIES -->
+<!-- WHY CHOOSE ONJJEM -->
 <section class="print-section">
   <div class="print-inner">
     <div class="section-header" style="margin-bottom:28px;">
-      <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;"><span>🖨</span> Bring Your Photos to Life</div>
-      <h2 class="section-title" style="margin-top:10px;">Print Your Memories</h2>
+      <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;"><span>🎁</span> Why Choose Us</div>
+      <h2 class="section-title" style="margin-top:10px;">Gifts Made With Love</h2>
     </div>
     <div class="print-card">
       <div class="gold-bar-w"></div>
       <div class="print-card-inner">
-        <p class="print-card-sub">Three ways to turn your restored photos into something you can hold, display, and treasure.</p>
+        <p class="print-card-sub">Upload your favourite photo and we'll turn it into a beautiful, personalised gift — printed to order and delivered to your door.</p>
         <div class="print-row">
-          <div class="print-row-icon" style="background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.3);">∞</div>
+          <div class="print-row-icon" style="background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.3);">📷</div>
           <div class="print-row-body">
             <div class="print-row-head">
-              <span class="print-row-title">Monthly Plan — £12.99/month</span>
-              <span class="print-row-badge" style="color:#4A90D9;background:rgba(74,144,217,0.12);border-color:rgba(74,144,217,0.35);">UNLIMITED</span>
+              <span class="print-row-title">Upload Any Photo</span>
+              <span class="print-row-badge" style="color:#C9960C;background:rgba(201,150,12,0.12);border-color:rgba(201,150,12,0.35);">EASY</span>
             </div>
-            <p class="print-row-desc">Full studio-quality restoration every month. No limits, no per-photo charges. Cancel anytime.</p>
+            <p class="print-row-desc">Pick any picture from your phone or computer — family photos, holiday snaps, pets, wedding memories, baby photos. Any picture you love.</p>
           </div>
         </div>
         <div class="print-row">
-          <div class="print-row-icon" style="background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.3);">✦</div>
+          <div class="print-row-icon" style="background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.3);">🎨</div>
           <div class="print-row-body">
             <div class="print-row-head">
-              <span class="print-row-title">We Do It For You</span>
-              <span class="print-row-badge" style="color:#C9960C;background:rgba(201,150,12,0.12);border-color:rgba(201,150,12,0.35);">CONCIERGE</span>
+              <span class="print-row-title">Choose Your Gift</span>
+              <span class="print-row-badge" style="color:#C9960C;background:rgba(201,150,12,0.12);border-color:rgba(201,150,12,0.35);">PERSONALISED</span>
             </div>
-            <p class="print-row-desc">Send us your pictures and we'll do it all — beautifully printed on canvas, cushions, jigsaws, throws, silk keepsakes, and more.</p>
-            <a href="/shop" target="_blank" rel="noopener" class="print-row-cta">Browse our Gift Shop →</a>
+            <p class="print-row-desc">Canvas prints, framed photos, cushions, mugs, jigsaws, name tags and more — all printed with your picture. New gifts added regularly.</p>
+            <a href="/shop" target="_blank" rel="noopener" class="print-row-cta">Browse Our Gift Range →</a>
           </div>
         </div>
         <div class="print-row">
-          <div class="print-row-icon" style="background:rgba(74,144,217,0.14);border:1px solid rgba(74,144,217,0.3);">⌂</div>
+          <div class="print-row-icon" style="background:rgba(201,150,12,0.14);border:1px solid rgba(201,150,12,0.3);">🚚</div>
           <div class="print-row-body">
             <div class="print-row-head">
-              <span class="print-row-title">Do It Yourself</span>
-              <span class="print-row-badge" style="color:#4A90D9;background:rgba(74,144,217,0.12);border-color:rgba(74,144,217,0.35);">YOUR PRINTER</span>
+              <span class="print-row-title">Printed &amp; Delivered</span>
+              <span class="print-row-badge" style="color:#C9960C;background:rgba(201,150,12,0.12);border-color:rgba(201,150,12,0.35);">UK DELIVERY</span>
             </div>
-            <p class="print-row-desc">Download your fully restored HD photo and print it yourself — total creative control, right in your hands.</p>
+            <p class="print-row-desc">Every gift is made to order with premium materials and carefully packaged. Delivered straight to your door or directly to a loved one.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
 
 <!-- ANNIVERSARY BANNER -->
 <div style="background:var(--bg2);padding:24px;">
@@ -874,7 +515,7 @@
       <div style="flex:1;">
         <div class="jubilee-eyebrow">Anniversary &amp; Jubilee Collection</div>
         <div class="jubilee-title">Celebrate a Lifetime of Love</div>
-        <div style="font-size:11px;color:rgba(250,247,242,0.45);margin-top:3px;">Silver · Ruby · Golden · Diamond · Platinum jubilee gifts, crafted around your restored family photographs.</div>
+        <div style="font-size:11px;color:rgba(250,247,242,0.45);margin-top:3px;">Silver · Ruby · Golden · Diamond · Platinum jubilee gifts, crafted around your favourite family photographs.</div>
       </div>
       <a href="/shop" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:var(--gbg);border:1px solid var(--gb);color:var(--gold);font-size:11px;font-weight:700;padding:8px 16px;border-radius:40px;text-decoration:none;white-space:nowrap;flex-shrink:0;">Shop Now ›</a>
     </div>
@@ -882,11 +523,11 @@
 </div>
 
 <!-- COLLECTIONS DIRECTORY -->
-<section class="collections-section">
+<section class="collections-section" id="gifts">
   <div class="section-header" style="margin-bottom:0;">
     <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;"><span style="color:var(--gold)">✦</span> ONJJEM Collections</div>
     <h2 class="section-title" style="margin-top:10px;">Explore Our Gift Range</h2>
-    <p class="section-sub" style="margin-top:10px;">Beautifully printed gifts made from your restored photographs — delivered to your door.</p>
+    <p class="section-sub" style="margin-top:10px;">Beautifully printed gifts made from your own photographs — delivered to your door.</p>
   </div>
   <div class="collections-card">
     <div class="gold-bar"></div>
@@ -934,72 +575,97 @@
   <a href="/shop" target="_blank" rel="noopener" class="coll-cta-btn">🎁 &nbsp;Browse the Full Gift Shop</a>
 </section>
 
+<!-- GIFT IDEAS -->
+<section style="padding:80px 24px;background:var(--bg3);">
+  <div style="max-width:960px;margin:0 auto;">
+    <div class="section-header">
+      <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;"><span>⚽</span> Gift Ideas</div>
+      <h2 class="section-title" style="margin-top:10px;">What Will You Put on Yours?</h2>
+      <p class="section-sub" style="margin-top:10px;">Any photo you love, printed on any gift. Here are some of our customers' favourite ideas.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:36px;">
+      <div style="background:var(--card);border:1px solid rgba(201,150,12,0.18);border-radius:18px;padding:24px;text-align:center;">
+        <div style="font-size:42px;margin-bottom:12px;">⚽</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--cream);">Sports Heroes</div>
+        <p style="font-size:13px;color:var(--c55);margin-top:8px;line-height:1.6;">Got a photo with your favourite footballer? A snap from match day? Put your sporting hero on a canvas for your bedroom wall, a cushion, or a mug.</p>
+      </div>
+      <div style="background:var(--card);border:1px solid rgba(201,150,12,0.18);border-radius:18px;padding:24px;text-align:center;">
+        <div style="font-size:42px;margin-bottom:12px;">👶</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--cream);">Baby & Family</div>
+        <p style="font-size:13px;color:var(--c55);margin-top:8px;line-height:1.6;">First smile, first steps, first birthday — turn precious baby moments and family photos into keepsakes grandparents will treasure forever.</p>
+      </div>
+      <div style="background:var(--card);border:1px solid rgba(201,150,12,0.18);border-radius:18px;padding:24px;text-align:center;">
+        <div style="font-size:42px;margin-bottom:12px;">🐾</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--cream);">Pets</div>
+        <p style="font-size:13px;color:var(--c55);margin-top:8px;line-height:1.6;">Your best friend deserves a spot on the wall. Dogs, cats, horses — any pet photo printed on canvas, cushions, mugs and more.</p>
+      </div>
+      <div style="background:var(--card);border:1px solid rgba(201,150,12,0.18);border-radius:18px;padding:24px;text-align:center;">
+        <div style="font-size:42px;margin-bottom:12px;">🌴</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--cream);">Holidays & Travel</div>
+        <p style="font-size:13px;color:var(--c55);margin-top:8px;line-height:1.6;">That perfect sunset, the beach, the mountain view — bring your favourite holiday memories home on a big canvas or a cosy cushion.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:36px;">
+      <a href="/shop" target="_blank" rel="noopener" style="display:inline-block;background:linear-gradient(135deg,#8B6200,var(--gold),var(--gold-lt),var(--gold));color:var(--bg);font-size:15px;font-weight:700;padding:14px 32px;border-radius:40px;text-decoration:none;box-shadow:0 6px 24px rgba(201,150,12,0.28);transition:transform 0.15s;">🎁 Start Your Gift Now</a>
+    </div>
+  </div>
+</section>
+
+<!-- CUSTOMER REVIEWS -->
+<section style="padding:80px 24px;background:var(--bg2);" id="reviews">
+  <div style="max-width:960px;margin:0 auto;">
+    <div class="section-header">
+      <div class="eyebrow" style="display:flex;align-items:center;justify-content:center;gap:6px;"><span>⭐</span> What Our Customers Say</div>
+      <h2 class="section-title" style="margin-top:10px;">Loved by Families Across the UK</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;">
+      <div style="background:var(--card);border:1px solid rgba(201,150,12,0.18);border-radius:18px;padding:28px;">
+        <div style="color:var(--gold);font-size:18px;letter-spacing:3px;margin-bottom:12px;">★★★★★</div>
+        <p style="font-size:14px;color:var(--cream);line-height:1.7;">"Got a photo mug with our wedding picture on it for my husband's birthday — he absolutely loved it. The print quality is brilliant and it arrived so quickly."</p>
+        <div style="margin-top:16px;font-size:12px;color:var(--c55);font-weight:600;">— Claire, Birmingham</div>
+      </div>
+      <div style="background:var(--card);border:1px solid rgba(201,150,12,0.18);border-radius:18px;padding:28px;">
+        <div style="color:var(--gold);font-size:18px;letter-spacing:3px;margin-bottom:12px;">★★★★★</div>
+        <p style="font-size:14px;color:var(--cream);line-height:1.7;">"The cushion with my little boy's photo on is gorgeous — he giggles every time he sees it on the sofa. Beautiful quality and the colours are so vivid."</p>
+        <div style="margin-top:16px;font-size:12px;color:var(--c55);font-weight:600;">— Rachel, Leeds</div>
+      </div>
+      <div style="background:var(--card);border:1px solid rgba(201,150,12,0.18);border-radius:18px;padding:28px;">
+        <div style="color:var(--gold);font-size:18px;letter-spacing:3px;margin-bottom:12px;">★★★★★</div>
+        <p style="font-size:14px;color:var(--cream);line-height:1.7;">"Ordered a big canvas of my dad for his 70th — it looks stunning on his wall. He was so touched. The jigsaw of the grandkids was a massive hit at Christmas too."</p>
+        <div style="margin-top:16px;font-size:12px;color:var(--c55);font-weight:600;">— James, Manchester</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- HOW IT WORKS -->
 <section class="how-section" id="how">
   <div class="how-inner">
     <div class="section-header">
       <div class="eyebrow"><span>✦</span> Simple &amp; Fast</div>
       <h2 class="section-title" style="margin-top:12px;">How It Works</h2>
-      <p class="section-sub" style="margin-top:12px;">From upload to a beautiful restored image in under a minute.</p>
+      <p class="section-sub" style="margin-top:12px;">From your photo to a beautiful finished gift, delivered to your door.</p>
     </div>
     <div class="steps">
       <div class="step">
         <div class="step-icon">📷</div>
         <span class="step-num">Step 01</span>
         <div class="step-title">Upload Your Photo</div>
-        <p class="step-desc">Choose any photograph — faded, blurry, or black-and-white.</p>
+        <p class="step-desc">Upload any photo straight from your phone or computer.</p>
       </div>
       <div class="step">
         <div class="step-icon">✦</div>
         <span class="step-num">Step 02</span>
-        <div class="step-title">Choose Enhancement</div>
-        <p class="step-desc">Select Sharpen, Colourize, Restore, or combine them.</p>
+        <div class="step-title">Choose Your Gift</div>
+        <p class="step-desc">Pick from canvas, framed prints, cushions, mugs, jigsaws and more.</p>
       </div>
       <div class="step">
         <div class="step-icon">🖼</div>
         <span class="step-num">Step 03</span>
-        <div class="step-title">Download or Order</div>
-        <p class="step-desc">Save your HD photo, or order it as a luxury canvas, jigsaw, or gift.</p>
+        <div class="step-title">We Print &amp; Deliver</div>
+        <p class="step-desc">We make your gift to order and post it to your door.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing-section" id="pricing">
-  <div class="pricing-inner">
-    <div class="section-header">
-      <div class="eyebrow"><span>✦</span> Simple Pricing</div>
-      <h2 class="section-title" style="margin-top:12px;">Pay Only for What You Need</h2>
-      <p class="section-sub" style="margin-top:12px;">Start free, pay only when you need more. No account required.</p>
-    </div>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="price-icon" style="background:rgba(232,160,32,0.1)">🎁</div>
-        <div class="price-label">Free</div>
-        <div class="price-desc">Upload any photo and get a free preview restoration — see the result before you pay anything.</div>
-        <div class="price-amount">£0</div>
-        <div class="price-period">always free</div>
-        <button class="price-cta" style="background:rgba(232,160,32,0.14);color:#E8A020;border:1px solid rgba(232,160,32,0.3);" onclick="document.getElementById('tool').scrollIntoView({behavior:'smooth'})">Try Free Now</button>
-      </div>
-      <div class="price-card">
-        <div class="price-icon" style="background:rgba(201,150,12,0.1)">📷</div>
-        <div class="price-label">One Photo</div>
-        <div class="price-desc">Pay once, get one full HD restoration. No subscription, no account needed.</div>
-        <div class="price-amount">£1.49</div>
-        <div class="price-period">per photo</div>
-        <button class="price-cta" style="background:rgba(201,150,12,0.14);color:#C9960C;border:1px solid rgba(201,150,12,0.4);" onclick="startSinglePhoto()">Buy One Photo</button>
-      </div>
-      <div class="price-card">
-        <div class="price-icon" style="background:rgba(74,144,217,0.1)">∞</div>
-        <div class="price-label">Monthly Unlimited</div>
-        <div class="price-desc">Unlimited full-quality restorations every month. Cancel anytime.</div>
-        <div class="price-amount">£12.99</div>
-        <div class="price-period">per month</div>
-        <button class="price-cta" style="background:rgba(74,144,217,0.14);color:#4A90D9;border:1px solid rgba(74,144,217,0.4);" onclick="startSubscribe('monthly')" id="btnMonthly">Subscribe Monthly</button>
-      </div>
-    </div>
-    <p style="text-align:center;font-size:12px;color:rgba(250,247,242,0.28);margin-top:22px;line-height:1.7;">Subscriptions renew automatically. Cancel anytime — email <a href="mailto:hello@onjjem.com" style="color:rgba(201,150,12,0.55);">hello@onjjem.com</a></p>
   </div>
 </section>
 
@@ -1007,36 +673,18 @@
   <div class="gold-rule"></div>
   <div class="footer-inner" style="margin-top:36px;">
     <div class="footer-brand">ONJJEM</div>
-    <div class="footer-tagline">Cinema-Grade AI Photo Restoration · London</div>
+    <div class="footer-tagline">Personalised Photo Gifts · Made in Britain</div>
     <div class="footer-links">
-      <a href="#tool">Try Free</a>
-      <a href="#gallery">Gallery</a>
+      <a href="#gifts">Gifts</a>
       <a href="/shop" target="_blank" rel="noopener">Shop</a>
       <a href="#how">How It Works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="/privacy">Privacy Policy</a>
-      <a href="/terms">Terms of Use</a>
-      <a href="/support">Support</a>
+      <a href="/delivery">Delivery &amp; Returns</a>
+      <a href="/terms">Terms &amp; Conditions</a>
       <a href="mailto:hello@onjjem.com">hello@onjjem.com</a>
     </div>
     <div class="footer-copy">&copy; 2026 ONJJEM, London. All rights reserved.</div>
   </div>
 </footer>
-
-<!-- PAYMENT MODAL -->
-<div class="modal-backdrop" id="payModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closePayModal()">✕</button>
-    <div class="gold-bar" style="margin:-36px -36px 24px;"></div>
-    <div class="modal-title">Full HD Restoration</div>
-    <p class="modal-sub">One payment, one beautiful full-quality photo. No subscription.</p>
-    <div class="modal-price">£1.49 <small>one-time</small></div>
-    <div class="payment-error" id="payError"></div>
-    <div id="payment-element"></div>
-    <button class="btn-restore btn-restore-paid" id="btnSubmitPay" style="width:100%;margin-top:4px;" onclick="submitPayment()">Pay £1.49 &amp; Get HD Photo</button>
-    <p style="font-size:11px;color:rgba(250,247,242,0.22);text-align:center;margin-top:12px;">🔒 Secured by Stripe · Photos never stored</p>
-  </div>
-</div>
 
 <!-- EMAIL SIGNUP POPUP -->
 <div class="signup-backdrop" id="signupBackdrop">
@@ -1063,7 +711,7 @@
           <div class="signup-code-label">Your code</div>
           <div class="signup-code-value" id="signupCodeDisplay">WELCOME10</div>
         </div>
-        <button class="btn-primary" style="font-size:13px;padding:12px 28px;" onclick="closeSignup()">✦ &nbsp;Restore a Photo Now</button>
+        <button class="btn-primary" style="font-size:13px;padding:12px 28px;" onclick="closeSignup()">🎁 &nbsp;Start Shopping Now</button>
       </div>
     </div>
   </div>
