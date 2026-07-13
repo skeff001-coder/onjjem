@@ -1,0 +1,13 @@
+.git
+attached_assets
+documents
+exports
+screenshots
+node_modules
+artifacts/onjjem-video
+artifacts/onjjem-website
+artifacts/whatsupdog
+artifacts/mockup-sandbox
+artifacts/owens-photofix
+artifacts/api-server
+*.mp4
