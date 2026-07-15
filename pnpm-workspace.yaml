@@ -1,4 +1,13 @@
-﻿packages:
+packages:
   - 'artifacts/canine-encyclopedia'
   - 'artifacts/api-server'
+  - 'artifacts/onjjem-website'
   - 'lib/*'
+
+onlyBuiltDependencies:
+  - '@google/genai'
+  - esbuild
+  - protobufjs
+  - sharp
+  - '@img/sharp-linux-x64'
+
