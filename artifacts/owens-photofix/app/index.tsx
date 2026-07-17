@@ -105,10 +105,6 @@ export default function HomeScreen() {
         <View style={s.xmasBanner}>
           <Text style={s.xmasTitle}>CHRISTMAS DEALS</Text>
           <View style={s.xmasRow}>
-            <Ionicons name="gift-outline" size={16} color="#F5D78E" />
-            <Text style={s.xmasItem}>FREE Playing Cards when you spend 40 or more</Text>
-          </View>
-          <View style={s.xmasRow}>
             <Ionicons name="bag-outline" size={16} color="#F5D78E" />
             <Text style={s.xmasItem}>FREE Santa Sack when you spend 100 or more</Text>
           </View>
