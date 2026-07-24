@@ -57,21 +57,6 @@ const TILE = Math.ceil(width / COLS);
 const GRID_ROWS = Math.ceil(height / TILE) + 1;
 const GRID_TOTAL = COLS * GRID_ROWS;
 
-const FACE_SIZE = 58;
-const FACES = ["🐶", "🐕", "🦮", "🐩", "🐕‍🦺", "🐶", "🐕", "🦮"];
-function buildFaces(count: number) {
-  const list = [];
-  const PHI = 137.508;
-  for (let i = 0; i < count; i++) {
-    const x = ((i * 0.618033) % 1) * (width - FACE_SIZE);
-    const y = ((i * 0.381966) % 1) * (height - FACE_SIZE);
-    const rot = ((i * PHI) % 360) - 180;
-    list.push({ x, y, rot, emoji: FACES[i % FACES.length], op: 0.35 + (i % 7) * 0.06 });
-  }
-  return list;
-}
-const SCATTERED_FACES = buildFaces(72);
-
 /* ─── Types ─── */
 type ScanType =
   | "breed"
@@ -122,10 +107,10 @@ function useScannerDefs(): ScannerDef[] {
         id: "mixed_dna",
         title: "Mixed Breed DNA",
         subtitle: "Genetic heritage breakdown",
-        description: "Discover your dog's ancestral breeds, genetic markers, and full heritage tree. Our top revenue scanner.",
+        description: "Discover your dog's ancestral breeds, genetic markers, and full heritage tree.",
         icon: "git-merge-outline",
-        color: "#FF2D78",
-        glow: "rgba(255,45,120,0.35)",
+        color: "#c98b9c",
+        glow: "rgba(201,139,156,0.28)",
         free: false,
         packageId: PACKAGE_MIXED_BREED,
         entitlementCheck: () => hasMixedBreed || all,
@@ -134,10 +119,10 @@ function useScannerDefs(): ScannerDef[] {
         id: "age_calc",
         title: "Age Calculator",
         subtitle: "Visual age estimation",
-        description: "Our AI reads coat condition, eye clarity, and muscle tone to estimate your dog's age. Super engaging.",
+        description: "Our AI reads coat condition, eye clarity, and muscle tone to estimate your dog's age.",
         icon: "hourglass-outline",
-        color: "#00F5FF",
-        glow: "rgba(0,245,255,0.35)",
+        color: "#7fb0c2",
+        glow: "rgba(127,176,194,0.28)",
         free: false,
         packageId: PACKAGE_AGE_CALC,
         entitlementCheck: () => hasAgeCalc || all,
@@ -145,11 +130,11 @@ function useScannerDefs(): ScannerDef[] {
       {
         id: "personality",
         title: "Personality Matcher",
-        subtitle: "Shareable viral results",
+        subtitle: "Shareable results",
         description: "Analyse your dog's expression and posture to reveal their dominant traits, social style, and energy level.",
         icon: "happy-outline",
-        color: "#B24BF3",
-        glow: "rgba(178,75,243,0.35)",
+        color: "#a999c9",
+        glow: "rgba(169,153,201,0.28)",
         free: false,
         packageId: PACKAGE_PERSONALITY,
         entitlementCheck: () => hasPersonality || all,
@@ -159,71 +144,40 @@ function useScannerDefs(): ScannerDef[] {
   );
 }
 
-/* ─── Outline text helper ─── */
-const outlineStyle = (strokeColor: string, size: number) =>
-  Platform.OS === "web"
-    ? ({ color: "transparent", WebkitTextStroke: `3px ${strokeColor}`, fontSize: size } as any)
-    : { color: "rgba(255,255,255,0.06)", textShadowColor: strokeColor, textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 10, fontSize: size };
-
-/* ─── Graffiti Title ─── */
-function GraffitiTitle() {
+/* ─── Header ─── */
+function ScannerHeader() {
   return (
     <View style={gStyles.wrap}>
-      {/* "THE ULTIMATE DOG ENCYCLOPEDIA" — yellow, italic, no box, top of screen */}
-      <View style={gStyles.encyclopediaWrap}>
-        <Text style={gStyles.encyclopediaLine1}>THE ULTIMATE</Text>
-        <Text style={gStyles.encyclopediaLine2}>DOG ENCYCLOPEDIA</Text>
-      </View>
-
-      {/* "WHAT'S UP DOG!" — outline / see-through so dogs show behind */}
-      <View style={{ transform: [{ rotate: "-5deg" }], alignSelf: "flex-start", marginLeft: 8, marginTop: 4 }}>
-        <Text style={[gStyles.word, outlineStyle("#FF2D78", 56)]}>WHAT'S</Text>
-      </View>
-      <View style={{ transform: [{ rotate: "4deg" }], alignSelf: "flex-end", marginRight: 14, marginTop: -10 }}>
-        <Text style={[gStyles.word, outlineStyle("#00F5FF", 84)]}>UP</Text>
-      </View>
-      <View style={{ transform: [{ rotate: "-3deg" }], alignSelf: "flex-start", marginLeft: 22, marginTop: -16 }}>
-        <Text style={[gStyles.word, outlineStyle("#FFE600", 68)]}>DOG!</Text>
-      </View>
-      <View style={{ transform: [{ rotate: "2deg" }], alignSelf: "flex-end", marginRight: 26, marginTop: -4 }}>
-        <Text style={[gStyles.word, { color: "rgba(178,75,243,0.7)", fontSize: 18, textShadowColor: "#4A008A", textShadowOffset: { width: 2, height: 2 }, textShadowRadius: 1 }]}>
-          🐾 scan any dog
-        </Text>
-      </View>
+      <Text style={gStyles.eyebrow}>HERITAGE SCANNER</Text>
+      <Text style={gStyles.headline}>Discover the story in their eyes.</Text>
+      <Text style={gStyles.subhead}>Scan any dog to reveal their breed, age, and personality.</Text>
     </View>
   );
 }
 
 const gStyles = StyleSheet.create({
-  wrap: { width: "100%", paddingHorizontal: 12, paddingTop: 0 },
-  word: { fontFamily: "Inter_700Bold", letterSpacing: -1.5 },
-  encyclopediaWrap: {
-    alignItems: "center",
-    paddingTop: 2,
-    paddingBottom: 6,
-  },
-  encyclopediaLine1: {
+  wrap: { width: "100%", paddingHorizontal: 20, paddingTop: 4, paddingBottom: 4 },
+  eyebrow: {
     fontSize: 11,
     fontFamily: "Inter_700Bold",
-    color: "#FFE600",
-    letterSpacing: 5,
-    textAlign: "center",
-    fontStyle: "italic",
-    textShadowColor: "rgba(0,0,0,0.9)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    color: "#c9a84c",
+    letterSpacing: 3,
+    textTransform: "uppercase",
   },
-  encyclopediaLine2: {
-    fontSize: 22,
+  headline: {
+    fontSize: 26,
     fontFamily: "Inter_700Bold",
-    color: "#FFE600",
-    letterSpacing: 1.5,
-    textAlign: "center",
-    fontStyle: "italic",
-    textShadowColor: "rgba(0,0,0,0.9)",
-    textShadowOffset: { width: 1, height: 2 },
-    textShadowRadius: 6,
-    marginTop: 1,
+    color: "#ffffff",
+    letterSpacing: -0.4,
+    lineHeight: 32,
+    marginTop: 6,
+  },
+  subhead: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.55)",
+    marginTop: 4,
+    lineHeight: 18,
   },
 });
 
@@ -238,7 +192,7 @@ function BlinkingFooter() {
   }, [blink, scanY]);
   return (
     <>
-      <Animated.View style={{ position: "absolute", left: 0, right: 0, height: 3, backgroundColor: "#FFE600", shadowColor: "#FFE600", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 1, shadowRadius: 18, transform: [{ translateY: scanY }], pointerEvents: "none" } as any} />
+      <Animated.View style={{ position: "absolute", left: 0, right: 0, height: 3, backgroundColor: "#c9a84c", shadowColor: "#c9a84c", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 1, shadowRadius: 18, transform: [{ translateY: scanY }], pointerEvents: "none" } as any} />
       <Animated.View style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, alignItems: "center", justifyContent: "center", opacity: blink, pointerEvents: "none" } as any}>
         <Text style={{ fontFamily: "Inter_700Bold", fontSize: 38, letterSpacing: 1, color: "#ffffff", textShadowColor: "#ffffff", textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 24 }}>That's My Dog!</Text>
       </Animated.View>
@@ -454,30 +408,30 @@ function ScanResultModal({
 function MixedDNAResult({ data }: { data: MixedBreedResult }) {
   return (
     <View style={rStyles.resultWrap}>
-      <View style={[rStyles.iconRing, { borderColor: "#FF2D78" }]}>
-        <Ionicons name="git-merge-outline" size={28} color="#FF2D78" />
+      <View style={[rStyles.iconRing, { borderColor: "#c98b9c" }]}>
+        <Ionicons name="git-merge-outline" size={28} color="#c98b9c" />
       </View>
       <Text style={rStyles.resultTitle}>Mixed Breed DNA</Text>
       <Text style={rStyles.resultSubtitle}>Genetic Heritage Analysis</Text>
 
       <View style={rStyles.metricRow}>
         <View style={rStyles.metric}>
-          <Text style={[rStyles.metricValue, { color: "#FF2D78" }]}>{data.primaryBreed}</Text>
+          <Text style={[rStyles.metricValue, { color: "#c98b9c" }]}>{data.primaryBreed}</Text>
           <Text style={rStyles.metricLabel}>Primary Breed</Text>
         </View>
         <View style={rStyles.metric}>
-          <Text style={[rStyles.metricValue, { color: "#FF2D78" }]}>{data.secondaryBreed}</Text>
+          <Text style={[rStyles.metricValue, { color: "#c98b9c" }]}>{data.secondaryBreed}</Text>
           <Text style={rStyles.metricLabel}>Secondary</Text>
         </View>
       </View>
 
       <View style={rStyles.metric}>
-        <Text style={[rStyles.metricValue, { color: "#FF2D78" }]}>{data.confidence}%</Text>
+        <Text style={[rStyles.metricValue, { color: "#c98b9c" }]}>{data.confidence}%</Text>
         <Text style={rStyles.metricLabel}>Confidence</Text>
       </View>
 
-      <ResultSection title="Genetic Markers" icon="cellular-outline" color="#FF2D78" items={data.geneticMarkers} />
-      <ResultSection title="Ancestral Breeds" icon="time-outline" color="#FF2D78" items={data.ancestralBreeds} />
+      <ResultSection title="Genetic Markers" icon="cellular-outline" color="#c98b9c" items={data.geneticMarkers} />
+      <ResultSection title="Ancestral Breeds" icon="time-outline" color="#c98b9c" items={data.ancestralBreeds} />
 
       <View style={rStyles.summaryBox}>
         <Text style={rStyles.summaryText}>{data.dnaSummary}</Text>
@@ -489,34 +443,34 @@ function MixedDNAResult({ data }: { data: MixedBreedResult }) {
 function AgeCalcResult({ data }: { data: AgeEstimateResult }) {
   return (
     <View style={rStyles.resultWrap}>
-      <View style={[rStyles.iconRing, { borderColor: "#00F5FF" }]}>
-        <Ionicons name="hourglass-outline" size={28} color="#00F5FF" />
+      <View style={[rStyles.iconRing, { borderColor: "#7fb0c2" }]}>
+        <Ionicons name="hourglass-outline" size={28} color="#7fb0c2" />
       </View>
       <Text style={rStyles.resultTitle}>Age Calculator</Text>
       <Text style={rStyles.resultSubtitle}>Visual Age Estimation</Text>
 
       <View style={rStyles.bigNumberWrap}>
-        <Text style={[rStyles.bigNumber, { color: "#00F5FF" }]}>{data.estimatedAge}</Text>
+        <Text style={[rStyles.bigNumber, { color: "#7fb0c2" }]}>{data.estimatedAge}</Text>
         <Text style={rStyles.bigNumberLabel}>Estimated Age</Text>
       </View>
 
       <View style={rStyles.metricRow}>
         <View style={rStyles.metric}>
-          <Text style={[rStyles.metricValue, { color: "#00F5FF" }]}>{data.ageRange}</Text>
+          <Text style={[rStyles.metricValue, { color: "#7fb0c2" }]}>{data.ageRange}</Text>
           <Text style={rStyles.metricLabel}>Range</Text>
         </View>
         <View style={rStyles.metric}>
-          <Text style={[rStyles.metricValue, { color: "#00F5FF" }]}>{data.confidence}%</Text>
+          <Text style={[rStyles.metricValue, { color: "#7fb0c2" }]}>{data.confidence}%</Text>
           <Text style={rStyles.metricLabel}>Confidence</Text>
         </View>
       </View>
 
       <View style={rStyles.metric}>
-        <Text style={[rStyles.metricValue, { color: "#00F5FF" }]}>{data.lifeStage}</Text>
+        <Text style={[rStyles.metricValue, { color: "#7fb0c2" }]}>{data.lifeStage}</Text>
         <Text style={rStyles.metricLabel}>Life Stage</Text>
       </View>
 
-      <ResultSection title="Visual Signs" icon="eye-outline" color="#00F5FF" items={data.signs} />
+      <ResultSection title="Visual Signs" icon="eye-outline" color="#7fb0c2" items={data.signs} />
 
       <View style={rStyles.summaryBox}>
         <Text style={rStyles.summaryLabel}>Birthday Estimate</Text>
@@ -529,33 +483,33 @@ function AgeCalcResult({ data }: { data: AgeEstimateResult }) {
 function PersonalityResultView({ data }: { data: PersonalityResult }) {
   return (
     <View style={rStyles.resultWrap}>
-      <View style={[rStyles.iconRing, { borderColor: "#B24BF3" }]}>
-        <Ionicons name="happy-outline" size={28} color="#B24BF3" />
+      <View style={[rStyles.iconRing, { borderColor: "#a999c9" }]}>
+        <Ionicons name="happy-outline" size={28} color="#a999c9" />
       </View>
       <Text style={rStyles.resultTitle}>Personality Matcher</Text>
       <Text style={rStyles.resultSubtitle}>Behavioural Analysis</Text>
 
       <View style={rStyles.metric}>
-        <Text style={[rStyles.metricValue, { color: "#B24BF3" }]}>{data.dominantTrait}</Text>
+        <Text style={[rStyles.metricValue, { color: "#a999c9" }]}>{data.dominantTrait}</Text>
         <Text style={rStyles.metricLabel}>Dominant Trait</Text>
       </View>
 
       <View style={rStyles.metricRow}>
         <View style={rStyles.metric}>
-          <Text style={[rStyles.metricValue, { color: "#B24BF3", fontSize: 14 }]}>{data.socialStyle}</Text>
+          <Text style={[rStyles.metricValue, { color: "#a999c9", fontSize: 14 }]}>{data.socialStyle}</Text>
           <Text style={rStyles.metricLabel}>Social Style</Text>
         </View>
         <View style={rStyles.metric}>
-          <Text style={[rStyles.metricValue, { color: "#B24BF3", fontSize: 14 }]}>{data.energyLevel}</Text>
+          <Text style={[rStyles.metricValue, { color: "#a999c9", fontSize: 14 }]}>{data.energyLevel}</Text>
           <Text style={rStyles.metricLabel}>Energy</Text>
         </View>
       </View>
 
-      <Text style={[rStyles.sectionTitle, { color: "#B24BF3" }]}>Personality Traits</Text>
+      <Text style={[rStyles.sectionTitle, { color: "#a999c9" }]}>Personality Traits</Text>
       <View style={rStyles.tagRow}>
         {data.traits.map((t, i) => (
-          <View key={i} style={[rStyles.tag, { backgroundColor: "#B24BF322", borderColor: "#B24BF344" }]}>
-            <Text style={[rStyles.tagText, { color: "#B24BF3" }]}>{t}</Text>
+          <View key={i} style={[rStyles.tag, { backgroundColor: "#a999c922", borderColor: "#a999c944" }]}>
+            <Text style={[rStyles.tagText, { color: "#a999c9" }]}>{t}</Text>
           </View>
         ))}
       </View>
@@ -610,22 +564,22 @@ function HealthGuideResult({ data }: { data: HealthGuideResult }) {
 function TrickTrainerResultView({ data }: { data: TrickTrainerResult }) {
   return (
     <View style={rStyles.resultWrap}>
-      <View style={[rStyles.iconRing, { borderColor: "#FFE600" }]}>
-        <Ionicons name="flash-outline" size={28} color="#FFE600" />
+      <View style={[rStyles.iconRing, { borderColor: "#c9a84c" }]}>
+        <Ionicons name="flash-outline" size={28} color="#c9a84c" />
       </View>
       <Text style={rStyles.resultTitle}>Trick Trainer</Text>
       <Text style={rStyles.resultSubtitle}>{data.difficulty} Training Plan</Text>
 
       <View style={rStyles.metric}>
-        <Text style={[rStyles.metricValue, { color: "#FFE600" }]}>{data.estimatedTime}</Text>
+        <Text style={[rStyles.metricValue, { color: "#c9a84c" }]}>{data.estimatedTime}</Text>
         <Text style={rStyles.metricLabel}>Total Time to Master</Text>
       </View>
 
-      <Text style={[rStyles.sectionTitle, { color: "#FFE600" }]}>Tricks to Learn</Text>
+      <Text style={[rStyles.sectionTitle, { color: "#c9a84c" }]}>Tricks to Learn</Text>
       {data.tricks.map((t, i) => (
         <View key={i} style={rStyles.trickCard}>
-          <View style={[rStyles.trickNumber, { backgroundColor: "#FFE60022", borderColor: "#FFE60044" }]}>
-            <Text style={[rStyles.trickNumberText, { color: "#FFE600" }]}>{i + 1}</Text>
+          <View style={[rStyles.trickNumber, { backgroundColor: "#c9a84c22", borderColor: "#c9a84c44" }]}>
+            <Text style={[rStyles.trickNumberText, { color: "#c9a84c" }]}>{i + 1}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={rStyles.trickName}>{t.name}</Text>
@@ -639,7 +593,7 @@ function TrickTrainerResultView({ data }: { data: TrickTrainerResult }) {
         <Text style={rStyles.summaryText}>{data.trainingSchedule}</Text>
       </View>
 
-      <ResultSection title="Pro Tips" icon="bulb-outline" color="#FFE600" items={data.tips} />
+      <ResultSection title="Pro Tips" icon="bulb-outline" color="#c9a84c" items={data.tips} />
     </View>
   );
 }
@@ -1061,30 +1015,24 @@ export default function ScannerScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: "#0a0e1a" }]}>
-      {/* FULL-SCREEN DOG PHOTO COLLAGE */}
+      {/* Background dog-photo collage, dimmed for legibility */}
       <View style={[StyleSheet.absoluteFill, { pointerEvents: "none" } as any]}>
-        {dogPhotos.length > 0 ? (
+        {dogPhotos.length > 0 &&
           Array.from({ length: GRID_TOTAL }).map((_, i) => {
             const col = i % COLS;
             const row = Math.floor(i / COLS);
             const photo = dogPhotos[i % dogPhotos.length];
-            const dimmed = (col + row) % 2 === 0;
             return (
               <Image
                 key={i}
                 source={{ uri: photo }}
-                style={{ position: "absolute", left: col * TILE, top: row * TILE, width: TILE, height: TILE, opacity: dimmed ? 0.78 : 0.95 }}
+                style={{ position: "absolute", left: col * TILE, top: row * TILE, width: TILE, height: TILE, opacity: 0.4 }}
                 resizeMode="cover"
               />
             );
-          })
-        ) : (
-          SCATTERED_FACES.map((f, i) => (
-            <Text key={i} style={[styles.scatteredFace, { left: f.x, top: f.y, opacity: f.op, transform: [{ rotate: `${f.rot}deg` }] }]}>
-              {f.emoji}
-            </Text>
-          ))
-        )}
+          })}
+        {/* dark scrim so the collage reads as texture, not noise */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(10,14,26,0.82)" }]} />
       </View>
 
       {COLLAGE_ONLY && <BlinkingFooter />}
@@ -1095,8 +1043,8 @@ export default function ScannerScreen() {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingTop: topPad + 12, paddingBottom: isWeb ? 100 : insets.bottom + 80 }}
           >
-            {/* Graffiti Title */}
-            <GraffitiTitle />
+            {/* Header */}
+            <ScannerHeader />
 
             {/* Scanner Cards */}
             <View style={{ alignItems: "center", gap: 12, marginTop: 20, paddingHorizontal: 16 }}>
@@ -1150,9 +1098,9 @@ export default function ScannerScreen() {
               style={[styles.onjjemStrip, { marginTop: 24, marginHorizontal: 16 }]}
             >
               <View style={{ flex: 1 }}>
-                <Text style={styles.onjjemLabel}>PERSONALISED DOG MERCHANDISE</Text>
-                <Text style={styles.onjjemTitle}>Canvas · Prints · Mugs · Cushions · Socks · Scarves</Text>
-                <Text style={styles.onjjemSub}>Any picture, any size — go to onjjem.com</Text>
+                <Text style={styles.onjjemLabel}>FROM ONJJEM, OUR SISTER COMPANY</Text>
+                <Text style={styles.onjjemTitle}>Turn this photo into a keepsake</Text>
+                <Text style={styles.onjjemSub}>Canvas, mugs, keyrings & more — onjjem.com</Text>
               </View>
               <Ionicons name="bag-outline" size={24} color="#c9a84c" />
             </TouchableOpacity>
@@ -1268,7 +1216,6 @@ export default function ScannerScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scatteredFace: { position: "absolute", fontSize: FACE_SIZE, lineHeight: FACE_SIZE + 8 },
 
   unlockAllBtn: {
     flexDirection: "row",
