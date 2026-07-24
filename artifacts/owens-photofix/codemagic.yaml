@@ -65,3 +65,4 @@ workflows:
         issuer_id: $ASC_ISSUER_ID
         submit_to_testflight: false
         submit_to_app_store: true
+        # trigger rebuild
