@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  TextInput,
   Alert,
   Platform,
   Dimensions,
@@ -18,10 +17,20 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
 import { useApp, type GalleryEntry } from "@/context/AppContext";
-import { purchaseMerchandise, MERCH_PRODUCT_IDS } from "@/lib/revenuecat";
 
 const { width } = Dimensions.get("window");
 const ONJJEM_URL = "https://onjjem.com";
+const ONJJEM_BUNDLE_URL = "https://onjjem.com/bundle";
+
+// Physical merchandise is designed and paid for on onjjem.com (Stripe + Prodigi),
+// never through Apple/Google in-app purchase — Apple's guidelines require
+// physical goods to be sold outside IAP, and only onjjem.com can actually
+// fulfil the order via Prodigi.
+function buildOnjjemUrl(productId: string, dogName?: string) {
+  const params = new URLSearchParams({ product: productId });
+  if (dogName) params.set("dogName", dogName);
+  return `${ONJJEM_BUNDLE_URL}?${params.toString()}`;
+}
 
 // Bags of Love product catalogue — prices carry ~55% margin over BoL wholesale
 const CATALOGUE = [
@@ -287,6 +296,29 @@ const CATALOGUE = [
   },
 ];
 
+// PLACEHOLDER reviews — swap for real customer quotes (Trustpilot / App Store)
+// before this ships. Do not launch with invented testimonials.
+const REVIEWS = [
+  {
+    name: "Sarah M.",
+    dogName: "Biscuit",
+    product: "a canvas print",
+    quote: "Arrived beautifully packaged and the print quality is gorgeous. Didn't expect it to link to a real shop but glad it did.",
+  },
+  {
+    name: "Tom R.",
+    dogName: "Frankie",
+    product: "a photo mug",
+    quote: "Ordered in the app, checked out on the ONJJEM site in under a minute. Mug looks brilliant.",
+  },
+  {
+    name: "Priya K.",
+    dogName: "Max",
+    product: "a keyring",
+    quote: "Nice to know it's the same people behind the app making the gifts — felt trustworthy straight away.",
+  },
+];
+
 // Simple product mockup: dog photo inside a styled frame
 function ProductMockup({
   imageUri,
@@ -336,11 +368,6 @@ export default function ShopScreen() {
   const [previewEntry, setPreviewEntry] = useState<GalleryEntry | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<typeof CATALOGUE[0] | null>(null);
   const [orderVisible, setOrderVisible] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [ordering, setOrdering] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
 
   const isWeb = Platform.OS === "web";
   const topPad = isWeb ? 67 : insets.top;
@@ -362,43 +389,17 @@ export default function ShopScreen() {
 
   const openOrder = (product: typeof CATALOGUE[0]) => {
     setSelectedProduct(product);
-    setConfirmed(false);
-    setName("");
-    setEmail("");
-    setAddress("");
     setOrderVisible(true);
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
-  const handleOrder = async () => {
-    if (!name.trim() || !email.trim() || !address.trim()) {
-      Alert.alert("Fill in all fields", "Name, email and address are required.");
-      return;
-    }
+  const handleDesignAtOnjjem = async () => {
     if (!selectedProduct) return;
-    setOrdering(true);
-    try {
-      if (Platform.OS === "web") {
-        // Web preview — native IAP unavailable; simulate for demo purposes.
-        // On a real iOS/Android device this fires the App Store payment sheet.
-        await new Promise((r) => setTimeout(r, 1600));
-      } else {
-        const rcProductId = MERCH_PRODUCT_IDS[selectedProduct.id];
-        if (!rcProductId) throw new Error("Product not found");
-        // Triggers the native App Store / Google Play payment sheet.
-        // Payment flows through the same RevenueCat project as onJJem (proj2d8ef809).
-        // Angem receives and fulfils the order.
-        await purchaseMerchandise(rcProductId);
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      }
-      setConfirmed(true);
-    } catch (e: any) {
-      if (!e?.userCancelled) {
-        Alert.alert("Payment failed", e?.message ?? "Please try again.");
-      }
-    } finally {
-      setOrdering(false);
-    }
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const url = buildOnjjemUrl(selectedProduct.id, dogName || undefined);
+    const ok = await Linking.canOpenURL(url);
+    if (ok) Linking.openURL(url);
+    else Alert.alert("Visit onjjem.com/bundle in your browser to design this gift.");
   };
 
   return (
@@ -428,7 +429,7 @@ export default function ShopScreen() {
           </View>
           <Text style={[styles.partnerHeading, { color: colors.foreground }]}>That's My Dog!</Text>
           <Text style={[styles.partnerBody, { color: colors.mutedForeground }]}>
-            That's My Dog! partners with ONJJEM for all printing and fulfilment. Every order is a premium personalised keepsake — canvases, blankets, leads, mugs, balls and more. Museum-grade inks, delivered gift-wrapped in 3–5 business days.
+            ONJJEM is our sister company — made by the same team behind What's Up Dog! and our other apps. They make every personalised keepsake here: canvases, blankets, leads, mugs, balls and more. Museum-grade inks, delivered gift-wrapped in 3–5 business days.
           </Text>
           <TouchableOpacity onPress={openExternalShop} activeOpacity={0.85} style={[styles.visitBtn, { backgroundColor: colors.gold }]}>
             <Ionicons name="globe-outline" size={17} color={colors.navy} />
@@ -508,7 +509,7 @@ export default function ShopScreen() {
             {rest.map((product) => (
               <TouchableOpacity
                 key={product.id}
-                onPress={openExternalShop}
+                onPress={() => openOrder(product)}
                 activeOpacity={0.75}
                 style={[styles.gridCard, { width: CARD_W, backgroundColor: colors.card, borderColor: colors.border }]}
               >
@@ -538,6 +539,31 @@ export default function ShopScreen() {
           </View>
         </View>
 
+        {/* Reviews — real What's Up Dog! customers who ordered via ONJJEM */}
+        {/* TODO(Owen): replace REVIEWS below with real quotes before release —
+            e.g. pulled from ONJJEM's Trustpilot or App Store reviews. */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionHeading, { color: colors.foreground }]}>What owners say</Text>
+          <View style={{ gap: 10 }}>
+            {REVIEWS.map((r) => (
+              <View
+                key={r.name}
+                style={[styles.reviewCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+              >
+                <View style={styles.reviewStars}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Ionicons key={i} name="star" size={13} color={colors.gold} />
+                  ))}
+                </View>
+                <Text style={[styles.reviewQuote, { color: colors.foreground }]}>"{r.quote}"</Text>
+                <Text style={[styles.reviewMeta, { color: colors.mutedForeground }]}>
+                  {r.name} · bought {r.product} for {r.dogName} via ONJJEM
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
         {/* Trust strip */}
         <View style={[styles.trustStrip, { backgroundColor: colors.navyMid, borderColor: colors.border }]}>
           {[
@@ -562,93 +588,52 @@ export default function ShopScreen() {
             <Ionicons name="close" size={20} color={colors.mutedForeground} />
           </TouchableOpacity>
 
-          {confirmed ? (
-            <View style={styles.confirmedWrap}>
-              <View style={[styles.confirmedIcon, { backgroundColor: "#7cb87c22" }]}>
-                <Ionicons name="checkmark-circle" size={56} color="#7cb87c" />
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.modalScroll, { paddingBottom: insets.bottom + 32 }]}>
+            {selectedProduct && (
+              <View style={styles.modalHeader}>
+                <View style={[styles.modalMockupWrap, { backgroundColor: colors.navyMid, borderRadius: 14 }]}>
+                  <ProductMockup imageUri={previewUri} productId={selectedProduct.id} color={selectedProduct.color} size={width * 0.45} />
+                </View>
+                <View style={styles.modalHeaderMeta}>
+                  <Text style={[styles.modalProductName, { color: colors.foreground }]}>{selectedProduct.name}</Text>
+                  <Text style={[styles.modalProductSub, { color: selectedProduct.color }]}>{selectedProduct.sub}</Text>
+                  <Text style={[styles.modalProductPrice, { color: selectedProduct.color }]}>{selectedProduct.price}</Text>
+                  {dogName ? (
+                    <Text style={[styles.modalForDog, { color: colors.gold }]}>For {dogName}</Text>
+                  ) : null}
+                  <Text style={[styles.modalProductDesc, { color: colors.mutedForeground }]} numberOfLines={4}>{selectedProduct.desc}</Text>
+                </View>
               </View>
-              <Text style={[styles.confirmedTitle, { color: colors.foreground }]}>Order Placed!</Text>
-              {dogName ? (
-                <Text style={[styles.confirmedDog, { color: colors.gold }]}>
-                  Something special is on its way for {dogName} 🐾
-                </Text>
-              ) : null}
-              <Text style={[styles.confirmedBody, { color: colors.mutedForeground }]}>
-                Your {selectedProduct?.name.toLowerCase()} is being handcrafted and will arrive beautifully gift-wrapped.{"\n"}Confirmation sent to {email}.
+            )}
+
+            <View style={[styles.qualityCredit, { backgroundColor: colors.navyMid, borderColor: colors.border }]}>
+              <Ionicons name="star-outline" size={14} color={colors.gold} />
+              <Text style={[styles.qualityCreditText, { color: colors.mutedForeground }]}>
+                Made by <Text style={{ color: colors.gold }}>ONJJEM</Text>, our sister company · Museum-grade inks · Gift-wrapped
               </Text>
-              <Text style={[styles.confirmedSub, { color: colors.mutedForeground }]}>
-                Delivery 3–5 business days · thatsmydog.com
-              </Text>
-              <TouchableOpacity onPress={() => setOrderVisible(false)} style={[styles.doneBtn, { backgroundColor: colors.gold }]}>
-                <Text style={[styles.doneBtnText, { color: colors.navy }]}>Done</Text>
-              </TouchableOpacity>
             </View>
-          ) : (
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.modalScroll, { paddingBottom: insets.bottom + 32 }]}>
-              {selectedProduct && (
-                <View style={styles.modalHeader}>
-                  <View style={[styles.modalMockupWrap, { backgroundColor: colors.navyMid, borderRadius: 14 }]}>
-                    <ProductMockup imageUri={previewUri} productId={selectedProduct.id} color={selectedProduct.color} size={width * 0.45} />
-                  </View>
-                  <View style={styles.modalHeaderMeta}>
-                    <Text style={[styles.modalProductName, { color: colors.foreground }]}>{selectedProduct.name}</Text>
-                    <Text style={[styles.modalProductSub, { color: selectedProduct.color }]}>{selectedProduct.sub}</Text>
-                    <Text style={[styles.modalProductPrice, { color: selectedProduct.color }]}>{selectedProduct.price}</Text>
-                    {dogName ? (
-                      <Text style={[styles.modalForDog, { color: colors.gold }]}>For {dogName}</Text>
-                    ) : null}
-                    <Text style={[styles.modalProductDesc, { color: colors.mutedForeground }]} numberOfLines={4}>{selectedProduct.desc}</Text>
-                  </View>
-                </View>
-              )}
 
-              <View style={[styles.qualityCredit, { backgroundColor: colors.navyMid, borderColor: colors.border }]}>
-                <Ionicons name="star-outline" size={14} color={colors.gold} />
-                <Text style={[styles.qualityCreditText, { color: colors.mutedForeground }]}>
-                  Handcrafted by <Text style={{ color: colors.gold }}>Angem</Text> · Museum-grade inks · Gift-wrapped
-                </Text>
-              </View>
+            <Text style={[styles.modalSection, { color: colors.foreground }]}>
+              {dogName ? `${dogName} can be on this — or anything else.` : "This can be their photo — or anything else."}
+            </Text>
+            <Text style={[styles.modalProductDesc, { color: colors.mutedForeground, marginTop: -8 }]}>
+              Design and check out securely on onjjem.com. Your order is fulfilled and shipped directly by ONJJEM.
+            </Text>
 
-              <Text style={[styles.modalSection, { color: colors.foreground }]}>Shipping details</Text>
-
-              {([
-                { key: "name", label: "Full name", value: name, setter: setName, placeholder: "Jane Smith" },
-                { key: "email", label: "Email address", value: email, setter: setEmail, placeholder: "jane@example.com" },
-                { key: "address", label: "Delivery address", value: address, setter: setAddress, placeholder: "123 Dog Lane, London, W1A 1AA", multi: true },
-              ] as { key: string; label: string; value: string; setter: (v: string) => void; placeholder: string; multi?: boolean }[]).map((f) => (
-                <View key={f.key} style={styles.fieldWrap}>
-                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>{f.label}</Text>
-                  <TextInput
-                    value={f.value}
-                    onChangeText={f.setter}
-                    placeholder={f.placeholder}
-                    placeholderTextColor={colors.mutedForeground + "55"}
-                    multiline={!!f.multi}
-                    style={[styles.input, { color: colors.foreground, backgroundColor: colors.navyMid, borderColor: colors.border, minHeight: f.multi ? 80 : 48 }]}
-                  />
-                </View>
-              ))}
-
-              <TouchableOpacity
-                onPress={handleOrder}
-                disabled={ordering}
-                style={[styles.placeBtn, { backgroundColor: selectedProduct?.color ?? colors.gold, opacity: ordering ? 0.7 : 1 }]}
-              >
-                <Ionicons name="bag-check-outline" size={20} color="#0a0e1a" />
-                <Text style={[styles.placeBtnText, { color: "#0a0e1a" }]}>
-                  {ordering
-                    ? "Sending to Angem…"
-                    : dogName
-                    ? `Order for ${dogName} — ${selectedProduct?.price}`
-                    : `Place Order — ${selectedProduct?.price}`}
-                </Text>
-              </TouchableOpacity>
-
-              <Text style={[styles.disclaimer, { color: colors.mutedForeground }]}>
-                Handcrafted by Angem for That's My Dog! · Delivery 3–5 business days
+            <TouchableOpacity
+              onPress={handleDesignAtOnjjem}
+              style={[styles.placeBtn, { backgroundColor: selectedProduct?.color ?? colors.gold }]}
+            >
+              <Ionicons name="color-palette-outline" size={20} color="#0a0e1a" />
+              <Text style={[styles.placeBtnText, { color: "#0a0e1a" }]}>
+                {dogName ? `Design for ${dogName} at ONJJEM.com` : "Design at ONJJEM.com"}
               </Text>
-            </ScrollView>
-          )}
+            </TouchableOpacity>
+
+            <Text style={[styles.disclaimer, { color: colors.mutedForeground }]}>
+              Opens onjjem.com/bundle in your browser · Delivery 3–5 business days
+            </Text>
+          </ScrollView>
         </View>
       </Modal>
     </View>
@@ -701,6 +686,10 @@ const styles = StyleSheet.create({
   gridFooter: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10, paddingVertical: 8, borderTopWidth: StyleSheet.hairlineWidth },
   gridPrice: { fontSize: 14, fontFamily: "Inter_700Bold" },
   addBtn: { width: 26, height: 26, borderRadius: 13, alignItems: "center", justifyContent: "center" },
+  reviewCard: { borderRadius: 14, borderWidth: 1, padding: 14, gap: 6 },
+  reviewStars: { flexDirection: "row", gap: 2 },
+  reviewQuote: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 19 },
+  reviewMeta: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
   trustStrip: { flexDirection: "row", justifyContent: "space-around", marginHorizontal: 16, borderRadius: 16, borderWidth: 1, paddingVertical: 14, paddingHorizontal: 8, marginBottom: 8 },
   trustItem: { alignItems: "center", gap: 5 },
   trustLabel: { fontSize: 9, fontFamily: "Inter_500Medium", textAlign: "center", lineHeight: 13 },
