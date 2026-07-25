@@ -50,10 +50,11 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // customer orders — an invalid SKU here fails silently into
   // fulfilment_queue exactly like the Magic Mug bug did.
   "canvas-stretched-6x8":   { sku: "GLOBAL-CAN-6X8",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-10x14": { sku: "GLOBAL-CAN-10X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  // Note: this one is a 19mm stretcher bar (CAN-19MM-SC-*), not the 38mm
+  // GLOBAL-CAN-* family used by the other confirmed sizes below - real
+  // cost confirmed at £14.00, not the £19.00 originally assumed.
+  "canvas-stretched-10x14": { sku: "CAN-19MM-SC-10X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "canvas-stretched-12x14": { sku: "GLOBAL-CAN-12X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-17x24": { sku: "GLOBAL-CAN-17X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-23x34": { sku: "GLOBAL-CAN-23X34", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
 
   // ── Eco Canvas ──────────────────────────────────────────────────────────────
   // ECO-CAN-* requires wrap attribute (same as stretched canvas).
@@ -66,11 +67,18 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   // ── Eco Rolled Canvas ───────────────────────────────────────────────────────
   // ECO-ROL-* unframed rolled prints, no attribute required.
+  // 10x10, 12x12, 12x18 SKUs pre-existing/validated. The rest follow the
+  // ── Eco Rolled Canvas ───────────────────────────────────────────────────────
+  // ECO-ROL-* unframed rolled prints, no attribute required.
+  // All 8 sizes CONFIRMED against Prodigi's own size/price listing.
   "eco-rolled-10x10": { sku: "ECO-ROL-10X10", sizing: "fillPrintArea" },
+  "eco-rolled-10x12": { sku: "ECO-ROL-10X12", sizing: "fillPrintArea" },
+  "eco-rolled-11x14": { sku: "ECO-ROL-11X14", sizing: "fillPrintArea" },
   "eco-rolled-12x12": { sku: "ECO-ROL-12X12", sizing: "fillPrintArea" },
+  "eco-rolled-12x16": { sku: "ECO-ROL-12X16", sizing: "fillPrintArea" },
   "eco-rolled-12x18": { sku: "ECO-ROL-12X18", sizing: "fillPrintArea" },
-  "eco-rolled-16x20": { sku: "ECO-ROL-16X20", sizing: "fillPrintArea" },
-  "eco-rolled-18x24": { sku: "ECO-ROL-18X24", sizing: "fillPrintArea" },
+  "eco-rolled-10x20": { sku: "ECO-ROL-10X20", sizing: "fillPrintArea" },
+  "eco-rolled-12x24": { sku: "ECO-ROL-12X24", sizing: "fillPrintArea" },
 
   // ── Slim Canvas ─────────────────────────────────────────────────────────────
   // GLOBAL-SLIMCAN-* requires wrap attribute.
@@ -83,6 +91,12 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "slim-canvas-12x14": { sku: "GLOBAL-SLIMCAN-12X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "slim-canvas-8x28":  { sku: "GLOBAL-SLIMCAN-8X28",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "slim-canvas-36x24": { sku: "GLOBAL-SLIMCAN-36X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+
+  // These two are CONFIRMED (not guessed) - real SKUs from Prodigi's own
+  // size/price listing. Note the actual dimensions are 17x23.4" and
+  // 23x33.1", not an even 17x24"/23x34" - the display label reflects this.
+  "slim-canvas-17x23_4": { sku: "GLOBAL-SLIMCAN-17X23_4", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-23x33_1": { sku: "GLOBAL-SLIMCAN-23X33_1", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
 
   // ── Box Frames ──────────────────────────────────────────────────────────────
   // GLOBAL-BOX-* requires color attribute: "white" | "natural" | "black".
@@ -199,14 +213,15 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Glow in the Dark Posters ───────────────────────────────────────
   // GLOBAL-GLOW-* SKUs from Prodigi catalog (2026-06-02).
   // Glow-in-the-dark photo posters that charge under light and glow at night.
-  // ⚠️ UNVALIDATED — same caveat as other newly-added sizes today: follows
-  // the established naming pattern but not confirmed against the live
-  // Prodigi API.
-  "glow-12x12": { sku: "GLOBAL-GLOW-12X12", sizing: "fillPrintArea" },
-  "glow-12x16": { sku: "GLOBAL-GLOW-12X16", sizing: "fillPrintArea" },
-  "glow-16x24": { sku: "GLOBAL-GLOW-16X24", sizing: "fillPrintArea" },
-  "glow-18x24": { sku: "GLOBAL-GLOW-18X24", sizing: "fillPrintArea" },
-  "glow-28x39": { sku: "GLOBAL-GLOW-28X39", sizing: "fillPrintArea" },
+  // All 5 sizes CONFIRMED against Prodigi's own listing - real prefix is
+  // ART-GITD-*, not GLOBAL-GLOW-* as originally guessed (good thing this
+  // got checked). Note 12x12 uses a metric SKU (305x305mm) and 28x39
+  // actually ships as 28x40 - both are Prodigi's real naming, not a typo.
+  "glow-12x12": { sku: "ART-GITD-305X305", sizing: "fillPrintArea" },
+  "glow-12x16": { sku: "ART-GITD-12X16",   sizing: "fillPrintArea" },
+  "glow-16x24": { sku: "ART-GITD-16X24",   sizing: "fillPrintArea" },
+  "glow-18x24": { sku: "ART-GITD-18X24",   sizing: "fillPrintArea" },
+  "glow-28x39": { sku: "ART-GITD-28X40",   sizing: "fillPrintArea" },
 };
 
 // ── Types ─────────────────────────────────────────────────────────────────────
