@@ -7,6 +7,8 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import ProductDetail from "@/pages/product";
 import ContactPage from "@/pages/contact";
+import EffortlessBurnSupport from "@/pages/effortless-burn-support";
+import EffortlessBurnPrivacy from "@/pages/effortless-burn-privacy";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +26,8 @@ function Router() {
       <Route path="/shop" component={Home} />
       <Route path="/product/:categoryId" component={ProductDetail} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/effortless-burn/support" component={EffortlessBurnSupport} />
+      <Route path="/effortless-burn/privacy" component={EffortlessBurnPrivacy} />
       <Route component={NotFound} />
     </Switch>
   );
