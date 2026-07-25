@@ -194,6 +194,19 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       shipping_address_collection: {
         allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK"],
       },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: 325, currency: "gbp" },
+            display_name: "Postage & Packing",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 3 },
+              maximum: { unit: "business_day", value: 5 },
+            },
+          },
+        },
+      ],
       success_url: body.successUrl || `${origin}/?order=success`,
       cancel_url: body.cancelUrl || `${origin}/#shop`,
       metadata: {

@@ -11,7 +11,7 @@ export interface CatalogEntry {
 export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
   "tin-round": { name: 'Personalised Tin Round 5x5', pricePence: 2295 },
   "tin-rect":  { name: 'Personalised Tin Rectangular 7x4', pricePence: 2295 },
-  "magic-mug": { name: 'Magic Photo Mug 11oz', pricePence: 1899 },
+  "magic-mug": { name: 'Magic Photo Mug 11oz', pricePence: 1399 },
   "xmas-sack": { name: 'Christmas Sack', pricePence: 1995 },
   "xmas-bauble": { name: 'Christmas Bauble', pricePence: 1595 },
   "xmas-alum-sq": { name: 'Aluminium Christmas Ornament Square', pricePence: 1995 },

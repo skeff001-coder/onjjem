@@ -98,6 +98,14 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "mug-11oz": { sku: "GLOBAL-MUG-W",  sizing: "fillPrintArea" },
   "mug-15oz": { sku: "H-MUG-15OZ-W", sizing: "fillPrintArea" },
 
+  // ── Magic Photo Mug (heat-reveal colour-changing) ──────────────────────────
+  // H-MUG-11OZ-CC: 11oz heat-activated gloss mug, confirmed via live Prodigi
+  // order screenshot 2026-07. Was previously MISSING from this mapping
+  // entirely, meaning every order for this product failed at fulfilment and
+  // sat in fulfilment_queue as 'failed' rather than being sent to Prodigi —
+  // check the queue for any past orders needing manual resubmission.
+  "magic-mug": { sku: "H-MUG-11OZ-CC", sizing: "fillPrintArea" },
+
   // ── Pet Tags ─────────────────────────────────────────────────────────────────
   // Aluminium, dye-sublimated, UK lab. Both validated live on 2026-06-01.
   // PET-MET-ROUND: 3.2x3.9cm round tag, £5.00. PET-MET-BONE: 2.8x3.8cm bone, £5.00.
