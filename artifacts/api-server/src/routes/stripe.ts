@@ -198,7 +198,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
         {
           shipping_rate_data: {
             type: "fixed_amount",
-            fixed_amount: { amount: 325, currency: "gbp" },
+            fixed_amount: { amount: 399, currency: "gbp" },
             display_name: "Postage & Packing",
             delivery_estimate: {
               minimum: { unit: "business_day", value: 3 },

@@ -43,11 +43,17 @@ export interface ProdigiProduct {
 export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Stretched Canvas ────────────────────────────────────────────────────────
   // SKU format: GLOBAL-CAN-{W}X{H} (inches). wrap attribute required.
-  "canvas-stretched-8x10":  { sku: "GLOBAL-CAN-8X10",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-10x12": { sku: "GLOBAL-CAN-10X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-12x16": { sku: "GLOBAL-CAN-12X16", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-16x20": { sku: "GLOBAL-CAN-16X20", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-20x24": { sku: "GLOBAL-CAN-20X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  // ⚠️ UNVALIDATED — these SKUs follow the same naming pattern as the
+  // confirmed-working sizes below, but haven't been checked against the
+  // live Prodigi API. Recommend placing one test order per size (or
+  // checking Prodigi's product list) before relying on these for real
+  // customer orders — an invalid SKU here fails silently into
+  // fulfilment_queue exactly like the Magic Mug bug did.
+  "canvas-stretched-6x8":   { sku: "GLOBAL-CAN-6X8",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-10x14": { sku: "GLOBAL-CAN-10X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-12x14": { sku: "GLOBAL-CAN-12X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-17x24": { sku: "GLOBAL-CAN-17X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-23x34": { sku: "GLOBAL-CAN-23X34", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
 
   // ── Eco Canvas ──────────────────────────────────────────────────────────────
   // ECO-CAN-* requires wrap attribute (same as stretched canvas).
@@ -68,10 +74,15 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   // ── Slim Canvas ─────────────────────────────────────────────────────────────
   // GLOBAL-SLIMCAN-* requires wrap attribute.
-  "slim-canvas-8x16":  { sku: "GLOBAL-SLIMCAN-8X16",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-24x40": { sku: "GLOBAL-SLIMCAN-24X40", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-28x36": { sku: "GLOBAL-SLIMCAN-28X36", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-40x48": { sku: "GLOBAL-SLIMCAN-40X48", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  // ⚠️ UNVALIDATED — same caveat as the stretched canvas sizes above:
+  // follows the established naming pattern but not confirmed against
+  // the live Prodigi API. Check before relying on these for real orders.
+  "slim-canvas-8x8":   { sku: "GLOBAL-SLIMCAN-8X8",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-8x10":  { sku: "GLOBAL-SLIMCAN-8X10",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-10x10": { sku: "GLOBAL-SLIMCAN-10X10", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-12x14": { sku: "GLOBAL-SLIMCAN-12X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-8x28":  { sku: "GLOBAL-SLIMCAN-8X28",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-36x24": { sku: "GLOBAL-SLIMCAN-36X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
 
   // ── Box Frames ──────────────────────────────────────────────────────────────
   // GLOBAL-BOX-* requires color attribute: "white" | "natural" | "black".
@@ -188,13 +199,14 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Glow in the Dark Posters ───────────────────────────────────────
   // GLOBAL-GLOW-* SKUs from Prodigi catalog (2026-06-02).
   // Glow-in-the-dark photo posters that charge under light and glow at night.
-  "glow-4x6":   { sku: "GLOBAL-GLOW-4X6",   sizing: "fillPrintArea" },
-  "glow-5x7":   { sku: "GLOBAL-GLOW-5X7",   sizing: "fillPrintArea" },
-  "glow-8x10":  { sku: "GLOBAL-GLOW-8X10",  sizing: "fillPrintArea" },
+  // ⚠️ UNVALIDATED — same caveat as other newly-added sizes today: follows
+  // the established naming pattern but not confirmed against the live
+  // Prodigi API.
+  "glow-12x12": { sku: "GLOBAL-GLOW-12X12", sizing: "fillPrintArea" },
   "glow-12x16": { sku: "GLOBAL-GLOW-12X16", sizing: "fillPrintArea" },
-  "glow-16x20": { sku: "GLOBAL-GLOW-16X20", sizing: "fillPrintArea" },
-  "glow-20x24": { sku: "GLOBAL-GLOW-20X24", sizing: "fillPrintArea" },
-  "glow-24x32": { sku: "GLOBAL-GLOW-24X32", sizing: "fillPrintArea" },
+  "glow-16x24": { sku: "GLOBAL-GLOW-16X24", sizing: "fillPrintArea" },
+  "glow-18x24": { sku: "GLOBAL-GLOW-18X24", sizing: "fillPrintArea" },
+  "glow-28x39": { sku: "GLOBAL-GLOW-28X39", sizing: "fillPrintArea" },
 };
 
 // ── Types ─────────────────────────────────────────────────────────────────────
