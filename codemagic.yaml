@@ -114,13 +114,9 @@ workflows:
           echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
           xcode-project use-profiles
           rm -f /Users/builder/export_options.plist
-          /usr/libexec/PlistBuddy -c "Add :method string app-store-connect" /Users/builder/export_options.plist
-          /usr/libexec/PlistBuddy -c "Add :teamID string J6N9GAHK44" /Users/builder/export_options.plist
-          /usr/libexec/PlistBuddy -c "Add :signingStyle string manual" /Users/builder/export_options.plist
-          /usr/libexec/PlistBuddy -c "Add :signingCertificate string 'Apple Distribution'" /Users/builder/export_options.plist
-          /usr/libexec/PlistBuddy -c "Add :provisioningProfiles dict" /Users/builder/export_options.plist
-          /usr/libexec/PlistBuddy -c "Add :provisioningProfiles:com.onjjem.canineencyclopedia string 'Whats up dog App Store'" /Users/builder/export_options.plist
+          python3 -c "import plistlib; plistlib.dump({'method': 'app-store-connect', 'teamID': 'J6N9GAHK44', 'signingStyle': 'manual', 'signingCertificate': 'Apple Distribution', 'provisioningProfiles': {'com.onjjem.canineencyclopedia': 'Whats up dog App Store'}}, open('/Users/builder/export_options.plist', 'wb'))"
           plutil -lint /Users/builder/export_options.plist
+          cat /Users/builder/export_options.plist
           xcode-project build-ipa \
             --workspace "$WORKSPACE" \
             --scheme "$SCHEME" \
