@@ -95,7 +95,11 @@ workflows:
       - name: Prebuild iOS
         script: |
           cd artifacts/canine-encyclopedia
-          npx expo prebuild --platform ios --clean
+          CI=1 npx expo prebuild --platform ios --clean --no-install
+      - name: Install dependencies after prebuild
+        script: |
+          cd artifacts/canine-encyclopedia
+          pnpm install --no-frozen-lockfile
       - name: Patch Podfile for Xcode 26 fmt compile bug
         script: |
           cd artifacts/canine-encyclopedia
