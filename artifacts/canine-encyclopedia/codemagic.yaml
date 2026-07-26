@@ -29,6 +29,10 @@ workflows:
         script: |
           cd artifacts/canine-encyclopedia
           npx expo prebuild --platform ios --clean
+      - name: Patch Podfile for Xcode 26 fmt compile bug
+        script: |
+          cd artifacts/canine-encyclopedia
+          python3 scripts/patch-podfile.py
       - name: Install CocoaPods
         script: |
           cd artifacts/canine-encyclopedia/ios

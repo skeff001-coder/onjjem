@@ -1,0 +1,119 @@
+workflows:
+  owens-photofix-ios-release:
+    name: ONJJEM (owens-photofix) - iOS App Store Release
+    instance_type: mac_mini_m1
+    max_build_duration: 60
+
+    environment:
+      node: v20
+      xcode: latest
+      vars:
+        BUNDLE_ID: com.onjjem.photorestoration
+        CERT_PASSWORD: onjjem2026
+        ASC_KEY_ID: LKZCCH49F7
+        ASC_ISSUER_ID: 48a98d11-f9f9-4c66-ac96-a4834a146201
+        ASC_APP_ID: "6770767370"
+
+    scripts:
+      - name: Install pnpm
+        script: npm install -g pnpm
+
+      - name: Install workspace dependencies
+        script: pnpm install
+
+      - name: Verify pricing docs are in sync with lib/pricing.ts
+        script: node artifacts/owens-photofix/scripts/check-pricing-docs.mjs
+
+      - name: Expo prebuild (generate native iOS project)
+        script: |
+          cd artifacts/owens-photofix
+          npx expo prebuild --platform ios --clean
+
+      - name: Set up signing keychain
+        script: |
+          keychain initialize
+          keychain add-certificates \
+            --certificate "$CM_BUILD_DIR/artifacts/owens-photofix/certs/dist_cert.p12" \
+            --certificate-password "$CERT_PASSWORD"
+          xcode-project use-profiles \
+            --path "$CM_BUILD_DIR/artifacts/owens-photofix/ios" \
+            --profile "$CM_BUILD_DIR/artifacts/owens-photofix/certs/dist_profile.mobileprovision"
+
+      - name: Load App Store Connect API key
+        script: |
+          echo "APP_STORE_CONNECT_PRIVATE_KEY<<ENDOFKEY" >> $CM_ENV
+          cat "$CM_BUILD_DIR/artifacts/owens-photofix/assets/SubscriptionKey_LKZCCH49F7.p8" >> $CM_ENV
+          echo "ENDOFKEY" >> $CM_ENV
+
+      - name: Build iOS IPA
+        script: |
+          WORKSPACE=$(find artifacts/owens-photofix/ios -maxdepth 1 -name "*.xcworkspace" | head -1)
+          SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null | awk '/Schemes:/,0' | sed -n '2p' | tr -d ' ')
+          echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
+          xcode-project build-ipa \
+            --workspace "$WORKSPACE" \
+            --scheme "$SCHEME"
+
+    artifacts:
+      - "**/*.ipa"
+      - "**/*.dSYM.zip"
+
+    publishing:
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $ASC_KEY_ID
+        issuer_id: $ASC_ISSUER_ID
+        submit_to_testflight: false
+        submit_to_app_store: true
+
+  canine-encyclopedia-ios-release:
+    name: What's Up Dog! - iOS Release
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.onjjem.canineencyclopedia
+      node: 22.12.0
+      vars:
+        BUNDLE_ID: com.onjjem.canineencyclopedia
+        XCODE_WORKSPACE: ios/CanineEncyclopedia.xcworkspace
+        XCODE_SCHEME: CanineEncyclopedia
+    scripts:
+      - name: Install pnpm
+        script: npm install -g pnpm
+      - name: Install dependencies
+        script: |
+          cd artifacts/canine-encyclopedia
+          pnpm install --no-frozen-lockfile
+      - name: Set up Expo credentials
+        script: |
+          cd artifacts/canine-encyclopedia
+          npx expo install --fix
+      - name: Prebuild iOS
+        script: |
+          cd artifacts/canine-encyclopedia
+          npx expo prebuild --platform ios --clean
+      - name: Patch Podfile for Xcode 26 fmt compile bug
+        script: |
+          cd artifacts/canine-encyclopedia
+          python3 scripts/patch-podfile.py
+      - name: Install CocoaPods
+        script: |
+          cd artifacts/canine-encyclopedia/ios
+          pod install
+      - name: Build iOS
+        script: |
+          cd artifacts/canine-encyclopedia
+          xcode-project use-profiles
+          xcode-project build-ipa \
+            --workspace ios/CanineEncyclopedia.xcworkspace \
+            --scheme CanineEncyclopedia
+    artifacts:
+      - artifacts/canine-encyclopedia/build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
