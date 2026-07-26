@@ -79,8 +79,6 @@ workflows:
       node: 22.12.0
       vars:
         BUNDLE_ID: com.onjjem.canineencyclopedia
-        XCODE_WORKSPACE: ios/CanineEncyclopedia.xcworkspace
-        XCODE_SCHEME: CanineEncyclopedia
     scripts:
       - name: Install pnpm
         script: npm install -g pnpm --force
@@ -111,10 +109,13 @@ workflows:
       - name: Build iOS
         script: |
           cd artifacts/canine-encyclopedia
+          WORKSPACE=$(find ios -maxdepth 1 -name "*.xcworkspace" | head -1)
+          SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null | awk '/Schemes:/,0' | sed -n '2p' | tr -d ' ')
+          echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
           xcode-project use-profiles
           xcode-project build-ipa \
-            --workspace ios/CanineEncyclopedia.xcworkspace \
-            --scheme CanineEncyclopedia
+            --workspace "$WORKSPACE" \
+            --scheme "$SCHEME"
     artifacts:
       - artifacts/canine-encyclopedia/build/ios/ipa/*.ipa
     publishing:
