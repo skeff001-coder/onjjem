@@ -106,24 +106,13 @@ workflows:
         script: |
           cd artifacts/canine-encyclopedia/ios
           pod install
-      - name: Build iOS
+            - name: Build iOS
         script: |
           cd artifacts/canine-encyclopedia
           WORKSPACE=$(find ios -maxdepth 1 -name "*.xcworkspace" | head -1)
           SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null | awk '/Schemes:/,0' | sed -n '2p' | tr -d ' ')
           echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
           xcode-project use-profiles
-          rm -f /Users/builder/export_options.plist
-          python3 -c "import plistlib; plistlib.dump({'method': 'app-store', 'teamID': 'J6N9GAHK44', 'signingStyle': 'manual', 'signingCertificate': 'Apple Distribution', 'provisioningProfiles': {'com.onjjem.canineencyclopedia': 'Whats up dog App Store'}}, open('/Users/builder/export_options.plist', 'wb'))"
-          plutil -lint /Users/builder/export_options.plist
-          cat /Users/builder/export_options.plist
           xcode-project build-ipa \
             --workspace "$WORKSPACE" \
-            --scheme "$SCHEME" \
-            --export-options-plist /Users/builder/export_options.plist
-    artifacts:
-      - artifacts/canine-encyclopedia/build/ios/ipa/*.ipa
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
+            --scheme "$SCHEME"
