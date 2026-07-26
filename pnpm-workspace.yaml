@@ -1,5 +1,6 @@
 packages:
   - 'artifacts/api-server'
+  - 'artifacts/canine-encyclopedia'
   - 'lib/*'
 
 onlyBuiltDependencies:
