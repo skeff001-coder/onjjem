@@ -113,11 +113,9 @@ workflows:
           SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null | awk '/Schemes:/,0' | sed -n '2p' | tr -d ' ')
           echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
           xcode-project use-profiles
-          /usr/libexec/PlistBuddy -c "Set :method app-store-connect" /Users/builder/export_options.plist
           xcode-project build-ipa \
             --workspace "$WORKSPACE" \
-            --scheme "$SCHEME" \
-            --export-options-plist /Users/builder/export_options.plist
+            --scheme "$SCHEME"
     artifacts:
       - artifacts/canine-encyclopedia/build/ios/ipa/*.ipa
     publishing:
