@@ -66,7 +66,7 @@ workflows:
         submit_to_testflight: false
         submit_to_app_store: true
 
-  canine-encyclopedia-ios-release:
+    canine-encyclopedia-ios-release:
     name: What's Up Dog! - iOS Release
     max_build_duration: 120
     instance_type: mac_mini_m2
@@ -106,7 +106,7 @@ workflows:
         script: |
           cd artifacts/canine-encyclopedia/ios
           pod install
-            - name: Build iOS
+      - name: Build iOS
         script: |
           cd artifacts/canine-encyclopedia
           WORKSPACE=$(find ios -maxdepth 1 -name "*.xcworkspace" | head -1)
@@ -116,3 +116,9 @@ workflows:
           xcode-project build-ipa \
             --workspace "$WORKSPACE" \
             --scheme "$SCHEME"
+    artifacts:
+      - artifacts/canine-encyclopedia/build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
