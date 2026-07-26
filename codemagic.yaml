@@ -114,7 +114,7 @@ workflows:
           echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
           xcode-project use-profiles
           rm -f /Users/builder/export_options.plist
-          python3 -c "import plistlib; plistlib.dump({'method': 'app-store-connect', 'teamID': 'J6N9GAHK44', 'signingStyle': 'manual', 'signingCertificate': 'Apple Distribution', 'provisioningProfiles': {'com.onjjem.canineencyclopedia': 'Whats up dog App Store'}}, open('/Users/builder/export_options.plist', 'wb'))"
+          python3 -c "import plistlib; plistlib.dump({'method': 'app-store', 'teamID': 'J6N9GAHK44', 'signingStyle': 'manual', 'signingCertificate': 'Apple Distribution', 'provisioningProfiles': {'com.onjjem.canineencyclopedia': 'Whats up dog App Store'}}, open('/Users/builder/export_options.plist', 'wb'))"
           plutil -lint /Users/builder/export_options.plist
           cat /Users/builder/export_options.plist
           xcode-project build-ipa \
