@@ -73,6 +73,7 @@ workflows:
     integrations:
       app_store_connect: "ONJJEM Codemagic"
     environment:
+xcode: 26.1
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.onjjem.canineencyclopedia
