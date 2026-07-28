@@ -53,22 +53,15 @@
       ],
       "expo-font",
       "expo-web-browser",
-      [
+[
         "expo-image-picker",
         {
           "photosPermission": "ONJJEM needs access to your photos so you can choose a photo to restore.",
           "cameraPermission": "ONJJEM can use your camera to take a photo for restoration."
         }
-      ],
-      [
-        "expo-media-library",
-        {
-          "photosPermission": "Allow ONJJEM to save your enhanced photos to your library.",
-          "savePhotosPermission": "Allow ONJJEM to save your enhanced photos to your library.",
-          "isAccessMediaLocationEnabled": false
-        }
       ]
     ],
+
     "experiments": {
       "typedRoutes": true,
       "baseUrl": "/mobile"
