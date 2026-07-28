@@ -24,11 +24,12 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     description:
       "Gallery-quality canvas wrapped around a sturdy wooden frame. Ready to hang straight out of the box with a sawtooth hanger on the back.",
     variants: [
-      { sku: "canvas-stretched-8x10",  label: '8"×10"',  pricePence: 4199 },
-      { sku: "canvas-stretched-10x12", label: '10"×12"', pricePence: 4599 },
-      { sku: "canvas-stretched-12x16", label: '12"×16"', pricePence: 5399 },
-      { sku: "canvas-stretched-16x20", label: '16"×20"', pricePence: 7599 },
-      { sku: "canvas-stretched-20x24", label: '20"×24"', pricePence: 8999 },
+      { sku: "canvas-stretched-a5",    label: "A5 (14.8×21cm)",  pricePence: 2199 },
+      { sku: "canvas-stretched-10x16", label: '10"×16"',         pricePence: 2699 },
+      { sku: "canvas-stretched-24x40", label: '24"×40"',         pricePence: 6099 },
+      { sku: "canvas-stretched-28x43", label: '28"×43"',         pricePence: 6199 },
+      { sku: "canvas-stretched-40x48", label: '40"×48"',         pricePence: 8099 },
+      { sku: "canvas-stretched-41x41", label: '41"×41"',         pricePence: 8599 },
     ],
   },
   {
@@ -197,3 +198,4 @@ export function formatPrice(pence: number): string {
 export function minPrice(product: ShopProduct): number {
   return Math.min(...product.variants.map((v) => v.pricePence));
 }
+
