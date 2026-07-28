@@ -20,10 +20,11 @@ workflows:
 
       - name: Install workspace dependencies
         script: pnpm install --no-frozen-lockfile
+
       - name: Expo prebuild (generate native iOS project)
         script: |
           cd artifacts/owens-photofix
-          npx expo prebuild --platform ios --clean
+          pnpm exec expo prebuild --platform ios --clean
 
       - name: Set up signing keychain
         script: |
