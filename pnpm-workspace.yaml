@@ -1,6 +1,7 @@
 packages:
   - 'artifacts/api-server'
   - 'artifacts/canine-encyclopedia'
+  - 'artifacts/owens-photofix'
   - 'lib/*'
 
 onlyBuiltDependencies:
@@ -9,3 +10,4 @@ onlyBuiltDependencies:
   - protobufjs
   - sharp
   - '@img/sharp-linux-x64'
+
