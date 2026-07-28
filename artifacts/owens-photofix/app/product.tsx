@@ -22,6 +22,8 @@ const BG = "#0F0D09";
 const CARD_BG = "#1C1A14";
 const CREAM = "#FAF7F2";
 const MUTED = "#7A6E57";
+// Must match the shipping_options fixed_amount in artifacts/api-server/src/routes/stripe.ts
+const SHIPPING_PENCE = 499;
 
 export default function ProductDetailScreen() {
   const { productId } = useLocalSearchParams<{ productId: string }>();
@@ -197,7 +199,7 @@ export default function ProductDetailScreen() {
 
         <View style={styles.trustRow}>
           {[
-            { icon: "airplane-outline", text: "UK & worldwide shipping" },
+            { icon: "airplane-outline", text: "Ships worldwide" },
             { icon: "time-outline", text: "3–5 working days" },
             { icon: "shield-checkmark-outline", text: "Secure Stripe checkout" },
           ].map(({ icon, text }) => (
@@ -215,6 +217,11 @@ export default function ProductDetailScreen() {
           <Text style={styles.checkoutPrice}>
             {selectedVariant ? formatPrice(selectedVariant.pricePence) : ""}
           </Text>
+          {selectedVariant && (
+            <Text style={styles.checkoutPriceBreakdown}>
+              + {formatPrice(SHIPPING_PENCE)} postage & packing
+            </Text>
+          )}
         </View>
         <TouchableOpacity
           style={[styles.checkoutBtn, loading && styles.checkoutBtnLoading]}
@@ -361,6 +368,7 @@ const styles = StyleSheet.create({
   checkoutPriceWrap: { flex: 1 },
   checkoutPriceLabel: { fontSize: 11, color: MUTED, fontFamily: "Inter_400Regular" },
   checkoutPrice: { fontSize: 22, fontWeight: "700", color: GOLD, fontFamily: "Inter_700Bold" },
+  checkoutPriceBreakdown: { fontSize: 11, color: MUTED, fontFamily: "Inter_400Regular", marginTop: 1 },
   checkoutBtn: { borderRadius: 14, overflow: "hidden", flex: 1.4 },
   checkoutBtnLoading: { opacity: 0.7 },
   checkoutBtnGradient: {
