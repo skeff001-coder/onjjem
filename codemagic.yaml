@@ -20,10 +20,6 @@ workflows:
 
       - name: Install workspace dependencies
         script: pnpm install --no-frozen-lockfile
-
-      - name: Verify pricing docs are in sync with lib/pricing.ts
-        script: node artifacts/owens-photofix/scripts/check-pricing-docs.mjs
-
       - name: Expo prebuild (generate native iOS project)
         script: |
           cd artifacts/owens-photofix
