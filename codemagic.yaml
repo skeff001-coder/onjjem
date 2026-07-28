@@ -82,6 +82,8 @@ workflows:
         BUNDLE_ID: com.onjjem.canineencyclopedia
         EXPO_PUBLIC_REVENUECAT_IOS_API_KEY: appl_QlAKzSnABwsXylEXGysyHrvnJpx
         EXPO_PUBLIC_REVENUECAT_TEST_API_KEY: appl_QlAKzSnABwsXylEXGysyHrvnJpx
+        EXPO_PUBLIC_DOMAIN: onjjem-api-server-production.up.railway.app
+
 
     scripts:
       - name: Install pnpm
