@@ -22,6 +22,11 @@ workflows:
       - name: Install workspace dependencies
         script: pnpm install --no-frozen-lockfile
 
+      - name: Install owens-photofix dependencies
+        script: |
+          cd artifacts/owens-photofix
+          pnpm install --no-frozen-lockfile
+
       - name: Expo prebuild (generate native iOS project)
         script: |
           cd artifacts/owens-photofix
