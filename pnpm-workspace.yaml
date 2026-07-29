@@ -9,3 +9,4 @@ onlyBuiltDependencies:
   - protobufjs
   - sharp
   - '@img/sharp-linux-x64'
+
