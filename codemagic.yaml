@@ -80,4 +80,66 @@ workflows:
       xcode: 26.1
       node: 22.12.0
       ios_signing:
-        distrib
+        distribution_type: app_store
+        bundle_identifier: com.onjjem.canineencyclopedia
+      vars:
+        BUNDLE_ID: com.onjjem.canineencyclopedia
+        EXPO_PUBLIC_REVENUECAT_IOS_API_KEY: appl_QlAKzSnABwsXylEXGysyHrvnJpx
+        EXPO_PUBLIC_REVENUECAT_TEST_API_KEY: appl_QlAKzSnABwsXylEXGysyHrvnJpx
+        EXPO_PUBLIC_DOMAIN: onjjem-api-server-production.up.railway.app
+
+    scripts:
+      # --- Setup ---
+      - name: Install pnpm
+        script: npm install -g pnpm --force
+
+      - name: Install dependencies
+        script: |
+          cd artifacts/canine-encyclopedia
+          pnpm install --no-frozen-lockfile
+
+      - name: Set up Expo credentials
+        script: |
+          cd artifacts/canine-encyclopedia
+          npx expo install --fix
+
+      # --- Build native project ---
+      - name: Prebuild iOS
+        script: |
+          cd artifacts/canine-encyclopedia
+          CI=1 npx expo prebuild --platform ios --clean --no-install
+
+      - name: Install dependencies after prebuild
+        script: |
+          cd artifacts/canine-encyclopedia
+          pnpm install --no-frozen-lockfile
+
+      - name: Patch Podfile for Xcode 26 fmt compile bug
+        script: |
+          cd artifacts/canine-encyclopedia
+          python3 scripts/patch-podfile.py
+
+      - name: Install CocoaPods
+        script: |
+          cd artifacts/canine-encyclopedia/ios
+          pod install
+
+      # --- Signing, Archive & IPA ---
+      - name: Build iOS
+        script: |
+          cd artifacts/canine-encyclopedia
+          WORKSPACE=$(find ios -maxdepth 1 -name "*.xcworkspace" | head -1)
+          SCHEME="ThatsMyDog"
+          echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
+          xcode-project use-profiles
+          xcode-project build-ipa \
+            --workspace "$WORKSPACE" \
+            --scheme "$SCHEME"
+
+    artifacts:
+      - artifacts/canine-encyclopedia/build/ios/ipa/*.ipa
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
