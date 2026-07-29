@@ -2,7 +2,8 @@
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "builder": "RAILPACK",
-    "buildCommand": "corepack enable && corepack prepare pnpm@9.15.9 --activate && pnpm install --no-frozen-lockfile && pnpm --filter @workspace/api-server build"
+    "buildCommand": "pnpm install --no-frozen-lockfile && pnpm --filter @workspace/api-server build"
+
   },
   "deploy": {
     "startCommand": "pnpm --filter @workspace/api-server start"
