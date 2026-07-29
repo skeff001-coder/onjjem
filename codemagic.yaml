@@ -35,7 +35,7 @@ workflows:
       - name: Build iOS IPA
         script: |
           WORKSPACE=$(find artifacts/owens-photofix/ios -maxdepth 1 -name "*.xcworkspace" | head -1)
-          SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null | awk '/Schemes:/,0' | sed -n '2p' | tr -d ' ')
+          SCHEME="ONJJEMPhotoRestoration"
           echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
           xcode-project build-ipa \
             --workspace "$WORKSPACE" \
