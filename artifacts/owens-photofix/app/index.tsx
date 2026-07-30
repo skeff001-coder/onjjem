@@ -102,17 +102,14 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        <View style={s.xmasBanner}>
+         <View style={s.xmasBanner}>
           <Text style={s.xmasTitle}>SUMMER DEALS</Text>
-          <View style={s.xmasRow}>
-            <Ionicons name="gift-outline" size={16} color="#F5D78E" />
-            <Text style={s.xmasItem}>FREE Playing Cards on orders over £40</Text>
-          </View>
           <View style={s.xmasRow}>
             <Ionicons name="sunny-outline" size={16} color="#F5D78E" />
             <Text style={s.xmasItem}>Personalised photo gifts from just £6.99</Text>
           </View>
         </View>
+
 
         <View style={s.mugFeature}>
           <Text style={s.mugLabel}>OUR BESTSELLER</Text>
@@ -121,7 +118,7 @@ export default function HomeScreen() {
             Starts solid black. Pour in a hot drink and your photo appears in full colour - like magic.
           </Text>
           <TouchableOpacity style={s.mugBtn} onPress={openShop} activeOpacity={0.85}>
-            <Text style={s.mugBtnText}>Order The Magic Mug - £18.99</Text>
+            <Text style={s.mugBtnText}>Order The Magic Mug - £13.99</Text>
             <Ionicons name="chevron-forward" size={14} color="#0A0804" />
           </TouchableOpacity>
         </View>
