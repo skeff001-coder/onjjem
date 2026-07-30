@@ -1059,28 +1059,6 @@ export default function ScannerScreen() {
               ))}
             </View>
 
-            {/* Unlock All Scanners CTA */}
-            {!hasAllScanners && (
-              <View style={{ alignItems: "center", marginTop: 24, paddingHorizontal: 16 }}>
-                <TouchableOpacity
-                  onPress={handleUnlockAll}
-                  disabled={isBuying}
-                  activeOpacity={0.85}
-                  style={styles.unlockAllBtn}
-                >
-                  {isBuying ? (
-                    <ActivityIndicator color="#0a0e1a" size="small" />
-                  ) : (
-                    <>
-                      <Ionicons name="lock-open-outline" size={20} color="#0a0e1a" />
-                      <Text style={styles.unlockAllText}>Unlock All Scanners</Text>
-                      <Text style={styles.unlockAllPrice}>£3.49</Text>
-                    </>
-                  )}
-                </TouchableOpacity>
-                <Text style={styles.unlockAllSub}>Save 30% vs buying individually</Text>
-              </View>
-            )}
 
             {/* Restore Purchases */}
             <TouchableOpacity onPress={handleRestore} disabled={isRestoring} style={{ alignItems: "center", marginTop: 16 }}>
