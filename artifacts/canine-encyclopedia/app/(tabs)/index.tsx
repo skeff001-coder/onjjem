@@ -1167,8 +1167,10 @@ export default function ScannerScreen() {
                 </View>
                 <Text style={[styles.purchaseTitle, { color: colors.foreground }]}>{purchaseTarget.title}</Text>
                 <Text style={[styles.purchaseDesc, { color: colors.mutedForeground }]}>{purchaseTarget.description}</Text>
-                <Text style={[styles.purchasePrice, { color: purchaseTarget.color }]}>99p</Text>
-                <Text style={[styles.purchaseSub, { color: colors.mutedForeground }]}>One-time purchase. No subscription.</Text>
+                                <Text style={[styles.purchasePrice, { color: purchaseTarget.color }]}>99p</Text>
+                <Text style={[styles.purchaseSub, { color: colors.mutedForeground }]}>
+                  One-time purchase, unlocks every premium scanner. No subscription.
+                </Text>
                 <TouchableOpacity
                   onPress={handlePurchase}
                   disabled={isBuying}
