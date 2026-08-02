@@ -42,19 +42,16 @@ export interface ProdigiProduct {
 
 export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Stretched Canvas ────────────────────────────────────────────────────────
-  // SKU format: GLOBAL-CAN-{W}X{H} (inches). wrap attribute required.
-  // ⚠️ UNVALIDATED — these SKUs follow the same naming pattern as the
-  // confirmed-working sizes below, but haven't been checked against the
-  // live Prodigi API. Recommend placing one test order per size (or
-  // checking Prodigi's product list) before relying on these for real
-  // customer orders — an invalid SKU here fails silently into
-  // fulfilment_queue exactly like the Magic Mug bug did.
-  "canvas-stretched-6x8":   { sku: "GLOBAL-CAN-6X8",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  // Note: this one is a 19mm stretcher bar (CAN-19MM-SC-*), not the 38mm
-  // GLOBAL-CAN-* family used by the other confirmed sizes below - real
-  // cost confirmed at £14.00, not the £19.00 originally assumed.
-  "canvas-stretched-10x14": { sku: "CAN-19MM-SC-10X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-12x14": { sku: "GLOBAL-CAN-12X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  // SKU format: GLOBAL-CAN-{Ax} (A0–A5 standard sizes). wrap attribute required.
+  // ⚠️ UNVALIDATED against live Prodigi API — pulled from Prodigi's product
+  // page listing on 2026-08-02, not confirmed via Quotes API yet. Test one
+  // real order per size before trusting this for customer checkout.
+  "canvas-stretched-a5": { sku: "GLOBAL-CAN-A5", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-a4": { sku: "GLOBAL-CAN-A4", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-a3": { sku: "GLOBAL-CAN-A3", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-a2": { sku: "GLOBAL-CAN-A2", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-a1": { sku: "GLOBAL-CAN-A1", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-a0": { sku: "GLOBAL-CAN-A0", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
 
   // ── Eco Canvas ──────────────────────────────────────────────────────────────
   // ECO-CAN-* requires wrap attribute (same as stretched canvas).
