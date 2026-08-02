@@ -37,17 +37,14 @@ export const products: Product[] = [
     image: "/products/stretched-canvas.webp",
     category: "wall-art",
     variants: [
-      // cost £14.00 + £6.75 ship = £20.75 → 50% margin = £41.50
-      { sku: "canvas-stretched-8x10",  label: '8"×10"',  pricePence: 4199 },
-      // cost £16.00 + £6.75 ship = £22.75 → 50% margin = £45.50
-      { sku: "canvas-stretched-10x12", label: '10"×12"', pricePence: 4599 },
-      // cost £20.00 + £6.75 ship = £26.75 → 50% margin = £53.50
-      { sku: "canvas-stretched-12x16", label: '12"×16"', pricePence: 5399 },
-      // cost £27.00 + £10.75 ship = £37.75 → 50% margin = £75.50
-      { sku: "canvas-stretched-16x20", label: '16"×20"', pricePence: 7599 },
-      // cost £34.00 + £10.75 ship = £44.75 → 50% margin = £89.50
-      { sku: "canvas-stretched-20x24", label: '20"×24"', pricePence: 8999 },
+      { sku: "canvas-stretched-a5", label: "A5", pricePence: 2700 },
+      { sku: "canvas-stretched-a4", label: "A4", pricePence: 2900 },
+      { sku: "canvas-stretched-a3", label: "A3", pricePence: 3600 },
+      { sku: "canvas-stretched-a2", label: "A2", pricePence: 5100 },
+      { sku: "canvas-stretched-a1", label: "A1", pricePence: 7200 },
+      { sku: "canvas-stretched-a0", label: "A0", pricePence: 9600 },
     ],
+
   },
 
   {
