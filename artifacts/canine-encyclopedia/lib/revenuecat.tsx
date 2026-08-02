@@ -135,13 +135,26 @@ function useSubscriptionContext() {
   const hasGrooming = !!(active[ENTITLEMENT_GROOMING] || active[ENTITLEMENT_BLUEPRINT]);
   const hasBlueprint = !!active[ENTITLEMENT_BLUEPRINT];
 
-  // Scanners
-  const hasAllScanners = !!active[ENTITLEMENT_ALL_SCANNERS];
-  const hasMixedBreed = !!(active[ENTITLEMENT_MIXED_BREED] || hasAllScanners);
-  const hasAgeCalc = !!(active[ENTITLEMENT_AGE_CALC] || hasAllScanners);
-  const hasPersonality = !!(active[ENTITLEMENT_PERSONALITY] || hasAllScanners);
-  const hasHealthGuide = !!(active[ENTITLEMENT_HEALTH_GUIDE] || hasAllScanners);
-  const hasTrickTrainer = !!(active[ENTITLEMENT_TRICK_TRAINER] || hasAllScanners);
+  // Scanners — buying ANY one of the five 99p scanner packages unlocks all
+  // of them. This is deliberate: our RevenueCat product/entitlement wiring
+  // for these five near-identical 99p packages proved unreliable to keep
+  // perfectly 1:1 across iOS/Android/Test Store, so rather than fight that
+  // mapping we unlock the whole set on any single purchase and say so
+  // clearly in the purchase button copy.
+  const hasAnyScannerPurchase = !!(
+    active[ENTITLEMENT_MIXED_BREED] ||
+    active[ENTITLEMENT_AGE_CALC] ||
+    active[ENTITLEMENT_PERSONALITY] ||
+    active[ENTITLEMENT_HEALTH_GUIDE] ||
+    active[ENTITLEMENT_TRICK_TRAINER] ||
+    active[ENTITLEMENT_ALL_SCANNERS]
+  );
+  const hasAllScanners = hasAnyScannerPurchase;
+  const hasMixedBreed = hasAnyScannerPurchase;
+  const hasAgeCalc = hasAnyScannerPurchase;
+  const hasPersonality = hasAnyScannerPurchase;
+  const hasHealthGuide = hasAnyScannerPurchase;
+  const hasTrickTrainer = hasAnyScannerPurchase;
 
   const packageFor = (identifier: string): PurchasesPackage | undefined =>
     offeringsQuery.data?.current?.availablePackages.find((p) => p.identifier === identifier);
