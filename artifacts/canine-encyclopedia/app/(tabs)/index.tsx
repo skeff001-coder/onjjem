@@ -1179,7 +1179,7 @@ export default function ScannerScreen() {
                   {isBuying ? (
                     <ActivityIndicator color="#0a0e1a" size="small" />
                   ) : (
-                    <Text style={[styles.purchaseBtnText, { color: "#0a0e1a" }]}>Unlock for 99p</Text>
+                    <Text style={[styles.purchaseBtnText, { color: "#0a0e1a" }]}>Unlock All for 99p</Text>
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setPurchaseModalVisible(false)} style={{ paddingVertical: 8 }}>
