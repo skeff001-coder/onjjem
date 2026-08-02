@@ -23,14 +23,15 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     category: "Wall Art",
     description:
       "Gallery-quality canvas wrapped around a sturdy wooden frame. Ready to hang straight out of the box with a sawtooth hanger on the back.",
-    variants: [
-      { sku: "canvas-stretched-a5",    label: "A5 (14.8×21cm)",  pricePence: 2199 },
-      { sku: "canvas-stretched-10x16", label: '10"×16"',         pricePence: 2699 },
-      { sku: "canvas-stretched-24x40", label: '24"×40"',         pricePence: 6099 },
-      { sku: "canvas-stretched-28x43", label: '28"×43"',         pricePence: 6199 },
-      { sku: "canvas-stretched-40x48", label: '40"×48"',         pricePence: 8099 },
-      { sku: "canvas-stretched-41x41", label: '41"×41"',         pricePence: 8599 },
+        variants: [
+      { sku: "canvas-stretched-a5", label: "A5", pricePence: 2700 },
+      { sku: "canvas-stretched-a4", label: "A4", pricePence: 2900 },
+      { sku: "canvas-stretched-a3", label: "A3", pricePence: 3600 },
+      { sku: "canvas-stretched-a2", label: "A2", pricePence: 5100 },
+      { sku: "canvas-stretched-a1", label: "A1", pricePence: 7200 },
+      { sku: "canvas-stretched-a0", label: "A0", pricePence: 9600 },
     ],
+
   },
   {
     id: "eco-canvas",
