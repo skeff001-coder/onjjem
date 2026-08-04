@@ -790,15 +790,14 @@ export default function ScannerScreen() {
     // Owned or free — start scan
     startScan(def.id);
   };
-
-  const startScan = async (scanType: ScanType) => {
-    setActiveScanType(scanType);
-    if (scanType === "breed") {
-      // Use camera for breed scan
+  const pickImage = async (
+    source: "camera" | "library",
+  ): Promise<{ uri: string; base64: string } | null> => {
+    if (source === "camera") {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== "granted") {
         Alert.alert("Camera access needed", "Please allow camera access to scan your dog.");
-        return;
+        return null;
       }
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ["images"],
@@ -807,38 +806,51 @@ export default function ScannerScreen() {
         allowsEditing: true,
         aspect: [4, 3],
       });
-      if (!result.canceled && result.assets[0]) {
-        await processImage(result.assets[0].uri, result.assets[0].base64 ?? "", "breed");
-      }
+      if (result.canceled || !result.assets[0]) return null;
+      return { uri: result.assets[0].uri, base64: result.assets[0].base64 ?? "" };
     } else {
-      // All other scans — camera or gallery
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        // Fall back to gallery
-        const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ["images"],
-          quality: 0.85,
-          base64: true,
-          allowsEditing: true,
-          aspect: [4, 3],
-        });
-        if (!result.canceled && result.assets[0]) {
-          await processImage(result.assets[0].uri, result.assets[0].base64 ?? "", scanType);
-        }
-        return;
+        Alert.alert("Photo library access needed", "Please allow photo library access to choose a photo.");
+        return null;
       }
-      const result = await ImagePicker.launchCameraAsync({
+      const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
         quality: 0.85,
         base64: true,
         allowsEditing: true,
         aspect: [4, 3],
       });
-      if (!result.canceled && result.assets[0]) {
-        await processImage(result.assets[0].uri, result.assets[0].base64 ?? "", scanType);
-      }
+      if (result.canceled || !result.assets[0]) return null;
+      return { uri: result.assets[0].uri, base64: result.assets[0].base64 ?? "" };
     }
   };
+
+  const startScan = async (scanType: ScanType) => {
+    setActiveScanType(scanType);
+    Alert.alert(
+      "Add a photo",
+      "Take a new photo or choose one from your library.",
+      [
+        {
+          text: "Take Photo",
+          onPress: async () => {
+            const picked = await pickImage("camera");
+            if (picked) await processImage(picked.uri, picked.base64, scanType);
+          },
+        },
+        {
+          text: "Choose from Library",
+          onPress: async () => {
+            const picked = await pickImage("library");
+            if (picked) await processImage(picked.uri, picked.base64, scanType);
+          },
+        },
+        { text: "Cancel", style: "cancel" },
+      ],
+    );
+  };
+
 
   const processImage = async (uri: string, base64: string, scanType: ScanType) => {
     setScannedUri(uri);
