@@ -137,14 +137,6 @@ export default function GalleryScreen() {
             <Text style={[styles.emptyBody, { color: colors.mutedForeground }]}>
               Head to the Scanner tab and point your camera at any dog to get started.
             </Text>
-            <TouchableOpacity
-              onPress={() => router.replace("/")}
-              style={[styles.scanNowBtn, { backgroundColor: colors.gold }]}
-              activeOpacity={0.85}
-            >
-              <Ionicons name="camera-outline" size={18} color={colors.navy} />
-              <Text style={[styles.scanNowText, { color: colors.navy }]}>Scan a Dog Now</Text>
-            </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.grid}>
