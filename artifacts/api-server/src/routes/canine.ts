@@ -211,7 +211,7 @@ router.post("/mixed-breed-dna", async (req: Request, res: Response) => {
           { text: `Analyse this dog photo as a canine geneticist. Determine the most likely breed mix and provide a detailed DNA-style breakdown.\n\nReturn ONLY valid JSON:\n{\n  "primaryBreed": "Main breed",\n  "secondaryBreed": "Secondary breed or 'None'",\n  "confidence": 85,\n  "geneticMarkers": ["Visual marker 1", "Visual marker 2", "Visual marker 3"],\n  "ancestralBreeds": ["Ancestor 1", "Ancestor 2"],\n  "dnaSummary": "2-3 sentences summarising the genetic heritage"\n}` },
         ],
       }],
-      config: { maxOutputTokens: 512, responseMimeType: "application/json" },
+      config: { maxOutputTokens: 2048, responseMimeType: "application/json" },
     });
     const text = response.text ?? "{}";
     const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
@@ -236,7 +236,7 @@ router.post("/age-estimate", async (req: Request, res: Response) => {
           { text: `Estimate this dog's age from visual cues in the photo (coat condition, eye clarity, muscle tone, grey muzzle, teeth if visible).\n\nReturn ONLY valid JSON:\n{\n  "estimatedAge": "e.g. 3-4 years",\n  "ageRange": "e.g. 2-5 years",\n  "confidence": 78,\n  "lifeStage": "Puppy / Adolescent / Young Adult / Mature Adult / Senior",\n  "signs": ["Visual sign 1", "Visual sign 2", "Visual sign 3"],\n  "birthdayEstimate": "Born around season year"\n}` },
         ],
       }],
-      config: { maxOutputTokens: 512, responseMimeType: "application/json" },
+      config: { maxOutputTokens: 2048, responseMimeType: "application/json" },
     });
     const text = response.text ?? "{}";
     const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
@@ -262,7 +262,7 @@ router.post("/personality-scan", async (req: Request, res: Response) => {
           { text: `Analyse this dog's personality from its expression, posture, and appearance. ${breedHint}\n\nReturn ONLY valid JSON:\n{\n  "traits": ["Trait 1", "Trait 2", "Trait 3", "Trait 4"],\n  "dominantTrait": "Most dominant personality trait",\n  "socialStyle": "How they interact with people and dogs",\n  "energyLevel": "e.g. High — needs 90+ min exercise daily",\n  "description": "2-3 sentences describing this dog's personality"\n}` },
         ],
       }],
-      config: { maxOutputTokens: 512, responseMimeType: "application/json" },
+      config: { maxOutputTokens: 2048, responseMimeType: "application/json" },
     });
     const text = response.text ?? "{}";
     const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
