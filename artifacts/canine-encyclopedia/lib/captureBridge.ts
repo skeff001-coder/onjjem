@@ -5,7 +5,7 @@
 // instead — the caller registers it right before navigating to the camera
 // screen, and the camera screen calls it once a photo is captured (or the
 // user cancels), then clears itself.
-export type CaptureResult = { uri: string; base64: string } | null;
+export type CaptureResult = { uri: string; base64: string; mimeType: string } | null;
 
 let pendingResolve: ((result: CaptureResult) => void) | null = null;
 
