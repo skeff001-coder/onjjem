@@ -69,7 +69,7 @@ export default function CameraCaptureScreen() {
       if (!photo?.uri) {
         throw new Error("No photo returned");
       }
-      resolveCapture({ uri: photo.uri, base64: photo.base64 ?? "" });
+      resolveCapture({ uri: photo.uri, base64: photo.base64 ?? "", mimeType: "image/jpeg" });
       router.back();
     } catch (err) {
       Alert.alert("Capture failed", "Could not take the photo. Please try again.");
