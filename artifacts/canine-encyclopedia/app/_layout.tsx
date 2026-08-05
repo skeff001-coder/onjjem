@@ -40,6 +40,10 @@ function RootLayoutNav() {
         name="breed-search"
         options={{ headerShown: false, presentation: "card" }}
       />
+      <Stack.Screen
+        name="camera-capture"
+        options={{ headerShown: false, presentation: "fullScreenModal" }}
+      />
     </Stack>
   );
 }
