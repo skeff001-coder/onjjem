@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "36",
+      "buildNumber": "37",
       "infoPlist": {
         "NSCameraUsageDescription": "That's My Dog! uses your camera to scan and identify your dog's breed using AI.",
         "NSPhotoLibraryUsageDescription": "That's My Dog! accesses your photos so you can choose a dog image for breed identification.",
