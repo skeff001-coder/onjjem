@@ -21,7 +21,6 @@ import Purchases from "react-native-purchases";
 import { useColors } from "@/hooks/useColors";
 import { useApp } from "@/context/AppContext";
 import { KnowledgeSection, InfoRow, TagList } from "@/components/KnowledgeSection";
-import { MerchSheet } from "@/components/MerchSheet";
 
 const { width } = Dimensions.get("window");
 const PHOTO_SIZE = width * 0.42;
@@ -198,7 +197,6 @@ export default function BreedScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { currentScan, currentKnowledge, currentDogName, gallery } = useApp();
-  const [merchVisible, setMerchVisible] = useState(false);
   const [breedPhotos, setBreedPhotos] = useState<string[]>([]);
   const [photosLoading, setPhotosLoading] = useState(true);
 
@@ -387,7 +385,7 @@ export default function BreedScreen() {
             <TouchableOpacity
               onPress={() => {
                 if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setMerchVisible(true);
+                Linking.openURL("https://onjjem.com");
               }}
               style={[styles.merchCTA, { backgroundColor: colors.navyMid, borderColor: colors.gold + "33" }]}
               activeOpacity={0.85}
@@ -401,8 +399,8 @@ export default function BreedScreen() {
                 </Text>
                 <Text style={[styles.merchCTASub, { color: colors.mutedForeground }]}>
                   {isPersonalised
-                    ? `A personalised ball, canvas print or tote — just for ${dogName}`
-                    : "Dog ball · Canvas print · Tote bag · and more"}
+                    ? `A photo mug, canvas print or glow poster — just for ${dogName}`
+                    : "Photo mugs · Canvas prints · Glow posters · and more"}
                 </Text>
                 <Text style={[styles.merchPowered, { color: colors.gold + "aa" }]}>
                   Powered by ONJJEM.com
@@ -413,14 +411,6 @@ export default function BreedScreen() {
           )}
         </View>
       </ScrollView>
-
-      <MerchSheet
-        visible={merchVisible}
-        onClose={() => setMerchVisible(false)}
-        imageUri={galleryEntry?.uri}
-        breedName={currentScan.breed}
-        dogName={dogName}
-      />
     </View>
   );
 }
