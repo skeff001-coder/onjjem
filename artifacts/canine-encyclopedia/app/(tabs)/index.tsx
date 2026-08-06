@@ -1063,6 +1063,7 @@ export default function ScannerScreen() {
     const name = dogName.trim();
     setCurrentDogName(name);
     setCurrentScan(pendingScan);
+    setCurrentPhotoUri(scannedUri);
     await addToGallery({
       id: pendingGalleryId,
       uri: scannedUri,
