@@ -26,6 +26,7 @@ import { useColors } from "@/hooks/useColors";
 import { waitForCapture } from "@/lib/captureBridge";
 import { useApp } from "@/context/AppContext";
 import { ScanButton } from "@/components/ScanButton";
+import { ProductMockup } from "@/components/ProductMockup";
 import {
   identifyBreedFromBase64,
   getBreedKnowledge,
@@ -367,11 +368,13 @@ function ScanResultModal({
   onClose,
   result,
   scanType,
+  scannedUri,
 }: {
   visible: boolean;
   onClose: () => void;
   result: ScanResultData | null;
   scanType: ScanType;
+  scannedUri: string | null;
 }) {
   const colors = useColors();
   if (!visible || !result) return null;
@@ -401,6 +404,7 @@ function ScanResultModal({
           {scanType === "trick_trainer" && result.type === "trick_trainer" && (
             <TrickTrainerResultView data={result.data} />
           )}
+          {scannedUri && <ProductMockup photoUri={scannedUri} />}
         </ScrollView>
       </View>
     </Modal>
@@ -1254,6 +1258,7 @@ export default function ScannerScreen() {
         }}
         result={scanResult}
         scanType={activeScanType ?? "breed"}
+        scannedUri={scannedUri}
       />
 
       {/* Web Prompt */}
