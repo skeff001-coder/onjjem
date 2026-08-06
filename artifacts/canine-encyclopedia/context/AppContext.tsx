@@ -21,6 +21,8 @@ interface AppContextValue {
   updateDogName: (id: string, name: string) => Promise<void>;
   currentScan: BreedScanResult | null;
   setCurrentScan: (scan: BreedScanResult | null) => void;
+  currentPhotoUri: string | null;
+  setCurrentPhotoUri: (uri: string | null) => void;
   currentDogName: string;
   setCurrentDogName: (name: string) => void;
   currentKnowledge: BreedKnowledge | null;
@@ -38,6 +40,7 @@ const GALLERY_STORAGE_KEY = "@canine_gallery";
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [gallery, setGallery] = useState<GalleryEntry[]>([]);
   const [currentScan, setCurrentScan] = useState<BreedScanResult | null>(null);
+  const [currentPhotoUri, setCurrentPhotoUri] = useState<string | null>(null);
   const [currentDogName, setCurrentDogName] = useState("");
   const [currentKnowledge, setCurrentKnowledge] = useState<BreedKnowledge | null>(null);
   const [selectedGalleryEntry, setSelectedGalleryEntry] = useState<GalleryEntry | null>(null);
@@ -90,6 +93,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         updateDogName,
         currentScan,
         setCurrentScan,
+        currentPhotoUri,
+        setCurrentPhotoUri,
         currentDogName,
         setCurrentDogName,
         currentKnowledge,
