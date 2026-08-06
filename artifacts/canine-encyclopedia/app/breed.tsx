@@ -21,6 +21,7 @@ import Purchases from "react-native-purchases";
 import { useColors } from "@/hooks/useColors";
 import { useApp } from "@/context/AppContext";
 import { KnowledgeSection, InfoRow, TagList } from "@/components/KnowledgeSection";
+import { ProductMockup } from "@/components/ProductMockup";
 
 const { width } = Dimensions.get("window");
 const PHOTO_SIZE = width * 0.42;
@@ -196,12 +197,17 @@ export default function BreedScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { currentScan, currentKnowledge, currentDogName, gallery } = useApp();
+  const { currentScan, currentKnowledge, currentDogName, currentPhotoUri, gallery } = useApp();
   const [breedPhotos, setBreedPhotos] = useState<string[]>([]);
   const [photosLoading, setPhotosLoading] = useState(true);
 
   const isWeb = Platform.OS === "web";
 
+  // currentPhotoUri is set directly by the naming screen right before
+  // navigating here, so it's always the exact photo just scanned — unlike
+  // looking it up from the gallery by matching breed name, which could
+  // both race against the gallery state finishing its update AND
+  // accidentally match a different dog of the same breed scanned earlier.
   const galleryEntry = currentScan
     ? gallery.find((g) => g.breed === currentScan.breed)
     : null;
@@ -236,8 +242,8 @@ export default function BreedScreen() {
       >
         {/* Hero */}
         <View style={styles.heroSection}>
-          {galleryEntry?.uri ? (
-            <Image source={{ uri: galleryEntry.uri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+          {currentPhotoUri ? (
+            <Image source={{ uri: currentPhotoUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
           ) : (
             <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.navyMid, alignItems: "center", justifyContent: "center" }]}>
               <Ionicons name="paw-outline" size={60} color={colors.gold + "44"} />
@@ -292,9 +298,9 @@ export default function BreedScreen() {
               decelerationRate="fast"
               snapToInterval={PHOTO_SIZE + 10}
             >
-              {galleryEntry?.uri && (
+              {currentPhotoUri && (
                 <View style={styles.photoWrap}>
-                  <Image source={{ uri: galleryEntry.uri }} style={[styles.photoTile, { width: PHOTO_SIZE, height: PHOTO_SIZE }]} resizeMode="cover" />
+                  <Image source={{ uri: currentPhotoUri }} style={[styles.photoTile, { width: PHOTO_SIZE, height: PHOTO_SIZE }]} resizeMode="cover" />
                   <View style={[styles.yourDogBadge, { backgroundColor: colors.gold }]}>
                     <Text style={[styles.yourDogBadgeText, { color: colors.navy }]}>
                       {dogName || "Your dog"}
@@ -380,35 +386,8 @@ export default function BreedScreen() {
             </View>
           )}
 
-          {/* onjjem CTA */}
-          {galleryEntry && (
-            <TouchableOpacity
-              onPress={() => {
-                if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                Linking.openURL("https://onjjem.com");
-              }}
-              style={[styles.merchCTA, { backgroundColor: colors.navyMid, borderColor: colors.gold + "33" }]}
-              activeOpacity={0.85}
-            >
-              <Image source={{ uri: galleryEntry.uri }} style={styles.merchThumb} resizeMode="cover" />
-              <View style={{ flex: 1, gap: 3 }}>
-                <Text style={[styles.merchCTATitle, { color: colors.foreground }]}>
-                  {isPersonalised
-                    ? `Create something for ${dogName} 🐾`
-                    : "Create personalised keepsakes"}
-                </Text>
-                <Text style={[styles.merchCTASub, { color: colors.mutedForeground }]}>
-                  {isPersonalised
-                    ? `A photo mug, canvas print or glow poster — just for ${dogName}`
-                    : "Photo mugs · Canvas prints · Glow posters · and more"}
-                </Text>
-                <Text style={[styles.merchPowered, { color: colors.gold + "aa" }]}>
-                  Powered by ONJJEM.com
-                </Text>
-              </View>
-              <Ionicons name="chevron-forward" size={16} color={colors.gold} />
-            </TouchableOpacity>
-          )}
+          {/* onjjem product previews */}
+          {currentPhotoUri && <ProductMockup photoUri={currentPhotoUri} />}
         </View>
       </ScrollView>
     </View>
