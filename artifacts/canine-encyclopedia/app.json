@@ -19,7 +19,9 @@
       "buildNumber": "40",
       "usesAppleSignIn": true,
 
-      "infoPlist": {
+     "infoPlist": { 
+        "LSApplicationQueriesSchemes": ["whatsapp", "fb", "instagram", "tiktok"],
+
         "NSCameraUsageDescription": "That's My Dog! uses your camera to scan and identify your dog's breed using AI.",
         "NSPhotoLibraryUsageDescription": "That's My Dog! accesses your photos so you can choose a dog image for breed identification.",
         "NSPhotoLibraryAddUsageDescription": "That's My Dog! saves identified dog portraits to your photo library.",
