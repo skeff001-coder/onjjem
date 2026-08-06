@@ -787,7 +787,7 @@ export default function ScannerScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { gallery, addToGallery, setCurrentScan, setCurrentKnowledge, setCurrentDogName, cacheKnowledge } = useApp();
+  const { gallery, addToGallery, setCurrentScan, setCurrentPhotoUri, setCurrentKnowledge, setCurrentDogName, cacheKnowledge } = useApp();
   const {
     hasMixedBreed,
     hasAgeCalc,
