@@ -269,12 +269,13 @@ function ScannerCard({
           onPointerLeave: handleHoverOut,
         } as any : {})}
       >
-        {/* Premium badge */}
+      {/* Premium badge */}
         {!def.free && !owned && (
           <View style={[cardStyles.premiumBadge, { backgroundColor: def.color }]}>
-            <Text style={cardStyles.premiumBadgeText}>99p</Text>
+            <Text style={cardStyles.premiumBadgeText}>Bundle</Text>
           </View>
         )}
+
         {!def.free && owned && (
           <View style={[cardStyles.ownedBadge, { backgroundColor: def.color + "22", borderColor: def.color + "44" }]}>
             <Ionicons name="checkmark-circle" size={12} color={def.color} />
