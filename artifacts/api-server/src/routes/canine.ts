@@ -3,7 +3,6 @@ import { GoogleGenAI } from "@google/genai";
 
 const router = Router();
 
-
 function getAI() {
   const apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
   if (!apiKey) {
