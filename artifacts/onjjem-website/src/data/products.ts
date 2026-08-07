@@ -573,4 +573,3 @@ export const products: Product[] = [
     ],
   },
 ];
-```
