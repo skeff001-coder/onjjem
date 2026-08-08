@@ -1031,6 +1031,8 @@ export default function ScannerScreen() {
   const [lastPhoto, setLastPhoto] = useState<{ uri: string; base64: string; mimeType: string } | null>(null);
   const [purchaseModalVisible, setPurchaseModalVisible] = useState(false);
   const [purchaseTarget, setPurchaseTarget] = useState<ScannerDef | null>(null);
+  const [stylePickerVisible, setStylePickerVisible] = useState(false);
+  const [selectedCartoonStyle, setSelectedCartoonStyle] = useState<"default" | "oil-painting" | "anime" | "pop-art">("default");
   const [isBuying, setIsBuying] = useState(false);
 
   const isWeb = Platform.OS === "web";
@@ -1067,6 +1069,10 @@ export default function ScannerScreen() {
     if (!def.free && !isOwned(def)) {
       setPurchaseTarget(def);
       setPurchaseModalVisible(true);
+      return;
+    }
+    if (def.id === "cartoon") {
+      setStylePickerVisible(true);
       return;
     }
     if (def.free && Platform.OS === "ios") {
@@ -1249,7 +1255,7 @@ export default function ScannerScreen() {
           break;
         }
         case "cartoon": {
-          const data = await getDogCartoon(base64, mimeType);
+          const data = await getDogCartoon(base64, mimeType, selectedCartoonStyle);
           setScanResult({ type: "cartoon", data });
           setResultVisible(true);
           if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -1525,6 +1531,40 @@ export default function ScannerScreen() {
         scannedUri={scannedUri}
       />
 
+      {/* Cartoon Style Picker */}
+      <Modal visible={stylePickerVisible} animationType="slide" transparent onRequestClose={() => setStylePickerVisible(false)}>
+        <View style={styles.stylePickerOverlay}>
+          <View style={styles.stylePickerSheet}>
+            <View style={styles.nameHandle} />
+            <Text style={styles.stylePickerTitle}>Choose a Style</Text>
+            <Text style={styles.stylePickerSubtitle}>Pick how you'd like your dog reimagined</Text>
+            {[
+              { id: "default" as const, label: "Animated Movie", icon: "film-outline" },
+              { id: "oil-painting" as const, label: "Oil Painting", icon: "color-palette-outline" },
+              { id: "anime" as const, label: "Anime", icon: "sparkles-outline" },
+              { id: "pop-art" as const, label: "Pop Art", icon: "color-filter-outline" },
+            ].map((opt) => (
+              <TouchableOpacity
+                key={opt.id}
+                style={styles.styleOptionRow}
+                onPress={() => {
+                  setSelectedCartoonStyle(opt.id);
+                  setStylePickerVisible(false);
+                  startScan("cartoon");
+                }}
+              >
+                <Ionicons name={opt.icon as any} size={22} color="#e0a95c" />
+                <Text style={styles.styleOptionText}>{opt.label}</Text>
+                <Ionicons name="chevron-forward" size={18} color="rgba(255,255,255,0.3)" />
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity onPress={() => setStylePickerVisible(false)} style={{ marginTop: 8, alignItems: "center", paddingVertical: 10 }}>
+              <Text style={{ color: "rgba(255,255,255,0.4)", fontFamily: "Inter_600SemiBold", fontSize: 13 }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       {/* Web Prompt */}
       <WebPrompt visible={webPromptVisible} onClose={() => setWebPromptVisible(false)} />
 
@@ -1614,6 +1654,12 @@ const styles = StyleSheet.create({
   nameModalWrap: { flex: 1, justifyContent: "flex-end" },
   nameSheet: { borderTopLeftRadius: 28, borderTopRightRadius: 28, borderWidth: 1, borderBottomWidth: 0, padding: 24, paddingBottom: 44, gap: 14 },
   nameHandle: { width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.15)", alignSelf: "center", marginBottom: 6 },
+  stylePickerOverlay: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" },
+  stylePickerSheet: { backgroundColor: "#141927", borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, paddingBottom: 36 },
+  stylePickerTitle: { fontSize: 20, fontFamily: "Inter_700Bold", color: "#fff", textAlign: "center", marginTop: 8 },
+  stylePickerSubtitle: { fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: 4, marginBottom: 18 },
+  styleOptionRow: { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 14, paddingHorizontal: 16, backgroundColor: "rgba(224,169,92,0.08)", borderRadius: 14, marginBottom: 10 },
+  styleOptionText: { flex: 1, fontSize: 15, fontFamily: "Inter_600SemiBold", color: "#fff" },
   breedFoundRow: { flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderRadius: 16 },
   nameThumbnail: { width: 52, height: 52, borderRadius: 12 },
   breedFoundLabel: { fontSize: 10, fontFamily: "Inter_600SemiBold", color: "rgba(255,255,255,0.45)", letterSpacing: 1, textTransform: "uppercase" },
