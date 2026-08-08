@@ -1,5 +1,8 @@
 import { BebasNeue_400Regular } from "@expo-google-fonts/bebas-neue";
 import {
+  Baloo2_700Bold,
+} from "@expo-google-fonts/baloo-2";
+import {
   Cinzel_400Regular,
   Cinzel_700Bold,
 } from "@expo-google-fonts/cinzel";
@@ -15,6 +18,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { GraffitiTitle } from "@/components/GraffitiTitle";
+import { ArtisanSubtitle } from "@/components/ArtisanSubtitle";
 import React, { useEffect, useRef } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import {
@@ -66,6 +70,9 @@ function AppSplash() {
 
         {/* Brand name */}
         <GraffitiTitle fontSize={60} letterSpacing={8} />
+        <View style={{ marginTop: 6 }}>
+          <ArtisanSubtitle fontSize={16} letterSpacing={2.5} />
+        </View>
         <Text style={splash.subtitle}>Bringing your Gems of Love to Life</Text>
 
 
@@ -287,6 +294,7 @@ function RootLayoutNav() {
       <Stack.Screen name="dev-settings" options={{ headerShown: false }} />
       <Stack.Screen name="shop" options={{ headerShown: false }} />
       <Stack.Screen name="product" options={{ headerShown: false }} />
+      <Stack.Screen name="cartoon" options={{ headerShown: false }} />
     </Stack>
   );
 }
@@ -294,6 +302,7 @@ function RootLayoutNav() {
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     BebasNeue_400Regular,
+    Baloo2_700Bold,
     Cinzel_400Regular,
     Cinzel_700Bold,
     PlayfairDisplay_900Black,
