@@ -11,10 +11,6 @@ function getAI() {
   return new GoogleGenAI({ apiKey });
 }
 
-// Turns a customer's uploaded photo into a warm, family-friendly Pixar/Disney-style
-// cartoon illustration, using Gemini's native image generation ("Nano Banana").
-// This is a genuine image-to-image transformation, not just a text description —
-// the response contains actual generated image bytes.
 router.post("/cartoonify", async (req: Request, res: Response) => {
   const { base64Image, mimeType = "image/jpeg" } = req.body;
 
@@ -41,7 +37,7 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
         },
       ],
       config: {
-        responseModalities: ["image"],
+        responseModalities: ["IMAGE"],
       },
     });
 
