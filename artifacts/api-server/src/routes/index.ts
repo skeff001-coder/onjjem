@@ -19,4 +19,3 @@ router.use(freeScanRouter);
 router.use(cartoonifyRouter);
 
 export default router;
-
