@@ -32,6 +32,13 @@ export const PACKAGE_HEALTH_GUIDE = "health_guide_package";
 export const PACKAGE_TRICK_TRAINER = "trick_trainer_package";
 export const PACKAGE_ALL_SCANNERS = "all_scanners_package";
 
+// ─── Cartoon-ify ───────────────────────────────────────────────────────────
+// Deliberately kept separate from the scanner bundle above — this is a
+// standalone paid product with no free trial, not part of "buy any
+// scanner, get all three".
+export const ENTITLEMENT_CARTOON = "dog_cartoon";
+export const PACKAGE_CARTOON = "dog_cartoon_package";
+
 // ─── Pup-Grade Products ──────────────────────────────────────────────────────
 export const PUPGRADE_PRODUCT_IDS: Record<string, string> = {
   bark_translator:   "pupgrade_bark_translator",
@@ -156,6 +163,9 @@ function useSubscriptionContext() {
   const hasHealthGuide = hasAnyScannerPurchase;
   const hasTrickTrainer = hasAnyScannerPurchase;
 
+  // Standalone, no free trial, not part of the scanner bundle.
+  const hasCartoon = !!active[ENTITLEMENT_CARTOON];
+
   const packageFor = (identifier: string): PurchasesPackage | undefined =>
     offeringsQuery.data?.current?.availablePackages.find((p) => p.identifier === identifier);
 
@@ -172,6 +182,7 @@ function useSubscriptionContext() {
     hasHealthGuide,
     hasTrickTrainer,
     hasAllScanners,
+    hasCartoon,
     packageFor,
     purchase: purchaseMutation.mutateAsync,
     restore: restoreMutation.mutateAsync,
