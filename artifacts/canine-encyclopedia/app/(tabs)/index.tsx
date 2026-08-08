@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   Image,
+  Share,
   TouchableOpacity,
   ActivityIndicator,
   Platform,
@@ -36,11 +37,13 @@ import {
   getPersonalityScan,
   getHealthGuide,
   getTrickTrainer,
+  getDogCartoon,
   type MixedBreedResult,
   type AgeEstimateResult,
   type PersonalityResult,
   type HealthGuideResult,
   type TrickTrainerResult,
+  type DogCartoonResult,
 } from "@/lib/gemini";
 import {
   useSubscription,
@@ -50,6 +53,7 @@ import {
   PACKAGE_HEALTH_GUIDE,
   PACKAGE_TRICK_TRAINER,
   PACKAGE_ALL_SCANNERS,
+  PACKAGE_CARTOON,
 } from "@/lib/revenuecat";
 import { COLLAGE_ONLY } from "@/constants/recordingMode";
 
@@ -68,7 +72,8 @@ type ScanType =
   | "age_calc"
   | "personality"
   | "health_guide"
-  | "trick_trainer";
+  | "trick_trainer"
+  | "cartoon";
 
 interface ScannerDef {
   id: ScanType;
@@ -92,6 +97,7 @@ function useScannerDefs(): ScannerDef[] {
     hasHealthGuide,
     hasTrickTrainer,
     hasAllScanners,
+    hasCartoon,
   } = useSubscription();
 
   const all = hasAllScanners;
@@ -143,8 +149,20 @@ function useScannerDefs(): ScannerDef[] {
         packageId: PACKAGE_PERSONALITY,
         entitlementCheck: () => hasPersonality || all,
       },
+      {
+        id: "cartoon",
+        title: "Cartoon-ify",
+        subtitle: "Turn them into a character",
+        description: "Turn your dog into a vibrant, animated-movie-style cartoon character — keeping their real markings and colouring recognisable.",
+        icon: "color-wand-outline",
+        color: "#e0a95c",
+        glow: "rgba(224,169,92,0.28)",
+        free: false,
+        packageId: PACKAGE_CARTOON,
+        entitlementCheck: () => hasCartoon,
+      },
     ],
-    [hasMixedBreed, hasAgeCalc, hasPersonality, hasHealthGuide, hasTrickTrainer, all]
+    [hasMixedBreed, hasAgeCalc, hasPersonality, hasHealthGuide, hasTrickTrainer, hasCartoon, all]
   );
 }
 
@@ -361,7 +379,8 @@ type ScanResultData =
   | { type: "age_calc"; data: AgeEstimateResult }
   | { type: "personality"; data: PersonalityResult }
   | { type: "health_guide"; data: HealthGuideResult }
-  | { type: "trick_trainer"; data: TrickTrainerResult };
+  | { type: "trick_trainer"; data: TrickTrainerResult }
+  | { type: "cartoon"; data: DogCartoonResult };
 
 /* ─── Result Modal ─── */
 function ScanResultModal({
@@ -405,7 +424,10 @@ function ScanResultModal({
           {scanType === "trick_trainer" && result.type === "trick_trainer" && (
             <TrickTrainerResultView data={result.data} />
           )}
-          {scannedUri && <ProductMockup photoUri={scannedUri} />}
+          {scanType === "cartoon" && result.type === "cartoon" && (
+            <CartoonResultView data={result.data} />
+          )}
+          {scannedUri && scanType !== "cartoon" && <ProductMockup photoUri={scannedUri} />}
         </ScrollView>
       </View>
     </Modal>
@@ -553,6 +575,68 @@ function AgeCalcResult({ data }: { data: AgeEstimateResult }) {
       )}
 
       <ResultSection title="Age-Specific Care" icon="heart-outline" color="#7fb0c2" items={data.careRecommendations} />
+    </View>
+  );
+}
+
+function CartoonResultView({ data }: { data: DogCartoonResult }) {
+  const [saving, setSaving] = useState(false);
+  const dataUri = `data:${data.mimeType};base64,${data.imageBase64}`;
+
+  const handleSaveShare = async () => {
+    setSaving(true);
+    try {
+      const fileUri = `${FileSystem.cacheDirectory}dog-cartoon-${Date.now()}.png`;
+      await FileSystem.writeAsStringAsync(fileUri, data.imageBase64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      await Share.share(
+        Platform.OS === "ios" ? { url: fileUri } : { url: fileUri, message: "My dog, cartoon-ified!" },
+      );
+    } catch (e) {
+      Alert.alert("Couldn't save", "Something went wrong saving the image. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <View style={rStyles.resultWrap}>
+      <View style={[rStyles.iconRing, { borderColor: "#e0a95c" }]}>
+        <Ionicons name="color-wand-outline" size={28} color="#e0a95c" />
+      </View>
+      <Text style={rStyles.resultTitle}>Cartoon-ify</Text>
+      <Text style={rStyles.resultSubtitle}>Your dog, animated-movie style</Text>
+
+      <Image
+        source={{ uri: dataUri }}
+        style={{ width: "100%", aspectRatio: 1, borderRadius: 16, marginTop: 16, backgroundColor: "#1a1a1a" }}
+        resizeMode="cover"
+      />
+
+      <TouchableOpacity
+        onPress={handleSaveShare}
+        disabled={saving}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          backgroundColor: "#e0a95c",
+          borderRadius: 12,
+          paddingVertical: 14,
+          marginTop: 16,
+        }}
+      >
+        {saving ? (
+          <ActivityIndicator color="#1a1206" size="small" />
+        ) : (
+          <>
+            <Ionicons name="download-outline" size={18} color="#1a1206" />
+            <Text style={{ fontSize: 14, fontWeight: "700", color: "#1a1206" }}>Save / Share</Text>
+          </>
+        )}
+      </TouchableOpacity>
     </View>
   );
 }
@@ -914,6 +998,10 @@ export default function ScannerScreen() {
   const [scanResult, setScanResult] = useState<ScanResultData | null>(null);
   const [resultVisible, setResultVisible] = useState(false);
   const [webPromptVisible, setWebPromptVisible] = useState(false);
+  // Remembers the most recently scanned photo so the paid scanners
+  // (mixed_dna / age_calc / personality) can reuse it instead of asking
+  // the user to take or pick a photo all over again.
+  const [lastPhoto, setLastPhoto] = useState<{ uri: string; base64: string; mimeType: string } | null>(null);
   const [purchaseModalVisible, setPurchaseModalVisible] = useState(false);
   const [purchaseTarget, setPurchaseTarget] = useState<ScannerDef | null>(null);
   const [isBuying, setIsBuying] = useState(false);
@@ -972,7 +1060,15 @@ export default function ScannerScreen() {
       // consume step in processImage still enforces the real limit
       // whenever a connection is available.
     }
-    // Owned or free — start scan
+    // Owned or free — start scan.
+    // For the three "reads the same photo differently" scanners, reuse the
+    // most recently scanned photo if we have one, rather than making the
+    // user take or pick a photo all over again.
+    const REUSABLE_SCANS: ScanType[] = ["mixed_dna", "age_calc", "personality", "cartoon"];
+    if (REUSABLE_SCANS.includes(def.id) && lastPhoto) {
+      await processImage(lastPhoto.uri, lastPhoto.base64, lastPhoto.mimeType, def.id);
+      return;
+    }
     startScan(def.id);
   };
 
@@ -1066,6 +1162,7 @@ export default function ScannerScreen() {
 
   const processImage = async (uri: string, base64: string, mimeType: string, scanType: ScanType) => {
     setScannedUri(uri);
+    setLastPhoto({ uri, base64, mimeType });
     if (scanType === "breed") {
       setPhase("scanning");
       setStatusText("Identifying breed…");
@@ -1120,6 +1217,13 @@ export default function ScannerScreen() {
         case "personality": {
           const data = await getPersonalityScan(base64, mimeType);
           setScanResult({ type: "personality", data });
+          setResultVisible(true);
+          if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          break;
+        }
+        case "cartoon": {
+          const data = await getDogCartoon(base64, mimeType);
+          setScanResult({ type: "cartoon", data });
           setResultVisible(true);
           if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           break;
@@ -1408,9 +1512,13 @@ export default function ScannerScreen() {
                 </View>
                 <Text style={[styles.purchaseTitle, { color: colors.foreground }]}>{purchaseTarget.title}</Text>
                 <Text style={[styles.purchaseDesc, { color: colors.mutedForeground }]}>{purchaseTarget.description}</Text>
-                <Text style={[styles.purchasePrice, { color: purchaseTarget.color }]}>99p</Text>
+                <Text style={[styles.purchasePrice, { color: purchaseTarget.color }]}>
+                  {purchaseTarget.id === "cartoon" ? "£3.99" : "£2.99"}
+                </Text>
                 <Text style={[styles.purchaseSub, { color: colors.mutedForeground }]}>
-                  One-time purchase, unlocks every premium scanner. No subscription.
+                  {purchaseTarget.id === "cartoon"
+                    ? "One-time purchase for this feature only. No free trial, no subscription."
+                    : "One-time purchase, unlocks every premium scanner. No subscription."}
                 </Text>
                 <TouchableOpacity
                   onPress={handlePurchase}
@@ -1420,7 +1528,9 @@ export default function ScannerScreen() {
                   {isBuying ? (
                     <ActivityIndicator color="#0a0e1a" size="small" />
                   ) : (
-                    <Text style={[styles.purchaseBtnText, { color: "#0a0e1a" }]}>Unlock All for 99p</Text>
+                    <Text style={[styles.purchaseBtnText, { color: "#0a0e1a" }]}>
+                      {purchaseTarget.id === "cartoon" ? "Unlock Cartoon-ify for £3.99" : "Unlock All for £2.99"}
+                    </Text>
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setPurchaseModalVisible(false)} style={{ paddingVertical: 8 }}>
