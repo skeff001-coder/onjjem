@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { ArtisanSubtitle } from "@/components/ArtisanSubtitle";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 
@@ -54,6 +56,7 @@ export default function HomeScreen() {
             <Text style={s.brandMid} numberOfLines={1} adjustsFontSizeToFit>ONJJEM</Text>
             <Text style={s.brandTop} numberOfLines={1} adjustsFontSizeToFit>ONJJEM</Text>
           </View>
+          <ArtisanSubtitle fontSize={15} letterSpacing={2} />
           <Text style={s.tagline}>Personalised Photo Gift Specialists</Text>
           <Text style={s.subTagline}>Made in Britain  |  Delivered to Your Door</Text>
           <View style={s.goldLine} />
@@ -85,6 +88,21 @@ export default function HomeScreen() {
             </View>
           </View>
         ))}
+
+        <TouchableOpacity
+          style={s.cartoonCard}
+          onPress={() => router.push("/cartoon")}
+          activeOpacity={0.88}
+        >
+          <View style={s.cartoonIconWrap}>
+            <Ionicons name="color-wand-outline" size={28} color="#0A0804" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={s.cartoonTitle}>Try Cartoon-ify ✨</Text>
+            <Text style={s.cartoonSub}>Turn any photo into a vibrant animated illustration — free to try</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color="#0A0804" style={{ opacity: 0.6 }} />
+        </TouchableOpacity>
 
         <TouchableOpacity style={s.ctaGold} onPress={openShop} activeOpacity={0.85}>
           <Ionicons name="bag-handle-outline" size={20} color="#0A0804" />
@@ -203,6 +221,25 @@ const s = StyleSheet.create({
   promiseIcon: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(201,150,12,0.1)", alignItems: "center", justifyContent: "center" },
   promiseTitle: { fontSize: 12, fontWeight: "700", color: "#F5EDD8", marginBottom: 2 },
   promiseSub: { fontSize: 11, color: "rgba(245,237,216,0.5)", lineHeight: 17 },
+  cartoonCard: {
+    backgroundColor: GOLD,
+    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    padding: 16,
+    marginBottom: 14,
+  },
+  cartoonIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: "rgba(10,8,4,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cartoonTitle: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#0A0804" },
+  cartoonSub: { fontSize: 12, color: "rgba(10,8,4,0.75)", marginTop: 2 },
   ctaGold: { backgroundColor: GOLD, borderRadius: 10, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 15, paddingHorizontal: 20 },
   ctaGoldText: { fontSize: 15, color: DARK, fontWeight: "700", flex: 1, textAlign: "center" },
   sectionTitle: { fontSize: 17, color: "#F5D78E", fontWeight: "700", letterSpacing: 0.3 },
