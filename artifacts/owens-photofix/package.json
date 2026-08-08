@@ -10,6 +10,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@expo-google-fonts/bebas-neue": "^0.4.1",
+    "@expo-google-fonts/baloo-2": "^0.4.1",
     "@expo-google-fonts/cinzel": "^0.4.2",
     "@expo-google-fonts/inter": "^0.4.2",
     "@expo-google-fonts/playfair-display": "^0.4.2",
