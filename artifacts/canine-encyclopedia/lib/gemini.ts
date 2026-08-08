@@ -3,8 +3,8 @@ export interface BreedScanResult {
   confidence: string;
   mixBreeds?: string[];
   isMix: boolean;
+  
 }
-
 export interface BreedKnowledge {
   breed: string;
   habitat: {
