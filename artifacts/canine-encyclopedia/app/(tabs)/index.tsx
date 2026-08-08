@@ -86,6 +86,7 @@ interface ScannerDef {
   free: boolean;
   packageId?: string;
   entitlementCheck?: () => boolean;
+  featured?: boolean;
 }
 
 /* ─── Scanner Definitions ─── */
@@ -151,15 +152,16 @@ function useScannerDefs(): ScannerDef[] {
       },
       {
         id: "cartoon",
-        title: "Cartoon-ify",
-        subtitle: "Turn them into a character",
-        description: "Turn your dog into a vibrant, animated-movie-style cartoon character — keeping their real markings and colouring recognisable.",
+        title: "Cartoon-ify ✨",
+        subtitle: "See them as a movie star",
+        description: "Watch your dog transform into a vibrant, animated-movie-style character in seconds — then unlock 3 more styles (Oil Painting, Anime, Pop Art) and print your favourite at ONJJEM.",
         icon: "color-wand-outline",
         color: "#e0a95c",
         glow: "rgba(224,169,92,0.28)",
         free: false,
         packageId: PACKAGE_CARTOON,
         entitlementCheck: () => hasCartoon,
+        featured: true,
       },
     ],
     [hasMixedBreed, hasAgeCalc, hasPersonality, hasHealthGuide, hasTrickTrainer, hasCartoon, all]
@@ -237,6 +239,7 @@ function ScannerCard({
   const anim = useRef(new Animated.Value(0)).current;
   const [hovered, setHovered] = useState(false);
   const scale = useRef(new Animated.Value(1)).current;
+  const pulse = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(anim, {
@@ -246,6 +249,18 @@ function ScannerCard({
       useNativeDriver: Platform.OS !== "web",
     }).start();
   }, [anim, index]);
+
+  useEffect(() => {
+    if (!def.featured || owned) return;
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, { toValue: 1, duration: 1200, useNativeDriver: Platform.OS !== "web" }),
+        Animated.timing(pulse, { toValue: 0, duration: 1200, useNativeDriver: Platform.OS !== "web" }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [def.featured, owned, pulse]);
 
   const nativeDriver = Platform.OS !== "web";
   const handleHoverIn = () => {
@@ -265,33 +280,44 @@ function ScannerCard({
 
   const translateY = anim.interpolate({ inputRange: [0, 1], outputRange: [40, 0] });
   const opacity = anim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
+  const isFeaturedGlow = def.featured && !owned;
+  const glowShadowOpacity = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.2, 0.55] });
+  const glowBorderColor = isFeaturedGlow ? def.color : (hovered ? def.color : "rgba(255,255,255,0.08)");
 
   return (
     <Animated.View style={{ transform: [{ translateY }, { scale }], opacity, width: CARD_WIDTH }}>
+      <Animated.View
+        style={[
+          cardStyles.card,
+          {
+            borderColor: glowBorderColor,
+            borderWidth: isFeaturedGlow ? 1.5 : (hovered ? 1.5 : 1),
+            shadowColor: def.color,
+            shadowOpacity: isFeaturedGlow ? glowShadowOpacity : (hovered ? 0.25 : 0.08),
+            shadowRadius: isFeaturedGlow ? 24 : (hovered ? 20 : 8),
+          },
+        ]}
+      >
       <TouchableOpacity
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         activeOpacity={0.9}
-        style={[
-          cardStyles.card,
-          {
-            borderColor: hovered ? def.color : "rgba(255,255,255,0.08)",
-            borderWidth: hovered ? 1.5 : 1,
-            shadowColor: def.color,
-            shadowOpacity: hovered ? 0.25 : 0.08,
-            shadowRadius: hovered ? 20 : 8,
-          },
-        ]}
+        style={{ gap: 10 }}
         {...(Platform.OS === "web" ? {
           onPointerEnter: handleHoverIn,
           onPointerLeave: handleHoverOut,
         } as any : {})}
       >
         {/* Premium badge */}
-        {!def.free && !owned && (
+        {!def.free && !owned && !def.featured && (
           <View style={[cardStyles.premiumBadge, { backgroundColor: def.color }]}>
             <Text style={cardStyles.premiumBadgeText}>Bundle</Text>
+          </View>
+        )}
+        {!def.free && !owned && def.featured && (
+          <View style={[cardStyles.premiumBadge, { backgroundColor: def.color }]}>
+            <Text style={cardStyles.premiumBadgeText}>Try It ✨</Text>
           </View>
         )}
         {!def.free && owned && (
@@ -319,6 +345,7 @@ function ScannerCard({
 
         <Text style={cardStyles.description}>{def.description}</Text>
       </TouchableOpacity>
+      </Animated.View>
     </Animated.View>
   );
 }
