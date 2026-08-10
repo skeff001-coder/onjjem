@@ -136,7 +136,7 @@ export default function HomeScreen() {
             Starts solid black. Pour in a hot drink and your photo appears in full colour - like magic.
           </Text>
           <TouchableOpacity style={s.mugBtn} onPress={openShop} activeOpacity={0.85}>
-            <Text style={s.mugBtnText}>Order The Magic Mug - £13.99</Text>
+            <Text style={s.mugBtnText}>Order The Magic Mug - £17.99</Text>
             <Ionicons name="chevron-forward" size={14} color="#0A0804" />
           </TouchableOpacity>
         </View>
