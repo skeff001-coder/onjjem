@@ -1527,7 +1527,7 @@ export default function ScannerScreen() {
           setScannedUri(null);
         }}
         result={scanResult}
-        scanType={activeScanType ?? "breed"}
+        scanType={scanResult?.type ?? "breed"}
         scannedUri={scannedUri}
       />
 
