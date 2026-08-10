@@ -861,7 +861,7 @@ function ResultSection({ title, icon, color, items }: { title: string; icon: str
         <Ionicons name={icon as any} size={14} color={color} />
         <Text style={[rStyles.sectionTitle, { color }]}>{title}</Text>
       </View>
-      {items.map((item, i) => (
+      {(items ?? []).map((item, i) => (
         <View key={i} style={{ flexDirection: "row", alignItems: "flex-start", gap: 8, marginBottom: 6 }}>
           <Text style={{ color, fontSize: 14, marginTop: 1 }}>•</Text>
           <Text style={[rStyles.bulletText, { flex: 1 }]}>{item}</Text>
