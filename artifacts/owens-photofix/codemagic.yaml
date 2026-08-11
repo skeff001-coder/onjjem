@@ -27,7 +27,8 @@ workflows:
       - name: Expo prebuild (generate native iOS project)
         script: |
           cd artifacts/owens-photofix
-          npx expo prebuild --platform ios --clean
+          export RCT_USE_PREBUILT_RNCORE=0
+          pnpm exec expo prebuild --platform ios --clean
 
       - name: Set up signing keychain
         script: |
