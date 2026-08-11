@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "owens-photofix",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.photorestoration",
-      "buildNumber": "135",
+      "buildNumber": "136",
       "privacyPolicyUrl": "https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
