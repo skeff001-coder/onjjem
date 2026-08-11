@@ -454,7 +454,7 @@ function ScanResultModal({
           {scanType === "cartoon" && result.type === "cartoon" && (
             <CartoonResultView data={result.data} />
           )}
-          {scannedUri && scanType !== "cartoon" && <ProductMockup photoUri={scannedUri} />}
+          {scannedUri && !["cartoon", "mixed_dna", "age_calc", "personality"].includes(scanType) && <ProductMockup photoUri={scannedUri} />}
         </ScrollView>
       </View>
     </Modal>
