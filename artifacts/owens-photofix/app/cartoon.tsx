@@ -10,7 +10,7 @@ import {
   Linking,
   Platform,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
@@ -20,7 +20,7 @@ const API_BASE = `https://${process.env.EXPO_PUBLIC_DOMAIN ?? ""}`;
 type Phase = "idle" | "picked" | "generating" | "done" | "error";
 
 export default function CartoonScreen() {
-  const insets = useSafeAreaInsets();
+  
   const [phase, setPhase] = useState<Phase>("idle");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [cartoonUri, setCartoonUri] = useState<string | null>(null);
@@ -80,7 +80,8 @@ export default function CartoonScreen() {
   return (
     <View style={s.root}>
       <ScrollView
-        contentContainerStyle={[s.scroll, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 40 }]}
+        contentContainerStyle={[s.scroll, { paddingTop: 60, paddingBottom: 60 }]}
+
         showsVerticalScrollIndicator={false}
       >
         <TouchableOpacity onPress={() => router.back()} style={s.backBtn}>
