@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "44",
+      "buildNumber": "45",
       "usesAppleSignIn": true,
 
      "infoPlist": { 
