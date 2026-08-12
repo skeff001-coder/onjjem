@@ -603,12 +603,14 @@ function AgeCalcResult({ data }: { data: AgeEstimateResult }) {
         </View>
       )}
 
-      <ResultSection title="Age-Specific Care" icon="heart-outline" color="#7fb0c2" items={data.careRecommendations} />
+            <ResultSection title="Age-Specific Care" icon="heart-outline" color="#7fb0c2" items={data.careRecommendations} />
+      <PrintCTA color="#7fb0c2" />
     </View>
   );
 }
 
 function CartoonResultView({ data }: { data: DogCartoonResult }) {
+
   const [saving, setSaving] = useState(false);
   const dataUri = `data:${data.mimeType};base64,${data.imageBase64}`;
 
