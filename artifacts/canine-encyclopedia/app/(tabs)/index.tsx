@@ -753,17 +753,19 @@ function PersonalityResultView({ data }: { data: PersonalityResult }) {
         </View>
       )}
 
-      {!!data.compatibilityNotes && (
+            {!!data.compatibilityNotes && (
         <View style={rStyles.summaryBox}>
           <Text style={[rStyles.summaryLabel, { color: "#a999c9" }]}>Kids & Other Pets</Text>
           <Text style={rStyles.summaryText}>{data.compatibilityNotes}</Text>
         </View>
       )}
+      <PrintCTA color="#a999c9" />
     </View>
   );
 }
 
 function HealthGuideResult({ data }: { data: HealthGuideResult }) {
+
   return (
     <View style={rStyles.resultWrap}>
       <View style={[rStyles.iconRing, { borderColor: "#4ade80" }]}>
