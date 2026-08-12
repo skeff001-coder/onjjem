@@ -117,39 +117,16 @@ function useScannerDefs(): ScannerDef[] {
       },
       {
         id: "mixed_dna",
-        title: "Mixed Breed DNA",
-        subtitle: "Genetic heritage breakdown",
-        description: "Discover your dog's ancestral breeds, genetic markers, and full heritage tree.",
-        icon: "git-merge-outline",
-        color: "#c98b9c",
-        glow: "rgba(201,139,156,0.28)",
+        title: "🧬 The Full Story Bundle",
+        subtitle: "DNA · Age · Personality — all in one",
+        description: "Unlock your dog's complete Mixed Breed DNA, Age Estimate & Personality Profile in one go — plus a free postcard of your dog, delivered to your door.",
+        icon: "layers-outline",
+        color: "#d4af37",
+        glow: "rgba(212,175,55,0.3)",
         free: false,
         packageId: PACKAGE_MIXED_BREED,
         entitlementCheck: () => hasMixedBreed || all,
-      },
-      {
-        id: "age_calc",
-        title: "Age Calculator",
-        subtitle: "Visual age estimation",
-        description: "Our AI reads coat condition, eye clarity, and muscle tone to estimate your dog's age.",
-        icon: "hourglass-outline",
-        color: "#7fb0c2",
-        glow: "rgba(127,176,194,0.28)",
-        free: false,
-        packageId: PACKAGE_AGE_CALC,
-        entitlementCheck: () => hasAgeCalc || all,
-      },
-      {
-        id: "personality",
-        title: "Personality Matcher",
-        subtitle: "Shareable results",
-        description: "Analyse your dog's expression and posture to reveal their dominant traits, social style, and energy level.",
-        icon: "happy-outline",
-        color: "#a999c9",
-        glow: "rgba(169,153,201,0.28)",
-        free: false,
-        packageId: PACKAGE_PERSONALITY,
-        entitlementCheck: () => hasPersonality || all,
+        featured: true,
       },
       {
         id: "cartoon",
@@ -318,7 +295,7 @@ function ScannerCard({
         )}
         {!def.free && !owned && def.featured && (
           <View style={[cardStyles.premiumBadge, { backgroundColor: def.color }]}>
-            <Text style={cardStyles.premiumBadgeText}>Try It ✨</Text>
+            <Text style={cardStyles.premiumBadgeText}>{def.id === "mixed_dna" ? "Bundle ✨" : "Try It ✨"}</Text>
           </View>
         )}
         {!def.free && owned && (
@@ -1089,6 +1066,7 @@ export default function ScannerScreen() {
   const [purchaseModalVisible, setPurchaseModalVisible] = useState(false);
   const [purchaseTarget, setPurchaseTarget] = useState<ScannerDef | null>(null);
   const [stylePickerVisible, setStylePickerVisible] = useState(false);
+  const [storyPickerVisible, setStoryPickerVisible] = useState(false);
   const [selectedCartoonStyle, setSelectedCartoonStyle] = useState<"default" | "oil-painting" | "anime" | "pop-art">("default");
   const [isBuying, setIsBuying] = useState(false);
   const [cartoonFreeUsed, setCartoonFreeUsed] = useState<boolean | null>(null);
@@ -1158,6 +1136,12 @@ export default function ScannerScreen() {
       }
       setPurchaseTarget(def);
       setPurchaseModalVisible(true);
+      return;
+    }
+    if (def.id === "mixed_dna") {
+      // Already owned — let them pick which of the three reports to view,
+      // rather than guessing which one they meant.
+      setStoryPickerVisible(true);
       return;
     }
     if (def.free && Platform.OS === "ios") {
@@ -1699,6 +1683,42 @@ export default function ScannerScreen() {
               </TouchableOpacity>
             ))}
             <TouchableOpacity onPress={() => setStylePickerVisible(false)} style={{ marginTop: 8, alignItems: "center", paddingVertical: 10 }}>
+              <Text style={{ color: "rgba(255,255,255,0.4)", fontFamily: "Inter_600SemiBold", fontSize: 13 }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Story Picker — choose which report to view from the Full Story Bundle */}
+      <Modal visible={storyPickerVisible} animationType="slide" transparent onRequestClose={() => setStoryPickerVisible(false)}>
+        <View style={styles.stylePickerOverlay}>
+          <View style={styles.stylePickerSheet}>
+            <View style={styles.nameHandle} />
+            <Text style={styles.stylePickerTitle}>Your Dog's Full Story</Text>
+            <Text style={styles.stylePickerSubtitle}>Choose which report to view</Text>
+            {[
+              { id: "mixed_dna" as const, label: "Mixed Breed DNA", icon: "git-merge-outline" },
+              { id: "age_calc" as const, label: "Age Calculator", icon: "hourglass-outline" },
+              { id: "personality" as const, label: "Personality Matcher", icon: "happy-outline" },
+            ].map((opt) => (
+              <TouchableOpacity
+                key={opt.id}
+                style={styles.styleOptionRow}
+                onPress={() => {
+                  setStoryPickerVisible(false);
+                  if (lastPhoto) {
+                    processImage(lastPhoto.uri, lastPhoto.base64, lastPhoto.mimeType, opt.id);
+                  } else {
+                    startScan(opt.id);
+                  }
+                }}
+              >
+                <Ionicons name={opt.icon as any} size={22} color="#d4af37" />
+                <Text style={styles.styleOptionText}>{opt.label}</Text>
+                <Ionicons name="chevron-forward" size={18} color="rgba(255,255,255,0.3)" />
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity onPress={() => setStoryPickerVisible(false)} style={{ marginTop: 8, alignItems: "center", paddingVertical: 10 }}>
               <Text style={{ color: "rgba(255,255,255,0.4)", fontFamily: "Inter_600SemiBold", fontSize: 13 }}>Cancel</Text>
             </TouchableOpacity>
           </View>
