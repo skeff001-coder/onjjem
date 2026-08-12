@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.photorestoration",
-      "buildNumber": "142",
+      "buildNumber": "143",
       "privacyPolicyUrl": "https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
@@ -52,7 +52,15 @@
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "ONJJEM needs access to your photos so you can choose a photo to restore.",
+          "savePhotosPermission": "Allow ONJJEM to save your enhanced photo to your Photos library.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
     ],
 
     "experiments": {
