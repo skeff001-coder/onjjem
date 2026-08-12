@@ -18,6 +18,8 @@ workflows:
         bundle_identifier: com.onjjem.photorestoration
       vars:
         BUNDLE_ID: com.onjjem.photorestoration
+        EXPO_PUBLIC_DOMAIN: onjjem-production-5ef8.up.railway.app
+
 
     scripts:
       # --- Setup ---
