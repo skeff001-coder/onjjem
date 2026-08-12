@@ -19,6 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import Purchases from "react-native-purchases";
 import { useColors } from "@/hooks/useColors";
+import { useSubscription } from "@/lib/revenuecat";
 import { useApp } from "@/context/AppContext";
 import { KnowledgeSection, InfoRow, TagList } from "@/components/KnowledgeSection";
 import { ProductMockup } from "@/components/ProductMockup";
@@ -198,6 +199,7 @@ export default function BreedScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { currentScan, currentKnowledge, currentDogName, currentPhotoUri, gallery } = useApp();
+  const { hasMixedBreed } = useSubscription();
   const [breedPhotos, setBreedPhotos] = useState<string[]>([]);
   const [photosLoading, setPhotosLoading] = useState(true);
 
@@ -276,6 +278,36 @@ export default function BreedScreen() {
             )}
           </View>
         </View>
+
+        {/* Gentle reminder — only shown if not yet purchased */}
+        {!hasMixedBreed && (
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 12,
+              backgroundColor: "rgba(201,168,76,0.08)",
+              borderWidth: 1,
+              borderColor: "rgba(201,168,76,0.25)",
+              borderRadius: 16,
+              marginHorizontal: 16,
+              marginTop: 16,
+              padding: 16,
+            }}
+          >
+            <Ionicons name="sparkles" size={24} color={colors.gold} />
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: "700", color: colors.foreground }}>
+                Unlock {displayName}'s full story — £2.99
+              </Text>
+              <Text style={{ fontSize: 12, color: colors.mutedForeground, marginTop: 2 }}>
+                Free postcard · Free Loyalty Card access · DNA, Age & Personality reports
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.mutedForeground} />
+          </TouchableOpacity>
+        )}
 
         {/* Breed Photo Gallery */}
         <View style={[styles.photoSection, { backgroundColor: colors.navyMid }]}>
