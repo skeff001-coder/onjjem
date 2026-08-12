@@ -23,6 +23,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Haptics from "expo-haptics";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColors } from "@/hooks/useColors";
 import { waitForCapture } from "@/lib/captureBridge";
 import { getOrRequestAppleUserId, getFreeScanStatus, consumeFreeScan } from "@/lib/freeScanAuth";
@@ -1073,6 +1074,8 @@ export default function ScannerScreen() {
   const [pendingScan, setPendingScan] = useState<Awaited<ReturnType<typeof identifyBreedFromBase64>> | null>(null);
   const [dogName, setDogName] = useState("");
   const [pendingGalleryId, setPendingGalleryId] = useState<string | null>(null);
+  const [revealOfferVisible, setRevealOfferVisible] = useState(false);
+  const [revealOfferDogName, setRevealOfferDogName] = useState("");
   const nameInputRef = useRef<TextInput>(null);
 
   const [activeScanType, setActiveScanType] = useState<ScanType | null>(null);
@@ -1088,6 +1091,18 @@ export default function ScannerScreen() {
   const [stylePickerVisible, setStylePickerVisible] = useState(false);
   const [selectedCartoonStyle, setSelectedCartoonStyle] = useState<"default" | "oil-painting" | "anime" | "pop-art">("default");
   const [isBuying, setIsBuying] = useState(false);
+  const [cartoonFreeUsed, setCartoonFreeUsed] = useState<boolean | null>(null);
+  const [cartoonPaidUsesRemaining, setCartoonPaidUsesRemaining] = useState(0);
+
+  useEffect(() => {
+    if (!hasMixedBreed) return;
+    (async () => {
+      const freeUsedRaw = await AsyncStorage.getItem("wud_cartoon_free_used");
+      setCartoonFreeUsed(freeUsedRaw === "true");
+      const paidRaw = await AsyncStorage.getItem("wud_cartoon_paid_uses");
+      setCartoonPaidUsesRemaining(paidRaw ? parseInt(paidRaw, 10) : 0);
+    })();
+  }, [hasMixedBreed]);
 
   const isWeb = Platform.OS === "web";
   const topPad = isWeb ? 67 : insets.top;
@@ -1126,7 +1141,23 @@ export default function ScannerScreen() {
       return;
     }
     if (def.id === "cartoon") {
-      setStylePickerVisible(true);
+      if (!hasMixedBreed) {
+        Alert.alert(
+          "Unlock Cartoon-ify",
+          "Cartoon-ify is a reward for purchasing the Mixed Breed DNA, Age Calculator & Personality Matcher bundle (£2.99). Buy the bundle to unlock your first free cartoon!",
+        );
+        return;
+      }
+      if (cartoonFreeUsed === false) {
+        setStylePickerVisible(true);
+        return;
+      }
+      if (cartoonPaidUsesRemaining > 0) {
+        setStylePickerVisible(true);
+        return;
+      }
+      setPurchaseTarget(def);
+      setPurchaseModalVisible(true);
       return;
     }
     if (def.free && Platform.OS === "ios") {
@@ -1312,6 +1343,14 @@ export default function ScannerScreen() {
           const data = await getDogCartoon(base64, mimeType, cartoonStyleOverride ?? "default");
           setScanResult({ type: "cartoon", data });
           setResultVisible(true);
+          if (cartoonFreeUsed === false) {
+            await AsyncStorage.setItem("wud_cartoon_free_used", "true");
+            setCartoonFreeUsed(true);
+          } else if (cartoonPaidUsesRemaining > 0) {
+            const next = cartoonPaidUsesRemaining - 1;
+            await AsyncStorage.setItem("wud_cartoon_paid_uses", String(next));
+            setCartoonPaidUsesRemaining(next);
+          }
           if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           break;
         }
@@ -1363,18 +1402,33 @@ export default function ScannerScreen() {
       timestamp: Date.now(),
       hasDeepKnowledge: false,
     });
-    router.push("/breed");
     getBreedKnowledge(pendingScan.breed)
       .then((k) => {
         setCurrentKnowledge(k);
         cacheKnowledge(pendingScan.breed, k);
       })
       .catch(() => {});
+    setRevealOfferDogName(name || "your dog");
     setPhase("idle");
     setScannedUri(null);
     setPendingScan(null);
     setPendingGalleryId(null);
     setDogName("");
+    setRevealOfferVisible(true);
+  };
+
+  const dismissRevealOffer = () => {
+    setRevealOfferVisible(false);
+    router.push("/breed");
+  };
+
+  const acceptRevealOffer = () => {
+    setRevealOfferVisible(false);
+    const mixedDnaDef = scanners.find((s) => s.id === "mixed_dna");
+    if (mixedDnaDef) {
+      setPurchaseTarget(mixedDnaDef);
+      setPurchaseModalVisible(true);
+    }
   };
 
   const handleReset = () => {
@@ -1403,8 +1457,18 @@ export default function ScannerScreen() {
       await purchase(pkg);
       if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setPurchaseModalVisible(false);
-      // After purchase, start the scan
-      startScan(purchaseTarget.id);
+      if (purchaseTarget.id === "cartoon") {
+        await AsyncStorage.setItem("wud_cartoon_paid_uses", "3");
+        setCartoonPaidUsesRemaining(3);
+        setStylePickerVisible(true);
+      } else if (lastPhoto) {
+        // Reuse the photo just scanned (e.g. from the Reveal Story offer)
+        // rather than asking for a brand new photo.
+        await processImage(lastPhoto.uri, lastPhoto.base64, lastPhoto.mimeType, purchaseTarget.id);
+      } else {
+        // After purchase, start the scan
+        startScan(purchaseTarget.id);
+      }
     } catch (e: any) {
       if (!e?.userCancelled) Alert.alert("Purchase failed", e?.message ?? "Please try again.");
     } finally {
@@ -1571,6 +1635,29 @@ export default function ScannerScreen() {
         </KeyboardAvoidingView>
       </Modal>
 
+      {/* Reveal Story Offer — shown right after a breed scan is named */}
+      <Modal visible={revealOfferVisible} animationType="slide" transparent onRequestClose={dismissRevealOffer}>
+        <View style={styles.nameModalWrap}>
+          <TouchableOpacity style={StyleSheet.absoluteFill} onPress={dismissRevealOffer} />
+          <View style={[styles.nameSheet, { backgroundColor: "#141927", borderColor: "rgba(255,255,255,0.1)" }]}>
+            <View style={styles.nameHandle} />
+            <Text style={{ fontSize: 22, fontWeight: "800", color: "#fff", textAlign: "center" }}>
+              🐾 {revealOfferDogName}'s story awaits
+            </Text>
+            <Text style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
+              Unlock {revealOfferDogName}'s full Mixed Breed DNA, Age & Personality report — plus a free postcard
+              of {revealOfferDogName} posted straight to your door, and access to the Loyalty Card.
+            </Text>
+            <TouchableOpacity onPress={acceptRevealOffer} style={[styles.continueBtn, { marginTop: 18 }]}>
+              <Text style={styles.continueBtnText}>Reveal {revealOfferDogName}'s Story — £2.99</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={dismissRevealOffer} style={styles.cancelLink}>
+              <Text style={styles.cancelText}>Maybe later</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       {/* Premium Scan Result */}
       <ScanResultModal
         visible={resultVisible}
@@ -1633,7 +1720,7 @@ export default function ScannerScreen() {
                 <Text style={[styles.purchaseTitle, { color: colors.foreground }]}>{purchaseTarget.title}</Text>
                 <Text style={[styles.purchaseDesc, { color: colors.mutedForeground }]}>{purchaseTarget.description}</Text>
                 <Text style={[styles.purchasePrice, { color: purchaseTarget.color }]}>
-                  {purchaseTarget.id === "cartoon" ? "£3.99" : "£2.99"}
+                  {purchaseTarget.id === "cartoon" ? "£4.99" : "£2.99"}
                 </Text>
                 <Text style={[styles.purchaseSub, { color: colors.mutedForeground }]}>
                   {purchaseTarget.id === "cartoon"
@@ -1649,7 +1736,7 @@ export default function ScannerScreen() {
                     <ActivityIndicator color="#0a0e1a" size="small" />
                   ) : (
                     <Text style={[styles.purchaseBtnText, { color: "#0a0e1a" }]}>
-                      {purchaseTarget.id === "cartoon" ? "Unlock Cartoon-ify for £3.99" : "Unlock All for £2.99"}
+                      {purchaseTarget.id === "cartoon" ? "Unlock 3 More Cartoons for £4.99" : "Unlock All for £2.99"}
                     </Text>
                   )}
                 </TouchableOpacity>
