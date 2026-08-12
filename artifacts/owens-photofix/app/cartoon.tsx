@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -12,18 +12,29 @@ import {
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system/legacy";
 import { router } from "expo-router";
+import { useSubscription } from "@/lib/revenuecat";
 
 const API_BASE = `https://${process.env.EXPO_PUBLIC_DOMAIN ?? ""}`;
+const CARTOON_FREE_USED_KEY = "onjjem_cartoon_free_used";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const GRID_COLUMNS = 3;
 const GRID_GAP = 3;
 const THUMB_SIZE = (SCREEN_WIDTH - 40 - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS;
 
-type Phase = "idle" | "permission-denied" | "picking" | "picked" | "generating" | "done" | "error";
+type Phase =
+  | "idle"
+  | "permission-denied"
+  | "picking"
+  | "picked"
+  | "generating"
+  | "done"
+  | "error"
+  | "paywall";
 
 export default function CartoonScreen() {
   const [phase, setPhase] = useState<Phase>("idle");
@@ -32,6 +43,38 @@ export default function CartoonScreen() {
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [assets, setAssets] = useState<MediaLibrary.Asset[]>([]);
   const [loadingAssets, setLoadingAssets] = useState(false);
+  const [freeUsed, setFreeUsed] = useState<boolean | null>(null);
+
+  const { isSubscribed, photoCredits, perPhotoPackage, monthlyPackage, purchase, isPurchasing } =
+    useSubscription();
+
+  useEffect(() => {
+    AsyncStorage.getItem(CARTOON_FREE_USED_KEY).then((v) => setFreeUsed(v === "true"));
+  }, []);
+
+  const markFreeUsed = async () => {
+    await AsyncStorage.setItem(CARTOON_FREE_USED_KEY, "true");
+    setFreeUsed(true);
+  };
+
+  // Decide, right before generating, whether this attempt is allowed —
+  // and if not, show the paywall instead of calling the API.
+  const checkAccessThenPick = async () => {
+    if (freeUsed === false) {
+      // First ever cartoon — free, no purchase needed.
+      openPicker();
+      return;
+    }
+    if (isSubscribed) {
+      openPicker();
+      return;
+    }
+    if (photoCredits > 0) {
+      openPicker();
+      return;
+    }
+    setPhase("paywall");
+  };
 
   const openPicker = async () => {
     try {
@@ -60,8 +103,6 @@ export default function CartoonScreen() {
   const selectAsset = useCallback(async (asset: MediaLibrary.Asset) => {
     try {
       setPhase("picked");
-      // On iOS, asset.uri is a ph:// identifier — resolve it to a real
-      // readable file:// path via getAssetInfoAsync before reading bytes.
       const info = await MediaLibrary.getAssetInfoAsync(asset.id);
       const localUri = info.localUri ?? info.uri ?? asset.uri;
 
@@ -76,7 +117,7 @@ export default function CartoonScreen() {
       setErrorMsg("Could not read that photo. Please try a different one.");
       setPhase("error");
     }
-  }, []);
+  }, [freeUsed, isSubscribed, photoCredits]);
 
   const generateCartoon = async (base64: string, mimeType: string) => {
     setPhase("generating");
@@ -91,6 +132,13 @@ export default function CartoonScreen() {
       if (data.base64Image) {
         setCartoonUri(`data:${data.mimeType ?? "image/png"};base64,${data.base64Image}`);
         setPhase("done");
+
+        // Charge for this generation only after it succeeds.
+        if (freeUsed === false) {
+          await markFreeUsed();
+        } else if (!isSubscribed && photoCredits > 0) {
+          await useSubscriptionCredit();
+        }
       } else {
         setErrorMsg(data.error || "Couldn't create the cartoon. Please try again.");
         setPhase("error");
@@ -98,6 +146,35 @@ export default function CartoonScreen() {
     } catch (err) {
       setErrorMsg("Could not connect. Please check your connection and try again.");
       setPhase("error");
+    }
+  };
+
+  // Small wrapper so we can call consumePhotoCredit from useSubscription
+  // without re-destructuring it at the top (keeps hook order stable).
+  const { consumePhotoCredit } = useSubscription();
+  const useSubscriptionCredit = async () => {
+    await consumePhotoCredit();
+  };
+
+  const buyOneMore = async () => {
+    if (!perPhotoPackage) return;
+    try {
+      await purchase(perPhotoPackage);
+      setPhase("idle");
+      openPicker();
+    } catch (err) {
+      // Purchase cancelled or failed — stay on paywall.
+    }
+  };
+
+  const subscribeUnlimited = async () => {
+    if (!monthlyPackage) return;
+    try {
+      await purchase(monthlyPackage);
+      setPhase("idle");
+      openPicker();
+    } catch (err) {
+      // Purchase cancelled or failed — stay on paywall.
     }
   };
 
@@ -119,7 +196,7 @@ export default function CartoonScreen() {
         showsVerticalScrollIndicator={false}
       >
         <TouchableOpacity
-          onPress={() => (phase === "picking" ? setPhase("idle") : router.back())}
+          onPress={() => (phase === "picking" || phase === "paywall" ? setPhase("idle") : router.back())}
           style={s.backBtn}
         >
           <Ionicons name="chevron-back" size={22} color="#F5EDD8" />
@@ -138,8 +215,42 @@ export default function CartoonScreen() {
           <View style={s.startCard}>
             <Ionicons name="color-wand-outline" size={48} color="#C9960C" />
             <Text style={s.startTitle}>Choose a photo to transform</Text>
-            <TouchableOpacity onPress={openPicker} style={s.primaryBtn}>
+            {freeUsed === false && (
+              <Text style={s.freeNote}>✨ Your first one is free</Text>
+            )}
+            <TouchableOpacity onPress={checkAccessThenPick} style={s.primaryBtn}>
               <Text style={s.primaryBtnText}>Choose Photo</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {phase === "paywall" && (
+          <View style={s.startCard}>
+            <Ionicons name="sparkles" size={40} color="#C9960C" />
+            <Text style={s.startTitle}>You've used your free cartoon</Text>
+            <Text style={s.errorText}>
+              Get more cartoons — buy one more, or subscribe for unlimited access.
+            </Text>
+            {perPhotoPackage && (
+              <TouchableOpacity onPress={buyOneMore} disabled={isPurchasing} style={s.primaryBtn}>
+                {isPurchasing ? (
+                  <ActivityIndicator color="#0F0D09" />
+                ) : (
+                  <Text style={s.primaryBtnText}>
+                    Buy One More — {perPhotoPackage.product.priceString}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            )}
+            {monthlyPackage && (
+              <TouchableOpacity onPress={subscribeUnlimited} disabled={isPurchasing} style={s.secondaryPurchaseBtn}>
+                <Text style={s.secondaryPurchaseBtnText}>
+                  Subscribe Unlimited — {monthlyPackage.product.priceString}/mo
+                </Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={reset} style={s.secondaryBtn}>
+              <Text style={s.secondaryBtnText}>Not Now</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -243,9 +354,18 @@ const s = StyleSheet.create({
     gap: 16,
   },
   startTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", textAlign: "center" },
+  freeNote: { fontSize: 13, color: "#C9960C", fontFamily: "Inter_600SemiBold" },
   errorText: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
   primaryBtn: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 14, paddingHorizontal: 32 },
   primaryBtnText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15 },
+  secondaryPurchaseBtn: {
+    borderWidth: 1,
+    borderColor: "#C9960C",
+    borderRadius: 999,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+  },
+  secondaryPurchaseBtnText: { color: "#C9960C", fontFamily: "Inter_700Bold", fontSize: 14 },
   secondaryBtn: { marginTop: 4, paddingVertical: 10 },
   secondaryBtnText: { color: "rgba(245,237,216,0.6)", fontFamily: "Inter_600SemiBold", fontSize: 13 },
   pickerTitle: { fontSize: 16, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", marginBottom: 12 },
