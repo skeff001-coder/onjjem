@@ -322,6 +322,12 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "exoboard-841x1189": { sku: "GLOBAL-EXOBOARD-841X1189", sizing: "fillPrintArea" },
   "exoboard-210x297":  { sku: "GLOBAL-EXOBOARD-210X297",  sizing: "fillPrintArea" },
   "exoboard-300x400":  { sku: "GLOBAL-EXOBOARD-300X400",  sizing: "fillPrintArea" },
+
+  // ── Hidden free-gift products (not in the visible shop catalogue) ─────────
+  // Only ever referenced by internal reward-redemption flows (e.g. the WUD
+  // £2.99 bundle's free postcard). Never shown to customers as a normal
+  // purchasable item.
+  "wud-gift-postcard": { sku: "CLASSIC-POST-GLOS-6X4", sizing: "fillPrintArea" },
 };
 
 
