@@ -534,17 +534,19 @@ function MixedDNAResult({ data }: { data: MixedBreedResult }) {
 
       <ResultSection title="Health Considerations" icon="medkit-outline" color="#c98b9c" items={data.healthConsiderations} />
 
-      {!!data.geneticFunFact && (
+            {!!data.geneticFunFact && (
         <View style={[rStyles.summaryBox, { marginTop: 8 }]}>
           <Text style={[rStyles.summaryLabel, { color: "#c98b9c" }]}>DID YOU KNOW?</Text>
           <Text style={rStyles.summaryText}>{data.geneticFunFact}</Text>
         </View>
       )}
+      <PrintCTA color="#c98b9c" />
     </View>
   );
 }
 
 function AgeCalcResult({ data }: { data: AgeEstimateResult }) {
+
   return (
     <View style={rStyles.resultWrap}>
       <View style={[rStyles.iconRing, { borderColor: "#7fb0c2" }]}>
