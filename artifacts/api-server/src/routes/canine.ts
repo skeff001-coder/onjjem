@@ -1,5 +1,4 @@
 import { Router, Request, Response } from "express";
-// v2
 import { GoogleGenAI } from "@google/genai";
 
 const router = Router();
@@ -227,20 +226,30 @@ router.post("/mixed-breed-dna", async (req: Request, res: Response) => {
       [
         { inlineData: { mimeType, data: base64Image } },
         {
-          text: `Analyse this dog photo as a canine geneticist. Determine the most likely breed mix and provide a detailed DNA-style breakdown.
+          text: `Analyse this dog photo as a canine geneticist producing a thorough, premium DNA-style heritage report — this is a paid product, so it needs to feel genuinely comprehensive and personal, not a quick summary.
 
 Return ONLY valid JSON:
 {
   "primaryBreed": "Main breed",
   "secondaryBreed": "Secondary breed or 'None'",
   "confidence": 85,
-  "geneticMarkers": ["Visual marker 1", "Visual marker 2", "Visual marker 3"],
-  "ancestralBreeds": ["Ancestor 1", "Ancestor 2"],
-  "dnaSummary": "2-3 sentences summarising the genetic heritage"
+  "geneticMarkers": ["Visual marker 1", "Visual marker 2", "Visual marker 3", "Visual marker 4", "Visual marker 5"],
+  "ancestralBreeds": [
+    { "breed": "Ancestor breed name", "estimatedPercentage": 45, "traitContribution": "What this breed likely contributed (coat, build, temperament)" },
+    { "breed": "Ancestor breed name", "estimatedPercentage": 30, "traitContribution": "What this breed likely contributed" }
+  ],
+  "dnaSummary": "A rich, engaging paragraph (4-5 sentences) telling the story of this dog's genetic heritage, written to be shared and enjoyed",
+  "inheritedTraits": [
+    { "trait": "Specific behaviour or physical trait", "likelySource": "Which breed in the mix this probably comes from" },
+    { "trait": "Specific behaviour or physical trait", "likelySource": "Which breed in the mix this probably comes from" },
+    { "trait": "Specific behaviour or physical trait", "likelySource": "Which breed in the mix this probably comes from" }
+  ],
+  "healthConsiderations": ["Mix-specific health note 1", "Mix-specific health note 2", "Mix-specific health note 3"],
+  "geneticFunFact": "One genuinely interesting, specific fact about this breed combination's ancestral history"
 }${JSON_SAFETY_NOTE}`,
         },
       ],
-      2048,
+      4096,
       true,
     );
     res.json(result);
@@ -258,7 +267,7 @@ router.post("/age-estimate", async (req: Request, res: Response) => {
       [
         { inlineData: { mimeType, data: base64Image } },
         {
-          text: `Estimate this dog's age from visual cues in the photo (coat condition, eye clarity, muscle tone, grey muzzle, teeth if visible).
+          text: `Estimate this dog's age from visual cues in the photo (coat condition, eye clarity, muscle tone, grey muzzle, teeth if visible), and produce a thorough, premium age report — this is a paid product, so it needs to feel genuinely comprehensive and personal, not a quick estimate.
 
 Return ONLY valid JSON:
 {
@@ -266,12 +275,16 @@ Return ONLY valid JSON:
   "ageRange": "e.g. 2-5 years",
   "confidence": 78,
   "lifeStage": "Puppy / Adolescent / Young Adult / Mature Adult / Senior",
-  "signs": ["Visual sign 1", "Visual sign 2", "Visual sign 3"],
-  "birthdayEstimate": "Born around season year"
+  "signs": ["Visual sign 1", "Visual sign 2", "Visual sign 3", "Visual sign 4", "Visual sign 5"],
+  "birthdayEstimate": "Born around season year",
+  "humanYearsEquivalent": "e.g. Around 28-31 in human years",
+  "lifeStageDescription": "2-3 sentences on what this specific life stage means for this dog day-to-day right now",
+  "whatsNextMilestone": "1-2 sentences on the next life stage ahead and roughly when to expect it",
+  "careRecommendations": ["Age-specific care tip 1", "Age-specific care tip 2", "Age-specific care tip 3"]
 }${JSON_SAFETY_NOTE}`,
         },
       ],
-      2048,
+      4096,
       true,
     );
     res.json(result);
@@ -290,19 +303,23 @@ router.post("/personality-scan", async (req: Request, res: Response) => {
       [
         { inlineData: { mimeType, data: base64Image } },
         {
-          text: `Analyse this dog's personality from its expression, posture, and appearance. ${breedHint}
+          text: `Analyse this dog's personality from its expression, posture, and appearance. ${breedHint} Produce a thorough, premium personality profile — this is a paid product, so it needs to feel genuinely comprehensive and personal, not a quick description.
 
 Return ONLY valid JSON:
 {
-  "traits": ["Trait 1", "Trait 2", "Trait 3", "Trait 4"],
+  "traits": ["Trait 1", "Trait 2", "Trait 3", "Trait 4", "Trait 5", "Trait 6"],
   "dominantTrait": "Most dominant personality trait",
   "socialStyle": "How they interact with people and dogs",
   "energyLevel": "e.g. High — needs 90+ min exercise daily",
-  "description": "2-3 sentences describing this dog's personality"
+  "description": "A rich, engaging paragraph (4-5 sentences) describing this dog's personality, written to be shared and enjoyed",
+  "idealOwnerMatch": "2-3 sentences on the kind of owner and lifestyle this dog would thrive with",
+  "trainingStyle": "2 sentences on how this personality type responds best to training — what motivates them",
+  "behaviouralQuirk": "One specific, charming quirk or habit this personality type likely has",
+  "compatibilityNotes": "2 sentences on how this dog would likely do with children and other pets"
 }${JSON_SAFETY_NOTE}`,
         },
       ],
-      2048,
+      3072,
       true,
     );
     res.json(result);
@@ -378,11 +395,37 @@ Return ONLY valid JSON:
 
 // Cartoon-ify — unlike every other route in this file, this one asks
 // Gemini's image model to generate a new image rather than analyse the
-// photo and return JSON. Paid-only, no free trial (checked app-side via
-// entitlement before this is ever called).
+// photo and return JSON.
+//
+// `style` selects which look to generate:
+//   "default"       - free, always available, one generation per dog
+//   "oil-painting"  - paid, part of the £3.99 unlock
+//   "anime"         - paid, part of the £3.99 unlock
+//   "pop-art"       - paid, part of the £3.99 unlock
+//
+// Paid styles are gated app-side via entitlement check before this is ever
+// called - this endpoint itself doesn't verify purchase status.
+const CARTOON_STYLE_PROMPTS: Record<string, string> = {
+  default:
+    "Turn this dog photo into a charming, vibrant 3D-animated cartoon character illustration in the style of a modern animated family film. Keep the dog's real markings, coat colour, and breed features recognisable, but render them as a playful, expressive cartoon character. Clean background, warm lighting, high detail.",
+  "oil-painting":
+    "Turn this dog photo into a rich, textured oil painting portrait in the style of a classical fine art masterpiece. Keep the dog's real markings, coat colour, and breed features clearly recognisable. Use visible brushstrokes, warm gallery lighting, and a painterly, timeless quality — as if it belongs on a gallery wall.",
+  anime:
+    "Turn this dog photo into a vibrant Japanese anime-style illustration. Keep the dog's real markings, coat colour, and breed features recognisable, but render with bold clean linework, expressive large eyes, and classic anime shading and colour style. Clean, dynamic background.",
+  "pop-art":
+    "Turn this dog photo into a bold pop art illustration in the style of Andy Warhol / Roy Lichtenstein. Keep the dog's real markings, coat colour, and breed features recognisable, but render with bold flat colours, high contrast, halftone dot shading, and graphic outlines. Vibrant, punchy colour palette.",
+};
+
 router.post("/dog-cartoon", async (req: Request, res: Response) => {
-  const { base64Image, mimeType = "image/jpeg" } = req.body;
+  const { base64Image, mimeType = "image/jpeg", style = "default" } = req.body;
   if (!base64Image) { res.status(400).json({ error: "base64Image is required" }); return; }
+
+  const promptText = CARTOON_STYLE_PROMPTS[style];
+  if (!promptText) {
+    res.status(400).json({ error: `Unknown style: ${style}` });
+    return;
+  }
+
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
@@ -392,12 +435,13 @@ router.post("/dog-cartoon", async (req: Request, res: Response) => {
           role: "user",
           parts: [
             { inlineData: { mimeType, data: base64Image } },
-            {
-              text: "Turn this dog photo into a charming, vibrant 3D-animated cartoon character illustration in the style of a modern animated family film. Keep the dog's real markings, coat colour, and breed features recognisable, but render them as a playful, expressive cartoon character. Clean background, warm lighting, high detail. Do not add any text, watermark, or logo to the image.",
-            },
+            { text: `${promptText} Do not add any text, watermark, or logo to the image.` },
           ],
         },
       ],
+      config: {
+        responseModalities: ["IMAGE"],
+      },
     });
 
     const imagePart = response.candidates?.[0]?.content?.parts?.find(
