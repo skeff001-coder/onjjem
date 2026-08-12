@@ -130,9 +130,9 @@ function useScannerDefs(): ScannerDef[] {
       },
       {
         id: "cartoon",
-        title: "Cartoon-ify ✨",
-        subtitle: "See them as a movie star",
-        description: "Turn your dog into a vibrant, animated-movie-style character — then unlock Oil Painting and Pop Art styles too, and print your favourite at ONJJEM.",
+        title: "🎨 Cartoonify Elite",
+        subtitle: "Turn your dog into art",
+        description: "Reimagine your dog as 3 unbelievable illustrations — Animated Movie, Oil Painting & Pop Art — plus free stickers of your dog and a 10% off voucher for the Magic Mug at ONJJEM.",
         icon: "color-wand-outline",
         color: "#e0a95c",
         glow: "rgba(224,169,92,0.28)",
@@ -1113,7 +1113,11 @@ export default function ScannerScreen() {
       setWebPromptVisible(true);
       return;
     }
-    if (!def.free && !isOwned(def)) {
+    // Cartoon has its own bespoke free-then-paid gating just below —
+    // it must never be intercepted by the generic "not owned" check here,
+    // since that only reflects the old standalone £4.99 purchase, not the
+    // free scan earned from the £2.99 bundle.
+    if (!def.free && !isOwned(def) && def.id !== "cartoon") {
       setPurchaseTarget(def);
       setPurchaseModalVisible(true);
       return;
@@ -1234,6 +1238,26 @@ export default function ScannerScreen() {
         );
         return null;
       }
+    }
+  };
+
+  // Reuses lastPhoto if the app hasn't been restarted since the last scan.
+  // If it has (lastPhoto is only in-memory, not persisted), falls back to
+  // re-reading the most recently scanned dog's photo from the saved
+  // gallery, so a customer never gets asked for a fresh photo when we
+  // already have one from them.
+  const getReusablePhoto = async (): Promise<{ uri: string; base64: string; mimeType: string } | null> => {
+    if (lastPhoto) return lastPhoto;
+    const mostRecent = [...gallery].sort((a, b) => b.timestamp - a.timestamp)[0];
+    if (!mostRecent?.uri) return null;
+    try {
+      const base64 = await FileSystem.readAsStringAsync(mostRecent.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      const mimeType = mostRecent.uri.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg";
+      return { uri: mostRecent.uri, base64, mimeType };
+    } catch {
+      return null;
     }
   };
 
@@ -1445,13 +1469,15 @@ export default function ScannerScreen() {
         await AsyncStorage.setItem("wud_cartoon_paid_uses", "3");
         setCartoonPaidUsesRemaining(3);
         setStylePickerVisible(true);
-      } else if (lastPhoto) {
-        // Reuse the photo just scanned (e.g. from the Reveal Story offer)
-        // rather than asking for a brand new photo.
-        await processImage(lastPhoto.uri, lastPhoto.base64, lastPhoto.mimeType, purchaseTarget.id);
       } else {
-        // After purchase, start the scan
-        startScan(purchaseTarget.id);
+        // Reuse the dog's saved photo (e.g. from the Reveal Story offer)
+        // rather than asking for a brand new one.
+        const photo = await getReusablePhoto();
+        if (photo) {
+          await processImage(photo.uri, photo.base64, photo.mimeType, purchaseTarget.id);
+        } else {
+          startScan(purchaseTarget.id);
+        }
       }
     } catch (e: any) {
       if (!e?.userCancelled) Alert.alert("Purchase failed", e?.message ?? "Please try again.");
@@ -1704,10 +1730,11 @@ export default function ScannerScreen() {
               <TouchableOpacity
                 key={opt.id}
                 style={styles.styleOptionRow}
-                onPress={() => {
+                onPress={async () => {
                   setStoryPickerVisible(false);
-                  if (lastPhoto) {
-                    processImage(lastPhoto.uri, lastPhoto.base64, lastPhoto.mimeType, opt.id);
+                  const photo = await getReusablePhoto();
+                  if (photo) {
+                    processImage(photo.uri, photo.base64, photo.mimeType, opt.id);
                   } else {
                     startScan(opt.id);
                   }
