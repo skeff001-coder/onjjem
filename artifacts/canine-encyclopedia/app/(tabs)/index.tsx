@@ -1472,7 +1472,8 @@ export default function ScannerScreen() {
         <>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingTop: topPad + 12, paddingBottom: isWeb ? 100 : insets.bottom + 80 }}
+                        contentContainerStyle={{ paddingTop: topPad + 12, paddingBottom: isWeb ? 100 : insets.bottom + 140 }}
+
           >
             {/* Header */}
             <ScannerHeader />
