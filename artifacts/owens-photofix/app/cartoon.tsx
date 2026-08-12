@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,46 +7,76 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
+  FlatList,
   Linking,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import * as DocumentPicker from "expo-document-picker";
+import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system";
 import { router } from "expo-router";
 
 const API_BASE = `https://${process.env.EXPO_PUBLIC_DOMAIN ?? ""}`;
 
-type Phase = "idle" | "picked" | "generating" | "done" | "error";
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const GRID_COLUMNS = 3;
+const GRID_GAP = 3;
+const THUMB_SIZE = (SCREEN_WIDTH - 40 - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS;
+
+type Phase = "idle" | "permission-denied" | "picking" | "picked" | "generating" | "done" | "error";
 
 export default function CartoonScreen() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [cartoonUri, setCartoonUri] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [assets, setAssets] = useState<MediaLibrary.Asset[]>([]);
+  const [loadingAssets, setLoadingAssets] = useState(false);
 
-  const pickPhoto = async () => {
+  const openPicker = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: ["image/jpeg", "image/png", "image/heic", "image/webp"],
-        copyToCacheDirectory: true,
-      });
-      if (result.canceled || !result.assets?.[0]) return;
+      const permission = await MediaLibrary.requestPermissionsAsync();
+      if (!permission.granted) {
+        setErrorMsg("We need permission to access your photos to continue. You can enable this in Settings.");
+        setPhase("permission-denied");
+        return;
+      }
 
-      const asset = result.assets[0];
-      setPhotoUri(asset.uri);
-      setPhase("picked");
-
-      // Read file as base64
-      const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-        encoding: FileSystem.EncodingType.Base64,
+      setPhase("picking");
+      setLoadingAssets(true);
+      const result = await MediaLibrary.getAssetsAsync({
+        mediaType: "photo",
+        sortBy: [MediaLibrary.SortBy.creationTime],
+        first: 60,
       });
-      const mimeType = asset.mimeType ?? "image/jpeg";
-      generateCartoon(base64, mimeType);
+      setAssets(result.assets);
+      setLoadingAssets(false);
     } catch (err) {
-      setErrorMsg("Could not open the photo picker. Please try again.");
+      setErrorMsg("Could not load your photos. Please try again.");
       setPhase("error");
     }
   };
+
+  const selectAsset = useCallback(async (asset: MediaLibrary.Asset) => {
+    try {
+      setPhase("picked");
+      // On iOS, asset.uri is a ph:// identifier — resolve it to a real
+      // readable file:// path via getAssetInfoAsync before reading bytes.
+      const info = await MediaLibrary.getAssetInfoAsync(asset.id);
+      const localUri = info.localUri ?? info.uri ?? asset.uri;
+
+      setPhotoUri(localUri);
+
+      const base64 = await FileSystem.readAsStringAsync(localUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      const mimeType = localUri.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg";
+      generateCartoon(base64, mimeType);
+    } catch (err) {
+      setErrorMsg("Could not read that photo. Please try a different one.");
+      setPhase("error");
+    }
+  }, []);
 
   const generateCartoon = async (base64: string, mimeType: string) => {
     setPhase("generating");
@@ -76,9 +106,11 @@ export default function CartoonScreen() {
     setPhotoUri(null);
     setCartoonUri(null);
     setErrorMsg("");
+    setAssets([]);
   };
 
   const openShop = () => Linking.openURL("https://onjjem.com/shop");
+  const openSettings = () => Linking.openSettings();
 
   return (
     <View style={s.root}>
@@ -86,7 +118,10 @@ export default function CartoonScreen() {
         contentContainerStyle={s.scroll}
         showsVerticalScrollIndicator={false}
       >
-        <TouchableOpacity onPress={() => router.back()} style={s.backBtn}>
+        <TouchableOpacity
+          onPress={() => (phase === "picking" ? setPhase("idle") : router.back())}
+          style={s.backBtn}
+        >
           <Ionicons name="chevron-back" size={22} color="#F5EDD8" />
         </TouchableOpacity>
 
@@ -103,9 +138,49 @@ export default function CartoonScreen() {
           <View style={s.startCard}>
             <Ionicons name="color-wand-outline" size={48} color="#C9960C" />
             <Text style={s.startTitle}>Choose a photo to transform</Text>
-            <TouchableOpacity onPress={pickPhoto} style={s.primaryBtn}>
+            <TouchableOpacity onPress={openPicker} style={s.primaryBtn}>
               <Text style={s.primaryBtnText}>Choose Photo</Text>
             </TouchableOpacity>
+          </View>
+        )}
+
+        {phase === "permission-denied" && (
+          <View style={s.startCard}>
+            <Ionicons name="lock-closed-outline" size={40} color="#e05252" />
+            <Text style={s.errorText}>{errorMsg}</Text>
+            <TouchableOpacity onPress={openSettings} style={s.primaryBtn}>
+              <Text style={s.primaryBtnText}>Open Settings</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {phase === "picking" && (
+          <View>
+            <Text style={s.pickerTitle}>Choose a photo</Text>
+            {loadingAssets ? (
+              <View style={s.loaderWrap}>
+                <ActivityIndicator color="#C9960C" size="large" />
+              </View>
+            ) : assets.length === 0 ? (
+              <Text style={s.emptyText}>No photos found on this device.</Text>
+            ) : (
+              <FlatList
+                data={assets}
+                keyExtractor={(item) => item.id}
+                numColumns={GRID_COLUMNS}
+                scrollEnabled={false}
+                columnWrapperStyle={{ gap: GRID_GAP, marginBottom: GRID_GAP }}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => selectAsset(item)} activeOpacity={0.7}>
+                    <Image
+                      source={{ uri: item.uri }}
+                      style={{ width: THUMB_SIZE, height: THUMB_SIZE, borderRadius: 6 }}
+                      resizeMode="cover"
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+            )}
           </View>
         )}
 
@@ -173,6 +248,9 @@ const s = StyleSheet.create({
   primaryBtnText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15 },
   secondaryBtn: { marginTop: 4, paddingVertical: 10 },
   secondaryBtnText: { color: "rgba(245,237,216,0.6)", fontFamily: "Inter_600SemiBold", fontSize: 13 },
+  pickerTitle: { fontSize: 16, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", marginBottom: 12 },
+  loaderWrap: { paddingVertical: 60, alignItems: "center" },
+  emptyText: { color: "rgba(245,237,216,0.6)", textAlign: "center", paddingVertical: 40 },
   previewCard: { borderRadius: 20, overflow: "hidden", backgroundColor: "rgba(255,255,255,0.03)" },
   previewImg: { width: "100%", height: 320, opacity: 0.5 },
   loadingRow: {
