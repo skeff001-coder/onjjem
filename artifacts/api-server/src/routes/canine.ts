@@ -45,12 +45,12 @@ async function generateAndParseJSON<T>(
   let lastError: unknown;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const response = await ai.models.generateContent({
-              model: "gemini-2.5-flash-image",
-
+            const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
         contents: [{ role: "user", parts }],
         config,
       });
+
       const text = response.text ?? "{}";
       const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
       try {
