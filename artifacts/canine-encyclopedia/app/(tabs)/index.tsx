@@ -877,6 +877,7 @@ function TrickTrainerResultView({ data }: { data: TrickTrainerResult }) {
     </View>
   );
 }
+
 function PrintCTA({ color }: { color: string }) {
   return (
     <View style={{ marginTop: 16 }}>
@@ -902,7 +903,6 @@ function PrintCTA({ color }: { color: string }) {
     </View>
   );
 }
-
 
 function ResultSection({ title, icon, color, items }: { title: string; icon: string; color: string; items: string[] }) {
   return (
