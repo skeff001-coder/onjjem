@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.photorestoration",
-      "buildNumber": "140",
+      "buildNumber": "139",
       "privacyPolicyUrl": "https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
@@ -52,14 +52,7 @@
         }
       ],
       "expo-font",
-      "expo-web-browser",
-[
-        "expo-image-picker",
-        {
-          "photosPermission": "ONJJEM needs access to your photos so you can choose a photo to restore.",
-          "cameraPermission": "ONJJEM can use your camera to take a photo for restoration."
-        }
-      ]
+      "expo-web-browser"
     ],
 
     "experiments": {
