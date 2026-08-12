@@ -365,4 +365,111 @@ router.get("/stripe/products", async (_req: Request, res: Response) => {
   }
 });
 
+// ── Redeem a free gift earned in-app (e.g. WUD's £2.99 bundle postcard) ──────
+// Creates a £0 Stripe Checkout session (via a reusable 100%-off coupon) so
+// the customer can enter their shipping address through Stripe's existing,
+// trusted UI. The photo is stored the same way as normal orders, and the
+// existing webhook fulfils it through Prodigi automatically — this endpoint
+// only ever needs to exist here, no changes needed anywhere else.
+
+const REDEEMABLE_GIFTS: Record<string, { name: string; pricePence: number }> = {
+  "wud-gift-postcard": { name: "Free Dog Postcard (Loyalty Gift)", pricePence: 299 },
+};
+
+router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
+  const body = req.body as {
+    giftSku?: string;
+    photoBase64?: string;
+    dogName?: string;
+    successUrl?: string;
+    cancelUrl?: string;
+  };
+
+  if (!body.giftSku || !body.photoBase64) {
+    res.status(400).json({ error: "giftSku and photoBase64 are required" });
+    return;
+  }
+
+  const gift = REDEEMABLE_GIFTS[body.giftSku];
+  if (!gift) {
+    res.status(400).json({ error: "This item is not redeemable as a gift." });
+    return;
+  }
+
+  try {
+    const stripe = await getUncachableStripeClient();
+
+    const COUPON_ID = "wud-free-gift-100";
+    try {
+      await stripe.coupons.retrieve(COUPON_ID);
+    } catch {
+      await stripe.coupons.create({
+        id: COUPON_ID,
+        percent_off: 100,
+        duration: "once",
+        name: "Free Gift",
+      });
+    }
+
+    const photoToken = crypto.randomUUID();
+    await storePhoto(photoToken, body.photoBase64);
+
+    const origin = `${req.protocol}://${req.get("host")}`;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "gbp",
+            unit_amount: gift.pricePence,
+            product_data: {
+              name: gift.name,
+              metadata: { sku: body.giftSku },
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      discounts: [{ coupon: COUPON_ID }],
+      shipping_address_collection: {
+        allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK"],
+      },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: 0, currency: "gbp" },
+            display_name: "Free UK Delivery",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 3 },
+              maximum: { unit: "business_day", value: 5 },
+            },
+          },
+        },
+      ],
+      success_url: body.successUrl || `${origin}/?gift=claimed`,
+      cancel_url: body.cancelUrl || `${origin}/`,
+      metadata: {
+        sku: body.giftSku,
+        photo_token: photoToken,
+        gift_redemption: "true",
+        ...(body.dogName ? { dog_name: body.dogName } : {}),
+      },
+      custom_text: {
+        submit: {
+          message: `Your free ${body.dogName ? body.dogName + "'s" : "dog's"} postcard will be printed and dispatched within 3–5 working days.`,
+        },
+      },
+    });
+
+    res.json({ url: session.url });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    req.log.error({ msg }, "stripe/redeem-gift error");
+    res.status(500).json({ error: msg });
+  }
+});
+
 export default router;
