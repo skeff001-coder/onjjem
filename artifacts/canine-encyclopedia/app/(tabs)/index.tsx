@@ -877,6 +877,32 @@ function TrickTrainerResultView({ data }: { data: TrickTrainerResult }) {
     </View>
   );
 }
+function PrintCTA({ color }: { color: string }) {
+  return (
+    <View style={{ marginTop: 16 }}>
+      <TouchableOpacity
+        onPress={() => Linking.openURL("https://onjjem.com/shop")}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          borderWidth: 1,
+          borderColor: color,
+          borderRadius: 12,
+          paddingVertical: 14,
+        }}
+      >
+        <Ionicons name="print-outline" size={18} color={color} />
+        <Text style={{ fontSize: 14, fontWeight: "700", color }}>Get Your Dog Printed at ONJJEM</Text>
+      </TouchableOpacity>
+      <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: 8 }}>
+        Mugs, canvas, magnets & more — using your own dog photos
+      </Text>
+    </View>
+  );
+}
+
 
 function ResultSection({ title, icon, color, items }: { title: string; icon: string; color: string; items: string[] }) {
   return (
