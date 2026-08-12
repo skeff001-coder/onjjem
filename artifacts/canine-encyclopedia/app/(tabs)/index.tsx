@@ -641,7 +641,7 @@ function CartoonResultView({ data }: { data: DogCartoonResult }) {
         resizeMode="cover"
       />
 
-      <TouchableOpacity
+            <TouchableOpacity
         onPress={handleSaveShare}
         disabled={saving}
         style={{
@@ -664,9 +664,31 @@ function CartoonResultView({ data }: { data: DogCartoonResult }) {
           </>
         )}
       </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => Linking.openURL("https://onjjem.com/shop")}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          borderWidth: 1,
+          borderColor: "#e0a95c",
+          borderRadius: 12,
+          paddingVertical: 14,
+          marginTop: 10,
+        }}
+      >
+        <Ionicons name="print-outline" size={18} color="#e0a95c" />
+        <Text style={{ fontSize: 14, fontWeight: "700", color: "#e0a95c" }}>Get This Printed at ONJJEM</Text>
+      </TouchableOpacity>
+      <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: 8 }}>
+        Save the image above first, then upload it on the ONJJEM site
+      </Text>
     </View>
   );
 }
+
 
 function PersonalityResultView({ data }: { data: PersonalityResult }) {
   return (
