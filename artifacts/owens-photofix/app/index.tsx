@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
+  Image,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,12 +17,12 @@ import { ArtisanSubtitle } from "@/components/ArtisanSubtitle";
 const { width: SCREEN_W } = Dimensions.get("window");
 
 const TILES = [
-  { name: "Summer Deals", icon: "sunny-outline" },
-  { name: "Wall Art", icon: "image-outline" },
-  { name: "Prints", icon: "images-outline" },
-  { name: "Gifts", icon: "gift-outline" },
-  { name: "Kitchen and Home", icon: "cafe-outline" },
-  { name: "Many Many More", icon: "sparkles-outline" },
+  { name: "Summer Deals", icon: "sunny-outline", img: null },
+  { name: "Wall Art", icon: "image-outline", img: "https://onjjem.com/products/stretched-canvas.webp" },
+  { name: "Prints", icon: "images-outline", img: "https://onjjem.com/products/jigsaw-500pc.webp" },
+  { name: "Gifts", icon: "gift-outline", img: "https://onjjem.com/products/framed-photo-tiles.jpg" },
+  { name: "Kitchen and Home", icon: "cafe-outline", img: "https://onjjem.com/products/IMG_4299.jpeg" },
+  { name: "Many Many More", icon: "sparkles-outline", img: null },
 ];
 
 const REVIEWS = [
@@ -61,6 +62,25 @@ export default function HomeScreen() {
           <Text style={s.subTagline}>Made in Britain  |  Delivered to Your Door</Text>
           <View style={s.goldLine} />
         </View>
+
+        <Text style={s.showcaseLabel}>SEE WHAT YOU CAN CREATE</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={s.showcaseRow}
+        >
+          {[
+            { uri: "https://onjjem.com/products/IMG_4299.jpeg", label: "Magic Photo Mug" },
+            { uri: "https://onjjem.com/products/stretched-canvas.webp", label: "Stretched Canvas" },
+            { uri: "https://onjjem.com/products/jigsaw-500pc.webp", label: "Photo Jigsaw" },
+            { uri: "https://onjjem.com/products/framed-photo-tiles.jpg", label: "Framed Photo Tile" },
+          ].map((item, i) => (
+            <TouchableOpacity key={i} style={s.showcaseCard} onPress={openShop} activeOpacity={0.85}>
+              <Image source={{ uri: item.uri }} style={s.showcaseImg} />
+              <Text style={s.showcaseCardLabel}>{item.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
         <View style={s.accolade}>
           <Text style={s.accoladeTitle}>Britain's Premier Photo Gift Specialist</Text>
@@ -114,7 +134,11 @@ export default function HomeScreen() {
         <View style={s.grid}>
           {TILES.map((t, i) => (
             <TouchableOpacity key={i} style={s.card} onPress={openShop} activeOpacity={0.8}>
-              <Ionicons name={t.icon as any} size={28} color="#C9960C" />
+              {t.img ? (
+                <Image source={{ uri: t.img }} style={s.cardImg} />
+              ) : (
+                <Ionicons name={t.icon as any} size={28} color="#C9960C" />
+              )}
               <Text style={s.cardName}>{t.name}</Text>
             </TouchableOpacity>
           ))}
@@ -129,15 +153,20 @@ export default function HomeScreen() {
         </View>
 
 
-        <View style={s.mugFeature}>
-          <Text style={s.mugLabel}>OUR BESTSELLER</Text>
-          <Text style={s.mugTitle}>The Magic Photo Mug</Text>
-          <Text style={s.mugDesc}>
-            Starts solid black. Pour in a hot drink and your photo appears in full colour - like magic.
-          </Text>
-          <TouchableOpacity style={s.mugBtn} onPress={openShop} activeOpacity={0.85}>
-            <Text style={s.mugBtnText}>Order The Magic Mug - £17.99</Text>
-            <Ionicons name="chevron-forward" size={14} color="#0A0804" />
+        <Text style={s.dealsSectionTitle}>🔥 Hot Deals 🔥</Text>
+        <View style={s.dealsGrid}>
+          <TouchableOpacity style={s.dealTile} onPress={openShop} activeOpacity={0.85}>
+            <Text style={s.dealWas}>Was £19.99</Text>
+            <Text style={s.dealNow}>£14.99</Text>
+            <Text style={s.dealName}>Magic Photo Mug</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[s.dealTile, s.dealTileFlash]} onPress={openShop} activeOpacity={0.85}>
+            <View style={s.dealFlashBadge}>
+              <Text style={s.dealFlashBadgeText}>⚡ DEAL ⚡</Text>
+            </View>
+            <Text style={s.dealWas}>5x5 Gloss</Text>
+            <Text style={s.dealNow}>£7.99</Text>
+            <Text style={s.dealName}>Photo Print</Text>
           </TouchableOpacity>
         </View>
 
@@ -246,10 +275,42 @@ const s = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   card: { width: (SCREEN_W - 46) / 2, backgroundColor: "#1C1A14", borderRadius: 12, borderWidth: 1, borderColor: "rgba(201,150,12,0.2)", padding: 16, alignItems: "center", gap: 8, minHeight: 105, justifyContent: "center" },
   cardName: { fontSize: 13, fontWeight: "700", color: "#F5EDD8", textAlign: "center" },
+  cardImg: { width: 44, height: 44, borderRadius: 10 },
   xmasBanner: { backgroundColor: "#7A0E0E", borderRadius: 12, padding: 14, gap: 8 },
   xmasTitle: { fontSize: 12, fontWeight: "700", color: "#F5D78E", letterSpacing: 1.5, marginBottom: 2 },
   xmasRow: { flexDirection: "row", alignItems: "flex-start", gap: 8 },
   xmasItem: { fontSize: 12, color: "rgba(245,215,142,0.9)", flex: 1, lineHeight: 18 },
+  showcaseLabel: { fontSize: 11, color: "rgba(245,215,142,0.55)", letterSpacing: 2, textAlign: "center", marginTop: -4 },
+  showcaseRow: { gap: 12, paddingVertical: 4 },
+  showcaseCard: { width: 110, alignItems: "center", gap: 6 },
+  showcaseImg: { width: 110, height: 110, borderRadius: 14, borderWidth: 1, borderColor: "rgba(201,150,12,0.3)" },
+  showcaseCardLabel: { fontSize: 11, fontWeight: "600", color: "#F5EDD8", textAlign: "center" },
+  dealsSectionTitle: { fontSize: 17, color: "#F5D78E", fontWeight: "700", letterSpacing: 0.3, textAlign: "center" },
+  dealsGrid: { flexDirection: "row", gap: 10 },
+  dealTile: {
+    flex: 1,
+    backgroundColor: "#1A1206",
+    borderWidth: 1.5,
+    borderColor: "rgba(201,150,12,0.4)",
+    borderRadius: 14,
+    padding: 14,
+    alignItems: "center",
+    gap: 2,
+  },
+  dealTileFlash: { borderColor: GOLD },
+  dealFlashBadge: {
+    position: "absolute",
+    top: -10,
+    right: -6,
+    backgroundColor: "#C93B3B",
+    borderRadius: 20,
+    paddingVertical: 3,
+    paddingHorizontal: 7,
+  },
+  dealFlashBadgeText: { fontSize: 9, fontWeight: "800", color: "#FFF" },
+  dealWas: { fontSize: 10, color: "rgba(245,237,216,0.45)", textDecorationLine: "line-through" },
+  dealNow: { fontSize: 20, fontWeight: "800", color: GOLD, marginVertical: 2 },
+  dealName: { fontSize: 11, fontWeight: "600", color: "#F5EDD8", textAlign: "center" },
   mugFeature: { backgroundColor: "#0F0A04", borderWidth: 1, borderColor: "rgba(201,150,12,0.35)", borderRadius: 12, padding: 10, gap: 5 },
   mugLabel: { fontSize: 9, color: GOLD, letterSpacing: 2.5, fontWeight: "700" },
   mugTitle: { fontSize: 14, color: "#FFF5E0", fontWeight: "800" },
