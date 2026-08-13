@@ -15,7 +15,7 @@ export interface CatalogEntry {
 }
 
 export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
-  "canvas-stretched-a5": { name: 'Stretched Canvas (A5)', pricePence: 3299 },
+  "canvas-stretched-a5": { name: 'Stretched Canvas (A5)', pricePence: 2849 },
   "canvas-stretched-a4": { name: 'Stretched Canvas (A4)', pricePence: 3999 },
   "canvas-stretched-a3": { name: 'Stretched Canvas (A3)', pricePence: 4599 },
   "canvas-stretched-a2": { name: 'Stretched Canvas (A2)', pricePence: 6499 },
@@ -65,7 +65,7 @@ export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
   "photo-tile-5x7": { name: 'Framed Photo Tiles (5x7 inch)', pricePence: 1799 },
   "photo-tile-8x8": { name: 'Framed Photo Tiles (8x8 inch)', pricePence: 2099 },
   "photo-tile-8x10": { name: 'Framed Photo Tiles (8x10 inch)', pricePence: 2199 },
-  "magic-mug": { name: 'Magic Photo Mug (11oz Heat-Activated Mug)', pricePence: 1799 },
+  "magic-mug": { name: 'Magic Photo Mug (11oz Heat-Activated Mug)', pricePence: 1499 },
   "mug-11oz": { name: 'Photo Mugs (11oz Mug)', pricePence: 1199 },
   "mug-15oz": { name: 'Photo Mugs (15oz Large Mug)', pricePence: 2099 },
   "coaster-1pk": { name: 'Photo Coasters (Single Coaster)', pricePence: 1199 },
@@ -123,4 +123,5 @@ export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
   "water-bottle-copper-navy": { name: 'Personalised Insulated Water Bottle (Navy)', pricePence: 2999 },
   "water-bottle-copper-red": { name: 'Personalised Insulated Water Bottle (Red)', pricePence: 2999 },
   "water-bottle-copper-lime": { name: 'Personalised Insulated Water Bottle (Lime)', pricePence: 2999 },
+  "photo-print-5x5": { name: 'Photo Print (5x5 inch, Gloss)', pricePence: 799 },
 };
