@@ -47,7 +47,6 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // page listing on 2026-08-02, not confirmed via Quotes API yet. Test one
   // real order per size before trusting this for customer checkout.
   "canvas-stretched-a5": { sku: "GLOBAL-CAN-A5", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-6x8": { sku: "GLOBAL-CAN-6X8", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "canvas-stretched-a4": { sku: "GLOBAL-CAN-A4", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "canvas-stretched-a3": { sku: "GLOBAL-CAN-A3", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "canvas-stretched-a2": { sku: "GLOBAL-CAN-A2", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
@@ -56,7 +55,6 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   // ── Eco Canvas ──────────────────────────────────────────────────────────────
   // ECO-CAN-* requires wrap attribute (same as stretched canvas).
-  "eco-canvas-8x8":   { sku: "ECO-CAN-8X8",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "eco-canvas-8x12":  { sku: "ECO-CAN-8X12",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "eco-canvas-12x12": { sku: "ECO-CAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "eco-canvas-12x18": { sku: "ECO-CAN-12X18", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
@@ -82,38 +80,9 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "eco-rolled-10x20": { sku: "ECO-ROL-10X20", sizing: "fillPrintArea" },
   "eco-rolled-12x24": { sku: "ECO-ROL-12X24", sizing: "fillPrintArea" },
 
-  // ── Slim Canvas ─────────────────────────────────────────────────────────────
-  // GLOBAL-SLIMCAN-* requires wrap attribute.
-  // ⚠️ UNVALIDATED — same caveat as the stretched canvas sizes above:
-  // follows the established naming pattern but not confirmed against
-  // the live Prodigi API. Check before relying on these for real orders.
-  "slim-canvas-8x8":   { sku: "GLOBAL-SLIMCAN-8X8",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-8x10":  { sku: "GLOBAL-SLIMCAN-8X10",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-10x10": { sku: "GLOBAL-SLIMCAN-10X10", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-12x14": { sku: "GLOBAL-SLIMCAN-12X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-8x28":  { sku: "GLOBAL-SLIMCAN-8X28",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-36x24": { sku: "GLOBAL-SLIMCAN-36X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  // ⚠️ UNVALIDATED — these three follow the established GLOBAL-SLIMCAN-{size}
-  // naming pattern but aren't individually confirmed against the live API.
-  // Check before relying on them for a real order.
-  "slim-canvas-10x14": { sku: "GLOBAL-SLIMCAN-10X14", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-12x18": { sku: "GLOBAL-SLIMCAN-12X18", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-8x40":  { sku: "GLOBAL-SLIMCAN-8X40",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-
   // These two are CONFIRMED (not guessed) - real SKUs from Prodigi's own
   // size/price listing. Note the actual dimensions are 17x23.4" and
   // 23x33.1", not an even 17x24"/23x34" - the display label reflects this.
-  "slim-canvas-17x23_4": { sku: "GLOBAL-SLIMCAN-17X23_4", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-23x33_1": { sku: "GLOBAL-SLIMCAN-23X33_1", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-
-  // ── Box Frames ──────────────────────────────────────────────────────────────
-  // GLOBAL-BOX-* requires color attribute: "white" | "natural" | "black".
-  "box-frame-5x7":   { sku: "GLOBAL-BOX-5X7",   sizing: "fillPrintArea", attributes: { color: "black" } },
-  "box-frame-6x8":   { sku: "GLOBAL-BOX-6X8",   sizing: "fillPrintArea", attributes: { color: "black" } },
-  "box-frame-11x14": { sku: "GLOBAL-BOX-11X14", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "box-frame-12x12": { sku: "GLOBAL-BOX-12X12", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "box-frame-12x16": { sku: "GLOBAL-BOX-12X16", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "box-frame-16x20": { sku: "GLOBAL-BOX-16X20", sizing: "fillPrintArea", attributes: { color: "black" } },
 
   // ── Framed Photo Tiles ──────────────────────────────────────────────────────
   // PHOTIL-FRA-* requires color attribute: "white" | "black".
@@ -187,40 +156,6 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "tattoo-xl":  { sku: "GLOBAL-TATT-XL",  sizing: "fillPrintArea" }, // 8×8" (20×20cm)
   "tattoo-xxl": { sku: "GLOBAL-TATT-XXL", sizing: "fillPrintArea" }, // 12×12" (30×30cm)
 
-  // ── iPad Cases ──────────────────────────────────────────────────────────────────────────────
-  // GLOBAL-TECH-IPAD-* SKUs validated against Prodigi live API on 2026-06-02.
-  // Snap cases, printed edge-to-edge with water-based polyurethane coating.
-  // GLOBAL-TECH-IPADMIN1-CS not found in API — only Air + 2/3/4 available.
-  "ipad-air":     { sku: "GLOBAL-TECH-IPAD-A-CS",   sizing: "fillPrintArea" }, // iPad Air
-  "ipad-2-3-4":   { sku: "GLOBAL-TECH-IPAD2-CS",    sizing: "fillPrintArea" }, // iPad 2/3/4
-
-  // ── Folio Wallet Cases ─────────────────────────────────────────────────────────────────────────────
-  // GLOBAL-TECH-FWALLET-* SKUs from Prodigi catalog (2026-06-02).
-  // Faux leather folio with card slots, stand feature, custom photo print.
-  "folio-iphone11":      { sku: "GLOBAL-TECH-FWALLET-IPHONE11",     sizing: "fillPrintArea" },
-  "folio-iphone11pro":   { sku: "GLOBAL-TECH-FWALLET-IPHONE11PRO",  sizing: "fillPrintArea" },
-  "folio-iphone11promax":{ sku: "GLOBAL-TECH-FWALLET-IPHONE11PROMAX", sizing: "fillPrintArea" },
-  "folio-iphone12":      { sku: "GLOBAL-TECH-FWALLET-IPHONE12",     sizing: "fillPrintArea" },
-  "folio-iphone12mini":  { sku: "GLOBAL-TECH-FWALLET-IPHONE12MINI", sizing: "fillPrintArea" },
-  "folio-iphone12pro":   { sku: "GLOBAL-TECH-FWALLET-IPHONE12PRO",  sizing: "fillPrintArea" },
-  "folio-iphone12promax":{ sku: "GLOBAL-TECH-FWALLET-IPHONE12PROMAX", sizing: "fillPrintArea" },
-  "folio-iphone13":      { sku: "GLOBAL-TECH-FWALLET-IPHONE13",     sizing: "fillPrintArea" },
-
-  // ── Tough Phone Cases ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-  // GLOBAL-TECH-CASE-* SKUs from Prodigi catalog (2026-06-02).
-  // Dual-layer tough case with custom photo print, matte or gloss finish.
-  "tough-iphone11":      { sku: "GLOBAL-TECH-CASE-IPHONE11",     sizing: "fillPrintArea" },
-  "tough-iphone11pro":   { sku: "GLOBAL-TECH-CASE-IPHONE11PRO",  sizing: "fillPrintArea" },
-  "tough-iphone11promax":{ sku: "GLOBAL-TECH-CASE-IPHONE11PROMAX", sizing: "fillPrintArea" },
-  "tough-iphone12":      { sku: "GLOBAL-TECH-CASE-IPHONE12",     sizing: "fillPrintArea" },
-  "tough-iphone12mini":  { sku: "GLOBAL-TECH-CASE-IPHONE12MINI", sizing: "fillPrintArea" },
-  "tough-iphone12pro":   { sku: "GLOBAL-TECH-CASE-IPHONE12PRO",  sizing: "fillPrintArea" },
-  "tough-iphone12promax":{ sku: "GLOBAL-TECH-CASE-IPHONE12PROMAX", sizing: "fillPrintArea" },
-  "tough-iphone13":      { sku: "GLOBAL-TECH-CASE-IPHONE13",     sizing: "fillPrintArea" },
-  "tough-iphone13mini":  { sku: "GLOBAL-TECH-CASE-IPHONE13MINI", sizing: "fillPrintArea" },
-  "tough-iphone13pro":   { sku: "GLOBAL-TECH-CASE-IPHONE13PRO",  sizing: "fillPrintArea" },
-  "tough-iphone13promax":{ sku: "GLOBAL-TECH-CASE-IPHONE13PROMAX", sizing: "fillPrintArea" },
-
   // ── Glow in the Dark Posters ───────────────────────────────────────
   // GLOBAL-GLOW-* SKUs from Prodigi catalog (2026-06-02).
   // Glow-in-the-dark photo posters that charge under light and glow at night.
@@ -228,11 +163,6 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ART-GITD-*, not GLOBAL-GLOW-* as originally guessed (good thing this
   // got checked). Note 12x12 uses a metric SKU (305x305mm) and 28x39
   // actually ships as 28x40 - both are Prodigi's real naming, not a typo.
-  "glow-12x12": { sku: "ART-GITD-305X305", sizing: "fillPrintArea" },
-  "glow-12x16": { sku: "ART-GITD-12X16",   sizing: "fillPrintArea" },
-  "glow-16x24": { sku: "ART-GITD-16X24",   sizing: "fillPrintArea" },
-  "glow-18x24": { sku: "ART-GITD-18X24",   sizing: "fillPrintArea" },
-  "glow-28x39": { sku: "ART-GITD-28X40",   sizing: "fillPrintArea" },
   // ── Museum-Grade Fine Art Print ──────────────────────────────────────────────
   // ART-FAP-SAP-* SKUs from Prodigi spec sheet (2026-08). Flat fine art print,
   // no attributes required.
@@ -242,17 +172,6 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "art-print-12x16": { sku: "ART-FAP-SAP-12X16", sizing: "fillPrintArea" },
   "art-print-24x32": { sku: "ART-FAP-SAP-24X32", sizing: "fillPrintArea" },
   "art-print-36x48": { sku: "ART-FAP-SAP-36X48", sizing: "fillPrintArea" },
-
-  // ── Everyday Budget Poster ────────────────────────────────────────────────────
-  // GLOBAL-BLP-* SKUs from Prodigi spec sheet (2026-08). Flat poster, no
-  // attributes required.
-  "budget-poster-a5":  { sku: "GLOBAL-BLP-A5",  sizing: "fillPrintArea" },
-  "budget-poster-a4":  { sku: "GLOBAL-BLP-A4",  sizing: "fillPrintArea" },
-  "budget-poster-a3":  { sku: "GLOBAL-BLP-A3",  sizing: "fillPrintArea" },
-  "budget-poster-a2":  { sku: "GLOBAL-BLP-A2",  sizing: "fillPrintArea" },
-  "budget-poster-a1":  { sku: "GLOBAL-BLP-A1",  sizing: "fillPrintArea" },
-  "budget-poster-4x6": { sku: "GLOBAL-BLP-4X6", sizing: "fillPrintArea" },
-  "budget-poster-6x6": { sku: "GLOBAL-BLP-6X6", sizing: "fillPrintArea" },
 
   // ── Premium Metallic Foil Art Print ───────────────────────────────────────────
   // ART-FOIL-GOL-*/ART-FOIL-SIL-* SKUs from Prodigi spec sheet (2026-08). Colour
@@ -269,45 +188,14 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "art-foil-a2-silver":      { sku: "ART-FOIL-SIL-A2",     sizing: "fillPrintArea" },
   "art-foil-a1-gold":        { sku: "ART-FOIL-GOL-A1",     sizing: "fillPrintArea" },
   "art-foil-a1-silver":      { sku: "ART-FOIL-SIL-A1",     sizing: "fillPrintArea" },
-  "art-foil-20x28-gold":     { sku: "ART-FOIL-GOL-20X28",  sizing: "fillPrintArea" },
-  "art-foil-20x28-silver":   { sku: "ART-FOIL-SIL-20X28",  sizing: "fillPrintArea" },
-  "art-foil-20x30-gold":     { sku: "ART-FOIL-GOL-20X30",  sizing: "fillPrintArea" },
-  "art-foil-20x30-silver":   { sku: "ART-FOIL-SIL-20X30",  sizing: "fillPrintArea" },
-  "art-foil-20x40-gold":     { sku: "ART-FOIL-GOL-20X40",  sizing: "fillPrintArea" },
-  "art-foil-20x40-silver":   { sku: "ART-FOIL-SIL-20X40",  sizing: "fillPrintArea" },
-  "art-foil-24x24-gold":     { sku: "ART-FOIL-GOL-24X24",  sizing: "fillPrintArea" },
-  "art-foil-24x24-silver":   { sku: "ART-FOIL-GOL-24X24",  sizing: "fillPrintArea" }, // ⚠️ using Gold SKU as fallback — silver 24x24 unconfirmed
 
   // ── Premium Glow in the Dark Poster (Specialist Range) ────────────────────────
   // ART-GITD-* SKUs from Prodigi spec sheet (2026-08). Same family prefix as
   // the standard glow poster above, but these are distinct, non-overlapping
   // size SKUs — confirmed no collision with the existing glow-* entries.
-  "art-gitd-premium-4x6":    { sku: "ART-GITD-4X6",   sizing: "fillPrintArea" },
-  "art-gitd-premium-6x6":    { sku: "ART-GITD-6X6",   sizing: "fillPrintArea" },
   "art-gitd-premium-a4":     { sku: "ART-GITD-A4",    sizing: "fillPrintArea" },
   "art-gitd-premium-a3":     { sku: "ART-GITD-A3",    sizing: "fillPrintArea" },
   "art-gitd-premium-a2":     { sku: "ART-GITD-A2",    sizing: "fillPrintArea" },
-  "art-gitd-premium-20x24":  { sku: "ART-GITD-20X24", sizing: "fillPrintArea" },
-  "art-gitd-premium-36x48":  { sku: "ART-GITD-36X48", sizing: "fillPrintArea" },
-  "art-gitd-premium-40x60":  { sku: "ART-GITD-40X60", sizing: "fillPrintArea" },
-
-  // ── Budget Framed Poster ──────────────────────────────────────────────────────
-  // GLOBAL-BFP-* SKUs from Prodigi spec sheet (2026-08). Self-assembly framed
-  // poster — frame colour (Black/White/Natural) is a real customer choice on
-  // Prodigi's side, but the website doesn't currently offer a colour picker
-  // for this product, so every order defaults to Black. Add a colour selector
-  // to the site later if White/Natural should be offered too.
-  "bfp-5x7":   { sku: "GLOBAL-BFP-5X7",   sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-6x8":   { sku: "GLOBAL-BFP-6X8",   sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-11x14": { sku: "GLOBAL-BFP-11X14", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-12x12": { sku: "GLOBAL-BFP-12X12", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-12x16": { sku: "GLOBAL-BFP-12X16", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-16x16": { sku: "GLOBAL-BFP-16X16", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-16x20": { sku: "GLOBAL-BFP-16X20", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-18x24": { sku: "GLOBAL-BFP-18X24", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-20x20": { sku: "GLOBAL-BFP-20X20", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-20x28": { sku: "GLOBAL-BFP-20X28", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "bfp-24x32": { sku: "GLOBAL-BFP-24X32", sizing: "fillPrintArea", attributes: { color: "black" } },
 
   // ── Rigid Display Board (Exoboard/Foamex) ─────────────────────────────────────
   // GLOBAL-EXOBOARD-* SKUs from Prodigi spec sheet (2026-08). Rigid PVC/foam
@@ -323,11 +211,68 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "exoboard-210x297":  { sku: "GLOBAL-EXOBOARD-210X297",  sizing: "fillPrintArea" },
   "exoboard-300x400":  { sku: "GLOBAL-EXOBOARD-300X400",  sizing: "fillPrintArea" },
 
-  // ── Hidden free-gift products (not in the visible shop catalogue) ─────────
-  // Only ever referenced by internal reward-redemption flows (e.g. the WUD
-  // £2.99 bundle's free postcard). Never shown to customers as a normal
-  // purchasable item.
-  "wud-gift-postcard": { sku: "CLASSIC-POST-GLOS-6X4", sizing: "fillPrintArea" },
+  // ── New products added this session (2026-08-13) ──────────────────────────────
+
+  // Glow in the Dark Poster — A1 added, CONFIRMED (ART-GITD-A1, same family as A2-A4 above)
+  "art-gitd-premium-a1": { sku: "ART-GITD-A1", sizing: "fillPrintArea" },
+
+  // Budget Art Paper — SKUs CONFIRMED from real Prodigi basket screenshots
+  "budget-art-paper-8x8": { sku: "ART-FAP-BAP-8X8", sizing: "fillPrintArea" },
+  "budget-art-paper-12x16": { sku: "ART-FAP-BAP-12X16", sizing: "fillPrintArea" },
+  "budget-art-paper-18x24": { sku: "ART-FAP-BAP-18X24", sizing: "fillPrintArea" },
+  "budget-art-paper-40x40": { sku: "ART-FAP-BAP-40X40", sizing: "fillPrintArea" },
+
+  // Budget Poster — consolidated product, replaces old budget-poster-a0..a5.
+  // ⚠️ UNVALIDATED orientation attribute — same base SKU per size, distinguished
+  // by an "orientation" attribute. Key/value names are a best guess following
+  // the pattern used elsewhere in this file, not individually confirmed
+  // against the live API. Test one order of each orientation before relying
+  // on this for real customers.
+  "budget-poster-a5-portrait":  { sku: "GLOBAL-BLP-A5", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
+  "budget-poster-a5-landscape": { sku: "GLOBAL-BLP-A5", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+  "budget-poster-a4-portrait":  { sku: "GLOBAL-BLP-A4", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
+  "budget-poster-a4-landscape": { sku: "GLOBAL-BLP-A4", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+  "budget-poster-a3-portrait":  { sku: "GLOBAL-BLP-A3", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
+  "budget-poster-a3-landscape": { sku: "GLOBAL-BLP-A3", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+  "budget-poster-a2-portrait":  { sku: "GLOBAL-BLP-A2", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
+  "budget-poster-a2-landscape": { sku: "GLOBAL-BLP-A2", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+  "budget-poster-a1-portrait":  { sku: "GLOBAL-BLP-A1", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
+  "budget-poster-a1-landscape": { sku: "GLOBAL-BLP-A1", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+  "budget-poster-a0-portrait":  { sku: "GLOBAL-BLP-A0", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
+  "budget-poster-a0-landscape": { sku: "GLOBAL-BLP-A0", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+
+  // Eco Rolled Canvas — 4 new larger sizes. 24x47/28x40 CONFIRMED from your
+  // Prodigi screenshots (ECO-ROL-24X47, ECO-ROL-28X40). 16x20/20x20 follow
+  // the same established ECO-ROL-{size} naming pattern but weren't
+  // individually visible in your screenshots — check before a real order.
+  "eco-rolled-16x20": { sku: "ECO-ROL-16X20", sizing: "fillPrintArea" },
+  "eco-rolled-20x20": { sku: "ECO-ROL-20X20", sizing: "fillPrintArea" },
+  "eco-rolled-24x47": { sku: "ECO-ROL-24X47", sizing: "fillPrintArea" },
+  "eco-rolled-28x40": { sku: "ECO-ROL-28X40", sizing: "fillPrintArea" },
+
+  // Photo Print — SKU CONFIRMED from real Prodigi test-checkout (GLOBAL-PHO-5X5, Gloss)
+  "photo-print-5x5": { sku: "GLOBAL-PHO-5X5", sizing: "fillPrintArea", attributes: { finish: "Gloss" } },
+
+  // Printed Shower Towel — SKU CONFIRMED from real Prodigi basket screenshot (H-TOW-SHWR)
+  "printed-towel-shower": { sku: "H-TOW-SHWR", sizing: "fillPrintArea" },
+
+  // Slim Canvas — replaces old sizes entirely. All 4 SKUs CONFIRMED from
+  // your real Prodigi test-basket screenshots.
+  "slim-canvas-6x6":   { sku: "GLOBAL-SLIMCAN-6X6",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-12x12": { sku: "GLOBAL-SLIMCAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-30x30": { sku: "GLOBAL-SLIMCAN-30X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-43x87": { sku: "GLOBAL-SLIMCAN-43X87", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+
+  // Personalised Insulated Water Bottle — ⚠️ UNVALIDATED colour attribute.
+  // Base SKU (650ML-WATER-BOTTLE) and the fact that colour is a dropdown
+  // field were confirmed via your test checkout, but the exact attribute
+  // key/values Prodigi's API expects are a best guess. Black/White
+  // intentionally omitted — Prodigi lists them out of stock until Jan 2026.
+  // Test one real order before relying on this for real customers.
+  "water-bottle-copper-grey": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Grey" } },
+  "water-bottle-copper-navy": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Navy" } },
+  "water-bottle-copper-red":  { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Red" } },
+  "water-bottle-copper-lime": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Lime" } },
 };
 
 
