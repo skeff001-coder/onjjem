@@ -519,7 +519,19 @@ export const PHOTO_CREDITS_STORAGE_KEY = "onjjem_photo_credits";
 export const PACKAGE_IDENTIFIERS = {
   monthly: "$rc_monthly",
   perPhoto: "one_photo",
+  threePhotos: "three_photos",
+  fivePhotos: "five_photos",
+  tenPhotos: "ten_photos",
 } as const;
+
+// How many credits each bundle purchase grants — this is the ONLY place
+// that needs updating if you add/change a bundle tier later.
+const CREDIT_VALUES: Record<string, number> = {
+  [PACKAGE_IDENTIFIERS.perPhoto]: 1,
+  [PACKAGE_IDENTIFIERS.threePhotos]: 3,
+  [PACKAGE_IDENTIFIERS.fivePhotos]: 5,
+  [PACKAGE_IDENTIFIERS.tenPhotos]: 10,
+};
 
 function getRevenueCatApiKey(): string | null {
   // In dev / Expo Go / web, the test key is sufficient.
@@ -590,9 +602,12 @@ function useSubscriptionContext() {
   const purchaseMutation = useMutation({
     mutationFn: async (pkg: PurchasesPackage) => {
       const { customerInfo } = await Purchases.purchasePackage(pkg);
-      // Locally credit consumables (one-photo) — RevenueCat does not auto-track these
-      if (pkg.identifier === PACKAGE_IDENTIFIERS.perPhoto) {
-        const next = (await readPhotoCredits()) + 1;
+      // Locally credit consumables (photo bundles) — RevenueCat does not
+      // auto-track these, so we add however many credits this specific
+      // bundle grants (see CREDIT_VALUES above).
+      const creditsGranted = CREDIT_VALUES[pkg.identifier];
+      if (creditsGranted) {
+        const next = (await readPhotoCredits()) + creditsGranted;
         await writePhotoCredits(next);
         setPhotoCredits(next);
       }
@@ -633,6 +648,18 @@ function useSubscriptionContext() {
     currentOffering?.availablePackages.find(
       (p) => p.identifier === PACKAGE_IDENTIFIERS.perPhoto,
     ) ?? null;
+  const threePhotoPackage =
+    currentOffering?.availablePackages.find(
+      (p) => p.identifier === PACKAGE_IDENTIFIERS.threePhotos,
+    ) ?? null;
+  const fivePhotoPackage =
+    currentOffering?.availablePackages.find(
+      (p) => p.identifier === PACKAGE_IDENTIFIERS.fivePhotos,
+    ) ?? null;
+  const tenPhotoPackage =
+    currentOffering?.availablePackages.find(
+      (p) => p.identifier === PACKAGE_IDENTIFIERS.tenPhotos,
+    ) ?? null;
 
   const isSubscribed =
     customerInfoQuery.data?.entitlements.active?.[REVENUECAT_ENTITLEMENT_IDENTIFIER] !==
@@ -644,6 +671,9 @@ function useSubscriptionContext() {
     currentOffering,
     monthlyPackage,
     perPhotoPackage,
+    threePhotoPackage,
+    fivePhotoPackage,
+    tenPhotoPackage,
     isSubscribed,
     photoCredits,
     isLoading: customerInfoQuery.isLoading || offeringsQuery.isLoading,
