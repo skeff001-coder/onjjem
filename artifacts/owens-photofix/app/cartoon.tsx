@@ -45,7 +45,7 @@ export default function CartoonScreen() {
   const [loadingAssets, setLoadingAssets] = useState(false);
   const [freeUsed, setFreeUsed] = useState<boolean | null>(null);
 
-  const { isSubscribed, photoCredits, perPhotoPackage, monthlyPackage, purchase, isPurchasing } =
+  const { isSubscribed, photoCredits, perPhotoPackage, threePhotoPackage, fivePhotoPackage, tenPhotoPackage, purchase, isPurchasing } =
     useSubscription();
 
   useEffect(() => {
@@ -167,10 +167,10 @@ export default function CartoonScreen() {
     }
   };
 
-  const subscribeUnlimited = async () => {
-    if (!monthlyPackage) return;
+  const buyBundle = async (pkg: typeof perPhotoPackage) => {
+    if (!pkg) return;
     try {
-      await purchase(monthlyPackage);
+      await purchase(pkg);
       setPhase("idle");
       openPicker();
     } catch (err) {
@@ -229,7 +229,7 @@ export default function CartoonScreen() {
             <Ionicons name="sparkles" size={40} color="#C9960C" />
             <Text style={s.startTitle}>You've used your free cartoon</Text>
             <Text style={s.errorText}>
-              Get more cartoons — buy one more, or subscribe for unlimited access.
+              Get more cartoons — buy in bulk and save.
             </Text>
             {perPhotoPackage && (
               <TouchableOpacity onPress={buyOneMore} disabled={isPurchasing} style={s.primaryBtn}>
@@ -237,15 +237,29 @@ export default function CartoonScreen() {
                   <ActivityIndicator color="#0F0D09" />
                 ) : (
                   <Text style={s.primaryBtnText}>
-                    Buy One More — {perPhotoPackage.product.priceString}
+                    Buy 1 More — {perPhotoPackage.product.priceString}
                   </Text>
                 )}
               </TouchableOpacity>
             )}
-            {monthlyPackage && (
-              <TouchableOpacity onPress={subscribeUnlimited} disabled={isPurchasing} style={s.secondaryPurchaseBtn}>
+            {threePhotoPackage && (
+              <TouchableOpacity onPress={() => buyBundle(threePhotoPackage)} disabled={isPurchasing} style={s.secondaryPurchaseBtn}>
                 <Text style={s.secondaryPurchaseBtnText}>
-                  Subscribe Unlimited — {monthlyPackage.product.priceString}/mo
+                  Buy 3 — {threePhotoPackage.product.priceString}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {fivePhotoPackage && (
+              <TouchableOpacity onPress={() => buyBundle(fivePhotoPackage)} disabled={isPurchasing} style={s.secondaryPurchaseBtn}>
+                <Text style={s.secondaryPurchaseBtnText}>
+                  Buy 5 — {fivePhotoPackage.product.priceString}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {tenPhotoPackage && (
+              <TouchableOpacity onPress={() => buyBundle(tenPhotoPackage)} disabled={isPurchasing} style={s.secondaryPurchaseBtn}>
+                <Text style={s.secondaryPurchaseBtnText}>
+                  Buy 10 — {tenPhotoPackage.product.priceString}
                 </Text>
               </TouchableOpacity>
             )}
