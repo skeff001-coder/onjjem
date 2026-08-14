@@ -373,7 +373,13 @@ router.get("/stripe/products", async (_req: Request, res: Response) => {
 // only ever needs to exist here, no changes needed anywhere else.
 
 const REDEEMABLE_GIFTS: Record<string, { name: string; pricePence: number }> = {
-  "wud-gift-postcard": { name: "Free Dog Postcard (Loyalty Gift)", pricePence: 299 },
+  "wud-gift-postcard":   { name: "Free Dog Postcard (Bundle Gift)",           pricePence: 499  },
+  "wud-sticker-small":   { name: "Pet Vinyl Sticker 3×4\" (My Dog's Shop)",   pricePence: 499  },
+  "wud-sticker-xl":      { name: "XL Pet Vinyl Sticker 14×14\" (My Dog's Shop)", pricePence: 2499 },
+  "wud-magic-mug":       { name: "Magic Colour-Change Mug (My Dog's Shop)",   pricePence: 1699 },
+  "wud-bandanna":        { name: "Personalised Dog Bandanna (My Dog's Shop)", pricePence: 1999 },
+  "wud-jigsaw":          { name: "30-Piece Photo Jigsaw (My Dog's Shop)",     pricePence: 1999 },
+  "wud-invitation-card": { name: "Personalised Invitation Card (My Dog's Shop)", pricePence: 599 },
 };
 
 router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
@@ -381,6 +387,7 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
     giftSku?: string;
     photoBase64?: string;
     dogName?: string;
+    overridePrice?: number;
     successUrl?: string;
     cancelUrl?: string;
   };
@@ -395,6 +402,12 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
     res.status(400).json({ error: "This item is not redeemable as a gift." });
     return;
   }
+
+  // Allow the app to pass a discounted price (e.g. 15% bundle discount).
+  // Never allow the price to go below zero or exceed the catalogue price.
+  const finalPrice = body.overridePrice != null
+    ? Math.max(0, Math.min(body.overridePrice, gift.pricePence))
+    : gift.pricePence;
 
   try {
     const stripe = await getUncachableStripeClient();
@@ -418,11 +431,8 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
+      ...(finalPrice === 0 ? { payment_method_collection: "if_required" } : {}),
       line_items: [
-        {
-          price_data: {
-            currency: "gbp",
-            unit_amount: gift.pricePence,
             product_data: {
               name: gift.name,
               metadata: { sku: body.giftSku },
