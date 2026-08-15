@@ -374,12 +374,12 @@ router.get("/stripe/products", async (_req: Request, res: Response) => {
 
 const REDEEMABLE_GIFTS: Record<string, { name: string; pricePence: number }> = {
   "wud-gift-postcard":   { name: "Free Dog Postcard (Bundle Gift)",           pricePence: 499  },
-  "wud-sticker-small":   { name: "Pet Vinyl Sticker 3×4\" (My Dog's Shop)",   pricePence: 499  },
-  "wud-sticker-xl":      { name: "XL Pet Vinyl Sticker 14×14\" (My Dog's Shop)", pricePence: 2499 },
-  "wud-magic-mug":       { name: "Magic Colour-Change Mug (My Dog's Shop)",   pricePence: 1699 },
+  "wud-sticker-small":   { name: "Personalised Pet Sticker (My Dog's Shop)",  pricePence: 399  },
+  "wud-sticker-xl":      { name: "XL Pet Vinyl Sticker 14×14\" (My Dog's Shop)", pricePence: 2149 },
+  "wud-magic-mug":       { name: "Magic Colour-Change Mug (My Dog's Shop)",   pricePence: 1499 },
   "wud-bandanna":        { name: "Personalised Dog Bandanna (My Dog's Shop)", pricePence: 1999 },
   "wud-jigsaw":          { name: "30-Piece Photo Jigsaw (My Dog's Shop)",     pricePence: 1999 },
-  "wud-invitation-card": { name: "Personalised Invitation Card (My Dog's Shop)", pricePence: 599 },
+  "wud-invitation-card": { name: "Personalised Invitation Card (My Dog's Shop)", pricePence: 499 },
 };
 
 router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
@@ -433,6 +433,10 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
       payment_method_types: ["card"],
       ...(finalPrice === 0 ? { payment_method_collection: "if_required" } : {}),
       line_items: [
+        {
+          price_data: {
+            currency: "gbp",
+            unit_amount: finalPrice,
             product_data: {
               name: gift.name,
               metadata: { sku: body.giftSku },
