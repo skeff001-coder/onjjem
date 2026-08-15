@@ -295,7 +295,7 @@ function ScannerCard({
         )}
         {!def.free && !owned && def.featured && (
           <View style={[cardStyles.premiumBadge, { backgroundColor: def.color }]}>
-            <Text style={cardStyles.premiumBadgeText}>{def.id === "mixed_dna" ? "Bundle ✨" : "Try It ✨"}</Text>
+            <Text style={cardStyles.premiumBadgeText}>{def.id === "mixed_dna" ? "Bundle ✨" : "£4.99"}</Text>
           </View>
         )}
         {!def.free && owned && (
@@ -1069,18 +1069,18 @@ export default function ScannerScreen() {
   const [storyPickerVisible, setStoryPickerVisible] = useState(false);
   const [selectedCartoonStyle, setSelectedCartoonStyle] = useState<"default" | "oil-painting" | "anime" | "pop-art">("default");
   const [isBuying, setIsBuying] = useState(false);
-  const [cartoonFreeUsed, setCartoonFreeUsed] = useState<boolean | null>(null);
-  const [cartoonPaidUsesRemaining, setCartoonPaidUsesRemaining] = useState(0);
+  // Cartoon uses — 3 per purchase, tracked locally.
+  // No free cartoon scan. No bundle dependency.
+  const [cartoonUsesRemaining, setCartoonUsesRemaining] = useState<number>(0);
+  const [cartoonUsesLoaded, setCartoonUsesLoaded] = useState(false);
 
   useEffect(() => {
-    if (!hasMixedBreed) return;
     (async () => {
-      const freeUsedRaw = await AsyncStorage.getItem("wud_cartoon_free_used");
-      setCartoonFreeUsed(freeUsedRaw === "true");
-      const paidRaw = await AsyncStorage.getItem("wud_cartoon_paid_uses");
-      setCartoonPaidUsesRemaining(paidRaw ? parseInt(paidRaw, 10) : 0);
+      const raw = await AsyncStorage.getItem("wud_cartoon_paid_uses");
+      setCartoonUsesRemaining(raw ? parseInt(raw, 10) : 0);
+      setCartoonUsesLoaded(true);
     })();
-  }, [hasMixedBreed]);
+  }, []);
 
   const isWeb = Platform.OS === "web";
   const topPad = isWeb ? 67 : insets.top;
@@ -1123,21 +1123,12 @@ export default function ScannerScreen() {
       return;
     }
     if (def.id === "cartoon") {
-      if (!hasMixedBreed) {
-        Alert.alert(
-          "Unlock Cartoon-ify",
-          "Cartoon-ify is a reward for purchasing the Mixed Breed DNA, Age Calculator & Personality Matcher bundle (£2.99). Buy the bundle to unlock your first free cartoon!",
-        );
-        return;
-      }
-      if (cartoonFreeUsed === false) {
+      if (!cartoonUsesLoaded) return;
+      if (cartoonUsesRemaining > 0) {
         setStylePickerVisible(true);
         return;
       }
-      if (cartoonPaidUsesRemaining > 0) {
-        setStylePickerVisible(true);
-        return;
-      }
+      // No uses remaining — show purchase prompt
       setPurchaseTarget(def);
       setPurchaseModalVisible(true);
       return;
@@ -1351,13 +1342,10 @@ export default function ScannerScreen() {
           const data = await getDogCartoon(base64, mimeType, cartoonStyleOverride ?? "default");
           setScanResult({ type: "cartoon", data });
           setResultVisible(true);
-          if (cartoonFreeUsed === false) {
-            await AsyncStorage.setItem("wud_cartoon_free_used", "true");
-            setCartoonFreeUsed(true);
-          } else if (cartoonPaidUsesRemaining > 0) {
-            const next = cartoonPaidUsesRemaining - 1;
+          if (cartoonUsesRemaining > 0) {
+            const next = cartoonUsesRemaining - 1;
             await AsyncStorage.setItem("wud_cartoon_paid_uses", String(next));
-            setCartoonPaidUsesRemaining(next);
+            setCartoonUsesRemaining(next);
           }
           if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           break;
@@ -1467,11 +1455,9 @@ export default function ScannerScreen() {
       setPurchaseModalVisible(false);
       if (purchaseTarget.id === "cartoon") {
         await AsyncStorage.setItem("wud_cartoon_paid_uses", "3");
-        setCartoonPaidUsesRemaining(3);
+        setCartoonUsesRemaining(3);
         setStylePickerVisible(true);
       } else {
-        // Reuse the dog's saved photo (e.g. from the Reveal Story offer)
-        // rather than asking for a brand new one.
         const photo = await getReusablePhoto();
         if (photo) {
           await processImage(photo.uri, photo.base64, photo.mimeType, purchaseTarget.id);
@@ -1771,8 +1757,8 @@ export default function ScannerScreen() {
                 </Text>
                 <Text style={[styles.purchaseSub, { color: colors.mutedForeground }]}>
                   {purchaseTarget.id === "cartoon"
-                    ? "One-time purchase for this feature only. No free trial, no subscription."
-                    : "One-time purchase, unlocks every premium scanner. No subscription."}
+                    ? "Get 3 cartoon scans — choose from Animated Movie, Oil Painting or Pop Art styles. One-time purchase."
+                    : "Unlock your dog's full DNA, Age & Personality story — plus a free personalised postcard shipped to your door. One-time purchase."}
                 </Text>
                 <TouchableOpacity
                   onPress={handlePurchase}
@@ -1783,7 +1769,7 @@ export default function ScannerScreen() {
                     <ActivityIndicator color="#0a0e1a" size="small" />
                   ) : (
                     <Text style={[styles.purchaseBtnText, { color: "#0a0e1a" }]}>
-                      {purchaseTarget.id === "cartoon" ? "Unlock 3 More Cartoons for £4.99" : "Unlock All for £2.99"}
+                      {purchaseTarget.id === "cartoon" ? "Get 3 Cartoon Scans — £4.99" : "Unlock Full Story + Free Postcard — £2.99"}
                     </Text>
                   )}
                 </TouchableOpacity>
