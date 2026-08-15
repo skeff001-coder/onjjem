@@ -2,7 +2,7 @@
   "expo": {
     "name": "That's My Dog!",
     "slug": "canine-encyclopaedia",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "canine-encyclopedia",
@@ -16,8 +16,8 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "60",
-      "usesAppleSignIn": true,
+      "buildNumber": "61",
+      "6usesAppleSignIn": true,
 
      "infoPlist": { 
         "LSApplicationQueriesSchemes": ["whatsapp", "fb", "instagram", "tiktok"],
