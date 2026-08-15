@@ -39,12 +39,12 @@ const PRODUCTS = [
   },
   {
     id: "sticker-small",
-    name: "Pet Vinyl Sticker",
-    subtitle: "3\" × 4\" gloss kiss-cut",
+    name: "Personalised Pet Sticker",
+    subtitle: "3\" × 4\" premium gloss vinyl",
     description:
-      "Your dog's face on a premium waterproof gloss vinyl sticker. Kiss-cut for easy peeling, suitable for laptops, water bottles, phone cases and more.",
+      "Your dog's face on a single premium waterproof gloss vinyl sticker — kiss-cut for easy peeling. Stick it on your laptop, water bottle, phone case, car, or anywhere you want to show off your dog. Printed in vivid, fade-resistant colour.",
     icon: "star-outline" as const,
-    price: 499,
+    price: 399,
     rrp: null as number | null,
     freeWithBundle: false,
     sku: "wud-sticker-small",
@@ -57,7 +57,7 @@ const PRODUCTS = [
     description:
       "A massive 14x14 inch premium gloss vinyl sticker featuring your dog. Perfect for doors, walls, car windows or anywhere you want to make a statement.",
     icon: "expand-outline" as const,
-    price: 2499,
+    price: 2149,
     rrp: null as number | null,
     freeWithBundle: false,
     sku: "wud-sticker-xl",
@@ -70,7 +70,7 @@ const PRODUCTS = [
     description:
       "The most magical mug you'll own. Appears jet black when cold — pour in hot water and your dog's photo magically appears in full colour. A guaranteed conversation starter.",
     icon: "cafe-outline" as const,
-    price: 1699,
+    price: 1499,
     rrp: 1999 as number | null,
     freeWithBundle: false,
     sku: "wud-magic-mug",
@@ -111,7 +111,7 @@ const PRODUCTS = [
     description:
       "A beautiful personalised greeting card featuring your dog's photo — printed on premium card stock and supplied with a blank envelope ready to address. Perfect for birthdays, Christmas or any occasion.",
     icon: "envelope-outline" as const,
-    price: 599,
+    price: 499,
     rrp: null as number | null,
     freeWithBundle: false,
     sku: "wud-invitation-card",
@@ -147,9 +147,9 @@ export default function ShopScreen() {
   const openCheckout = async (product: (typeof PRODUCTS)[0]) => {
     if (!dogPhoto) {
       Alert.alert(
-        "No dog photo yet",
-        "Scan a dog first using the Scanner tab — we need their photo to personalise your order.",
-        [{ text: "OK" }]
+        "No dog photo found",
+        "We couldn't find a saved dog photo. Go to the Scanner tab and identify your dog's breed first — that photo is then used for all your personalised orders.",
+        [{ text: "Got it" }]
       );
       return;
     }
@@ -417,7 +417,7 @@ export default function ShopScreen() {
         <View style={s.header}>
           <Text style={s.title}>🐾 My Dog's Shop</Text>
           <Text style={s.subtitle}>
-            Everything personalised with {dogName}'s photo — printed and posted to your door
+            Everything personalised with {dogName}'s saved photo — printed and posted to your door. No extra scanning needed.
           </Text>
         </View>
 
@@ -431,7 +431,7 @@ export default function ShopScreen() {
             </View>
           )}
           <Text style={s.dogNameText}>
-            {dogPhoto ? dogName : "Scan a dog to get started"}
+            {dogPhoto ? dogName : "Identify your dog in the Scanner tab first"}
           </Text>
         </View>
 
@@ -542,6 +542,106 @@ export default function ShopScreen() {
             </View>
           );
         })}
+
+        {/* Loyalty Card teaser */}
+        <View style={{
+          backgroundColor: "rgba(212,175,55,0.08)",
+          borderWidth: 1,
+          borderColor: "rgba(212,175,55,0.3)",
+          borderRadius: 16,
+          padding: 18,
+          marginBottom: 12,
+        }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <Text style={{ fontSize: 24 }}>🏆</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 16, fontFamily: "Inter_700Bold", color: "#d4af37" }}>
+                Loyalty Card — Coming Soon
+              </Text>
+              <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
+                Included FREE with The Full Story Bundle
+              </Text>
+            </View>
+          </View>
+          <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20, marginBottom: 12 }}>
+            Collect photos of 10 different dog breeds to complete your Loyalty Card — and unlock some seriously exciting rewards. No scanning needed, just upload from your phone.
+          </Text>
+          <View style={{ gap: 8 }}>
+            {[
+              "🎨  Cartoonify Elite unlocked — FREE (worth £4.99)",
+              "🎀  Exclusive Loyal Customer prices on the bandanna & jigsaw",
+              "✨  15% off everything at ONJJEM.com",
+              "🎁  More rewards being added all the time...",
+            ].map((reward, i) => (
+              <Text key={i} style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.foreground }}>
+                {reward}
+              </Text>
+            ))}
+          </View>
+          {!hasMixedBreed && (
+            <Text style={{ fontSize: 12, fontFamily: "Inter_600SemiBold", color: "#d4af37", marginTop: 14, textAlign: "center" }}>
+              Buy The Full Story Bundle (£2.99) from the Scanner tab to unlock your Loyalty Card
+            </Text>
+          )}
+          {hasMixedBreed && (
+            <Text style={{ fontSize: 12, fontFamily: "Inter_600SemiBold", color: "#4ade80", marginTop: 14, textAlign: "center" }}>
+              ✅ Your Loyalty Card is unlocked — coming to the Scanner tab soon!
+            </Text>
+          )}
+        </View>
+
+        {/* ONJJEM Voucher */}
+        <View style={{
+          backgroundColor: "rgba(255,255,255,0.03)",
+          borderWidth: 1,
+          borderColor: "rgba(255,255,255,0.08)",
+          borderRadius: 16,
+          padding: 18,
+          marginBottom: 12,
+        }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <Text style={{ fontSize: 24 }}>🏷️</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 16, fontFamily: "Inter_700Bold", color: colors.foreground }}>
+                10% Off Anything at ONJJEM
+              </Text>
+              <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
+                Canvases · Framed Art · Foil Posters · Mugs · And more
+              </Text>
+            </View>
+          </View>
+          <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20, marginBottom: 12 }}>
+            Complete your Loyalty Card to unlock a 10% discount code valid on anything at onjjem.com — canvases, framed wall art, glow-in-the-dark posters, foil prints, temporary tattoos, and everything else in the full ONJJEM collection.
+          </Text>
+          {hasMixedBreed ? (
+            <Text style={{ fontSize: 13, fontFamily: "Inter_600SemiBold", color: colors.mutedForeground, textAlign: "center" }}>
+              🔒 Complete your Loyalty Card to claim this reward
+            </Text>
+          ) : (
+            <Text style={{ fontSize: 13, fontFamily: "Inter_600SemiBold", color: colors.mutedForeground, textAlign: "center" }}>
+              🔒 Unlocked when you complete the Loyalty Card
+            </Text>
+          )}
+        </View>
+
+        {/* Coming soon teaser */}
+        <View style={{
+          backgroundColor: "rgba(255,255,255,0.02)",
+          borderWidth: 1,
+          borderColor: "rgba(255,255,255,0.05)",
+          borderRadius: 16,
+          padding: 18,
+          marginBottom: 20,
+          alignItems: "center",
+        }}>
+          <Text style={{ fontSize: 20, marginBottom: 8 }}>🚀</Text>
+          <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: colors.foreground, textAlign: "center", marginBottom: 6 }}>
+            Big Rewards Coming Soon
+          </Text>
+          <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, textAlign: "center", lineHeight: 20 }}>
+            We're adding new exclusive rewards, surprises and gifts for loyal What's Up Dog! members all the time. The more you explore, the more you unlock. Watch this space. 🐾
+          </Text>
+        </View>
 
         {/* ONJJEM link for everything else */}
         <TouchableOpacity
