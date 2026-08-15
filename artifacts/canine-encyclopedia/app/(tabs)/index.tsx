@@ -132,7 +132,7 @@ function useScannerDefs(): ScannerDef[] {
         id: "cartoon",
         title: "🎨 Cartoonify Elite",
         subtitle: "Turn your dog into art",
-        description: "Reimagine your dog as 3 unbelievable illustrations — Animated Movie, Oil Painting & Pop Art — plus free stickers of your dog and a 10% off voucher for the Magic Mug at ONJJEM.",
+        description: "Reimagine your dog as 3 unbelievable illustrations — Animated Movie, Oil Painting & Pop Art — plus a 15% off voucher valid on anything at ONJJEM.com.",
         icon: "color-wand-outline",
         color: "#e0a95c",
         glow: "rgba(224,169,92,0.28)",
