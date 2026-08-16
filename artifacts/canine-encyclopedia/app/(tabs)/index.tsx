@@ -148,11 +148,103 @@ function useScannerDefs(): ScannerDef[] {
 
 /* ─── Header ─── */
 function ScannerHeader() {
+  const { gallery, currentDogName, currentPhotoUri, currentScan } = useApp();
+  const colors = useColors();
+
+  // Most recently scanned dog
+  const mostRecent = [...gallery].sort((a, b) => b.timestamp - a.timestamp)[0];
+  const dogPhoto = currentPhotoUri ?? mostRecent?.uri ?? null;
+  const dogName = currentDogName || mostRecent?.dogName || null;
+  const dogBreed = currentScan?.breed ?? mostRecent?.breed ?? null;
+
   return (
-    <View style={gStyles.wrap}>
-      <Text style={gStyles.eyebrow}>HERITAGE SCANNER</Text>
-      <Text style={gStyles.headline}>Discover the story in their eyes.</Text>
-      <Text style={gStyles.subhead}>Scan any dog to reveal their breed, age, and personality.</Text>
+    <View style={{ paddingHorizontal: 16, paddingTop: 8, gap: 16 }}>
+
+      {/* Hero */}
+      <View style={{
+        borderRadius: 24,
+        overflow: "hidden",
+        backgroundColor: "#12100E",
+        borderWidth: 1,
+        borderColor: "rgba(201,168,76,0.2)",
+      }}>
+        {dogPhoto ? (
+          /* Returning user — show their dog */
+          <View style={{ flexDirection: "row", padding: 16, gap: 12, alignItems: "center" }}>
+            <Image
+              source={{ uri: dogPhoto }}
+              style={{ width: 90, height: 90, borderRadius: 45, borderWidth: 2, borderColor: "#c9a84c" }}
+              resizeMode="cover"
+            />
+            <View style={{ flex: 1, gap: 4 }}>
+              <Text style={{ fontSize: 11, fontFamily: "Inter_700Bold", color: "#c9a84c", letterSpacing: 2 }}>
+                RECENTLY SCANNED
+              </Text>
+              <Text style={{ fontSize: 22, fontFamily: "Inter_700Bold", color: "#fff", letterSpacing: -0.3 }}>
+                {dogName ?? "Your Dog"} 🐾
+              </Text>
+              {dogBreed && (
+                <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.6)" }}>
+                  {dogBreed}
+                </Text>
+              )}
+              <Text style={{ fontSize: 12, fontFamily: "Inter_500Medium", color: "#c9a84c", marginTop: 4 }}>
+                View Full Profile →
+              </Text>
+            </View>
+          </View>
+        ) : (
+          /* New user — emotional hook */
+          <View style={{ padding: 20, gap: 8 }}>
+            <Text style={{ fontSize: 11, fontFamily: "Inter_700Bold", color: "#c9a84c", letterSpacing: 3 }}>
+              WHAT'S UP DOG!
+            </Text>
+            <Text style={{ fontSize: 26, fontFamily: "Inter_700Bold", color: "#fff", lineHeight: 32, letterSpacing: -0.4 }}>
+              Discover. Celebrate.{"\n"}
+              <Text style={{ color: "#c9a84c" }}>All about your dog.</Text>
+            </Text>
+            <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.55)", lineHeight: 18 }}>
+              Scan your dog and unlock their story, personality and art.
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {/* Feature discovery row */}
+      <View style={{
+        backgroundColor: "rgba(255,255,255,0.03)",
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.07)",
+        borderRadius: 16,
+        padding: 14,
+        gap: 12,
+      }}>
+        <Text style={{ fontSize: 12, fontFamily: "Inter_600SemiBold", color: "rgba(255,255,255,0.5)" }}>
+          What you can discover
+        </Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          {[
+            { icon: "🐾", label: "Breed\nBreakdown" },
+            { icon: "🧠", label: "Personality\nProfile" },
+            { icon: "🎂", label: "Age\nEstimate" },
+            { icon: "🧬", label: "Breed\nHistory" },
+            { icon: "🎨", label: "Turn Into\nArt" },
+          ].map((item, i) => (
+            <View key={i} style={{ alignItems: "center", gap: 4, flex: 1 }}>
+              <Text style={{ fontSize: 20 }}>{item.icon}</Text>
+              <Text style={{ fontSize: 9, fontFamily: "Inter_500Medium", color: "rgba(255,255,255,0.5)", textAlign: "center", lineHeight: 12 }}>
+                {item.label}
+              </Text>
+              {i === 4 && (
+                <View style={{ backgroundColor: "#c9a84c", borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
+                  <Text style={{ fontSize: 7, fontFamily: "Inter_700Bold", color: "#000" }}>NEW</Text>
+                </View>
+              )}
+            </View>
+          ))}
+        </View>
+      </View>
+
     </View>
   );
 }
