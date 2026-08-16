@@ -147,102 +147,292 @@ function useScannerDefs(): ScannerDef[] {
 }
 
 /* ─── Header ─── */
-function ScannerHeader() {
+function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
   const { gallery, currentDogName, currentPhotoUri, currentScan } = useApp();
   const colors = useColors();
 
-  // Most recently scanned dog
   const mostRecent = [...gallery].sort((a, b) => b.timestamp - a.timestamp)[0];
   const dogPhoto = currentPhotoUri ?? mostRecent?.uri ?? null;
   const dogName = currentDogName || mostRecent?.dogName || null;
   const dogBreed = currentScan?.breed ?? mostRecent?.breed ?? null;
 
   return (
-    <View style={{ paddingHorizontal: 16, paddingTop: 8, gap: 16 }}>
+    <View style={{ gap: 14, paddingHorizontal: 16, paddingTop: 8 }}>
 
-      {/* Hero */}
+      {/* ── Hero ── */}
       <View style={{
-        borderRadius: 24,
+        backgroundColor: "#111625",
+        borderRadius: 28,
         overflow: "hidden",
-        backgroundColor: "#12100E",
         borderWidth: 1,
-        borderColor: "rgba(201,168,76,0.2)",
+        borderColor: "rgba(255,255,255,0.05)",
+        minHeight: 180,
+        padding: 22,
+        justifyContent: "flex-end",
       }}>
-        {dogPhoto ? (
-          /* Returning user — show their dog */
-          <View style={{ flexDirection: "row", padding: 16, gap: 12, alignItems: "center" }}>
-            <Image
-              source={{ uri: dogPhoto }}
-              style={{ width: 90, height: 90, borderRadius: 45, borderWidth: 2, borderColor: "#c9a84c" }}
-              resizeMode="cover"
-            />
-            <View style={{ flex: 1, gap: 4 }}>
-              <Text style={{ fontSize: 11, fontFamily: "Inter_700Bold", color: "#c9a84c", letterSpacing: 2 }}>
-                RECENTLY SCANNED
-              </Text>
-              <Text style={{ fontSize: 22, fontFamily: "Inter_700Bold", color: "#fff", letterSpacing: -0.3 }}>
-                {dogName ?? "Your Dog"} 🐾
-              </Text>
-              {dogBreed && (
-                <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.6)" }}>
-                  {dogBreed}
-                </Text>
-              )}
-              <Text style={{ fontSize: 12, fontFamily: "Inter_500Medium", color: "#c9a84c", marginTop: 4 }}>
-                View Full Profile →
-              </Text>
-            </View>
-          </View>
-        ) : (
-          /* New user — emotional hook */
-          <View style={{ padding: 20, gap: 8 }}>
-            <Text style={{ fontSize: 11, fontFamily: "Inter_700Bold", color: "#c9a84c", letterSpacing: 3 }}>
-              WHAT'S UP DOG!
-            </Text>
-            <Text style={{ fontSize: 26, fontFamily: "Inter_700Bold", color: "#fff", lineHeight: 32, letterSpacing: -0.4 }}>
-              Discover. Celebrate.{"\n"}
-              <Text style={{ color: "#c9a84c" }}>All about your dog.</Text>
-            </Text>
-            <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.55)", lineHeight: 18 }}>
-              Scan your dog and unlock their story, personality and art.
-            </Text>
-          </View>
-        )}
+        {/* Headline */}
+        <Text style={{
+          fontSize: 30,
+          fontFamily: "Inter_700Bold",
+          color: "#fff",
+          letterSpacing: -0.6,
+          lineHeight: 36,
+          maxWidth: "65%",
+        }}>
+          {"Discover. Celebrate.\nCreate. All about "}
+          <Text style={{ color: "#E6C673" }}>your dog.</Text>
+        </Text>
+
+        <Text style={{
+          fontSize: 13,
+          fontFamily: "Inter_400Regular",
+          color: "#8E97A6",
+          marginTop: 8,
+          maxWidth: "60%",
+          lineHeight: 18,
+        }}>
+          Scan your dog and unlock their story, personality and art.
+        </Text>
+
+        {/* CTA */}
+        <TouchableOpacity
+          onPress={onScanPress}
+          activeOpacity={0.85}
+          style={{
+            marginTop: 16,
+            backgroundColor: "#E6C673",
+            borderRadius: 999,
+            paddingVertical: 13,
+            paddingHorizontal: 22,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+            alignSelf: "flex-start",
+            shadowColor: "#E6C673",
+            shadowOpacity: 0.35,
+            shadowRadius: 12,
+            shadowOffset: { width: 0, height: 4 },
+          }}
+        >
+          <Ionicons name="camera-outline" size={20} color="#000" />
+          <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: "#000", letterSpacing: 0.2 }}>
+            Scan Your Dog
+          </Text>
+        </TouchableOpacity>
+
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 8, marginLeft: 2 }}>
+          <Text style={{ fontSize: 11, color: "#626C7A" }}>↵</Text>
+          <Text style={{ fontSize: 11, color: "#626C7A", fontFamily: "Inter_400Regular" }}>
+            Free breed scan in seconds
+          </Text>
+        </View>
       </View>
 
-      {/* Feature discovery row */}
+      {/* ── Discovery grid ── */}
       <View style={{
-        backgroundColor: "rgba(255,255,255,0.03)",
+        backgroundColor: "#111625",
+        borderRadius: 24,
         borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.07)",
-        borderRadius: 16,
-        padding: 14,
+        borderColor: "rgba(255,255,255,0.05)",
+        padding: 16,
         gap: 12,
       }}>
-        <Text style={{ fontSize: 12, fontFamily: "Inter_600SemiBold", color: "rgba(255,255,255,0.5)" }}>
+        <Text style={{
+          fontSize: 11,
+          fontFamily: "Inter_700Bold",
+          color: "#626C7A",
+          letterSpacing: 1.5,
+          textTransform: "uppercase",
+        }}>
           What you can discover
         </Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           {[
-            { icon: "🐾", label: "Breed\nBreakdown" },
-            { icon: "🧠", label: "Personality\nProfile" },
-            { icon: "🎂", label: "Age\nEstimate" },
-            { icon: "🧬", label: "Breed\nHistory" },
-            { icon: "🎨", label: "Turn Into\nArt" },
+            { emoji: "🐾", label: "Breed\nBreakdown" },
+            { emoji: "🧠", label: "Personality\nProfile" },
+            { emoji: "🎂", label: "Age\nEstimate" },
+            { emoji: "🧬", label: "Breed\nHistory" },
+            { emoji: "🎨", label: "Turn Into\nArt", isNew: true },
           ].map((item, i) => (
-            <View key={i} style={{ alignItems: "center", gap: 4, flex: 1 }}>
-              <Text style={{ fontSize: 20 }}>{item.icon}</Text>
-              <Text style={{ fontSize: 9, fontFamily: "Inter_500Medium", color: "rgba(255,255,255,0.5)", textAlign: "center", lineHeight: 12 }}>
-                {item.label}
-              </Text>
-              {i === 4 && (
-                <View style={{ backgroundColor: "#c9a84c", borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
+            <View key={i} style={{ alignItems: "center", flex: 1, gap: 6 }}>
+              {item.isNew && (
+                <View style={{
+                  position: "absolute",
+                  top: -8,
+                  right: 0,
+                  backgroundColor: "#FFE395",
+                  borderRadius: 4,
+                  paddingHorizontal: 4,
+                  paddingVertical: 1,
+                  zIndex: 1,
+                }}>
                   <Text style={{ fontSize: 7, fontFamily: "Inter_700Bold", color: "#000" }}>NEW</Text>
                 </View>
               )}
+              <View style={{
+                backgroundColor: "rgba(9,12,21,0.5)",
+                borderRadius: 12,
+                padding: 8,
+              }}>
+                <Text style={{ fontSize: 20 }}>{item.emoji}</Text>
+              </View>
+              <Text style={{
+                fontSize: 9,
+                fontFamily: "Inter_500Medium",
+                color: "#8E97A6",
+                textAlign: "center",
+                lineHeight: 12,
+              }}>
+                {item.label}
+              </Text>
             </View>
           ))}
         </View>
+      </View>
+
+      {/* ── Recently scanned profile card ── */}
+      {dogPhoto && (
+        <View style={{
+          backgroundColor: "#111625",
+          borderRadius: 24,
+          borderWidth: 1,
+          borderColor: "rgba(255,255,255,0.05)",
+          padding: 16,
+          flexDirection: "row",
+          gap: 14,
+          alignItems: "stretch",
+        }}>
+          {/* Left: info */}
+          <View style={{ flex: 1, justifyContent: "space-between" }}>
+            <View>
+              <Text style={{
+                fontSize: 10,
+                fontFamily: "Inter_700Bold",
+                color: "#E6C673",
+                letterSpacing: 1.5,
+                textTransform: "uppercase",
+              }}>
+                Recently scanned
+              </Text>
+              <Text style={{
+                fontSize: 22,
+                fontFamily: "Inter_700Bold",
+                color: "#fff",
+                marginTop: 4,
+              }}>
+                {dogName ?? "Your Dog"} <Text style={{ fontSize: 16, color: "#626C7A" }}>♡</Text>
+              </Text>
+              {dogBreed && (
+                <Text style={{
+                  fontSize: 12,
+                  fontFamily: "Inter_500Medium",
+                  color: "#8E97A6",
+                  marginTop: 2,
+                }}>
+                  {dogBreed}
+                </Text>
+              )}
+            </View>
+
+            {/* Trait bars */}
+            <View style={{ gap: 8, marginTop: 14 }}>
+              {[
+                { icon: "⚡️", label: "Energy", pct: 85 },
+                { icon: "❤️", label: "Affection", pct: 92 },
+                { icon: "🌐", label: "Intelligence", pct: 78 },
+                { icon: "🎾", label: "Playfulness", pct: 88 },
+              ].map((m) => (
+                <View key={m.label} style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <Text style={{ fontSize: 11, width: 16 }}>{m.icon}</Text>
+                  <Text style={{
+                    fontSize: 10,
+                    fontFamily: "Inter_400Regular",
+                    color: "#8E97A6",
+                    width: 62,
+                  }}>
+                    {m.label}
+                  </Text>
+                  <View style={{
+                    flex: 1,
+                    height: 4,
+                    backgroundColor: "#242C3F",
+                    borderRadius: 999,
+                    overflow: "hidden",
+                  }}>
+                    <View style={{
+                      width: `${m.pct}%`,
+                      height: "100%",
+                      backgroundColor: "#E6C673",
+                      borderRadius: 999,
+                    }} />
+                  </View>
+                  <Text style={{
+                    fontSize: 9,
+                    fontFamily: "Inter_700Bold",
+                    color: "#626C7A",
+                    width: 24,
+                    textAlign: "right",
+                  }}>
+                    {m.pct}%
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          {/* Right: dog photo with overlay button */}
+          <View style={{
+            width: "45%",
+            borderRadius: 18,
+            overflow: "hidden",
+            backgroundColor: "#242C3F",
+            aspectRatio: 4 / 5,
+          }}>
+            <Image
+              source={{ uri: dogPhoto }}
+              style={{ width: "100%", height: "100%" }}
+              resizeMode="cover"
+            />
+            <View style={{
+              position: "absolute",
+              bottom: 8,
+              left: 8,
+              right: 8,
+              backgroundColor: "rgba(0,0,0,0.6)",
+              borderRadius: 12,
+              paddingVertical: 8,
+              paddingHorizontal: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+              <Text style={{ fontSize: 10, fontFamily: "Inter_700Bold", color: "#fff" }}>
+                View Full Profile
+              </Text>
+              <Text style={{ fontSize: 14, color: "#E6C673" }}>›</Text>
+            </View>
+          </View>
+        </View>
+      )}
+
+      {/* ── Create something amazing ── */}
+      <View style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 4,
+        marginBottom: 4,
+      }}>
+        <Text style={{
+          fontSize: 15,
+          fontFamily: "Inter_700Bold",
+          color: "#fff",
+        }}>
+          Create something amazing
+        </Text>
+        <Text style={{ fontSize: 12, color: "#626C7A", fontFamily: "Inter_500Medium" }}>
+          See all ›
+        </Text>
       </View>
 
     </View>
@@ -1628,7 +1818,10 @@ export default function ScannerScreen() {
 
           >
             {/* Header */}
-            <ScannerHeader />
+            <ScannerHeader onScanPress={() => {
+                const breedDef = scanners.find(s => s.id === "breed");
+                if (breedDef) handleScannerTap(breedDef);
+              }} />
 
             {/* Scanner Cards */}
             <View style={{ alignItems: "center", gap: 12, marginTop: 20, paddingHorizontal: 16 }}>
