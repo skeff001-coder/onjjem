@@ -7,6 +7,10 @@ import { WebhookHandlers } from "./webhookHandlers";
 
 const app: Express = express();
 
+app.get("/api/stripe/webhook", (_req: Request, res: Response) => {
+  res.status(200).json({ ok: true });
+});
+
 app.post(
   "/api/stripe/webhook",
   express.raw({ type: "application/json" }),
