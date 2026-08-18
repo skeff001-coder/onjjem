@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -135,6 +136,13 @@ export default function ShopScreen() {
   const { hasMixedBreed, hasCartoon } = useSubscription();
 
   const [loadingProduct, setLoadingProduct] = useState<string | null>(null);
+  const [postcardClaimed, setPostcardClaimed] = useState(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem("wud_postcard_claimed").then((v) => {
+      if (v === "true") setPostcardClaimed(true);
+    });
+  }, []);
 
   // Use the most recently scanned dog's photo if currentPhotoUri isn't set
   const dogPhoto =
@@ -182,6 +190,10 @@ export default function ShopScreen() {
 
       const data = await res.json();
       if (data.url) {
+        if (product.freeWithBundle) {
+          await AsyncStorage.setItem("wud_postcard_claimed", "true");
+          setPostcardClaimed(true);
+        }
         await Linking.openURL(data.url);
       } else {
         throw new Error(data.error || "Could not create checkout");
@@ -511,14 +523,16 @@ export default function ShopScreen() {
               {/* Buy button */}
               {isFreeWithBundle ? (
                 <TouchableOpacity
-                  style={s.freeBtn}
-                  onPress={() => openCheckout(product)}
-                  disabled={isLoading}
+                  style={[s.freeBtn, postcardClaimed && { opacity: 0.5 }]}
+                  onPress={() => !postcardClaimed && openCheckout(product)}
+                  disabled={isLoading || postcardClaimed}
                 >
                   {isLoading ? (
                     <ActivityIndicator color="#4ade80" />
                   ) : (
-                    <Text style={s.freeBtnText}>Claim Your Free Postcard →</Text>
+                    <Text style={s.freeBtnText}>
+                      {postcardClaimed ? "Postcard Already Claimed ✓" : "Claim Your Free Postcard →"}
+                    </Text>
                   )}
                 </TouchableOpacity>
               ) : (
