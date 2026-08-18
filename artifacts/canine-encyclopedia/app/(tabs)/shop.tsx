@@ -57,7 +57,7 @@ const PRODUCTS = [
     description:
       "A massive 14x14 inch premium gloss vinyl sticker featuring your dog. Perfect for doors, walls, car windows or anywhere you want to make a statement.",
     icon: "expand-outline" as const,
-    price: 2149,
+    price: 2099,
     rrp: null as number | null,
     freeWithBundle: false,
     sku: "wud-sticker-xl",
@@ -97,8 +97,8 @@ const PRODUCTS = [
     description:
       "A fun, high-quality 30-piece jigsaw featuring your dog's photo. Perfect for kids, grandparents, or anyone who loves your dog as much as you do.",
     icon: "extension-puzzle-outline" as const,
-    price: 1999,
-    rrp: 2499 as number | null,
+    price: 2499,
+    rrp: 2999 as number | null,
     freeWithBundle: false,
     sku: "wud-jigsaw",
     emoji: "🧩",
@@ -132,7 +132,7 @@ export default function ShopScreen() {
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const { currentPhotoUri, currentDogName, gallery } = useApp();
-  const { hasMixedBreed } = useSubscription();
+  const { hasMixedBreed, hasCartoon } = useSubscription();
 
   const [loadingProduct, setLoadingProduct] = useState<string | null>(null);
 
@@ -543,6 +543,50 @@ export default function ShopScreen() {
           );
         })}
 
+        {/* Cartoonify Elite 15% voucher */}
+        <View style={{
+          backgroundColor: hasCartoon ? "rgba(224,169,92,0.08)" : "rgba(255,255,255,0.02)",
+          borderWidth: 1,
+          borderColor: hasCartoon ? "rgba(224,169,92,0.3)" : "rgba(255,255,255,0.05)",
+          borderRadius: 16,
+          padding: 18,
+          marginBottom: 12,
+        }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <Text style={{ fontSize: 24 }}>🎨</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 16, fontFamily: "Inter_700Bold", color: hasCartoon ? "#e0a95c" : colors.foreground }}>
+                15% Off ONJJEM — Cartoonify Reward
+              </Text>
+              <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
+                Valid on anything at onjjem.com
+              </Text>
+            </View>
+          </View>
+          {hasCartoon ? (
+            <>
+              <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20, marginBottom: 12 }}>
+                Thank you for purchasing Cartoonify Elite! Your 15% discount is valid on canvases, framed wall art, magic mugs, glow-in-the-dark posters, foil prints and everything else at onjjem.com.
+              </Text>
+              <View style={{ backgroundColor: "rgba(224,169,92,0.15)", borderRadius: 10, padding: 12, alignItems: "center" }}>
+                <Text style={{ fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#e0a95c", marginBottom: 4 }}>YOUR DISCOUNT CODE</Text>
+                <Text style={{ fontSize: 22, fontFamily: "Inter_700Bold", color: "#e0a95c", letterSpacing: 3 }}>CARTOON15</Text>
+                <Text style={{ fontSize: 11, color: colors.mutedForeground, marginTop: 4 }}>Enter at checkout on onjjem.com</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => Linking.openURL("https://onjjem.com/shop")}
+                style={{ marginTop: 12, backgroundColor: "#e0a95c", borderRadius: 10, paddingVertical: 12, alignItems: "center" }}
+              >
+                <Text style={{ fontSize: 14, fontFamily: "Inter_700Bold", color: "#0a0a0a" }}>Shop at ONJJEM Now</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20 }}>
+              Purchase Cartoonify Elite (£4.99) from the Scanner tab to unlock your 15% discount code for anything at onjjem.com.
+            </Text>
+          )}
+        </View>
+
         {/* Loyalty Card teaser */}
         <View style={{
           backgroundColor: "rgba(212,175,55,0.08)",
@@ -603,7 +647,7 @@ export default function ShopScreen() {
             <Text style={{ fontSize: 24 }}>🏷️</Text>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 16, fontFamily: "Inter_700Bold", color: colors.foreground }}>
-                10% Off Anything at ONJJEM
+                15% Off Anything at ONJJEM
               </Text>
               <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
                 Canvases · Framed Art · Foil Posters · Mugs · And more
@@ -611,7 +655,7 @@ export default function ShopScreen() {
             </View>
           </View>
           <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20, marginBottom: 12 }}>
-            Complete your Loyalty Card to unlock a 10% discount code valid on anything at onjjem.com — canvases, framed wall art, glow-in-the-dark posters, foil prints, temporary tattoos, and everything else in the full ONJJEM collection.
+            Complete your Loyalty Card to unlock a 15% discount code valid on anything at onjjem.com — canvases, framed wall art, glow-in-the-dark posters, foil prints, temporary tattoos, and everything else in the full ONJJEM collection.
           </Text>
           {hasMixedBreed ? (
             <Text style={{ fontSize: 13, fontFamily: "Inter_600SemiBold", color: colors.mutedForeground, textAlign: "center" }}>
