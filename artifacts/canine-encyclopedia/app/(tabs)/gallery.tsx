@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,14 +10,19 @@ import {
   Linking,
   Dimensions,
   Image,
+  FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as MediaLibrary from "expo-media-library";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColors } from "@/hooks/useColors";
 import { useApp, type GalleryEntry } from "@/context/AppContext";
 import { BreedCard } from "@/components/BreedCard";
+import { useSubscription } from "@/lib/revenuecat";
 
 const { width } = Dimensions.get("window");
 
@@ -81,9 +86,74 @@ export default function GalleryScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { gallery, removeFromGallery, setCurrentKnowledge, setCurrentScan, setCurrentDogName, knowledgeCache } = useApp();
+  const { hasMixedBreed } = useSubscription();
 
   const isWeb = Platform.OS === "web";
   const topPad = isWeb ? 67 : insets.top;
+
+  const LOYALTY_KEY = "wud_loyalty_photos";
+  const LOYALTY_SLOTS = 10;
+
+  const [loyaltyPhotos, setLoyaltyPhotos] = useState<string[]>([]);
+  const [loyaltyLoaded, setLoyaltyLoaded] = useState(false);
+  const [pickingSlot, setPickingSlot] = useState<number | null>(null);
+  const [loyaltyComplete, setLoyaltyComplete] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const raw = await AsyncStorage.getItem(LOYALTY_KEY);
+      const photos = raw ? JSON.parse(raw) as string[] : [];
+      setLoyaltyPhotos(photos);
+      setLoyaltyComplete(photos.length >= LOYALTY_SLOTS);
+      setLoyaltyLoaded(true);
+    })();
+  }, []);
+
+  const pickLoyaltyPhoto = async (slotIndex: number) => {
+    const permission = await MediaLibrary.requestPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("Permission needed", "Please allow access to your photos to add a dog to your Loyalty Card.");
+      return;
+    }
+    setPickingSlot(slotIndex);
+    try {
+      const result = await MediaLibrary.getAssetsAsync({
+        mediaType: "photo",
+        sortBy: [MediaLibrary.SortBy.creationTime],
+        first: 60,
+      });
+      // Show photo picker
+      Alert.alert(
+        "Add Dog Photo",
+        "Choose from your most recent photos — pick any dog breed photo to fill this slot.",
+        [
+          { text: "Cancel", style: "cancel", onPress: () => setPickingSlot(null) },
+          {
+            text: "Choose Photo",
+            onPress: async () => {
+              if (result.assets.length > 0) {
+                const asset = result.assets[0];
+                const info = await MediaLibrary.getAssetInfoAsync(asset.id);
+                const uri = info.localUri ?? info.uri ?? asset.uri;
+                const updated = [...loyaltyPhotos];
+                updated[slotIndex] = uri;
+                setLoyaltyPhotos(updated);
+                await AsyncStorage.setItem(LOYALTY_KEY, JSON.stringify(updated));
+                if (updated.filter(Boolean).length >= LOYALTY_SLOTS) {
+                  setLoyaltyComplete(true);
+                  if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                  Alert.alert("🎉 Loyalty Card Complete!", "You've collected all 10 breeds! Your rewards are now unlocked in the That's My Dog! shop.");
+                }
+              }
+              setPickingSlot(null);
+            }
+          }
+        ]
+      );
+    } catch {
+      setPickingSlot(null);
+    }
+  };
 
   const namedCount = gallery.filter((g) => g.dogName).length;
 
@@ -126,6 +196,126 @@ export default function GalleryScreen() {
             <Ionicons name="paw" size={20} color={colors.gold} />
           </View>
         </View>
+
+        {/* ── Loyalty Card ── */}
+        {hasMixedBreed && loyaltyLoaded && (
+          <View style={{
+            marginHorizontal: 16,
+            marginBottom: 20,
+            backgroundColor: loyaltyComplete ? "rgba(212,175,55,0.1)" : "rgba(255,255,255,0.03)",
+            borderWidth: 1,
+            borderColor: loyaltyComplete ? "rgba(212,175,55,0.4)" : "rgba(255,255,255,0.08)",
+            borderRadius: 20,
+            padding: 18,
+            gap: 14,
+          }}>
+            {/* Header */}
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <Text style={{ fontSize: 22 }}>🏆</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 16, fontFamily: "Inter_700Bold", color: loyaltyComplete ? "#d4af37" : colors.foreground }}>
+                  {loyaltyComplete ? "Loyalty Card Complete! 🎉" : "Dog Breed Loyalty Card"}
+                </Text>
+                <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
+                  {loyaltyPhotos.filter(Boolean).length}/{LOYALTY_SLOTS} breeds collected
+                </Text>
+              </View>
+              {loyaltyComplete && (
+                <View style={{ backgroundColor: "#d4af37", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 }}>
+                  <Text style={{ fontSize: 10, fontFamily: "Inter_700Bold", color: "#000" }}>COMPLETE</Text>
+                </View>
+              )}
+            </View>
+
+            {/* Progress bar */}
+            <View style={{ height: 6, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: 999, overflow: "hidden" }}>
+              <View style={{
+                width: `${(loyaltyPhotos.filter(Boolean).length / LOYALTY_SLOTS) * 100}%`,
+                height: "100%",
+                backgroundColor: "#d4af37",
+                borderRadius: 999,
+              }} />
+            </View>
+
+            {/* Photo slots grid */}
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+              {Array.from({ length: LOYALTY_SLOTS }).map((_, i) => {
+                const photo = loyaltyPhotos[i];
+                const isLoading = pickingSlot === i;
+                return (
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => !loyaltyComplete && pickLoyaltyPhoto(i)}
+                    disabled={loyaltyComplete || isLoading}
+                    style={{
+                      width: (Dimensions.get("window").width - 32 - 36 - 18) / 5,
+                      aspectRatio: 1,
+                      borderRadius: 10,
+                      overflow: "hidden",
+                      backgroundColor: "rgba(255,255,255,0.06)",
+                      borderWidth: 1,
+                      borderColor: photo ? "#d4af37" : "rgba(255,255,255,0.1)",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {isLoading ? (
+                      <ActivityIndicator color="#d4af37" size="small" />
+                    ) : photo ? (
+                      <Image source={{ uri: photo }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+                    ) : (
+                      <Ionicons name="add" size={20} color="rgba(255,255,255,0.2)" />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {/* Instructions / reward */}
+            {loyaltyComplete ? (
+              <TouchableOpacity
+                onPress={() => router.push("/(tabs)/shop")}
+                style={{ backgroundColor: "#d4af37", borderRadius: 12, paddingVertical: 12, alignItems: "center" }}
+              >
+                <Text style={{ fontSize: 14, fontFamily: "Inter_700Bold", color: "#000" }}>Claim Your Rewards →</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 17 }}>
+                Upload photos of 10 different dog breeds to complete your card and unlock exclusive rewards — including a 15% discount on everything at ONJJEM.com. Tap any slot to add a photo.
+              </Text>
+            )}
+          </View>
+        )}
+
+        {/* Bundle prompt if not purchased */}
+        {!hasMixedBreed && (
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/index")}
+            style={{
+              marginHorizontal: 16,
+              marginBottom: 20,
+              backgroundColor: "rgba(212,175,55,0.06)",
+              borderWidth: 1,
+              borderColor: "rgba(212,175,55,0.2)",
+              borderRadius: 16,
+              padding: 14,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20 }}>🏆</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontFamily: "Inter_700Bold", color: "#d4af37" }}>
+                Loyalty Card — unlock with bundle
+              </Text>
+              <Text style={{ fontSize: 12, color: colors.mutedForeground, marginTop: 2 }}>
+                Buy The Full Story Bundle (£2.99) to unlock your Loyalty Card
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={colors.mutedForeground} />
+          </TouchableOpacity>
+        )}
 
         {/* ── Dog Gallery Grid ── */}
         {gallery.length === 0 ? (
