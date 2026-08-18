@@ -18,7 +18,6 @@
  *
  * All SKUs validated against the LIVE Prodigi API on 2026-06-01.
  */
-
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { logger } from "../lib/logger";
