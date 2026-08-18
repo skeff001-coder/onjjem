@@ -375,10 +375,10 @@ router.get("/stripe/products", async (_req: Request, res: Response) => {
 const REDEEMABLE_GIFTS: Record<string, { name: string; pricePence: number }> = {
   "wud-gift-postcard":   { name: "Free Dog Postcard (Bundle Gift)",           pricePence: 499  },
   "wud-sticker-small":   { name: "Personalised Pet Sticker (My Dog's Shop)",  pricePence: 399  },
-  "wud-sticker-xl":      { name: "XL Pet Vinyl Sticker 14×14\" (My Dog's Shop)", pricePence: 2149 },
+  "wud-sticker-xl":      { name: "XL Pet Vinyl Sticker 14×14\" (My Dog's Shop)", pricePence: 2099 },
   "wud-magic-mug":       { name: "Magic Colour-Change Mug (My Dog's Shop)",   pricePence: 1499 },
   "wud-bandanna":        { name: "Personalised Dog Bandanna (My Dog's Shop)", pricePence: 1999 },
-  "wud-jigsaw":          { name: "30-Piece Photo Jigsaw (My Dog's Shop)",     pricePence: 1999 },
+  "wud-jigsaw":          { name: "30-Piece Photo Jigsaw (My Dog's Shop)",     pricePence: 2499 },
   "wud-invitation-card": { name: "Personalised Invitation Card (My Dog's Shop)", pricePence: 499 },
 };
 
@@ -412,16 +412,20 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
   try {
     const stripe = await getUncachableStripeClient();
 
-    const COUPON_ID = "wud-free-gift-100";
-    try {
-      await stripe.coupons.retrieve(COUPON_ID);
-    } catch {
-      await stripe.coupons.create({
-        id: COUPON_ID,
-        percent_off: 100,
-        duration: "once",
-        name: "Free Gift",
-      });
+    let sessionDiscounts: { coupon: string }[] = [];
+    if (finalPrice === 0) {
+      const COUPON_ID = "wud-free-gift-100";
+      try {
+        await stripe.coupons.retrieve(COUPON_ID);
+      } catch {
+        await stripe.coupons.create({
+          id: COUPON_ID,
+          percent_off: 100,
+          duration: "once",
+          name: "Free Gift",
+        });
+      }
+      sessionDiscounts = [{ coupon: COUPON_ID }];
     }
 
     const photoToken = crypto.randomUUID();
@@ -446,7 +450,7 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
         },
       ],
       mode: "payment",
-      discounts: [{ coupon: COUPON_ID }],
+      ...(sessionDiscounts.length > 0 ? { discounts: sessionDiscounts } : {}),
       shipping_address_collection: {
         allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK"],
       },
