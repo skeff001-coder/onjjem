@@ -16,12 +16,15 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "64",
+      "buildNumber": "65",
       "6usesAppleSignIn": true,
-
-     "infoPlist": { 
-        "LSApplicationQueriesSchemes": ["whatsapp", "fb", "instagram", "tiktok"],
-
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "whatsapp",
+          "fb",
+          "instagram",
+          "tiktok"
+        ],
         "NSCameraUsageDescription": "That's My Dog! uses your camera to scan and identify your dog's breed using AI.",
         "NSPhotoLibraryUsageDescription": "That's My Dog! accesses your photos so you can choose a dog image for breed identification.",
         "NSPhotoLibraryAddUsageDescription": "That's My Dog! saves identified dog portraits to your photo library.",
@@ -60,14 +63,6 @@
         }
       ]
     ],
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/62b4eb54-c51c-4b4a-8655-f467dd74d938",
-      "enabled": false,
-      "checkAutomatically": "ON_LOAD"
-    },
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": false
