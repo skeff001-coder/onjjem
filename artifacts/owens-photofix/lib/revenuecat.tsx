@@ -638,38 +638,40 @@ function useSubscriptionContext() {
   };
 
   const currentOffering: PurchasesOffering | null =
-    offeringsQuery.data?.current ?? offeringsQuery.data?.all?.[0] ?? null;
+    offeringsQuery.data?.current ?? null;
 
-  // Debug: log if offerings are missing
-  if (!offeringsQuery.data?.all || offeringsQuery.data.all.length === 0) {
-    console.warn("[RevenueCat] No offerings configured — packages will be empty");
+  // Debug: log if offerings are missing entirely
+  const allOfferings = offeringsQuery.data?.all ?? {};
+  if (Object.keys(allOfferings).length === 0) {
+    console.warn("[RevenueCat] No offerings configured at all");
   }
-  if (currentOffering && !currentOffering.availablePackages.length) {
-    console.warn("[RevenueCat] Current offering has no packages", {
-      offeringId: currentOffering.identifier,
-    });
+
+  // Each bundle (one_cartoon / three_cartoon / five_cartoon / ten_photos) is
+  // set up in RevenueCat as its OWN offering — not as multiple packages
+  // inside a single "default" offering. So instead of searching for a
+  // package identifier inside currentOffering.availablePackages, we look
+  // each one up by offering identifier and grab its first (only) package.
+  function findPackageInOwnOffering(offeringIdentifier: string): PurchasesPackage | null {
+    const offering = allOfferings[offeringIdentifier];
+    if (!offering) {
+      console.warn(`[RevenueCat] No offering found with identifier "${offeringIdentifier}"`);
+      return null;
+    }
+    if (!offering.availablePackages.length) {
+      console.warn(`[RevenueCat] Offering "${offeringIdentifier}" has no packages attached`);
+      return null;
+    }
+    return offering.availablePackages[0];
   }
 
   const monthlyPackage =
     currentOffering?.availablePackages.find(
       (p) => p.identifier === PACKAGE_IDENTIFIERS.monthly,
     ) ?? null;
-  const perPhotoPackage =
-    currentOffering?.availablePackages.find(
-      (p) => p.identifier === PACKAGE_IDENTIFIERS.perPhoto,
-    ) ?? null;
-  const threePhotoPackage =
-    currentOffering?.availablePackages.find(
-      (p) => p.identifier === PACKAGE_IDENTIFIERS.threePhotos,
-    ) ?? null;
-  const fivePhotoPackage =
-    currentOffering?.availablePackages.find(
-      (p) => p.identifier === PACKAGE_IDENTIFIERS.fivePhotos,
-    ) ?? null;
-  const tenPhotoPackage =
-    currentOffering?.availablePackages.find(
-      (p) => p.identifier === PACKAGE_IDENTIFIERS.tenPhotos,
-    ) ?? null;
+  const perPhotoPackage = findPackageInOwnOffering(PACKAGE_IDENTIFIERS.perPhoto);
+  const threePhotoPackage = findPackageInOwnOffering(PACKAGE_IDENTIFIERS.threePhotos);
+  const fivePhotoPackage = findPackageInOwnOffering(PACKAGE_IDENTIFIERS.fivePhotos);
+  const tenPhotoPackage = findPackageInOwnOffering(PACKAGE_IDENTIFIERS.tenPhotos);
 
   const isSubscribed =
     customerInfoQuery.data?.entitlements.active?.[REVENUECAT_ENTITLEMENT_IDENTIFIER] !==
