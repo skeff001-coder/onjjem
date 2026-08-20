@@ -211,9 +211,9 @@ export default function CartoonScreen() {
         {phase === "paywall" && (
           <View style={s.startCard}>
             <Ionicons name="sparkles" size={40} color="#C9960C" />
-            <Text style={s.startTitle}>You've used your free cartoon</Text>
+            <Text style={s.startTitle}>Choose your cartoon pack</Text>
             <Text style={s.errorText}>
-              Get more cartoons — buy in bulk and save.
+              Buy in bulk and save — 1, 3 or 5 photos.
             </Text>
             {perPhotoPackage && (
               <TouchableOpacity onPress={buyOneMore} disabled={isPurchasing} style={s.primaryBtn}>
