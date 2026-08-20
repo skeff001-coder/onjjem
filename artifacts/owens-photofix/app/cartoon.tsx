@@ -19,7 +19,6 @@ import { router } from "expo-router";
 import { useSubscription } from "@/lib/revenuecat";
 
 const API_BASE = `https://${process.env.EXPO_PUBLIC_DOMAIN ?? ""}`;
-const CARTOON_FREE_USED_KEY = "onjjem_cartoon_free_used";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const GRID_COLUMNS = 3;
@@ -43,28 +42,13 @@ export default function CartoonScreen() {
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [assets, setAssets] = useState<MediaLibrary.Asset[]>([]);
   const [loadingAssets, setLoadingAssets] = useState(false);
-  const [freeUsed, setFreeUsed] = useState<boolean | null>(null);
 
   const { isSubscribed, photoCredits, perPhotoPackage, threePhotoPackage, fivePhotoPackage, tenPhotoPackage, purchase, isPurchasing } =
     useSubscription();
 
-  useEffect(() => {
-    AsyncStorage.getItem(CARTOON_FREE_USED_KEY).then((v) => setFreeUsed(v === "true"));
-  }, []);
-
-  const markFreeUsed = async () => {
-    await AsyncStorage.setItem(CARTOON_FREE_USED_KEY, "true");
-    setFreeUsed(true);
-  };
-
-  // Decide, right before generating, whether this attempt is allowed —
-  // and if not, show the paywall instead of calling the API.
+  // No free trial — every cartoon generation requires an active purchase
+  // (subscription or remaining photo credits). If neither, show paywall.
   const checkAccessThenPick = async () => {
-    if (freeUsed === false) {
-      // First ever cartoon — free, no purchase needed.
-      openPicker();
-      return;
-    }
     if (isSubscribed) {
       openPicker();
       return;
@@ -117,7 +101,7 @@ export default function CartoonScreen() {
       setErrorMsg("Could not read that photo. Please try a different one.");
       setPhase("error");
     }
-  }, [freeUsed, isSubscribed, photoCredits]);
+  }, [isSubscribed, photoCredits]);
 
   const generateCartoon = async (base64: string, mimeType: string) => {
     setPhase("generating");
@@ -133,10 +117,8 @@ export default function CartoonScreen() {
         setCartoonUri(`data:${data.mimeType ?? "image/png"};base64,${data.base64Image}`);
         setPhase("done");
 
-        // Charge for this generation only after it succeeds.
-        if (freeUsed === false) {
-          await markFreeUsed();
-        } else if (!isSubscribed && photoCredits > 0) {
+        // Charge one credit for this successful generation.
+        if (!isSubscribed && photoCredits > 0) {
           await useSubscriptionCredit();
         }
       } else {
@@ -213,13 +195,15 @@ export default function CartoonScreen() {
 
         {phase === "idle" && (
           <View style={s.startCard}>
-            <Ionicons name="color-wand-outline" size={48} color="#C9960C" />
-            <Text style={s.startTitle}>Choose a photo to transform</Text>
-            {freeUsed === false && (
-              <Text style={s.freeNote}>✨ Your first one is free</Text>
-            )}
+            <Image
+              source={{ uri: "https://onjjem.com/products/cartoonify-preview.jpeg" }}
+              style={s.previewImage}
+              resizeMode="cover"
+            />
+            <Text style={s.startTitle}>Turn any photo into a cartoon</Text>
+            <Text style={s.freeNote}>Animated-movie style · Vivid colour · Ready in seconds</Text>
             <TouchableOpacity onPress={checkAccessThenPick} style={s.primaryBtn}>
-              <Text style={s.primaryBtnText}>Choose Photo</Text>
+              <Text style={s.primaryBtnText}>Get Started</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -369,6 +353,12 @@ const s = StyleSheet.create({
   },
   startTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", textAlign: "center" },
   freeNote: { fontSize: 13, color: "#C9960C", fontFamily: "Inter_600SemiBold" },
+  previewImage: {
+    width: "100%",
+    height: 220,
+    borderRadius: 16,
+    marginBottom: 4,
+  },
   errorText: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
   primaryBtn: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 14, paddingHorizontal: 32 },
   primaryBtnText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15 },
