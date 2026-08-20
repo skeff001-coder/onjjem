@@ -1,0 +1,718 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Constants from "expo-constants";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { Platform } from "react-native";
+import Purchases, {
+  type CustomerInfo,
+  type PurchasesOffering,
+  type PurchasesOfferings,
+  type PurchasesPackage,
+} from "react-native-purchases";
+
+export const INSTALL_FIRST_SEEN_KEY = "onjjem_install_first_seen_at";
+export const FIRST_PAYWALL_SEEN_KEY = "onjjem_paywall_first_seen_at";
+export const PAYWALL_VIEW_COUNT_KEY = "onjjem_paywall_view_count";
+export const PAYWALL_DISMISS_COUNT_KEY = "onjjem_paywall_dismiss_count";
+
+/**
+ * Per-surface AsyncStorage key helpers — used by the dev stats screen to show
+ * conversion rates broken down by paywall name.
+ */
+export function paywallViewCountKey(name: string): string {
+  return `onjjem_paywall_view_count_${name}`;
+}
+export function paywallDismissCountKey(name: string): string {
+  return `onjjem_paywall_dismiss_count_${name}`;
+}
+export function paywallPurchaseCountKey(name: string): string {
+  return `onjjem_paywall_purchase_count_${name}`;
+}
+export function paywallPurchasePlanCountKey(name: string, planId: string): string {
+  return `onjjem_paywall_purchase_count_${name}_${planId}`;
+}
+export function paywallFirstSeenKey(name: string): string {
+  return `onjjem_paywall_first_seen_at_${name}`;
+}
+export function paywallPurchasedAtKey(name: string): string {
+  return `onjjem_paywall_purchased_at_${name}`;
+}
+
+/**
+ * Returns a local-timezone YYYY-MM-DD string for the given date (defaults to today).
+ * Used as the day-bucket key suffix so date ranges match what the user sees.
+ */
+export function localDayString(date: Date = new Date()): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/** Per-surface per-day view count key */
+export function paywallViewDayKey(name: string, day: string): string {
+  return `onjjem_paywall_view_count_${name}_day_${day}`;
+}
+/** Per-surface per-day dismissal count key */
+export function paywallDismissDayKey(name: string, day: string): string {
+  return `onjjem_paywall_dismiss_count_${name}_day_${day}`;
+}
+/** Per-surface per-day purchase count key */
+export function paywallPurchaseDayKey(name: string, day: string): string {
+  return `onjjem_paywall_purchase_count_${name}_day_${day}`;
+}
+/** Per-surface per-plan per-day purchase count key */
+export function paywallPurchasePlanDayKey(name: string, planId: string, day: string): string {
+  return `onjjem_paywall_purchase_count_${name}_${planId}_day_${day}`;
+}
+/** Global per-plan per-day purchase count key */
+export function paywallPurchaseGlobalPlanDayKey(plan: string, day: string): string {
+  return `onjjem_paywall_purchase_plan_count_${plan}_day_${day}`;
+}
+/** Global per-plan per-day dismissal count key */
+export function paywallDismissPlanDayKey(plan: string, day: string): string {
+  return `onjjem_paywall_dismiss_plan_count_${plan}_day_${day}`;
+}
+/** Per-surface per-plan per-day dismissal count key */
+export function paywallDismissSurfacePlanDayKey(surface: string, plan: string, day: string): string {
+  return `onjjem_paywall_dismiss_count_${surface}_${plan}_day_${day}`;
+}
+
+/**
+ * Global per-plan purchase count key — records how many times a purchase was
+ * completed while a specific plan (e.g. "annual", "monthly", "perpic") was
+ * selected, across all paywall surfaces. Used by the dev stats screen for plan
+ * conversion breakdown.
+ */
+export function paywallPurchaseGlobalPlanCountKey(plan: string): string {
+  return `onjjem_paywall_purchase_plan_count_${plan}`;
+}
+
+/**
+ * Per-plan dismissal count key — records how many times the paywall was
+ * dismissed while a specific plan (e.g. "annual", "monthly", "perpic") was
+ * selected. Used by the dev stats screen for plan abandonment breakdown.
+ */
+export function paywallDismissPlanCountKey(plan: string): string {
+  return `onjjem_paywall_dismiss_plan_count_${plan}`;
+}
+
+/**
+ * Per-surface-per-plan dismissal count key — records how many times a
+ * specific paywall surface was dismissed while a given plan was highlighted.
+ * Enables the dev stats screen to show plan abandonment broken down *per
+ * surface*, not just globally across all paywalls.
+ */
+export function paywallDismissSurfacePlanCountKey(surface: string, plan: string): string {
+  return `onjjem_paywall_dismiss_count_${surface}_${plan}`;
+}
+
+/**
+ * Call once as early as possible after RevenueCat is configured (e.g. in the
+ * root layout). Sets subscriber attributes that mark the install event:
+ *
+ *   - install_first_seen_at  — ISO timestamp of first app open (set once)
+ *   - platform               — "ios" | "android" | "web"
+ *   - locale                 — device locale/region tag (e.g. "en-GB", "fr-FR")
+ *   - device_model           — hardware model (e.g. "iPhone16,2")
+ *   - os_version             — OS version string (e.g. "18.4")
+ *
+ * These feed into RevenueCat Charts and any connected integration
+ * (Mixpanel, Amplitude, etc.) as the "install" step of the
+ * install → paywall view → purchase conversion funnel.
+ *
+ * locale + device_model + os_version allow Mixpanel/Amplitude to break down
+ * subscribers by country (via locale region tag) and device type after the
+ * RevenueCat → Mixpanel integration is enabled in the RevenueCat dashboard.
+ * See ANALYTICS_SETUP.md for the one-time dashboard setup steps.
+ */
+/**
+ * HOW TO VIEW THE CONVERSION FUNNEL IN REVENUECAT CHARTS
+ * -------------------------------------------------------
+ * 1. Open https://app.revenuecat.com → your project (app ID 6770767370)
+ * 2. Charts → "Initial Conversion" shows new subscribers per product
+ *    (com.onjjem.photorestoration.monthly / .annual / .one_photo)
+ * 3. Charts → "Active Subscriptions" and "Revenue" are broken down by product
+ * 4. Individual customer profiles show the subscriber attributes set here:
+ *    install_first_seen_at, paywall_first_seen_at, paywall_view_count, etc.
+ * 5. To connect a downstream tool (Mixpanel, Amplitude, Segment, etc.):
+ *    RevenueCat Dashboard → Integrations → Add Integration
+ *    No code changes needed — all attributes set here flow through automatically.
+ */
+
+export async function trackAppInstall(): Promise<void> {
+  try {
+    const existing = await AsyncStorage.getItem(INSTALL_FIRST_SEEN_KEY);
+    if (existing) return; // already recorded on a previous session
+
+    const now = new Date().toISOString();
+
+    // Capture device locale (e.g. "en-GB", "fr-FR") — the region tag gives
+    // a reliable proxy for the subscriber's country when Mixpanel/Amplitude
+    // segments by this property after the RevenueCat integration is enabled.
+    let locale = "unknown";
+    try {
+      locale = Intl.DateTimeFormat().resolvedOptions().locale ?? "unknown";
+    } catch {
+      // Intl not available in this JS engine build — fall back to "unknown"
+    }
+
+    // Device model (e.g. "iPhone16,2") and OS version (e.g. "18.4") let
+    // Mixpanel/Amplitude break subscriptions down by hardware and software.
+    const deviceModel: string =
+      (Platform.constants as Record<string, unknown>)?.["Model"] as string ?? "unknown";
+    const osVersion = String(Platform.Version);
+
+    // Set attributes and sync BEFORE writing the AsyncStorage marker.
+    // If the network call fails (offline, transient error), the marker is never
+    // written, so the next cold-start will automatically retry — preventing
+    // permanent undercounting of installs.
+    await Purchases.setAttributes({
+      install_first_seen_at: now,
+      platform: Platform.OS,
+      locale,
+      device_model: deviceModel,
+      os_version: osVersion,
+    });
+
+    // Push attributes to RevenueCat immediately so they appear in Charts
+    await Purchases.syncAttributesAndOfferingsIfNeeded();
+
+    // Only persist the marker after a successful sync
+    await AsyncStorage.setItem(INSTALL_FIRST_SEEN_KEY, now);
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
+/**
+ * Call this whenever a paywall surface becomes visible.
+ *
+ * Sets custom subscriber attributes on the RevenueCat customer profile:
+ *   - paywall_first_seen_at  — ISO timestamp of the very first paywall view (set once)
+ *   - paywall_last_seen_at   — ISO timestamp updated on every view
+ *   - paywall_name           — which paywall surface was most recently seen
+ *   - paywall_view_count     — cumulative count of all paywall views (event-like counter)
+ *
+ * These attributes flow into RevenueCat Charts and any connected integration
+ * (Mixpanel, Amplitude, etc.), enabling the install → paywall view → purchase
+ * conversion funnel to be measured per customer. Because `paywall_view_count` is
+ * an incrementing integer, it can be used to count paywall-view events even
+ * though RevenueCat attributes are profile traits rather than an event stream.
+ *
+ * RevenueCat Charts automatically surfaces installs (first configure() call) and
+ * purchases per product ID. Pairing that with these attributes completes the
+ * full funnel for each subscriber.
+ */
+export async function trackPaywallImpression(paywallName: string): Promise<void> {
+  try {
+    const now = new Date().toISOString();
+
+    const [firstSeen, rawCount] = await Promise.all([
+      AsyncStorage.getItem(FIRST_PAYWALL_SEEN_KEY),
+      AsyncStorage.getItem(PAYWALL_VIEW_COUNT_KEY),
+    ]);
+
+    const attrs: Record<string, string> = {
+      paywall_last_seen_at: now,
+      paywall_name: paywallName,
+    };
+
+    const isFirstView = !firstSeen;
+    if (isFirstView) attrs.paywall_first_seen_at = now;
+
+    const count = rawCount ? (parseInt(rawCount, 10) || 0) + 1 : 1;
+    attrs.paywall_view_count = String(count);
+
+    // Set attributes and sync BEFORE writing the AsyncStorage markers.
+    // If the network call fails, the markers are never written, so the next
+    // paywall open will retry — preventing permanent undercounting.
+    await Purchases.setAttributes(attrs);
+    // Push to RevenueCat immediately so Charts reflects the view without delay
+    await Purchases.syncAttributesAndOfferingsIfNeeded();
+
+    // Persist markers only after a successful sync
+    await AsyncStorage.setItem(PAYWALL_VIEW_COUNT_KEY, String(count));
+    if (isFirstView) await AsyncStorage.setItem(FIRST_PAYWALL_SEEN_KEY, now);
+
+    // Also persist a per-surface view count, first-seen timestamp, and today's day bucket
+    const surfaceKey = paywallViewCountKey(paywallName);
+    const surfaceFirstKey = paywallFirstSeenKey(paywallName);
+    const today = localDayString();
+    const viewDayKey = paywallViewDayKey(paywallName, today);
+    const [rawSurface, rawSurfaceFirst, rawDayCount] = await Promise.all([
+      AsyncStorage.getItem(surfaceKey),
+      AsyncStorage.getItem(surfaceFirstKey),
+      AsyncStorage.getItem(viewDayKey),
+    ]);
+    const surfaceCount = rawSurface ? (parseInt(rawSurface, 10) || 0) + 1 : 1;
+    const dayCount = rawDayCount ? (parseInt(rawDayCount, 10) || 0) + 1 : 1;
+    const surfaceWrites: [string, string][] = [
+      [surfaceKey, String(surfaceCount)],
+      [viewDayKey, String(dayCount)],
+    ];
+    if (!rawSurfaceFirst) surfaceWrites.push([surfaceFirstKey, now]);
+    await AsyncStorage.multiSet(surfaceWrites);
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
+/**
+ * Call this whenever a paywall surface is dismissed without a completed purchase.
+ *
+ * Sets custom subscriber attributes on the RevenueCat customer profile:
+ *   - paywall_dismissed_at    — ISO timestamp of the most recent dismissal
+ *   - paywall_dismissed_name  — which paywall surface was dismissed
+ *   - paywall_dismiss_count   — cumulative count of all dismissals (no-purchase closes)
+ *
+ * Together with `paywall_view_count` these allow a per-surface conversion rate
+ * (views ÷ purchases, or equivalently 1 − dismissals/views) to be computed for
+ * each paywall in RevenueCat Charts or any connected downstream tool.
+ *
+ * Only call this when the user has definitively closed the paywall without buying —
+ * do NOT call it after a successful purchase even if `onClose` is invoked.
+ *
+ * @param selectedPlan  Optional — the plan the user had highlighted at dismissal time
+ *                      (e.g. "annual", "monthly", "perpic"). Stored as the subscriber
+ *                      attribute `paywall_dismissed_plan` so RevenueCat Charts and any
+ *                      connected integration can break down abandonment by price tier.
+ */
+/**
+ * Call this immediately after a successful purchase on a paywall surface.
+ *
+ * Increments the per-surface purchase counter stored in AsyncStorage under
+ * `onjjem_paywall_purchase_count_<name>`. This gives an accurate conversion
+ * rate (real purchases ÷ views) rather than the estimated figure derived
+ * from views minus dismissals, which undercounts when users background the
+ * app without explicitly dismissing the paywall.
+ *
+ * When `planId` is provided, also sets the RevenueCat subscriber attribute
+ * `last_purchased_plan` to record which plan was highlighted at the moment
+ * the subscribe button was tapped. This may differ from the product that was
+ * ultimately purchased (e.g. if the user quickly switched plans mid-session),
+ * so it complements the RevenueCat purchase record and allows cross-referencing
+ * in RevenueCat Charts or any connected downstream tool.
+ */
+export async function trackPaywallPurchase(paywallName: string, planId?: string): Promise<void> {
+  try {
+    const today = localDayString();
+    const surfaceKey = paywallPurchaseCountKey(paywallName);
+    const purchasedAtKey = paywallPurchasedAtKey(paywallName);
+    const purchaseDayKey = paywallPurchaseDayKey(paywallName, today);
+    const keysToRead: string[] = [surfaceKey, purchasedAtKey, purchaseDayKey];
+    if (planId) {
+      keysToRead.push(paywallPurchasePlanCountKey(paywallName, planId));
+      keysToRead.push(paywallPurchaseGlobalPlanCountKey(planId));
+      keysToRead.push(paywallPurchasePlanDayKey(paywallName, planId, today));
+      keysToRead.push(paywallPurchaseGlobalPlanDayKey(planId, today));
+    }
+
+    const pairs = await AsyncStorage.multiGet(keysToRead);
+    const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
+
+    const count = map[surfaceKey] ? (parseInt(map[surfaceKey]!, 10) || 0) + 1 : 1;
+    const dayCount = map[purchaseDayKey] ? (parseInt(map[purchaseDayKey]!, 10) || 0) + 1 : 1;
+    const writes: [string, string][] = [
+      [surfaceKey, String(count)],
+      [purchaseDayKey, String(dayCount)],
+    ];
+
+    // Record the first purchase timestamp for time-to-convert display
+    if (!map[purchasedAtKey]) {
+      writes.push([purchasedAtKey, new Date().toISOString()]);
+    }
+
+    if (planId) {
+      // Per-surface-per-plan purchase count (e.g. onjjem_paywall_purchase_count_subscribe_modal_annual)
+      const surfacePlanKey = paywallPurchasePlanCountKey(paywallName, planId);
+      const surfacePlanCount = map[surfacePlanKey] ? (parseInt(map[surfacePlanKey]!, 10) || 0) + 1 : 1;
+      writes.push([surfacePlanKey, String(surfacePlanCount)]);
+
+      // Per-surface-per-plan per-day purchase count
+      const surfacePlanDayKey = paywallPurchasePlanDayKey(paywallName, planId, today);
+      const surfacePlanDayCount = map[surfacePlanDayKey] ? (parseInt(map[surfacePlanDayKey]!, 10) || 0) + 1 : 1;
+      writes.push([surfacePlanDayKey, String(surfacePlanDayCount)]);
+
+      // Global per-plan purchase count (onjjem_paywall_purchase_plan_count_<plan>)
+      const globalPlanKey = paywallPurchaseGlobalPlanCountKey(planId);
+      const globalPlanCount = map[globalPlanKey] ? (parseInt(map[globalPlanKey]!, 10) || 0) + 1 : 1;
+      writes.push([globalPlanKey, String(globalPlanCount)]);
+
+      // Global per-plan per-day purchase count
+      const globalPlanDayKey = paywallPurchaseGlobalPlanDayKey(planId, today);
+      const globalPlanDayCount = map[globalPlanDayKey] ? (parseInt(map[globalPlanDayKey]!, 10) || 0) + 1 : 1;
+      writes.push([globalPlanDayKey, String(globalPlanDayCount)]);
+
+      // Record which plan was highlighted at tap-time on the RevenueCat customer profile.
+      // This may differ from the purchased product if the user switched plans mid-session.
+      await Purchases.setAttributes({ last_purchased_plan: planId });
+      await Purchases.syncAttributesAndOfferingsIfNeeded();
+    }
+
+    await AsyncStorage.multiSet(writes);
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
+/**
+ * Call this when a customer's subscription lapses — either because they
+ * cancelled voluntarily or because a renewal payment failed.
+ *
+ * Sets the RevenueCat subscriber attribute `last_churned_plan` to the plan
+ * identifier (e.g. "annual", "monthly", "perpic") that was active at the
+ * time of churn, enabling RevenueCat Charts and any connected downstream
+ * tool (Mixpanel, Amplitude, etc.) to compare the plan distribution of
+ * churned customers against active ones.
+ *
+ * @param reason   "cancel" — user cancelled; "billing_error" — renewal failed
+ * @param planId   Optional plan identifier derived from the expiring product
+ */
+export function churnPlanCountKey(plan: string): string {
+  return `onjjem_churn_plan_count_${plan}`;
+}
+export function churnReasonCountKey(reason: "cancel" | "billing_error"): string {
+  return `onjjem_churn_reason_count_${reason}`;
+}
+export const CHURN_TOTAL_COUNT_KEY = "onjjem_churn_total_count";
+
+export async function trackSubscriptionChurn(
+  reason: "cancel" | "billing_error",
+  planId?: string,
+): Promise<void> {
+  try {
+    const attrs: Record<string, string> = {
+      last_churned_reason: reason,
+      last_churned_at: new Date().toISOString(),
+    };
+
+    if (planId) {
+      attrs.last_churned_plan = planId;
+    }
+
+    await Purchases.setAttributes(attrs);
+    await Purchases.syncAttributesAndOfferingsIfNeeded();
+
+    // Persist local counters so the dev stats screen can show a churn
+    // breakdown by plan and reason without relying on a server round-trip.
+    const reasonKey = churnReasonCountKey(reason);
+    const keysToRead: string[] = [CHURN_TOTAL_COUNT_KEY, reasonKey];
+    if (planId) keysToRead.push(churnPlanCountKey(planId));
+
+    const pairs = await AsyncStorage.multiGet(keysToRead);
+    const map = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
+
+    const total = map[CHURN_TOTAL_COUNT_KEY]
+      ? (parseInt(map[CHURN_TOTAL_COUNT_KEY]!, 10) || 0) + 1
+      : 1;
+    const reasonCount = map[reasonKey]
+      ? (parseInt(map[reasonKey]!, 10) || 0) + 1
+      : 1;
+    const writes: [string, string][] = [
+      [CHURN_TOTAL_COUNT_KEY, String(total)],
+      [reasonKey, String(reasonCount)],
+    ];
+
+    if (planId) {
+      const planKey = churnPlanCountKey(planId);
+      const planCount = map[planKey] ? (parseInt(map[planKey]!, 10) || 0) + 1 : 1;
+      writes.push([planKey, String(planCount)]);
+    }
+
+    await AsyncStorage.multiSet(writes);
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
+/**
+ * Derives a human-readable plan identifier from a RevenueCat product
+ * identifier string. Returns undefined if the product ID cannot be mapped.
+ *
+ * Examples:
+ *   "com.onjjem.photorestoration.monthly" → "monthly"
+ *   "one_photo"                           → "perpic"
+ *   "$rc_monthly"                         → "monthly"
+ */
+export function planIdFromProductIdentifier(productId: string): string | undefined {
+  const lower = productId.toLowerCase();
+  if (lower.includes("monthly")) return "monthly";
+  if (lower === PACKAGE_IDENTIFIERS.perPhoto || lower.includes("one_photo") || lower.includes("perpic")) return "perpic";
+  return undefined;
+}
+
+export async function trackPaywallDismissal(paywallName: string, selectedPlan?: string): Promise<void> {
+  try {
+    const now = new Date().toISOString();
+
+    const rawCount = await AsyncStorage.getItem(PAYWALL_DISMISS_COUNT_KEY);
+    const count = rawCount ? (parseInt(rawCount, 10) || 0) + 1 : 1;
+
+    const attrs: Record<string, string> = {
+      paywall_dismissed_at: now,
+      paywall_dismissed_name: paywallName,
+      paywall_dismiss_count: String(count),
+    };
+
+    if (selectedPlan) {
+      attrs.paywall_dismissed_plan = selectedPlan;
+    }
+
+    // Set attributes and sync BEFORE writing the AsyncStorage marker so that a
+    // network failure causes a retry on the next dismissal rather than silently
+    // dropping the event.
+    await Purchases.setAttributes(attrs);
+    await Purchases.syncAttributesAndOfferingsIfNeeded();
+
+    await AsyncStorage.setItem(PAYWALL_DISMISS_COUNT_KEY, String(count));
+
+    // Persist a per-surface dismiss count and today's day bucket
+    const today = localDayString();
+    const surfaceKey = paywallDismissCountKey(paywallName);
+    const dismissDayKey = paywallDismissDayKey(paywallName, today);
+    const [rawSurface, rawDismissDay] = await Promise.all([
+      AsyncStorage.getItem(surfaceKey),
+      AsyncStorage.getItem(dismissDayKey),
+    ]);
+    const surfaceCount = rawSurface ? (parseInt(rawSurface, 10) || 0) + 1 : 1;
+    const dismissDayCount = rawDismissDay ? (parseInt(rawDismissDay, 10) || 0) + 1 : 1;
+    const surfaceWrites: [string, string][] = [
+      [surfaceKey, String(surfaceCount)],
+      [dismissDayKey, String(dismissDayCount)],
+    ];
+
+    // Persist per-plan dismissal counts so the dev stats screen can show
+    // which plan users had selected when they abandoned the paywall.
+    if (selectedPlan) {
+      const planKey = paywallDismissPlanCountKey(selectedPlan);
+      const surfacePlanKey = paywallDismissSurfacePlanCountKey(paywallName, selectedPlan);
+      const planDayKey = paywallDismissPlanDayKey(selectedPlan, today);
+      const surfacePlanDayKey = paywallDismissSurfacePlanDayKey(paywallName, selectedPlan, today);
+      const pairs = await AsyncStorage.multiGet([planKey, surfacePlanKey, planDayKey, surfacePlanDayKey]);
+      const pairMap = Object.fromEntries(pairs.map(([k, v]) => [k, v]));
+      const planCount = pairMap[planKey] ? (parseInt(pairMap[planKey]!, 10) || 0) + 1 : 1;
+      const surfacePlanCount = pairMap[surfacePlanKey] ? (parseInt(pairMap[surfacePlanKey]!, 10) || 0) + 1 : 1;
+      const planDayCount = pairMap[planDayKey] ? (parseInt(pairMap[planDayKey]!, 10) || 0) + 1 : 1;
+      const surfacePlanDayCount = pairMap[surfacePlanDayKey] ? (parseInt(pairMap[surfacePlanDayKey]!, 10) || 0) + 1 : 1;
+      surfaceWrites.push(
+        [planKey, String(planCount)],
+        [surfacePlanKey, String(surfacePlanCount)],
+        [planDayKey, String(planDayCount)],
+        [surfacePlanDayKey, String(surfacePlanDayCount)],
+      );
+    }
+
+    await AsyncStorage.multiSet(surfaceWrites);
+  } catch {
+    // Non-critical — analytics failures must never affect the user experience
+  }
+}
+
+const REVENUECAT_TEST_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_TEST_API_KEY;
+const REVENUECAT_IOS_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY;
+const REVENUECAT_ANDROID_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY;
+
+export const REVENUECAT_ENTITLEMENT_IDENTIFIER = "pro";
+export const PHOTO_CREDITS_STORAGE_KEY = "onjjem_photo_credits";
+
+export const PACKAGE_IDENTIFIERS = {
+  monthly: "$rc_monthly",
+  perPhoto: "one_cartoon",
+  threePhotos: "three_cartoon",
+  fivePhotos: "five_cartoon",
+  tenPhotos: "ten_photos",
+} as const;
+
+// How many credits each bundle purchase grants — this is the ONLY place
+// that needs updating if you add/change a bundle tier later.
+const CREDIT_VALUES: Record<string, number> = {
+  [PACKAGE_IDENTIFIERS.perPhoto]: 1,
+  [PACKAGE_IDENTIFIERS.threePhotos]: 3,
+  [PACKAGE_IDENTIFIERS.fivePhotos]: 5,
+  [PACKAGE_IDENTIFIERS.tenPhotos]: 10,
+};
+
+function getRevenueCatApiKey(): string | null {
+  // In dev / Expo Go / web, the test key is sufficient.
+  if (
+    __DEV__ ||
+    Platform.OS === "web" ||
+    Constants.executionEnvironment === "storeClient"
+  ) {
+    return REVENUECAT_TEST_API_KEY ?? null;
+  }
+  // In a built native app, only the current platform key is required.
+  if (Platform.OS === "ios") return REVENUECAT_IOS_API_KEY ?? null;
+  if (Platform.OS === "android") return REVENUECAT_ANDROID_API_KEY ?? null;
+  return REVENUECAT_TEST_API_KEY ?? null;
+}
+
+let _configured = false;
+
+export function initializeRevenueCat() {
+  if (_configured) return;
+  const apiKey = getRevenueCatApiKey();
+  if (!apiKey) {
+    throw new Error("RevenueCat public API key not configured");
+  }
+  Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
+  Purchases.configure({ apiKey });
+  _configured = true;
+}
+
+async function readPhotoCredits(): Promise<number> {
+  try {
+    const raw = await AsyncStorage.getItem(PHOTO_CREDITS_STORAGE_KEY);
+    const n = raw ? parseInt(raw, 10) : 0;
+    return Number.isFinite(n) && n > 0 ? n : 0;
+  } catch {
+    return 0;
+  }
+}
+
+async function writePhotoCredits(n: number): Promise<void> {
+  try {
+    await AsyncStorage.setItem(PHOTO_CREDITS_STORAGE_KEY, String(Math.max(0, n)));
+  } catch {
+    // non-fatal
+  }
+}
+
+function useSubscriptionContext() {
+  const qc = useQueryClient();
+  const [photoCredits, setPhotoCredits] = useState(0);
+
+  useEffect(() => {
+    readPhotoCredits().then(setPhotoCredits);
+  }, []);
+
+  const customerInfoQuery = useQuery<CustomerInfo>({
+    queryKey: ["revenuecat", "customer-info"],
+    queryFn: async () => Purchases.getCustomerInfo(),
+    staleTime: 60_000,
+  });
+
+  const offeringsQuery = useQuery<PurchasesOfferings>({
+    queryKey: ["revenuecat", "offerings"],
+    queryFn: async () => Purchases.getOfferings(),
+    staleTime: 300_000,
+  });
+
+  const purchaseMutation = useMutation({
+    mutationFn: async (pkg: PurchasesPackage) => {
+      const { customerInfo } = await Purchases.purchasePackage(pkg);
+      // Locally credit consumables (photo bundles) — RevenueCat does not
+      // auto-track these, so we add however many credits this specific
+      // bundle grants (see CREDIT_VALUES above).
+      const creditsGranted = CREDIT_VALUES[pkg.identifier];
+      if (creditsGranted) {
+        const next = (await readPhotoCredits()) + creditsGranted;
+        await writePhotoCredits(next);
+        setPhotoCredits(next);
+      }
+      return customerInfo;
+    },
+    onSuccess: (customerInfo) => {
+      // Immediately update the query cache so isSubscribed is true right away
+      qc.setQueryData<CustomerInfo>(["revenuecat", "customer-info"], customerInfo);
+      qc.invalidateQueries({ queryKey: ["revenuecat", "customer-info"] });
+    },
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: async () => Purchases.restorePurchases(),
+    onSuccess: (customerInfo) => {
+      qc.setQueryData<CustomerInfo>(["revenuecat", "customer-info"], customerInfo);
+      qc.invalidateQueries({ queryKey: ["revenuecat", "customer-info"] });
+    },
+  });
+
+  const consumePhotoCredit = async (): Promise<boolean> => {
+    const current = await readPhotoCredits();
+    if (current <= 0) return false;
+    const next = current - 1;
+    await writePhotoCredits(next);
+    setPhotoCredits(next);
+    return true;
+  };
+
+  const currentOffering: PurchasesOffering | null =
+    offeringsQuery.data?.current ?? null;
+
+  // Debug: log if offerings are missing entirely
+  const allOfferings = offeringsQuery.data?.all ?? {};
+  if (Object.keys(allOfferings).length === 0) {
+    console.warn("[RevenueCat] No offerings configured at all");
+  }
+
+  // Each bundle (one_cartoon / three_cartoon / five_cartoon / ten_photos) is
+  // set up in RevenueCat as its OWN offering — not as multiple packages
+  // inside a single "default" offering. So instead of searching for a
+  // package identifier inside currentOffering.availablePackages, we look
+  // each one up by offering identifier and grab its first (only) package.
+  function findPackageInOwnOffering(offeringIdentifier: string): PurchasesPackage | null {
+    const offering = allOfferings[offeringIdentifier];
+    if (!offering) {
+      console.warn(`[RevenueCat] No offering found with identifier "${offeringIdentifier}"`);
+      return null;
+    }
+    if (!offering.availablePackages.length) {
+      console.warn(`[RevenueCat] Offering "${offeringIdentifier}" has no packages attached`);
+      return null;
+    }
+    return offering.availablePackages[0];
+  }
+
+  const monthlyPackage =
+    currentOffering?.availablePackages.find(
+      (p) => p.identifier === PACKAGE_IDENTIFIERS.monthly,
+    ) ?? null;
+  const perPhotoPackage = findPackageInOwnOffering(PACKAGE_IDENTIFIERS.perPhoto);
+  const threePhotoPackage = findPackageInOwnOffering(PACKAGE_IDENTIFIERS.threePhotos);
+  const fivePhotoPackage = findPackageInOwnOffering(PACKAGE_IDENTIFIERS.fivePhotos);
+  const tenPhotoPackage = findPackageInOwnOffering(PACKAGE_IDENTIFIERS.tenPhotos);
+
+  const isSubscribed =
+    customerInfoQuery.data?.entitlements.active?.[REVENUECAT_ENTITLEMENT_IDENTIFIER] !==
+    undefined;
+
+  return {
+    customerInfo: customerInfoQuery.data,
+    offerings: offeringsQuery.data,
+    currentOffering,
+    monthlyPackage,
+    perPhotoPackage,
+    threePhotoPackage,
+    fivePhotoPackage,
+    tenPhotoPackage,
+    isSubscribed,
+    photoCredits,
+    isLoading: customerInfoQuery.isLoading || offeringsQuery.isLoading,
+    purchase: purchaseMutation.mutateAsync,
+    restore: restoreMutation.mutateAsync,
+    isPurchasing: purchaseMutation.isPending,
+    isRestoring: restoreMutation.isPending,
+    consumePhotoCredit,
+    refresh: () => {
+      void customerInfoQuery.refetch();
+      void offeringsQuery.refetch();
+    },
+  };
+}
+
+type SubscriptionContextValue = ReturnType<typeof useSubscriptionContext>;
+const Context = createContext<SubscriptionContextValue | null>(null);
+
+export function SubscriptionProvider({ children }: { children: React.ReactNode }) {
+  const value = useSubscriptionContext();
+  return <Context.Provider value={value}>{children}</Context.Provider>;
+}
+
+export function useSubscription() {
+  const ctx = useContext(Context);
+  if (!ctx) {
+    throw new Error("useSubscription must be used within a SubscriptionProvider");
+  }
+  return ctx;
+}
