@@ -638,7 +638,17 @@ function useSubscriptionContext() {
   };
 
   const currentOffering: PurchasesOffering | null =
-    offeringsQuery.data?.current ?? null;
+    offeringsQuery.data?.current ?? offeringsQuery.data?.all?.[0] ?? null;
+
+  // Debug: log if offerings are missing
+  if (!offeringsQuery.data?.all || offeringsQuery.data.all.length === 0) {
+    console.warn("[RevenueCat] No offerings configured — packages will be empty");
+  }
+  if (currentOffering && !currentOffering.availablePackages.length) {
+    console.warn("[RevenueCat] Current offering has no packages", {
+      offeringId: currentOffering.identifier,
+    });
+  }
 
   const monthlyPackage =
     currentOffering?.availablePackages.find(
