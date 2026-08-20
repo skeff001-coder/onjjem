@@ -239,8 +239,6 @@ activeOpacity={0.88}
 <Text style={s.mugLabel}>OUR BESTSELLER</Text>
 
 <Text style={s.mugTitle}>The Magic Photo Mug</Text>
-  
-<Image source={require("@/assets/magic-mug-reveal.png")} style={s.mugImage} />
 
 <Text style={s.mugDesc}>
 
