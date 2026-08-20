@@ -43,11 +43,9 @@ export default function CartoonScreen() {
   const [assets, setAssets] = useState<MediaLibrary.Asset[]>([]);
   const [loadingAssets, setLoadingAssets] = useState(false);
 
-  const { isSubscribed, photoCredits, perPhotoPackage, threePhotoPackage, fivePhotoPackage, tenPhotoPackage, purchase, isPurchasing } =
+  const { isSubscribed, photoCredits, fivePhotoPackage, purchase, isPurchasing } =
     useSubscription();
 
-  // No free trial — every cartoon generation requires an active purchase
-  // (subscription or remaining photo credits). If neither, show paywall.
   const checkAccessThenPick = async () => {
     if (isSubscribed) {
       openPicker();
@@ -117,7 +115,6 @@ export default function CartoonScreen() {
         setCartoonUri(`data:${data.mimeType ?? "image/png"};base64,${data.base64Image}`);
         setPhase("done");
 
-        // Charge one credit for this successful generation.
         if (!isSubscribed && photoCredits > 0) {
           await useSubscriptionCredit();
         }
@@ -131,28 +128,15 @@ export default function CartoonScreen() {
     }
   };
 
-  // Small wrapper so we can call consumePhotoCredit from useSubscription
-  // without re-destructuring it at the top (keeps hook order stable).
   const { consumePhotoCredit } = useSubscription();
   const useSubscriptionCredit = async () => {
     await consumePhotoCredit();
   };
 
-  const buyOneMore = async () => {
-    if (!perPhotoPackage) return;
+  const buyScans = async () => {
+    if (!fivePhotoPackage) return;
     try {
-      await purchase(perPhotoPackage);
-      setPhase("idle");
-      openPicker();
-    } catch (err) {
-      // Purchase cancelled or failed — stay on paywall.
-    }
-  };
-
-  const buyBundle = async (pkg: typeof perPhotoPackage) => {
-    if (!pkg) return;
-    try {
-      await purchase(pkg);
+      await purchase(fivePhotoPackage);
       setPhase("idle");
       openPicker();
     } catch (err) {
@@ -211,40 +195,19 @@ export default function CartoonScreen() {
         {phase === "paywall" && (
           <View style={s.startCard}>
             <Ionicons name="sparkles" size={40} color="#C9960C" />
-            <Text style={s.startTitle}>Choose your cartoon pack</Text>
+            <Text style={s.startTitle}>Get 5 Cartoon Scans</Text>
             <Text style={s.errorText}>
-              Buy in bulk and save — 1, 3 or 5 photos.
+              Create beautiful cartoons from your photos
             </Text>
-            {perPhotoPackage && (
-              <TouchableOpacity onPress={buyOneMore} disabled={isPurchasing} style={s.primaryBtn}>
+            {fivePhotoPackage && (
+              <TouchableOpacity onPress={buyScans} disabled={isPurchasing} style={s.primaryBtn}>
                 {isPurchasing ? (
                   <ActivityIndicator color="#0F0D09" />
                 ) : (
                   <Text style={s.primaryBtnText}>
-                    Buy 1 More — {perPhotoPackage.product.priceString}
+                    Buy 5 Scans — {fivePhotoPackage.product.priceString}
                   </Text>
                 )}
-              </TouchableOpacity>
-            )}
-            {threePhotoPackage && (
-              <TouchableOpacity onPress={() => buyBundle(threePhotoPackage)} disabled={isPurchasing} style={s.secondaryPurchaseBtn}>
-                <Text style={s.secondaryPurchaseBtnText}>
-                  Buy 3 — {threePhotoPackage.product.priceString}
-                </Text>
-              </TouchableOpacity>
-            )}
-            {fivePhotoPackage && (
-              <TouchableOpacity onPress={() => buyBundle(fivePhotoPackage)} disabled={isPurchasing} style={s.secondaryPurchaseBtn}>
-                <Text style={s.secondaryPurchaseBtnText}>
-                  Buy 5 — {fivePhotoPackage.product.priceString}
-                </Text>
-              </TouchableOpacity>
-            )}
-            {tenPhotoPackage && (
-              <TouchableOpacity onPress={() => buyBundle(tenPhotoPackage)} disabled={isPurchasing} style={s.secondaryPurchaseBtn}>
-                <Text style={s.secondaryPurchaseBtnText}>
-                  Buy 10 — {tenPhotoPackage.product.priceString}
-                </Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity onPress={reset} style={s.secondaryBtn}>
@@ -362,14 +325,6 @@ const s = StyleSheet.create({
   errorText: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
   primaryBtn: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 14, paddingHorizontal: 32 },
   primaryBtnText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15 },
-  secondaryPurchaseBtn: {
-    borderWidth: 1,
-    borderColor: "#C9960C",
-    borderRadius: 999,
-    paddingVertical: 14,
-    paddingHorizontal: 28,
-  },
-  secondaryPurchaseBtnText: { color: "#C9960C", fontFamily: "Inter_700Bold", fontSize: 14 },
   secondaryBtn: { marginTop: 4, paddingVertical: 10 },
   secondaryBtnText: { color: "rgba(245,237,216,0.6)", fontFamily: "Inter_600SemiBold", fontSize: 13 },
   pickerTitle: { fontSize: 16, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", marginBottom: 12 },
