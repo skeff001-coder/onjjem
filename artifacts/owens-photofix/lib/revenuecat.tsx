@@ -518,9 +518,9 @@ export const PHOTO_CREDITS_STORAGE_KEY = "onjjem_photo_credits";
 
 export const PACKAGE_IDENTIFIERS = {
   monthly: "$rc_monthly",
-  perPhoto: "one_photo",
-  threePhotos: "three_photos",
-  fivePhotos: "five_photos",
+  perPhoto: "one_cartoon",
+  threePhotos: "three_cartoon",
+  fivePhotos: "five_cartoon",
   tenPhotos: "ten_photos",
 } as const;
 
