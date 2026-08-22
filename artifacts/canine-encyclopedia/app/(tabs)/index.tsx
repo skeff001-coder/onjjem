@@ -12,7 +12,7 @@ import {
   Alert,
   TextInput,
   KeyboardAvoidingView,
-  import CartoonifyGallery from '../../components/CartoonifyGallery';
+import CartoonifyGallery from '../../components/CartoonifyGallery';
   Modal,
   Animated,
   Linking,
