@@ -10,8 +10,6 @@ import {
   Linking,
 } from 'react-native';
 import CartoonifyGallery from '../../components/CartoonifyGallery'; 
-
-  Modal,
   Animated,
   Linking,
   ScrollView,
