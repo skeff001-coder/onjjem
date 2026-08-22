@@ -1,18 +1,20 @@
-import React, { useState, useRef, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   Image,
-  Share,
   TouchableOpacity,
-  ActivityIndicator,
-  Platform,
+  ScrollView,
   Dimensions,
-  Alert,
+  ActivityIndicator,
   TextInput,
   KeyboardAvoidingView,
+  Modal,
+  Animated,
+  Linking,
+} from 'react-native';
 import CartoonifyGallery from '../../components/CartoonifyGallery';
+
   Modal,
   Animated,
   Linking,
