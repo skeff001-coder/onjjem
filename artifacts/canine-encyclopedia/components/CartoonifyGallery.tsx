@@ -5,7 +5,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
+  Dimensions,  //
   ActivityIndicator,
 } from 'react-native';
 
