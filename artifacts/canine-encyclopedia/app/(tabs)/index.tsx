@@ -194,6 +194,12 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
         }}>
           Scan your dog and unlock their story, personality and art.
         </Text>
+      </Text>
+
+      <CartoonifyGallery />
+
+      {/* CTA */}
+
 
         {/* CTA */}
         <TouchableOpacity
