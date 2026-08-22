@@ -10,9 +10,6 @@ import {
   Linking,
 } from 'react-native';
 import CartoonifyGallery from '../../components/CartoonifyGallery'; 
-  Animated,
-  Linking,
-  ScrollView,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
