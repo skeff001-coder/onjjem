@@ -20,7 +20,7 @@ workflows:
         BUNDLE_ID: com.onjjem.photorestoration
         EXPO_PUBLIC_DOMAIN: onjjem-production-5ef8.up.railway.app
         EXPO_PUBLIC_REVENUECAT_TEST_API_KEY: "test_OGJMpwWspeprzlqFUWyeEQENXee"
-        EXPO_PUBLIC_REVENUECAT_IOS_API_KEY: "appl_QlAKzSnABwsXylEXGysyHrvnJpx"
+        EXPO_PUBLIC_REVENUECAT_IOS_API_KEY: "appl_GERIwqZAodXSClBKkxlSjxwPQZv"
         EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY: "goog_PrynAABKWsJkuDGlYyEurZjjJGO"
         REVENUECAT_PROJECT_ID: "proj2d8ef809"
 
