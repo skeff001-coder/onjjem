@@ -9,7 +9,6 @@ import {
   Animated,
   Linking,
 } from 'react-native';
-import CartoonifyGallery from '../../components/CartoonifyGallery';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -187,8 +186,6 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
           Scan your dog and unlock their story, personality and art.
         </Text>
       </Text>
-
-      <CartoonifyGallery />
 
       {/* CTA */}
 
