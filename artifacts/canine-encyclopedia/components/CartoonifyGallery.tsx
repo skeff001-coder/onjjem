@@ -16,25 +16,25 @@ export default function CartoonifyGallery() {
   const items = [
     {
       type: 'pair',
-      breed: 'Yellow Labrador',
-      before: 'https://raw.githubusercontent.com/skeff001-coder/onjjem/main/artifacts/canine-encyclopedia/assets/images/IMG_5850.jpg',
-      after: 'https://raw.githubusercontent.com/skeff001-coder/onjjem/main/artifacts/canine-encyclopedia/assets/images/IMG_5853.jpg'
+      breed: 'Doberman',
+      before: 'https://via.placeholder.com/400x400?text=Doberman+Before',
+      after: 'https://via.placeholder.com/400x400?text=Doberman+Cartoon'
     },
     {
       type: 'pair',
-      breed: 'Doberman',
-      before: 'https://raw.githubusercontent.com/skeff001-coder/onjjem/main/artifacts/canine-encyclopedia/assets/images/IMG_5851.jpg',
-      after: 'https://raw.githubusercontent.com/skeff001-coder/onjjem/main/artifacts/canine-encyclopedia/assets/images/IMG_5852.jpg'
+      breed: 'Yellow Labrador',
+      before: 'https://via.placeholder.com/400x400?text=Lab+Before',
+      after: 'https://via.placeholder.com/400x400?text=Lab+Cartoon'
     },
     {
       type: 'sample',
       breed: 'Jack Russell',
-      image: 'https://raw.githubusercontent.com/skeff001-coder/onjjem/main/artifacts/canine-encyclopedia/assets/images/IMG_5394.PNG'
+      image: 'https://via.placeholder.com/400x400?text=Jack+Russell+Cartoon'
     },
     {
       type: 'sample',
       breed: 'Shih Tzu',
-      image: 'https://raw.githubusercontent.com/skeff001-coder/onjjem/main/artifacts/canine-encyclopedia/assets/images/IMG_5854.jpg'
+      image: 'https://via.placeholder.com/400x400?text=Shih+Tzu+Cartoon'
     }
   ];
 
@@ -93,7 +93,7 @@ export default function CartoonifyGallery() {
     setAutoPlay(false);
   };
 
-  const handleDotPress = (idx) => {
+  const handleDotPress = (idx: number) => {
     setCurrentIndex(idx);
     setShowAfter(false);
     setAutoPlay(false);
