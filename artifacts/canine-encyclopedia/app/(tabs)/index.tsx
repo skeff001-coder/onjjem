@@ -3,17 +3,13 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
-  ScrollView,
-  Dimensions,
-  ActivityIndicator,
   TextInput,
   KeyboardAvoidingView,
   Modal,
   Animated,
   Linking,
 } from 'react-native';
-import CartoonifyGallery from '../../components/CartoonifyGallery';
+import CartoonifyGallery from '../../components/CartoonifyGallery'; 
 
   Modal,
   Animated,
