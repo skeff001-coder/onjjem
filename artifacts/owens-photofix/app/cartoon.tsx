@@ -43,7 +43,7 @@ export default function CartoonScreen() {
   const [assets, setAssets] = useState<MediaLibrary.Asset[]>([]);
   const [loadingAssets, setLoadingAssets] = useState(false);
 
-  const { isSubscribed, photoCredits, fivePhotoPackage, purchase, isPurchasing } =
+  const { isSubscribed, photoCredits, oneCartoonPackage, threeCartoonPackage, fiveCartoonPackage, purchase, isPurchasing } =
     useSubscription();
 
   const checkAccessThenPick = async () => {
@@ -133,14 +133,14 @@ export default function CartoonScreen() {
     await consumePhotoCredit();
   };
 
-  const buyScans = async () => {
-    if (!fivePhotoPackage) return;
+  const buyPackage = async (pkg: typeof oneCartoonPackage) => {
+    if (!pkg) return;
     try {
-      await purchase(fivePhotoPackage);
+      await purchase(pkg);
       setPhase("idle");
       openPicker();
     } catch (err) {
-      // Purchase cancelled or failed — stay on paywall.
+      // Purchase cancelled or failed
     }
   };
 
@@ -195,21 +195,67 @@ export default function CartoonScreen() {
         {phase === "paywall" && (
           <View style={s.startCard}>
             <Ionicons name="sparkles" size={40} color="#C9960C" />
-            <Text style={s.startTitle}>Get 5 Cartoon Scans</Text>
-            <Text style={s.errorText}>
-              Create beautiful cartoons from your photos
+            <Text style={s.startTitle}>Get Cartoon Scans</Text>
+            <Text style={s.paywallSubtitle}>
+              Choose how many scans you'd like
             </Text>
-            {fivePhotoPackage && (
-              <TouchableOpacity onPress={buyScans} disabled={isPurchasing} style={s.primaryBtn}>
-                {isPurchasing ? (
-                  <ActivityIndicator color="#0F0D09" />
-                ) : (
-                  <Text style={s.primaryBtnText}>
-                    Buy 5 Scans — {fivePhotoPackage.product.priceString}
-                  </Text>
-                )}
-              </TouchableOpacity>
-            )}
+            
+            <View style={s.optionsContainer}>
+              {oneCartoonPackage && (
+                <TouchableOpacity 
+                  onPress={() => buyPackage(oneCartoonPackage)}
+                  disabled={isPurchasing}
+                  style={s.optionButton}
+                >
+                  {isPurchasing ? (
+                    <ActivityIndicator color="#0F0D09" />
+                  ) : (
+                    <>
+                      <Text style={s.optionTitle}>1 Scan</Text>
+                      <Text style={s.optionPrice}>{oneCartoonPackage.product.priceString}</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              )}
+              
+              {threeCartoonPackage && (
+                <TouchableOpacity 
+                  onPress={() => buyPackage(threeCartoonPackage)}
+                  disabled={isPurchasing}
+                  style={[s.optionButton, s.recommendedButton]}
+                >
+                  <View style={s.recommendedBadge}>
+                    <Text style={s.recommendedText}>Recommended</Text>
+                  </View>
+                  {isPurchasing ? (
+                    <ActivityIndicator color="#0F0D09" />
+                  ) : (
+                    <>
+                      <Text style={s.optionTitle}>3 Scans</Text>
+                      <Text style={s.optionPrice}>{threeCartoonPackage.product.priceString}</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              )}
+              
+              {fiveCartoonPackage && (
+                <TouchableOpacity 
+                  onPress={() => buyPackage(fiveCartoonPackage)}
+                  disabled={isPurchasing}
+                  style={s.optionButton}
+                >
+                  {isPurchasing ? (
+                    <ActivityIndicator color="#0F0D09" />
+                  ) : (
+                    <>
+                      <Text style={s.optionTitle}>5 Scans</Text>
+                      <Text style={s.optionPrice}>{fiveCartoonPackage.product.priceString}</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              )}
+            </View>
+            
             <TouchableOpacity onPress={reset} style={s.secondaryBtn}>
               <Text style={s.secondaryBtnText}>Not Now</Text>
             </TouchableOpacity>
@@ -316,6 +362,7 @@ const s = StyleSheet.create({
   },
   startTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", textAlign: "center" },
   freeNote: { fontSize: 13, color: "#C9960C", fontFamily: "Inter_600SemiBold" },
+  paywallSubtitle: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
   previewImage: {
     width: "100%",
     height: 220,
@@ -323,10 +370,55 @@ const s = StyleSheet.create({
     marginBottom: 4,
   },
   errorText: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
-  primaryBtn: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 14, paddingHorizontal: 32 },
-  primaryBtnText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15 },
-  secondaryBtn: { marginTop: 4, paddingVertical: 10 },
-  secondaryBtnText: { color: "rgba(245,237,216,0.6)", fontFamily: "Inter_600SemiBold", fontSize: 13 },
+  primaryBtn: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 14, paddingHorizontal: 32, width: "100%" },
+  primaryBtnText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15, textAlign: "center" },
+  secondaryBtn: { marginTop: 4, paddingVertical: 10, width: "100%" },
+  secondaryBtnText: { color: "rgba(245,237,216,0.6)", fontFamily: "Inter_600SemiBold", fontSize: 13, textAlign: "center" },
+  
+  optionsContainer: {
+    width: "100%",
+    gap: 12,
+  },
+  optionButton: {
+    backgroundColor: "rgba(201,150,12,0.1)",
+    borderWidth: 1.5,
+    borderColor: "#C9960C",
+    borderRadius: 12,
+    padding: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  recommendedButton: {
+    backgroundColor: "rgba(201,150,12,0.15)",
+    borderWidth: 2,
+    borderColor: "#C9960C",
+  },
+  recommendedBadge: {
+    position: "absolute",
+    top: -8,
+    backgroundColor: "#C9960C",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  recommendedText: {
+    color: "#0F0D09",
+    fontSize: 10,
+    fontFamily: "Inter_700Bold",
+  },
+  optionTitle: {
+    color: "#F5EDD8",
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 16,
+    marginTop: 8,
+  },
+  optionPrice: {
+    color: "#C9960C",
+    fontFamily: "Inter_700Bold",
+    fontSize: 18,
+    marginTop: 4,
+  },
+  
   pickerTitle: { fontSize: 16, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", marginBottom: 12 },
   loaderWrap: { paddingVertical: 60, alignItems: "center" },
   emptyText: { color: "rgba(245,237,216,0.6)", textAlign: "center", paddingVertical: 40 },
