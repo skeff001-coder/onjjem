@@ -12,7 +12,6 @@ import {
   Linking,
   Dimensions,
 } from "react-native";
-import { CartoonCarousel, CARTOON_SAMPLES } from './components/CartoonCarousel';
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as MediaLibrary from "expo-media-library";
