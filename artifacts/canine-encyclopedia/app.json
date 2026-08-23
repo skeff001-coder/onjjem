@@ -1,4 +1,4 @@
-{
+ko{
   "expo": {
     "name": "That's My Dog!",
     "slug": "canine-encyclopaedia",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "72",
+      "buildNumber": "73",
       "6usesAppleSignIn": true,
       "infoPlist": {
         "LSApplicationQueriesSchemes": [
