@@ -134,14 +134,56 @@ export default function CartoonScreen() {
     await consumePhotoCredit();
   };
 
-  const buyPackage = async (pkg: typeof oneCartoonPackage) => {
+  const [boughtFivePack, setBoughtFivePack] = useState(false);
+  const [postcardClaimed, setPostcardClaimed] = useState(false);
+  const [claimingPostcard, setClaimingPostcard] = useState(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem("onjjem_five_pack_postcard_claimed").then((v) => {
+      if (v === "true") setPostcardClaimed(true);
+    });
+  }, []);
+
+  const buyPackage = async (pkg: typeof oneCartoonPackage, isFivePack = false) => {
     if (!pkg) return;
     try {
       await purchase(pkg);
+      if (isFivePack) setBoughtFivePack(true);
       setPhase("idle");
       openPicker();
     } catch (err) {
       // Purchase cancelled or failed
+    }
+  };
+
+  const claimFreePostcard = async () => {
+    if (!cartoonUri) return;
+    setClaimingPostcard(true);
+    try {
+      const base64 = cartoonUri.split(",")[1] ?? cartoonUri;
+      const mimeType = cartoonUri.startsWith("data:image/png") ? "image/png" : "image/jpeg";
+      const res = await fetch(`${API_BASE}/api/stripe/redeem-gift`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          giftSku: "onjjem-gift-postcard",
+          photoBase64: base64,
+          mimeType,
+          overridePrice: 0,
+          successUrl: "https://onjjem.com/?order=success",
+          cancelUrl: "https://onjjem.com/",
+        }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        await AsyncStorage.setItem("onjjem_five_pack_postcard_claimed", "true");
+        setPostcardClaimed(true);
+        await Linking.openURL(data.url);
+      }
+    } catch {
+      // Silently fail — not critical path
+    } finally {
+      setClaimingPostcard(false);
     }
   };
 
@@ -247,7 +289,7 @@ export default function CartoonScreen() {
               
               {fiveCartoonPackage && (
                 <TouchableOpacity 
-                  onPress={() => buyPackage(fiveCartoonPackage)}
+                  onPress={() => buyPackage(fiveCartoonPackage, true)}
                   disabled={isPurchasing}
                   style={s.optionButton}
                 >
@@ -333,6 +375,30 @@ export default function CartoonScreen() {
           <View style={s.resultCard}>
             <Image source={{ uri: cartoonUri }} style={s.resultImg} resizeMode="cover" />
             <Text style={s.resultLabel}>✨ Here's your cartoon!</Text>
+
+            {boughtFivePack && !postcardClaimed && (
+              <View style={s.freePostcardBox}>
+                <Text style={s.freePostcardTitle}>🎁 You've earned a free postcard!</Text>
+                <Text style={s.freePostcardSub}>
+                  As a 5-scan customer, get this cartoon printed on a postcard — on us.
+                </Text>
+                <TouchableOpacity
+                  onPress={claimFreePostcard}
+                  disabled={claimingPostcard}
+                  style={s.claimPostcardBtn}
+                >
+                  {claimingPostcard ? (
+                    <ActivityIndicator color="#0F0D09" />
+                  ) : (
+                    <Text style={s.claimPostcardBtnText}>Claim Your Free Postcard →</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            )}
+            {boughtFivePack && postcardClaimed && (
+              <Text style={s.postcardClaimedNote}>✅ Free postcard claimed</Text>
+            )}
+
             <TouchableOpacity onPress={openShop} style={s.printBtn}>
               <Ionicons name="print-outline" size={18} color="#0F0D09" />
               <Text style={s.printBtnText}>Get This Printed at ONJJEM</Text>
@@ -370,6 +436,45 @@ const s = StyleSheet.create({
   startTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", textAlign: "center" },
   freeNote: { fontSize: 13, color: "#C9960C", fontFamily: "Inter_600SemiBold" },
   paywallSubtitle: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
+  freePostcardBox: {
+    width: "100%",
+    backgroundColor: "rgba(74,222,128,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(74,222,128,0.3)",
+    borderRadius: 14,
+    padding: 16,
+    alignItems: "center",
+    gap: 8,
+  },
+  freePostcardTitle: {
+    fontSize: 15,
+    fontFamily: "Inter_700Bold",
+    color: "#4ade80",
+    textAlign: "center",
+  },
+  freePostcardSub: {
+    fontSize: 12,
+    color: "rgba(245,237,216,0.75)",
+    textAlign: "center",
+    lineHeight: 17,
+  },
+  claimPostcardBtn: {
+    backgroundColor: "#4ade80",
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginTop: 4,
+  },
+  claimPostcardBtnText: {
+    fontSize: 14,
+    fontFamily: "Inter_700Bold",
+    color: "#0F0D09",
+  },
+  postcardClaimedNote: {
+    fontSize: 13,
+    color: "#4ade80",
+    fontFamily: "Inter_600SemiBold",
+  },
   sampleLabel: {
     fontSize: 12,
     fontFamily: "Inter_600SemiBold",
