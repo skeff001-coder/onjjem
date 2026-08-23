@@ -1,4 +1,4 @@
-import { CartoonCarousel, CARTOON_SAMPLES } from './components/CartoonCarousel';
+import { CartoonCarousel, CARTOON_SAMPLES } from '@/components/CartoonCarousel';
 import React, { useState, useEffect } from 'react';
 import {
   View,
