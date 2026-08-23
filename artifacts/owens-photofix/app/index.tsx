@@ -116,27 +116,23 @@ showsVerticalScrollIndicator={false}
 
 <View style={s.accolade}>
 
-<Text style={s.accoladeTitle}>Britain's Premier Photo Gift Specialist</Text>
+<Text style={s.accoladeTitle}>Britain's Most Exciting Photo Gift Studio ✨</Text>
 
 <Text style={s.accoladeBody}>
 
-At ONJJEM, every gift is treated as if it were our own. We are not a factory
-
-and we are not a discount site. We are a specialist photo gift company producing
-
-luxury keepsakes to the very highest British standard - gifts that will be
-
-treasured for a lifetime.
+Forget boring prints. We turn your favourite photos into <Text style={{ color: "#4ADE80", fontWeight: "700" }}>show-stopping cartoons</Text>, <Text style={{ color: "#F5D060", fontWeight: "700" }}>magic colour-change mugs</Text>, and gifts so good they'll stop people in their tracks. Every single one made in Britain, to a standard nobody else touches.
 
 </Text>
 
 <Text style={s.accoladeBody}>
 
-When you order with ONJJEM you can expect exceptional print quality, fast
+Try <Text style={{ color: GOLD, fontWeight: "700" }}>Cartoon-ify</Text> and watch your photo transform into vibrant animated art in seconds — then bring it to life on a mug, canvas or postcard, delivered straight to your door.
 
-tracked delivery, complete privacy for your photos, and a gift so beautiful
+</Text>
 
-it will stop people in their tracks. Nobody in Britain does it better.
+<Text style={s.accoladeBody}>
+
+Got a little football fan at home? Send us a photo of their favourite player — or any sports star — and we'll <Text style={{ color: "#4ADE80", fontWeight: "700" }}>Cartoon-ify</Text> them into a fun animated illustration kids absolutely love. Any photo, any subject — we can do it all.
 
 </Text>
 
@@ -184,7 +180,13 @@ activeOpacity={0.88}
 
 <Text style={s.cartoonTitle}>Try Cartoon-ify ✨</Text>
 
-<Text style={s.cartoonSub}>Turn any photo into a vibrant animated illustration — free to try</Text>
+<Text style={s.cartoonSub}>Turn any photo into a vibrant animated illustration</Text>
+
+<View style={s.cartoonGiftBadge}>
+
+<Text style={s.cartoonGiftBadgeText}>🎁 Buy 5 scans, get a free postcard</Text>
+
+</View>
 
 </View>
 
@@ -390,7 +392,7 @@ tagline: { fontSize: 14, color: "#F5D78E", letterSpacing: 1, textAlign: "center"
 
 subTagline: { fontSize: 11, color: "rgba(245,215,142,0.45)", textAlign: "center" },
 
-accolade: { backgroundColor: "#1A1206", borderWidth: 1, borderColor: "rgba(201,150,12,0.3)", borderRadius: 12, padding: 16, gap: 10 },
+accolade: { backgroundColor: "#1A1206", borderWidth: 1.5, borderColor: "rgba(201,150,12,0.5)", borderRadius: 12, padding: 16, gap: 10 },
 
 accoladeTitle: { fontSize: 15, fontWeight: "700", color: GOLD, letterSpacing: 0.3 },
 
@@ -441,6 +443,19 @@ justifyContent: "center",
 cartoonTitle: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#0A0804" },
 
 cartoonSub: { fontSize: 12, color: "rgba(10,8,4,0.75)", marginTop: 2 },
+cartoonGiftBadge: {
+  backgroundColor: "rgba(10,8,4,0.12)",
+  borderRadius: 6,
+  paddingVertical: 3,
+  paddingHorizontal: 8,
+  alignSelf: "flex-start",
+  marginTop: 6,
+},
+cartoonGiftBadgeText: {
+  fontSize: 11,
+  fontWeight: "700",
+  color: "#0A0804",
+},
 
 ctaGold: { backgroundColor: GOLD, borderRadius: 10, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 15, paddingHorizontal: 20 },
 
