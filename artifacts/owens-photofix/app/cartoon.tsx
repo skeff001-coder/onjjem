@@ -451,3 +451,4 @@ const s = StyleSheet.create({
   printBtnText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15 },
   printNote: { fontSize: 12, color: "rgba(245,237,216,0.55)", textAlign: "center", paddingHorizontal: 30 },
 });
+
