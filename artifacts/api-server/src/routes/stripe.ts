@@ -373,7 +373,8 @@ router.get("/stripe/products", async (_req: Request, res: Response) => {
 // only ever needs to exist here, no changes needed anywhere else.
 
 const REDEEMABLE_GIFTS: Record<string, { name: string; pricePence: number }> = {
-  "wud-gift-postcard":   { name: "Free Dog Postcard (Bundle Gift)",           pricePence: 499  },
+  "wud-gift-postcard":   { name: "Premium Gloss Personalised Postcard (Bundle Gift)", pricePence: 499  },
+  "onjjem-gift-postcard": { name: "Premium Gloss Personalised Postcard (5-Pack Gift)", pricePence: 499  },
   "wud-sticker-small":   { name: "Personalised Pet Sticker (My Dog's Shop)",  pricePence: 399  },
   "wud-sticker-xl":      { name: "XL Pet Vinyl Sticker 14×14\" (My Dog's Shop)", pricePence: 2099 },
   "wud-magic-mug":       { name: "Magic Colour-Change Mug (My Dog's Shop)",   pricePence: 1499 },
