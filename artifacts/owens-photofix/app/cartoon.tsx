@@ -1,3 +1,4 @@
+import { CartoonCarousel, CARTOON_SAMPLES } from './components/CartoonCarousel';
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -200,6 +201,8 @@ export default function CartoonScreen() {
             <Text style={s.paywallSubtitle}>
               Choose how many scans you'd like
             </Text>
+            <CartoonCarousel samples={CARTOON_SAMPLES} />
+
             
             <View style={s.optionsContainer}>
               {oneCartoonPackage && (
