@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.photorestoration",
-      "buildNumber": "166",
+      "buildNumber": "167",
       "privacyPolicyUrl": "https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
