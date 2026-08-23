@@ -200,9 +200,13 @@ export default function CartoonScreen() {
             <Text style={s.paywallSubtitle}>
               Choose how many scans you'd like
             </Text>
-            <CartoonCarousel samples={CARTOON_SAMPLES} />
 
-            
+            <Text style={s.sampleLabel}>Real customer results — this is what yours could look like</Text>
+            <CartoonCarousel samples={CARTOON_SAMPLES} />
+            <Text style={s.sampleCaption}>
+              Turn your favourite photo into a keepsake your loved ones will treasure forever. Find your cartoon on mugs, canvases, postcards & more at ONJJEM — free UK delivery.
+            </Text>
+
             <View style={s.optionsContainer}>
               {oneCartoonPackage && (
                 <TouchableOpacity 
@@ -366,6 +370,21 @@ const s = StyleSheet.create({
   startTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", textAlign: "center" },
   freeNote: { fontSize: 13, color: "#C9960C", fontFamily: "Inter_600SemiBold" },
   paywallSubtitle: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
+  sampleLabel: {
+    fontSize: 12,
+    fontFamily: "Inter_600SemiBold",
+    color: "#C9960C",
+    textAlign: "center",
+    marginTop: 8,
+    letterSpacing: 0.3,
+  },
+  sampleCaption: {
+    fontSize: 13,
+    color: "rgba(245,237,216,0.75)",
+    textAlign: "center",
+    lineHeight: 19,
+    paddingHorizontal: 8,
+  },
   previewImage: {
     width: "100%",
     height: 220,
