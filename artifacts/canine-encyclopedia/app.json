@@ -13,14 +13,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#0a0e1a"
     },
-  "ios": {
-  "supportsTablet": false,
-  "bundleIdentifier": "com.onjjem.canineencyclopedia",
-  "buildNumber": "77",
-  "deploymentTarget": "12.0",
-  "usesAppleSignIn": true,
-}
-
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.onjjem.canineencyclopedia",
+      "buildNumber": "77",
+      "deploymentTarget": "12.0",
       "usesAppleSignIn": true,
       "infoPlist": {
         "LSApplicationQueriesSchemes": [
