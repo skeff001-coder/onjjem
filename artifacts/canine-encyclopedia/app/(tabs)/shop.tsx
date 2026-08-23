@@ -27,10 +27,10 @@ const ONJJEM_URL = "https://onjjem.com";
 const PRODUCTS = [
   {
     id: "postcard",
-    name: "Classic Personalised Postcard",
-    subtitle: "6x4\" gloss finish, posted to your door",
+    name: "Premium Gloss Personalised Postcard",
+    subtitle: "Museum-quality print, posted straight to your door",
     description:
-      "A stunning 350gsm gloss postcard featuring your dog's photo — printed edge to edge in rich, fade-resistant colour. The perfect keepsake or gift. Normally £4.99, free with The Full Story Bundle.",
+      "Printed on luxurious 350gsm gloss card with rich, true-to-life colour and edge-to-edge coverage — this isn't your average postcard. It's the kind of keepsake people pin above their desk or keep in a drawer for years. A genuinely lovely little gift, and yours free with The Full Story Bundle.",
     icon: "mail-outline" as const,
     price: 499,
     rrp: null as number | null,
