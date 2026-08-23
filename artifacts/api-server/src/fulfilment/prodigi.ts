@@ -277,6 +277,7 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // Physical rewards ordered through the WUD app's native Stripe checkout.
   // These are not listed on the public onjjem.com shop catalogue.
   "wud-gift-postcard":    { sku: "CLASSIC-POST-GLOS-6X4",  sizing: "fillPrintArea" },
+  "onjjem-gift-postcard": { sku: "CLASSIC-POST-GLOS-6X4",  sizing: "fillPrintArea" },
   "wud-sticker-small":    { sku: "GLOBAL-STI-3X4-G",        sizing: "fillPrintArea" },
   "wud-sticker-xl":       { sku: "GLOBAL-STI-14X14-G",      sizing: "fillPrintArea" },
   "wud-magic-mug":        { sku: "H-MUG-11OZ-CC",           sizing: "fillPrintArea" },
