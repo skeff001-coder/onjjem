@@ -7,8 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "canine-encyclopedia",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": false,
-    "jsEngine": "jsc",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
@@ -75,4 +74,3 @@
     },
     "owner": "skeff001"
   }
-}
