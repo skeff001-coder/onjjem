@@ -89,12 +89,11 @@ const PRODUCTS = [
     freeWithBundle: false,
     sku: "wud-bandanna",
     emoji: "🎀",
-    loyaltyExclusive: true,
   },
   {
     id: "jigsaw",
     name: "30-Piece Photo Jigsaw",
-    subtitle: "Loyal customer exclusive price",
+    subtitle: "A fun keepsake for the whole family",
     description:
       "A fun, high-quality 30-piece jigsaw featuring your dog's photo. Perfect for kids, grandparents, or anyone who loves your dog as much as you do.",
     icon: "extension-puzzle-outline" as const,
@@ -103,7 +102,6 @@ const PRODUCTS = [
     freeWithBundle: false,
     sku: "wud-jigsaw",
     emoji: "🧩",
-    loyaltyExclusive: true,
   },
   {
     id: "invitation-card",
@@ -124,9 +122,9 @@ function formatPrice(pence: number): string {
   return `£${(pence / 100).toFixed(2)}`;
 }
 
-function discountedPrice(pence: number, hasBundleDiscount: boolean): number {
-  if (!hasBundleDiscount) return pence;
-  return Math.round(pence * 0.85); // 15% off
+function discountedPrice(pence: number, _hasBundleDiscount: boolean): number {
+  // Shop discount removed — bundle members no longer get 15% off shop items.
+  return pence;
 }
 
 export default function ShopScreen() {
@@ -447,48 +445,17 @@ export default function ShopScreen() {
           </Text>
         </View>
 
-        {/* Bundle discount banner */}
-        {hasBundleDiscount ? (
-          <View style={s.discountBanner}>
-            <Ionicons name="sparkles" size={18} color="#d4af37" />
-            <Text style={s.discountBannerText}>
-              Bundle member — 15% off everything in this shop
-            </Text>
-          </View>
-        ) : (
-          <View style={s.noBundleBanner}>
-            <Ionicons name="information-circle-outline" size={16} color={colors.mutedForeground} />
-            <Text style={s.noBundleBannerText}>
-              Buy The Full Story Bundle (£2.99) from the Scanner tab to unlock 15% off all orders
-            </Text>
-          </View>
-        )}
-
         {/* Products */}
         {PRODUCTS.map((product) => {
           const isLoading = loadingProduct === product.id;
           const isFreeWithBundle = product.freeWithBundle && hasMixedBreed;
-          const finalPrice = isFreeWithBundle
-            ? 0
-            : discountedPrice(product.price, hasBundleDiscount);
-          const saving =
-            hasBundleDiscount && !isFreeWithBundle
-              ? product.price - finalPrice
-              : product.rrp
-              ? product.price - product.rrp < 0
-                ? product.rrp - product.price
-                : null
-              : null;
+          const finalPrice = isFreeWithBundle ? 0 : product.price;
+          const saving = product.rrp && product.rrp > product.price
+            ? product.rrp - product.price
+            : null;
 
           return (
             <View key={product.id} style={s.card}>
-              {product.loyaltyExclusive && (
-                <View style={s.exclusiveBadge}>
-                  <Ionicons name="trophy-outline" size={12} color="#d4af37" />
-                  <Text style={s.exclusiveText}>LOYAL CUSTOMER EXCLUSIVE</Text>
-                </View>
-              )}
-
               <View style={s.cardTop}>
                 <Text style={s.cardEmoji}>{product.emoji}</Text>
                 <View style={s.cardTextWrap}>
@@ -510,11 +477,6 @@ export default function ShopScreen() {
                     <Text style={s.price}>{formatPrice(finalPrice)}</Text>
                     {product.rrp && (
                       <Text style={s.rrp}>{formatPrice(product.rrp)}</Text>
-                    )}
-                    {hasBundleDiscount && (
-                      <View style={s.savingBadge}>
-                        <Text style={s.savingText}>15% off</Text>
-                      </View>
                     )}
                   </>
                 )}
@@ -539,7 +501,7 @@ export default function ShopScreen() {
                 <TouchableOpacity
                   style={s.buyBtn}
                   onPress={() => openCheckout(product)}
-                  disabled={isLoading || !dogPhoto}
+                  disabled={isLoading}
                 >
                   {isLoading ? (
                     <ActivityIndicator color="#0a0a0a" />
@@ -597,87 +559,6 @@ export default function ShopScreen() {
           ) : (
             <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20 }}>
               Purchase Cartoonify Elite (£4.99) from the Scanner tab to unlock your 15% discount code for anything at onjjem.com.
-            </Text>
-          )}
-        </View>
-
-        {/* Loyalty Card teaser */}
-        <View style={{
-          backgroundColor: "rgba(212,175,55,0.08)",
-          borderWidth: 1,
-          borderColor: "rgba(212,175,55,0.3)",
-          borderRadius: 16,
-          padding: 18,
-          marginBottom: 12,
-        }}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <Text style={{ fontSize: 24 }}>🏆</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 16, fontFamily: "Inter_700Bold", color: "#d4af37" }}>
-                Loyalty Card — Coming Soon
-              </Text>
-              <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
-                Included FREE with The Full Story Bundle
-              </Text>
-            </View>
-          </View>
-          <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20, marginBottom: 12 }}>
-            Collect photos of 10 different dog breeds to complete your Loyalty Card — and unlock some seriously exciting rewards. No scanning needed, just upload from your phone.
-          </Text>
-          <View style={{ gap: 8 }}>
-            {[
-              "🎨  Cartoonify Elite unlocked — FREE (worth £4.99)",
-              "🎀  Exclusive Loyal Customer prices on the bandanna & jigsaw",
-              "✨  15% off everything at ONJJEM.com",
-              "🎁  More rewards being added all the time...",
-            ].map((reward, i) => (
-              <Text key={i} style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.foreground }}>
-                {reward}
-              </Text>
-            ))}
-          </View>
-          {!hasMixedBreed && (
-            <Text style={{ fontSize: 12, fontFamily: "Inter_600SemiBold", color: "#d4af37", marginTop: 14, textAlign: "center" }}>
-              Buy The Full Story Bundle (£2.99) from the Scanner tab to unlock your Loyalty Card
-            </Text>
-          )}
-          {hasMixedBreed && (
-            <Text style={{ fontSize: 12, fontFamily: "Inter_600SemiBold", color: "#4ade80", marginTop: 14, textAlign: "center" }}>
-              ✅ Your Loyalty Card is unlocked — coming to the Scanner tab soon!
-            </Text>
-          )}
-        </View>
-
-        {/* ONJJEM Voucher */}
-        <View style={{
-          backgroundColor: "rgba(255,255,255,0.03)",
-          borderWidth: 1,
-          borderColor: "rgba(255,255,255,0.08)",
-          borderRadius: 16,
-          padding: 18,
-          marginBottom: 12,
-        }}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <Text style={{ fontSize: 24 }}>🏷️</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 16, fontFamily: "Inter_700Bold", color: colors.foreground }}>
-                15% Off Anything at ONJJEM
-              </Text>
-              <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
-                Canvases · Framed Art · Foil Posters · Mugs · And more
-              </Text>
-            </View>
-          </View>
-          <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20, marginBottom: 12 }}>
-            Complete your Loyalty Card to unlock a 15% discount code valid on anything at onjjem.com — canvases, framed wall art, glow-in-the-dark posters, foil prints, temporary tattoos, and everything else in the full ONJJEM collection.
-          </Text>
-          {hasMixedBreed ? (
-            <Text style={{ fontSize: 13, fontFamily: "Inter_600SemiBold", color: colors.mutedForeground, textAlign: "center" }}>
-              🔒 Complete your Loyalty Card to claim this reward
-            </Text>
-          ) : (
-            <Text style={{ fontSize: 13, fontFamily: "Inter_600SemiBold", color: colors.mutedForeground, textAlign: "center" }}>
-              🔒 Unlocked when you complete the Loyalty Card
             </Text>
           )}
         </View>
