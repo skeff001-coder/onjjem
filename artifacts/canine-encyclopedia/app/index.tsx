@@ -11,6 +11,8 @@ import {
   Animated,
   Platform,
   StyleSheet,
+  Modal,
+  Linking,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
@@ -20,6 +22,13 @@ import Purchases from 'react-native-purchases';
 import { Audio } from 'expo-av';
 
 const { width, height } = Dimensions.get('window');
+
+// ✨ CAROUSEL IMAGES - Using reliable placeholder URLs
+const CAROUSEL_IMAGES = {
+  lab: 'https://images.unsplash.com/photo-1633722715463-d30628519b67?w=500&q=80', // Yellow Lab
+  doberman: 'https://images.unsplash.com/photo-1633722715463-d30628519b67?w=500&q=80', // Doberman placeholder
+  chihuahua: 'https://images.unsplash.com/photo-1633722715463-d30628519b67?w=500&q=80', // Small dog
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -50,7 +59,6 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     borderRadius: 20,
     overflow: 'hidden',
-    boxShadow: '0 12px 40px rgba(124, 58, 255, 0.4)',
   },
   ctaGradient: {
     paddingVertical: 20,
@@ -68,10 +76,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: 'rgba(255,255,255,0.8)',
     fontWeight: '500',
-  },
-  resultContainer: {
-    marginHorizontal: 24,
-    marginBottom: 50,
   },
   resultImage: {
     width: '100%',
@@ -214,12 +218,122 @@ const styles = StyleSheet.create({
     color: '#a78bfa',
     fontWeight: '600',
   },
+  footerSection: {
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 40,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(124, 58, 255, 0.2)',
+  },
+  footerText: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.6)',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  footerBrand: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#7c3aff',
+  },
+  footerButton: {
+    backgroundColor: 'rgba(124, 58, 255, 0.15)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(124, 58, 255, 0.3)',
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  footerButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#a78bfa',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  modalContent: {
+    backgroundColor: '#0a0e27',
+    borderRadius: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+    borderWidth: 1.5,
+    borderColor: 'rgba(124, 58, 255, 0.3)',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#fff',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  modalSubtitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#7c3aff',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  modalFeature: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+    lineHeight: 24,
+    marginBottom: 16,
+    fontWeight: '500',
+  },
+  modalFeatureBold: {
+    fontWeight: '700',
+    color: '#fff',
+  },
+  modalFeatures: {
+    backgroundColor: 'rgba(124, 58, 255, 0.08)',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    marginBottom: 24,
+    borderLeftWidth: 4,
+    borderLeftColor: '#7c3aff',
+  },
+  modalButtons: {
+    gap: 12,
+  },
+  modalPrimaryButton: {
+    backgroundColor: '#7c3aff',
+    borderRadius: 16,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  modalPrimaryButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  modalSecondaryButton: {
+    backgroundColor: 'rgba(124, 58, 255, 0.1)',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: 'rgba(124, 58, 255, 0.3)',
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  modalSecondaryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#a78bfa',
+  },
 });
 
 export default function HomeScreen() {
   const [cartoonResult, setCartoonResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [userEntitlements, setUserEntitlements] = useState([]);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const scrollViewRef = useRef(null);
@@ -227,37 +341,40 @@ export default function HomeScreen() {
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const soundRef = useRef(null);
 
-  // Dog bark sounds (Mixkit free royalty-free)
-  const barkSounds = [
-    'https://assets.mixkit.co/active_storage/sfx/2054/2054-preview.mp3', // Dog barking twice
-    'https://assets.mixkit.co/active_storage/sfx/2056/2056-preview.mp3', // Medium size angry dog bark
-    'https://assets.mixkit.co/active_storage/sfx/2058/2058-preview.mp3', // Giant dog aggressive growl
-    'https://assets.mixkit.co/active_storage/sfx/2061/2061-preview.mp3', // Happy puppy barks
-    'https://assets.mixkit.co/active_storage/sfx/2059/2059-preview.mp3', // Annoyed big dog barking
+  const dogSounds = [
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2054/2054-preview.mp3', name: 'Dog barking twice' },
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2056/2056-preview.mp3', name: 'Medium angry bark' },
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2058/2058-preview.mp3', name: 'Giant aggressive growl' },
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2061/2061-preview.mp3', name: 'Happy puppy yips' },
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2059/2059-preview.mp3', name: 'Annoyed big dog' },
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2052/2052-preview.mp3', name: 'Dog whimper sad' },
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2063/2063-preview.mp3', name: 'Angry growling' },
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2067/2067-preview.mp3', name: 'Dog sniffing' },
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2064/2064-preview.mp3', name: 'Big dog panting' },
+    { url: 'https://assets.mixkit.co/active_storage/sfx/2068/2068-preview.mp3', name: 'Labrador playing' },
   ];
 
   const sampleCartoons = [
     {
       id: 1,
-      breed: 'Golden Retriever',
-      image: 'https://xnaggiadvfhrirkdkzwa.supabase.co/storage/v1/object/public/carousel/sample-golden.png',
-      story: 'your golden\'s got that loyal energy',
+      breed: 'Yellow Labrador',
+      image: CAROUSEL_IMAGES.lab,
+      story: 'loyal, happy, loves everyone',
     },
     {
       id: 2,
-      breed: 'Siberian Husky',
-      image: 'https://xnaggiadvfhrirkdkzwa.supabase.co/storage/v1/object/public/carousel/sample-husky.png',
-      story: 'pure chaos wrapped in fluff',
+      breed: 'Doberman Pinscher',
+      image: CAROUSEL_IMAGES.doberman,
+      story: 'sharp, alert, protective',
     },
     {
       id: 3,
-      breed: 'Dachshund',
-      image: 'https://xnaggiadvfhrirkdkzwa.supabase.co/storage/v1/object/public/carousel/sample-dachshund.png',
-      story: 'small pup, huge personality',
+      breed: 'Chihuahua',
+      image: CAROUSEL_IMAGES.chihuahua,
+      story: 'tiny but fearless',
     },
   ];
 
-  // Carousel auto-scroll
   useEffect(() => {
     const interval = setInterval(() => {
       setCarouselIndex((prev) => (prev + 1) % sampleCartoons.length);
@@ -265,34 +382,36 @@ export default function HomeScreen() {
     return () => clearInterval(interval);
   }, []);
 
-  // Random dog bark every 10 seconds
   useEffect(() => {
-    const playRandomBark = async () => {
+    const playRandomDogSound = async () => {
       try {
-        // Pick random bark
-        const randomIndex = Math.floor(Math.random() * barkSounds.length);
-        const soundUrl = barkSounds[randomIndex];
+        const randomIndex = Math.floor(Math.random() * dogSounds.length);
+        const soundData = dogSounds[randomIndex];
 
-        // Stop previous sound if playing
         if (soundRef.current) {
           await soundRef.current.unloadAsync();
         }
 
-        // Load and play new sound
-        const { sound } = await Audio.Sound.createAsync({ uri: soundUrl });
+        const { sound } = await Audio.Sound.createAsync({ uri: soundData.url });
         soundRef.current = sound;
+        await sound.setVolumeAsync(0.6);
         await sound.playAsync();
       } catch (error) {
-        console.warn('Error playing bark sound:', error);
+        console.warn('Error playing dog sound:', error);
       }
     };
 
-    const barkInterval = setInterval(() => {
-      playRandomBark();
-    }, 10000); // 10 seconds
+    const initialTimeout = setTimeout(() => {
+      playRandomDogSound();
+    }, 5000);
+
+    const soundInterval = setInterval(() => {
+      playRandomDogSound();
+    }, 10000);
 
     return () => {
-      clearInterval(barkInterval);
+      clearTimeout(initialTimeout);
+      clearInterval(soundInterval);
       if (soundRef.current) {
         soundRef.current.unloadAsync().catch(() => {});
       }
@@ -380,6 +499,7 @@ export default function HomeScreen() {
         onPurchaseCompleted={async () => {
           await checkEntitlements();
           setShowPaywall(false);
+          setShowPurchaseModal(true);
         }}
       />
     );
@@ -392,7 +512,6 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
       >
-        {/* Hero */}
         <LinearGradient
           colors={['#7c3aff', '#0a0e27']}
           start={{ x: 0, y: 0 }}
@@ -405,7 +524,6 @@ export default function HomeScreen() {
           </Text>
         </LinearGradient>
 
-        {/* Main CTA */}
         <View style={styles.ctaButton}>
           <LinearGradient
             colors={['#7c3aff', '#5a1fc8']}
@@ -430,7 +548,6 @@ export default function HomeScreen() {
           </LinearGradient>
         </View>
 
-        {/* Result */}
         {cartoonResult && (
           <Animated.View
             style={{
@@ -483,7 +600,6 @@ export default function HomeScreen() {
           </Animated.View>
         )}
 
-        {/* Carousel */}
         <View style={styles.carouselSection}>
           <Text style={styles.carouselTitle}>see it in action</Text>
 
@@ -520,7 +636,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Daily Fact */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>did you know?</Text>
           <View
@@ -538,7 +653,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Social Proof */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>people are obsessed</Text>
           <View style={styles.testimonialCard}>
@@ -548,7 +662,67 @@ export default function HomeScreen() {
             <Text style={styles.rating}>— maya. ⭐⭐⭐⭐⭐</Text>
           </View>
         </View>
+
+        <View style={styles.footerSection}>
+          <Text style={styles.footerText}>
+            Powered by <Text style={styles.footerBrand}>ONJJEM</Text> — Turn your cartoon into a physical gift.
+          </Text>
+          <TouchableOpacity
+            style={styles.footerButton}
+            onPress={() => Linking.openURL('https://onjjem.com')}
+          >
+            <Text style={styles.footerButtonText}>Shop prints, postcards & more</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
+
+      <Modal
+        visible={showPurchaseModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowPurchaseModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>🎉 Congrats!</Text>
+            <Text style={styles.modalSubtitle}>Now turn it into something physical.</Text>
+
+            <View style={styles.modalFeatures}>
+              <Text style={styles.modalFeature}>
+                <Text style={styles.modalFeatureBold}>Premium Printing Quality</Text> — Museum-grade materials and precision color matching for stunning results.
+              </Text>
+              <Text style={styles.modalFeature}>
+                <Text style={styles.modalFeatureBold}>Top-Class Customer Service</Text> — We're here to help every step of the way.
+              </Text>
+              <Text style={styles.modalFeature}>
+                <Text style={styles.modalFeatureBold}>Fast Shipping</Text> — Your cartoon arrives in days, not weeks.
+              </Text>
+              <Text style={styles.modalFeature}>
+                <Text style={styles.modalFeatureBold}>Wide Selection</Text> — Prints, postcards, mugs, canvas, and more.
+              </Text>
+            </View>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalPrimaryButton}
+                onPress={() => {
+                  setShowPurchaseModal(false);
+                  Linking.openURL('https://onjjem.com');
+                }}
+              >
+                <Text style={styles.modalPrimaryButtonText}>Shop on ONJJEM</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.modalSecondaryButton}
+                onPress={() => setShowPurchaseModal(false)}
+              >
+                <Text style={styles.modalSecondaryButtonText}>Continue exploring</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
