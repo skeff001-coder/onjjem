@@ -1,5 +1,7 @@
 import { BlurView } from "expo-blur";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
+// expo-glass-effect removed — Liquid Glass tab bar effect disabled,
+// falls back to standard tab bar styling.
+const isLiquidGlassAvailable = () => false;
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SymbolView } from "expo-symbols";
