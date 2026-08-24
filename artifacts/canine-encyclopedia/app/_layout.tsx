@@ -21,12 +21,6 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
-try {
-  initializeRevenueCat();
-} catch (err: any) {
-  Alert.alert("RevenueCat Unavailable", err?.message ?? "Unknown error");
-}
-
 function RootLayoutNav() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
@@ -60,6 +54,14 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
+
+  useEffect(() => {
+    try {
+      initializeRevenueCat();
+    } catch (err: any) {
+      Alert.alert("RevenueCat Unavailable", err?.message ?? "Unknown error");
+    }
+  }, []);
 
   if (!fontsLoaded && !fontError) return null;
 
