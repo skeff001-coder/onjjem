@@ -215,7 +215,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       mode: "payment",
       allow_promotion_codes: true,
       shipping_address_collection: {
-        allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK"],
+        allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"],
       },
       shipping_options: [
         {
@@ -453,7 +453,7 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
       mode: "payment",
       ...(sessionDiscounts.length > 0 ? { discounts: sessionDiscounts } : {}),
       shipping_address_collection: {
-        allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK"],
+        allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"],
       },
       shipping_options: [
         {
