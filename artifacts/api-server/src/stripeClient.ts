@@ -11,7 +11,7 @@ async function getCredentials(): Promise<StripeCredentials> {
   // Primary: use env var secrets (works in both dev and production deployment)
   // STRIPE_PK is an alternative name for the publishable key to avoid
   // conflicts with connector-linked STRIPE_PUBLISHABLE_KEY secrets.
-  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const secretKey = process.env.STRIPE_KEY_TEMP ?? process.env.STRIPE_SECRET_KEY;
   const publishableKey = process.env.STRIPE_LIVE_PK ?? process.env.STRIPE_PK;
 
   if (secretKey && publishableKey && (publishableKey.startsWith("pk_") || publishableKey.startsWith("rk_"))) {
