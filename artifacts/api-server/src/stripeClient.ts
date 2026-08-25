@@ -12,7 +12,7 @@ async function getCredentials(): Promise<StripeCredentials> {
   // STRIPE_PK is an alternative name for the publishable key to avoid
   // conflicts with connector-linked STRIPE_PUBLISHABLE_KEY secrets.
   const secretKey = process.env.STRIPE_KEY_TEMP ?? process.env.STRIPE_SECRET_KEY;
-  const publishableKey = process.env.STRIPE_LIVE_PK ?? process.env.STRIPE_PK;
+  const publishableKey = process.env.STRIPE_LIVE_PK ?? process.env.STRIPE_PK ?? process.env.STRIPE_PUBLISHABLE_KEY;
 
   if (secretKey && publishableKey && (publishableKey.startsWith("pk_") || publishableKey.startsWith("rk_"))) {
     return { secretKey, publishableKey };
