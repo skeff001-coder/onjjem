@@ -222,10 +222,21 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
           shipping_rate_data: {
             type: "fixed_amount",
             fixed_amount: { amount: 0, currency: "gbp" },
-            display_name: "Free UK Delivery",
+            display_name: "Free UK Delivery (UK only)",
             delivery_estimate: {
               minimum: { unit: "business_day", value: 3 },
               maximum: { unit: "business_day", value: 5 },
+            },
+          },
+        },
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: 1995, currency: "gbp" },
+            display_name: "International Shipping (outside UK)",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 5 },
+              maximum: { unit: "business_day", value: 14 },
             },
           },
         },
@@ -460,10 +471,21 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
           shipping_rate_data: {
             type: "fixed_amount",
             fixed_amount: { amount: 0, currency: "gbp" },
-            display_name: "Free UK Delivery",
+            display_name: "Free UK Delivery (UK only)",
             delivery_estimate: {
               minimum: { unit: "business_day", value: 3 },
               maximum: { unit: "business_day", value: 5 },
+            },
+          },
+        },
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: 1995, currency: "gbp" },
+            display_name: "International Shipping (outside UK)",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 5 },
+              maximum: { unit: "business_day", value: 14 },
             },
           },
         },
