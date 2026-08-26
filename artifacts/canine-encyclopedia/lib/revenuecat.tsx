@@ -215,6 +215,30 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
 
 export function useSubscription() {
   const ctx = useContext(Context);
-  if (!ctx) throw new Error("useSubscription must be used within SubscriptionProvider");
+  if (!ctx) {
+    // RevenueCat temporarily disabled for crash isolation testing —
+    // return safe no-op values instead of throwing, so screens that
+    // call useSubscription() don't crash the whole app.
+    return {
+      customerInfo: undefined,
+      offerings: undefined,
+      isLoading: false,
+      hasLineage: false,
+      hasGrooming: false,
+      hasBlueprint: false,
+      hasMixedBreed: false,
+      hasAgeCalc: false,
+      hasPersonality: false,
+      hasHealthGuide: false,
+      hasTrickTrainer: false,
+      hasAllScanners: false,
+      hasCartoon: false,
+      packageFor: () => undefined,
+      purchase: async () => { throw new Error("Purchases temporarily disabled"); },
+      restore: async () => { throw new Error("Purchases temporarily disabled"); },
+      isPurchasing: false,
+      isRestoring: false,
+    };
+  }
   return ctx;
 }
