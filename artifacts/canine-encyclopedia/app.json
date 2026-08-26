@@ -30,7 +30,8 @@
         "NSPhotoLibraryUsageDescription": "That's My Dog! accesses your photos so you can choose a dog image for breed identification.",
         "NSPhotoLibraryAddUsageDescription": "That's My Dog! saves identified dog portraits to your photo library.",
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "jsEngine": "jsc"
     },
     "android": {
       "package": "com.onjjem.canineencyclopedia",
@@ -73,7 +74,6 @@
         "projectId": "62b4eb54-c51c-4b4a-8655-f467dd74d938"
       }
     },
-    "owner": "skeff001",
-    "jsEngine": "jsc"
+    "owner": "skeff001"
   }
 }
