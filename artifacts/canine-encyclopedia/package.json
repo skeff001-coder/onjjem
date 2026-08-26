@@ -56,7 +56,6 @@
     "zod-validation-error": "^3.4.0"
   },
   "dependencies": {
-    "expo-camera": "^55.0.18",
-    "react-native-purchases": "10.8.0"
+    "expo-camera": "^55.0.18"
   }
 }
