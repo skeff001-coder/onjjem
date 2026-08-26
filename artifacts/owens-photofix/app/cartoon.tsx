@@ -225,7 +225,7 @@ export default function CartoonScreen() {
             <Image
               source={{ uri: "https://onjjem.com/products/cartoonify-preview.jpeg" }}
               style={s.previewImage}
-              resizeMode="cover"
+              resizeMode="contain"
             />
             <Text style={s.startTitle}>Turn any photo into a cartoon</Text>
             <Text style={s.freeNote}>Animated-movie style · Vivid colour · Ready in seconds</Text>
@@ -492,9 +492,10 @@ const s = StyleSheet.create({
   },
   previewImage: {
     width: "100%",
-    height: 220,
+    height: 280,
     borderRadius: 16,
     marginBottom: 4,
+    backgroundColor: "#1A1206",
   },
   errorText: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
   primaryBtn: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 14, paddingHorizontal: 32, width: "100%" },
