@@ -15,7 +15,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AppProvider } from "@/context/AppContext";
-import { SubscriptionProvider, initializeRevenueCat } from "@/lib/revenuecat";
+// RevenueCat temporarily disabled — isolation test to confirm/rule out
+// as the cause of the native SIGABRT crash on launch.
 
 SplashScreen.preventAutoHideAsync();
 
@@ -55,14 +56,6 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
-  useEffect(() => {
-    try {
-      initializeRevenueCat();
-    } catch (err: any) {
-      Alert.alert("RevenueCat Unavailable", err?.message ?? "Unknown error");
-    }
-  }, []);
-
   if (!fontsLoaded && !fontError) return null;
 
   return (
@@ -71,9 +64,7 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <GestureHandlerRootView style={{ flex: 1 }}>
             <AppProvider>
-              <SubscriptionProvider>
-                <RootLayoutNav />
-              </SubscriptionProvider>
+              <RootLayoutNav />
             </AppProvider>
           </GestureHandlerRootView>
         </QueryClientProvider>
