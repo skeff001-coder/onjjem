@@ -347,7 +347,7 @@ export const PHOTO_CREDITS_STORAGE_KEY = "onjjem_photo_credits";
 export const PACKAGE_IDENTIFIERS = {
   oneCartoon: "one_cartoon_scan",
   threeCartoons: "three_cartoon_scans",
-  fiveCartoons: "five_cartoon",
+  fiveCartoons: "five_cartoon_scans",
 } as const;
 
 // How many credits each bundle purchase grants
@@ -463,17 +463,22 @@ function useSubscriptionContext() {
     console.warn("[RevenueCat] No offerings configured at all");
   }
 
-  function findPackageInOwnOffering(offeringIdentifier: string): PurchasesPackage | null {
-    const offering = allOfferings[offeringIdentifier];
+  function findPackageInOwnOffering(packageIdentifier: string): PurchasesPackage | null {
+    const offering = allOfferings["cartoon_photos"];
     if (!offering) {
-      console.warn(`[RevenueCat] No offering found with identifier "${offeringIdentifier}"`);
+      console.warn(`[RevenueCat] No offering found with identifier "cartoon_photos"`);
       return null;
     }
     if (!offering.availablePackages.length) {
-      console.warn(`[RevenueCat] Offering "${offeringIdentifier}" has no packages attached`);
+      console.warn(`[RevenueCat] Offering "cartoon_photos" has no packages attached`);
       return null;
     }
-    return offering.availablePackages[0];
+    const pkg = offering.availablePackages.find(p => p.identifier === packageIdentifier);
+    if (!pkg) {
+      console.warn(`[RevenueCat] No package found with identifier "${packageIdentifier}" in offering "cartoon_photos"`);
+      return null;
+    }
+    return pkg;
   }
 
   const oneCartoonPackage = findPackageInOwnOffering(PACKAGE_IDENTIFIERS.oneCartoon);
