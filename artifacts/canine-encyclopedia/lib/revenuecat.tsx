@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { Platform } from "react-native";
 import Purchases, { type PurchasesPackage } from "react-native-purchases";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -102,24 +102,47 @@ function getRevenueCatApiKey() {
   return REVENUECAT_TEST_API_KEY;
 }
 
+let revenueCatConfigured = false;
+const configListeners: Array<() => void> = [];
+
 export function initializeRevenueCat() {
   const apiKey = getRevenueCatApiKey();
   Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
   Purchases.configure({ apiKey });
+  revenueCatConfigured = true;
+  configListeners.forEach((fn) => fn());
   console.log("Configured RevenueCat");
 }
 
 function useSubscriptionContext() {
+  const [configured, setConfigured] = useState(revenueCatConfigured);
+
+  useEffect(() => {
+    if (configured) return;
+    const listener = () => setConfigured(true);
+    configListeners.push(listener);
+    return () => {
+      const i = configListeners.indexOf(listener);
+      if (i > -1) configListeners.splice(i, 1);
+    };
+  }, [configured]);
+
   const customerInfoQuery = useQuery({
     queryKey: ["revenuecat", "customer-info"],
     queryFn: () => Purchases.getCustomerInfo(),
     staleTime: 60_000,
+    enabled: configured,
+    retry: 3,
+    retryDelay: 500,
   });
 
   const offeringsQuery = useQuery({
     queryKey: ["revenuecat", "offerings"],
     queryFn: () => Purchases.getOfferings(),
     staleTime: 300_000,
+    enabled: configured,
+    retry: 3,
+    retryDelay: 500,
   });
 
   const purchaseMutation = useMutation({
