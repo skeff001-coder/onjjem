@@ -18,6 +18,8 @@ Dimensions,
 
 Image,
 
+Platform,
+
 } from "react-native";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -382,11 +384,11 @@ goldLine: { width: 50, height: 1.5, backgroundColor: GOLD, opacity: 0.5 },
 
 brandWrap: { width: "100%", height: 90, alignItems: "center", justifyContent: "center" },
 
-brandShadow: { position: "absolute", fontSize: 70, fontWeight: "900", color: "#2A1800", letterSpacing: 10, width: "100%", textAlign: "center", top: 10 },
+brandShadow: { position: "absolute", fontSize: 70, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#6B4E10", letterSpacing: -1, width: "100%", textAlign: "center", top: 10 },
 
-brandMid: { position: "absolute", fontSize: 70, fontWeight: "900", color: "#7A5200", letterSpacing: 10, width: "100%", textAlign: "center", top: 5 },
+brandMid: { position: "absolute", fontSize: 70, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#B8781E", letterSpacing: -1, width: "100%", textAlign: "center", top: 5 },
 
-brandTop: { position: "absolute", fontSize: 70, fontWeight: "900", color: GOLD_LIGHT, letterSpacing: 10, width: "100%", textAlign: "center", top: 0 },
+brandTop: { position: "absolute", fontSize: 70, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#F3D078", letterSpacing: -1, width: "100%", textAlign: "center", top: 0 },
 
 tagline: { fontSize: 14, color: "#F5D78E", letterSpacing: 1, textAlign: "center" },
 
