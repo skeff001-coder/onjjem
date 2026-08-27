@@ -132,7 +132,6 @@ export const CartoonCarousel: React.FC<CartoonCarouselProps> = ({
 
 export const CARTOON_SAMPLES: CartoonSample[] = [
   { uri: 'https://xnaggiadvfhrirkdkzwa.supabase.co/storage/v1/object/public/carousel/IMG_5940.jpeg' },
-  { uri: 'https://xnaggiadvfhrirkdkzwa.supabase.co/storage/v1/object/public/carousel/IMG_5942.jpeg' },
   { uri: 'https://xnaggiadvfhrirkdkzwa.supabase.co/storage/v1/object/public/carousel/IMG_5944.jpeg' },
   { uri: 'https://xnaggiadvfhrirkdkzwa.supabase.co/storage/v1/object/public/carousel/IMG_5946.jpeg' },
   { uri: 'https://xnaggiadvfhrirkdkzwa.supabase.co/storage/v1/object/public/carousel/IMG_5948.jpeg' },
