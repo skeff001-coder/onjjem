@@ -7,34 +7,64 @@ import { join } from "path";
 const router = Router();
 
 // ── Free preview tracking ────────────────────────────────────────────────────
-// One free watermarked preview per email address, stored in a simple JSON
-// file on Railway's persistent filesystem — same pattern as free-scan.ts.
+// One free watermarked preview per email address, AND a limit per IP address
+// (to stop someone typing a new fake email each time to get unlimited free
+// previews) — both stored in a simple JSON file on Railway's persistent disk.
 const DATA_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || "/tmp";
 const DATA_FILE = join(DATA_DIR, "cartoonify_free_previews.json");
+const MAX_PREVIEWS_PER_IP_PER_DAY = 3;
 
-function readUsedEmails(): Record<string, boolean> {
+function readStore(): { emails: Record<string, boolean>; ipDaily: Record<string, { day: string; count: number }> } {
   try {
-    if (!existsSync(DATA_FILE)) return {};
-    return JSON.parse(readFileSync(DATA_FILE, "utf8"));
+    if (!existsSync(DATA_FILE)) return { emails: {}, ipDaily: {} };
+    const parsed = JSON.parse(readFileSync(DATA_FILE, "utf8"));
+    return { emails: parsed.emails ?? {}, ipDaily: parsed.ipDaily ?? {} };
   } catch {
-    return {};
+    return { emails: {}, ipDaily: {} };
+  }
+}
+
+function writeStore(store: ReturnType<typeof readStore>): void {
+  try {
+    mkdirSync(DATA_DIR, { recursive: true });
+    writeFileSync(DATA_FILE, JSON.stringify(store), "utf8");
+  } catch (err) {
+    console.error("cartoonify: failed to write preview tracking store", err);
   }
 }
 
 function markEmailUsed(email: string): void {
-  try {
-    mkdirSync(DATA_DIR, { recursive: true });
-    const store = readUsedEmails();
-    store[email.toLowerCase().trim()] = true;
-    writeFileSync(DATA_FILE, JSON.stringify(store), "utf8");
-  } catch (err) {
-    console.error("cartoonify: failed to record used email", err);
-  }
+  const store = readStore();
+  store.emails[email.toLowerCase().trim()] = true;
+  writeStore(store);
 }
 
 function hasEmailUsedFreePreview(email: string): boolean {
-  const store = readUsedEmails();
-  return !!store[email.toLowerCase().trim()];
+  const store = readStore();
+  return !!store.emails[email.toLowerCase().trim()];
+}
+
+function todayKey(): string {
+  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+function hasIpExceededDailyLimit(ip: string): boolean {
+  const store = readStore();
+  const entry = store.ipDaily[ip];
+  if (!entry || entry.day !== todayKey()) return false;
+  return entry.count >= MAX_PREVIEWS_PER_IP_PER_DAY;
+}
+
+function recordIpPreview(ip: string): void {
+  const store = readStore();
+  const today = todayKey();
+  const entry = store.ipDaily[ip];
+  if (!entry || entry.day !== today) {
+    store.ipDaily[ip] = { day: today, count: 1 };
+  } else {
+    entry.count += 1;
+  }
+  writeStore(store);
 }
 
 function getAI() {
@@ -129,7 +159,9 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
     return;
   }
 
-  // If this is a free preview request, enforce the one-per-email limit.
+  // If this is a free preview request, enforce the one-per-email limit AND
+  // a per-IP daily cap, so someone can't just type a new fake email each
+  // time to get unlimited free previews.
   if (watermark) {
     if (!email) {
       res.status(400).json({ error: "Email is required for a free preview" });
@@ -137,6 +169,11 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
     }
     if (hasEmailUsedFreePreview(email)) {
       res.json({ alreadyUsed: true });
+      return;
+    }
+    const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
+    if (hasIpExceededDailyLimit(ip)) {
+      res.json({ alreadyUsed: true, limitReason: "too_many_from_this_device" });
       return;
     }
   }
@@ -147,6 +184,8 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
     if (watermark && email) {
       const watermarkedBase64 = await addWatermark(result.base64Image, result.mimeType);
       markEmailUsed(email);
+      const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
+      recordIpPreview(ip);
       res.json({ base64Image: watermarkedBase64, mimeType: "image/png" });
       return;
     }
