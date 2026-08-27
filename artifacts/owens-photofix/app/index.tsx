@@ -27,6 +27,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
 import { router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 
 import { ArtisanSubtitle } from "@/components/ArtisanSubtitle";
 
@@ -64,7 +65,8 @@ export default function HomeScreen() {
 
 const insets = useSafeAreaInsets();
 
-const openShop = () => Linking.openURL("https://onjjem.com/shop");
+const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=gifts");
+const openMugShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=kitchen-magic&product=Magic+Photo+Mug");
 
 return (
 
@@ -227,7 +229,7 @@ Starts solid black. Pour in a hot drink and your photo appears in full colour - 
 
 </Text>
 
-<TouchableOpacity style={s.mugBtn} onPress={openShop} activeOpacity={0.85}>
+<TouchableOpacity style={s.mugBtn} onPress={openMugShop} activeOpacity={0.85}>
 
 <Text style={s.mugBtnText}>Order The Magic Mug - £14.99</Text>
 
