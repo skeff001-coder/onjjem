@@ -48,14 +48,6 @@ export default function CartoonScreen() {
     useSubscription();
 
   const checkAccessThenPick = async () => {
-    if (isSubscribed) {
-      openPicker();
-      return;
-    }
-    if (photoCredits > 0) {
-      openPicker();
-      return;
-    }
     setPhase("paywall");
   };
 
@@ -238,9 +230,9 @@ export default function CartoonScreen() {
         {phase === "paywall" && (
           <View style={s.startCard}>
             <Ionicons name="sparkles" size={40} color="#C9960C" />
-            <Text style={s.startTitle}>Get Cartoon Scans</Text>
+            <Text style={s.startTitle}>See Your Cartoon — Free</Text>
             <Text style={s.paywallSubtitle}>
-              Choose how many scans you'd like
+              Try Cartoon-ify free on our website, then add it to any gift for just £1.99
             </Text>
 
             <Text style={s.sampleLabel}>Real customer results — this is what yours could look like</Text>
@@ -249,62 +241,14 @@ export default function CartoonScreen() {
               Turn your favourite photo into a keepsake your loved ones will treasure forever. Find your cartoon on mugs, canvases, postcards & more at ONJJEM — free UK delivery.
             </Text>
 
-            <View style={s.optionsContainer}>
-              {oneCartoonPackage && (
-                <TouchableOpacity 
-                  onPress={() => buyPackage(oneCartoonPackage)}
-                  disabled={isPurchasing}
-                  style={s.optionButton}
-                >
-                  {isPurchasing ? (
-                    <ActivityIndicator color="#0F0D09" />
-                  ) : (
-                    <>
-                      <Text style={s.optionTitle}>1 Scan</Text>
-                      <Text style={s.optionPrice}>{oneCartoonPackage.product.priceString}</Text>
-                    </>
-                  )}
-                </TouchableOpacity>
-              )}
-              
-              {threeCartoonPackage && (
-                <TouchableOpacity 
-                  onPress={() => buyPackage(threeCartoonPackage)}
-                  disabled={isPurchasing}
-                  style={[s.optionButton, s.recommendedButton]}
-                >
-                  <View style={s.recommendedBadge}>
-                    <Text style={s.recommendedText}>Recommended</Text>
-                  </View>
-                  {isPurchasing ? (
-                    <ActivityIndicator color="#0F0D09" />
-                  ) : (
-                    <>
-                      <Text style={s.optionTitle}>3 Scans</Text>
-                      <Text style={s.optionPrice}>{threeCartoonPackage.product.priceString}</Text>
-                    </>
-                  )}
-                </TouchableOpacity>
-              )}
-              
-              {fiveCartoonPackage && (
-                <TouchableOpacity 
-                  onPress={() => buyPackage(fiveCartoonPackage, true)}
-                  disabled={isPurchasing}
-                  style={s.optionButton}
-                >
-                  {isPurchasing ? (
-                    <ActivityIndicator color="#0F0D09" />
-                  ) : (
-                    <>
-                      <Text style={s.optionTitle}>5 Scans</Text>
-                      <Text style={s.optionPrice}>{fiveCartoonPackage.product.priceString}</Text>
-                    </>
-                  )}
-                </TouchableOpacity>
-              )}
-            </View>
-            
+            <TouchableOpacity
+              onPress={() => Linking.openURL("https://onjjem.com/#cartoonify")}
+              style={s.websiteCtaButton}
+            >
+              <Ionicons name="globe-outline" size={20} color="#0F0D09" />
+              <Text style={s.websiteCtaText}>Try It Free at onjjem.com</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={reset} style={s.secondaryBtn}>
               <Text style={s.secondaryBtnText}>Not Now</Text>
             </TouchableOpacity>
@@ -500,6 +444,19 @@ const s = StyleSheet.create({
   errorText: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
   primaryBtn: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 14, paddingHorizontal: 32, width: "100%" },
   primaryBtnText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15, textAlign: "center" },
+  websiteCtaButton: {
+    backgroundColor: "#C9960C",
+    borderRadius: 999,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: 8,
+  },
+  websiteCtaText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15, textAlign: "center" },
   secondaryBtn: { marginTop: 4, paddingVertical: 10, width: "100%" },
   secondaryBtnText: { color: "rgba(245,237,216,0.6)", fontFamily: "Inter_600SemiBold", fontSize: 13, textAlign: "center" },
   
