@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system/legacy";
 import { router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { useSubscription } from "@/lib/revenuecat";
 
 const API_BASE = `https://${process.env.EXPO_PUBLIC_DOMAIN ?? ""}`;
@@ -187,7 +188,7 @@ export default function CartoonScreen() {
     setAssets([]);
   };
 
-  const openShop = () => Linking.openURL("https://onjjem.com/shop");
+  const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=gifts");
   const openSettings = () => Linking.openSettings();
 
   return (
@@ -241,12 +242,16 @@ export default function CartoonScreen() {
               Turn your favourite photo into a keepsake your loved ones will treasure forever. Find your cartoon on mugs, canvases, postcards & more at ONJJEM — free UK delivery.
             </Text>
 
+            <Text style={s.notice}>
+              Tap below to open our secure online creation studio and see your cartoon instantly.
+            </Text>
+
             <TouchableOpacity
-              onPress={() => Linking.openURL("https://onjjem.com/#cartoonify")}
+              onPress={() => WebBrowser.openBrowserAsync("https://onjjem.com/?category=gifts&cartoonify=1#cartoonify")}
               style={s.websiteCtaButton}
             >
-              <Ionicons name="globe-outline" size={20} color="#0F0D09" />
-              <Text style={s.websiteCtaText}>Get My Free Preview at onjjem.com</Text>
+              <Ionicons name="color-wand-outline" size={20} color="#0F0D09" />
+              <Text style={s.websiteCtaText}>Go to Online Creation Studio →</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={reset} style={s.secondaryBtn}>
@@ -380,6 +385,7 @@ const s = StyleSheet.create({
   startTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold", color: "#F5EDD8", textAlign: "center" },
   freeNote: { fontSize: 13, color: "#C9960C", fontFamily: "Inter_600SemiBold" },
   paywallSubtitle: { fontSize: 14, color: "rgba(245,237,216,0.8)", textAlign: "center" },
+  notice: { fontSize: 13, color: "rgba(245,237,216,0.6)", textAlign: "center", marginTop: 4, paddingHorizontal: 8 },
   freePostcardBox: {
     width: "100%",
     backgroundColor: "rgba(74,222,128,0.08)",
