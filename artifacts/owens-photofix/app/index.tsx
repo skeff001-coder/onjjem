@@ -60,20 +60,6 @@ const REVIEWS = [
 
 ];
 
-const PROMISES = [
-
-{ icon: "ribbon-outline", title: "Premium Quality Only", text: "Every gift printed using professional grade materials. Nothing cheap. Nothing rushed." },
-
-{ icon: "shield-checkmark-outline", title: "Made in Britain", text: "All orders fulfilled from UK print labs to the highest British standard." },
-
-{ icon: "rocket-outline", title: "Fast UK Delivery", text: "Dispatched within 1-2 days. Delivered to your door in 3-4 working days." },
-
-{ icon: "lock-closed-outline", title: "Your Photos Stay Private", text: "We never share or store your photos beyond printing your order." },
-
-{ icon: "star-outline", title: "Unique Gifts Nobody Else Has", text: "Every item made to order with your photo. No two gifts are ever the same." },
-
-];
-
 export default function HomeScreen() {
 
 const insets = useSafeAreaInsets();
@@ -118,43 +104,46 @@ showsVerticalScrollIndicator={false}
 
 <View style={s.accolade}>
 
-<Text style={s.accoladeTitle}>Handcrafted Gifts, Made From Your Memories ✨</Text>
+<Text style={s.accoladeTitle}>Turn Your Photos Into Beautiful Gifts</Text>
 
 <Text style={s.accoladeBody}>
 
-Upload any photo and we turn it into a beautiful, personalised gift — <Text style={{ color: GOLD, fontWeight: "700" }}>canvas prints</Text>, <Text style={{ color: "#F5D060", fontWeight: "700" }}>magic colour-change mugs</Text>, photo jigsaws, frames and much more. Every order is made just for you, to a standard nobody else touches.
-
-</Text>
-
-<Text style={s.accoladeBody}>
-
-Want something a little different? Try <Text style={{ color: "#4ADE80", fontWeight: "700" }}>Cartoon-ify</Text> and watch your photo transform into vibrant animated art — then bring it to life on a mug, canvas or postcard.
+Canvas prints, magic mugs, jigsaws, cartoons & more — handcrafted from your own photos.
 
 </Text>
 
 </View>
 
-{PROMISES.map((p, i) => (
+<TouchableOpacity
+  style={s.primaryCta}
+  onPress={openShop}
+  activeOpacity={0.88}
+>
+  <Text style={s.primaryCtaText}>Browse Gifts →</Text>
+</TouchableOpacity>
 
-<View key={i} style={s.promiseRow}>
+<View style={s.badgeRow}>
 
-<View style={s.promiseIcon}>
-
-<Ionicons name={p.icon as any} size={20} color="#C9960C" />
-
+<View style={s.badgeItem}>
+  <Ionicons name="shield-checkmark-outline" size={16} color="#C9960C" />
+  <Text style={s.badgeText}>Made in UK</Text>
 </View>
 
-<View style={{ flex: 1 }}>
+<View style={s.badgeDivider} />
 
-<Text style={s.promiseTitle}>{p.title}</Text>
+<View style={s.badgeItem}>
+  <Ionicons name="rocket-outline" size={16} color="#C9960C" />
+  <Text style={s.badgeText}>Fast Delivery</Text>
+</View>
 
-<Text style={s.promiseSub}>{p.text}</Text>
+<View style={s.badgeDivider} />
 
+<View style={s.badgeItem}>
+  <Ionicons name="lock-closed-outline" size={16} color="#C9960C" />
+  <Text style={s.badgeText}>100% Private</Text>
 </View>
 
 </View>
-
-))}
 
 <TouchableOpacity
 
@@ -388,13 +377,17 @@ accoladeTitle: { fontSize: 15, fontWeight: "700", color: GOLD, letterSpacing: 0.
 
 accoladeBody: { fontSize: 13, color: "rgba(245,237,216,0.8)", lineHeight: 21 },
 
-promiseRow: { flexDirection: "row", alignItems: "flex-start", gap: 12, backgroundColor: "rgba(201,150,12,0.04)", borderWidth: 1, borderColor: "rgba(201,150,12,0.1)", borderRadius: 10, padding: 12 },
+primaryCta: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 15, alignItems: "center", marginBottom: 18 },
 
-promiseIcon: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(201,150,12,0.1)", alignItems: "center", justifyContent: "center" },
+primaryCtaText: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#0A0804" },
 
-promiseTitle: { fontSize: 12, fontWeight: "700", color: "#F5EDD8", marginBottom: 2 },
+badgeRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 24, paddingVertical: 10 },
 
-promiseSub: { fontSize: 11, color: "rgba(245,237,216,0.5)", lineHeight: 17 },
+badgeItem: { flexDirection: "row", alignItems: "center", gap: 5 },
+
+badgeDivider: { width: 1, height: 12, backgroundColor: "rgba(201,150,12,0.25)" },
+
+badgeText: { fontSize: 11, fontWeight: "600", color: "rgba(245,237,216,0.75)" },
 
 cartoonCard: {
 
