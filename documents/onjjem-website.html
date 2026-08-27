@@ -1032,6 +1032,37 @@
 <div id="order-success-banner">✅ Payment successful! Check your email for next steps.</div>
 
 <script>
+function validateAndSubmitPreview() {
+  const emailInput = document.getElementById('preview-email-input');
+  const errorMsg = document.getElementById('modal-error-msg');
+  const userEmail = emailInput ? emailInput.value.trim() : '';
+
+  if (!userEmail || !userEmail.includes('@') || userEmail.length < 5) {
+    if (errorMsg) errorMsg.style.display = 'block';
+    if (emailInput) emailInput.style.borderColor = '#ff5e5e';
+    return;
+  }
+  
+  if (errorMsg) errorMsg.style.display = 'none';
+  if (emailInput) emailInput.style.borderColor = 'var(--gold)';
+
+  // Assign user email to global window context for backend capture
+  window.customerEmail = userEmail;
+  if (typeof userEmailAddress !== 'undefined') userEmailAddress = userEmail;
+
+  // Hide the modal
+  document.getElementById('cartoonPreviewModal').style.display = 'none';
+  
+  // Trigger generation flow if functions exist, otherwise continue checkout
+  if (typeof startCartoonGeneration === 'function') {
+    startCartoonGeneration(userEmail);
+  } else if (typeof handleUploadSuccess === 'function') {
+    handleUploadSuccess();
+  } else {
+    console.log("Email captured, continuing preview flow:", userEmail);
+  }
+}
+
 let stripeJs = null, stripeElements = null, uploadedBase64 = null, selectedModes = ['sharpen'], hdResultBase64 = null;
 
 async function initStripe() {
