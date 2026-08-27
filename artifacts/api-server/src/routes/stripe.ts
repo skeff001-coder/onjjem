@@ -11,6 +11,34 @@ import { storePhoto } from "../webhookHandlers";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { SHOP_SKU_PRICES } from "../shopPrices";
+import { GoogleGenAI } from "@google/genai";
+
+async function regenerateCartoonForOrder(base64Image: string, mimeType: string): Promise<string> {
+  const apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
+  if (!apiKey) throw new Error("Gemini AI integration not configured");
+  const ai = new GoogleGenAI({ apiKey });
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash-image",
+    contents: [
+      { inlineData: { mimeType, data: base64Image } },
+      {
+        text:
+          "Redraw this photo as a warm, high-quality Pixar/Disney-style " +
+          "3D animated cartoon illustration. Keep the subject clearly " +
+          "recognisable (same pose, same distinguishing features) but " +
+          "reimagined with soft cartoon shading, big expressive eyes if " +
+          "there's a face or animal in the photo, and a gentle, family-friendly " +
+          "art style. Keep the background simple and complementary, not busy. " +
+          "Output only the image, no text.",
+      },
+    ],
+    config: { responseModalities: ["IMAGE"] },
+  });
+  const parts = response.candidates?.[0]?.content?.parts ?? [];
+  const imagePart = parts.find((p: any) => p.inlineData);
+  if (!imagePart?.inlineData) throw new Error("Cartoon regeneration failed");
+  return imagePart.inlineData.data as string;
+}
 
 const router = Router();
 
@@ -97,7 +125,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     successUrl?: string;
     cancelUrl?: string;
     addCartoon?: boolean;
-    cartoonBase64?: string;
+    cartoonEmail?: string;
   };
 
   if (!body.sku) {
@@ -180,10 +208,21 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     }
 
     // Store the customer's photo so the webhook can retrieve it after payment.
-    // If a cartoon version was generated and accepted, that's what gets
-    // printed — not the original photo.
+    // If they're adding the cartoon upgrade, regenerate a fresh, clean
+    // (non-watermarked) version here — the version they saw during the free
+    // preview was watermarked and isn't fit for printing.
     let photoToken: string | null = null;
-    const photoToStore = body.addCartoon && body.cartoonBase64 ? body.cartoonBase64 : body.photoBase64;
+    let photoToStore = body.photoBase64;
+    if (body.addCartoon && body.photoBase64) {
+      try {
+        const rawBase64 = body.photoBase64.includes(",")
+          ? body.photoBase64.split(",")[1]
+          : body.photoBase64;
+        photoToStore = await regenerateCartoonForOrder(rawBase64, "image/jpeg");
+      } catch (err) {
+        req.log.error({ err }, "Cartoon regeneration for order failed — falling back to original photo");
+      }
+    }
     if (photoToStore) {
       photoToken = crypto.randomUUID();
       await storePhoto(photoToken, photoToStore);
@@ -199,7 +238,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       lineItems.push({
         price_data: {
           currency: "gbp",
-          unit_amount: 400, // £4.00
+          unit_amount: 199, // £1.99
           product_data: {
             name: "Cartoon Illustration Upgrade",
             metadata: { sku: "cartoon-addon" },
@@ -222,21 +261,10 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
           shipping_rate_data: {
             type: "fixed_amount",
             fixed_amount: { amount: 0, currency: "gbp" },
-            display_name: "Free UK Delivery (UK only)",
+            display_name: "Free UK Delivery",
             delivery_estimate: {
               minimum: { unit: "business_day", value: 3 },
               maximum: { unit: "business_day", value: 5 },
-            },
-          },
-        },
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: { amount: 1995, currency: "gbp" },
-            display_name: "International Shipping (outside UK)",
-            delivery_estimate: {
-              minimum: { unit: "business_day", value: 5 },
-              maximum: { unit: "business_day", value: 14 },
             },
           },
         },
@@ -471,21 +499,10 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
           shipping_rate_data: {
             type: "fixed_amount",
             fixed_amount: { amount: 0, currency: "gbp" },
-            display_name: "Free UK Delivery (UK only)",
+            display_name: "Free UK Delivery",
             delivery_estimate: {
               minimum: { unit: "business_day", value: 3 },
               maximum: { unit: "business_day", value: 5 },
-            },
-          },
-        },
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: { amount: 1995, currency: "gbp" },
-            display_name: "International Shipping (outside UK)",
-            delivery_estimate: {
-              minimum: { unit: "business_day", value: 5 },
-              maximum: { unit: "business_day", value: 14 },
             },
           },
         },
