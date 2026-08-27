@@ -184,12 +184,6 @@ activeOpacity={0.88}
 
 <Text style={s.cartoonSub}>Turn any photo into a vibrant animated illustration</Text>
 
-<View style={s.cartoonGiftBadge}>
-
-<Text style={s.cartoonGiftBadgeText}>🎁 Buy 5 scans, get a free postcard</Text>
-
-</View>
-
 </View>
 
 <Ionicons name="chevron-forward" size={20} color="#0A0804" style={{ opacity: 0.6 }} />
