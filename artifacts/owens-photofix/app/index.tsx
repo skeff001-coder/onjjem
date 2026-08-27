@@ -118,23 +118,17 @@ showsVerticalScrollIndicator={false}
 
 <View style={s.accolade}>
 
-<Text style={s.accoladeTitle}>Britain's Most Exciting Photo Gift Studio ✨</Text>
+<Text style={s.accoladeTitle}>Handcrafted Gifts, Made From Your Memories ✨</Text>
 
 <Text style={s.accoladeBody}>
 
-Forget boring prints. We turn your favourite photos into <Text style={{ color: "#4ADE80", fontWeight: "700" }}>show-stopping cartoons</Text>, <Text style={{ color: "#F5D060", fontWeight: "700" }}>magic colour-change mugs</Text>, and gifts so good they'll stop people in their tracks. Every single one made in Britain, to a standard nobody else touches.
+Upload any photo and we turn it into a beautiful, personalised gift — <Text style={{ color: GOLD, fontWeight: "700" }}>canvas prints</Text>, <Text style={{ color: "#F5D060", fontWeight: "700" }}>magic colour-change mugs</Text>, photo jigsaws, frames and much more. Every order is made just for you, to a standard nobody else touches.
 
 </Text>
 
 <Text style={s.accoladeBody}>
 
-Try <Text style={{ color: GOLD, fontWeight: "700" }}>Cartoon-ify</Text> and watch your photo transform into vibrant animated art in seconds — then bring it to life on a mug, canvas or postcard, delivered straight to your door.
-
-</Text>
-
-<Text style={s.accoladeBody}>
-
-Got a little football fan at home? Send us a photo of their favourite player — or any sports star — and we'll <Text style={{ color: "#4ADE80", fontWeight: "700" }}>Cartoon-ify</Text> them into a fun animated illustration kids absolutely love. Any photo, any subject — we can do it all.
+Want something a little different? Try <Text style={{ color: "#4ADE80", fontWeight: "700" }}>Cartoon-ify</Text> and watch your photo transform into vibrant animated art — then bring it to life on a mug, canvas or postcard.
 
 </Text>
 
@@ -376,13 +370,13 @@ hero: { alignItems: "center", gap: 6, paddingVertical: 10 },
 
 goldLine: { width: 50, height: 1.5, backgroundColor: GOLD, opacity: 0.5 },
 
-brandWrap: { width: "100%", height: 90, alignItems: "center", justifyContent: "center" },
+brandWrap: { width: "100%", height: 105, alignItems: "center", justifyContent: "center" },
 
-brandShadow: { position: "absolute", fontSize: 70, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#6B4E10", letterSpacing: -1, width: "100%", textAlign: "center", top: 10 },
+brandShadow: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#5A3F0A", letterSpacing: -1.5, width: "100%", textAlign: "center", top: 12 },
 
-brandMid: { position: "absolute", fontSize: 70, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#B8781E", letterSpacing: -1, width: "100%", textAlign: "center", top: 5 },
+brandMid: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#B8781E", letterSpacing: -1.5, width: "100%", textAlign: "center", top: 6 },
 
-brandTop: { position: "absolute", fontSize: 70, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#F3D078", letterSpacing: -1, width: "100%", textAlign: "center", top: 0 },
+brandTop: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#FFF6DD", letterSpacing: -1.5, width: "100%", textAlign: "center", top: 0 },
 
 tagline: { fontSize: 14, color: "#F5D78E", letterSpacing: 1, textAlign: "center" },
 
