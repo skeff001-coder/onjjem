@@ -93,14 +93,14 @@ async function addWatermark(base64Image: string, mimeType: string): Promise<stri
   const watermarkSvg = `
     <svg width="${width}" height="${height}">
       <style>
-        .wm { fill: rgba(255,255,255,0.35); font-size: ${Math.round(width / 10)}px; font-family: sans-serif; font-weight: 700; }
+        .wm { fill: rgba(255,255,255,0.45); font-size: ${Math.round(width / 6)}px; font-family: sans-serif; font-weight: 800; }
       </style>
-      ${Array.from({ length: 6 })
+      ${Array.from({ length: 4 })
         .map((_, row) =>
-          Array.from({ length: 3 })
+          Array.from({ length: 2 })
             .map(
               (__, col) =>
-                `<text class="wm" x="${col * width * 0.45 - width * 0.1}" y="${row * height * 0.2 + height * 0.1}" transform="rotate(-30 ${col * width * 0.45} ${row * height * 0.2})">ONJJEM PREVIEW</text>`
+                `<text class="wm" x="${col * width * 0.65 - width * 0.1}" y="${row * height * 0.3 + height * 0.12}" transform="rotate(-30 ${col * width * 0.65} ${row * height * 0.3})">ONJJEM PREVIEW</text>`
             )
             .join("")
         )
