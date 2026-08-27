@@ -230,9 +230,9 @@ export default function CartoonScreen() {
         {phase === "paywall" && (
           <View style={s.startCard}>
             <Ionicons name="sparkles" size={40} color="#C9960C" />
-            <Text style={s.startTitle}>See Your Cartoon — Free</Text>
+            <Text style={s.startTitle}>See Your Cartoon First</Text>
             <Text style={s.paywallSubtitle}>
-              Try Cartoon-ify free on our website, then add it to any gift for just £1.99
+              Get one free preview of your own photo as a cartoon — then add it to any gift for just £1.99
             </Text>
 
             <Text style={s.sampleLabel}>Real customer results — this is what yours could look like</Text>
@@ -246,7 +246,7 @@ export default function CartoonScreen() {
               style={s.websiteCtaButton}
             >
               <Ionicons name="globe-outline" size={20} color="#0F0D09" />
-              <Text style={s.websiteCtaText}>Try It Free at onjjem.com</Text>
+              <Text style={s.websiteCtaText}>Get My Free Preview at onjjem.com</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={reset} style={s.secondaryBtn}>
