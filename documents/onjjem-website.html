@@ -44,6 +44,78 @@
     .section-header { text-align: center; margin-bottom: 48px; }
     .section-header .eyebrow { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px; }
     .section-header .section-sub { max-width: 480px; margin: 12px auto 0; }
+    /* PREVIEW WEBHOOK MODAL FIXED CLASSES */
+    .modal-input-container {
+      margin: 22px 0 16px 0;
+      width: 100%;
+    }
+    .modal-email-input {
+      width: 100%;
+      max-width: 290px;
+      padding: 13px 16px;
+      border-radius: 25px;
+      border: 1px solid var(--gold);
+      background: var(--bg2);
+      color: var(--cream);
+      text-align: center;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      box-sizing: border-box;
+      transition: all 0.2s ease-in-out;
+    }
+    .modal-email-input:focus {
+      border-color: var(--gold-lt);
+      box-shadow: 0 0 10px rgba(245, 215, 142, 0.2);
+    }
+    .modal-error-msg {
+      color: #ff5e5e;
+      font-size: 12px;
+      margin-top: 6px;
+      text-align: center;
+      display: none;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      width: 100%;
+      max-width: 290px;
+      margin: 0 auto;
+    }
+    .btn-modal-cancel {
+      flex: 1;
+      padding: 12px;
+      border-radius: 25px;
+      background: transparent;
+      border: 1px solid var(--c20);
+      color: var(--c55);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-modal-cancel:hover {
+      background: rgba(255,255,255,0.04);
+      color: var(--cream);
+    }
+    .btn-modal-submit {
+      flex: 1;
+      padding: 12px;
+      border-radius: 25px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      border: none;
+      color: #000;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(201,150,12,0.2);
+      transition: all 0.2s;
+    }
+    .btn-modal-submit:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
 
     /* NAV */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 40px; background: rgba(14,12,8,0.94); backdrop-filter: blur(20px); border-bottom: 1px solid var(--gb); }
@@ -883,6 +955,33 @@
     <div class="footer-copy">&copy; 2026 ONJJEM, London. All rights reserved.</div>
   </div>
 </footer>
+<!-- CARTOON PREVIEW GENERATION FLOW FIXED -->
+<div class="modal-backdrop open" id="cartoonPreviewModal" style="display: flex !important; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 9999;">
+  <div class="modal" style="background: var(--card); border: 1px solid var(--gb); border-radius: var(--r-lg); padding: 30px; max-width: 380px; width: 90%; text-align: center; position: relative;">
+    <button type="button" class="modal-close" style="position: absolute; right: 16px; top: 12px; background: transparent; border: none; color: var(--c55); font-size: 22px; cursor: pointer;" onclick="document.getElementById('cartoonPreviewModal').style.display='none'">×</button>
+    <div class="gold-bar" style="margin: -10px auto 20px auto; width: 60px;"></div>
+    <div class="modal-title" style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--cream); margin-bottom: 8px;">Creating your cartoon...</div>
+    <p class="modal-sub" style="font-size: 14px; color: var(--c55); margin-bottom: 20px;">Email is required for a free preview</p>
+    
+    <!-- Input Field Integration -->
+    <div class="modal-input-container">
+      <input 
+        type="email" 
+        id="preview-email-input" 
+        class="modal-email-input"
+        placeholder="your@email.com" 
+        required
+      />
+      <div id="modal-error-msg" class="modal-error-msg">Please enter a valid email address.</div>
+    </div>
+
+    <!-- Actions Control Stack -->
+    <div class="modal-actions">
+      <button type="button" class="btn-modal-cancel" onclick="document.getElementById('cartoonPreviewModal').style.display='none'">Cancel</button>
+      <button type="button" class="btn-modal-submit" onclick="validateAndSubmitPreview()">Create Preview</button>
+    </div>
+  </div>
+</div>
 
 <!-- PAYMENT MODAL -->
 <div class="modal-backdrop" id="payModal">
