@@ -7,14 +7,15 @@ import { join } from "path";
 const router = Router();
 
 // ── Free preview tracking ────────────────────────────────────────────────────
-// One free watermarked preview per email address, AND a limit per IP address
-// (to stop someone typing a new fake email each time to get unlimited free
-// previews) — both stored in a simple JSON file on Railway's persistent disk.
+// Up to 2 free watermarked previews per email address (their first go, plus
+// one retry if they don't like the result) — capped further by a limit per
+// IP address (so someone can't just type a new fake email each time).
 const DATA_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || "/tmp";
 const DATA_FILE = join(DATA_DIR, "cartoonify_free_previews.json");
-const MAX_PREVIEWS_PER_IP_PER_DAY = 3;
+const MAX_PREVIEWS_PER_IP_PER_DAY = 6;
+const MAX_PREVIEWS_PER_EMAIL = 2;
 
-function readStore(): { emails: Record<string, boolean>; ipDaily: Record<string, { day: string; count: number }> } {
+function readStore(): { emails: Record<string, number>; ipDaily: Record<string, { day: string; count: number }> } {
   try {
     if (!existsSync(DATA_FILE)) return { emails: {}, ipDaily: {} };
     const parsed = JSON.parse(readFileSync(DATA_FILE, "utf8"));
@@ -33,15 +34,17 @@ function writeStore(store: ReturnType<typeof readStore>): void {
   }
 }
 
-function markEmailUsed(email: string): void {
+function recordEmailPreview(email: string): void {
   const store = readStore();
-  store.emails[email.toLowerCase().trim()] = true;
+  const key = email.toLowerCase().trim();
+  store.emails[key] = (store.emails[key] ?? 0) + 1;
   writeStore(store);
 }
 
-function hasEmailUsedFreePreview(email: string): boolean {
+function emailPreviewsRemaining(email: string): number {
   const store = readStore();
-  return !!store.emails[email.toLowerCase().trim()];
+  const used = store.emails[email.toLowerCase().trim()] ?? 0;
+  return Math.max(0, MAX_PREVIEWS_PER_EMAIL - used);
 }
 
 function todayKey(): string {
@@ -159,15 +162,17 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
     return;
   }
 
-  // If this is a free preview request, enforce the one-per-email limit AND
-  // a per-IP daily cap, so someone can't just type a new fake email each
-  // time to get unlimited free previews.
+  // If this is a free preview request, enforce up to 2 tries per email
+  // (their first go, plus one retry) AND a per-IP daily cap, so someone
+  // can't just type a new fake email each time for unlimited free previews.
+  let remaining = 0;
   if (watermark) {
     if (!email) {
       res.status(400).json({ error: "Email is required for a free preview" });
       return;
     }
-    if (hasEmailUsedFreePreview(email)) {
+    remaining = emailPreviewsRemaining(email);
+    if (remaining <= 0) {
       res.json({ alreadyUsed: true });
       return;
     }
@@ -183,10 +188,14 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
 
     if (watermark && email) {
       const watermarkedBase64 = await addWatermark(result.base64Image, result.mimeType);
-      markEmailUsed(email);
+      recordEmailPreview(email);
       const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
       recordIpPreview(ip);
-      res.json({ base64Image: watermarkedBase64, mimeType: "image/png" });
+      res.json({
+        base64Image: watermarkedBase64,
+        mimeType: "image/png",
+        retriesLeft: remaining - 1, // how many more tries after this one
+      });
       return;
     }
 
