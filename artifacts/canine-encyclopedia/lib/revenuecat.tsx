@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext } from "react";
 import { Platform } from "react-native";
 import Purchases, { type PurchasesPackage } from "react-native-purchases";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -41,11 +41,11 @@ export const PACKAGE_CARTOON = "dog_cartoon_package";
 
 // ─── Pup-Grade Products ──────────────────────────────────────────────────────
 export const PUPGRADE_PRODUCT_IDS: Record<string, string> = {
-  bark_translator: "pupgrade_bark_translator",
-  digital_pawsport: "pupgrade_digital_pawsport",
-  ai_glowup: "pupgrade_ai_glowup",
-  golden_badge: "pupgrade_golden_badge",
-  barkoff_pack: "pupgrade_barkoff_pack",
+  bark_translator:   "pupgrade_bark_translator",
+  digital_pawsport:  "pupgrade_digital_pawsport",
+  ai_glowup:         "pupgrade_ai_glowup",
+  golden_badge:      "pupgrade_golden_badge",
+  barkoff_pack:      "pupgrade_barkoff_pack",
 };
 
 export async function purchasePupgrade(rcProductId: string): Promise<string> {
@@ -59,25 +59,25 @@ export async function purchasePupgrade(rcProductId: string): Promise<string> {
 
 // ─── Merchandise Products ───────────────────────────────────────────────────
 export const MERCH_PRODUCT_IDS: Record<string, string> = {
-  canvas_20: "angem_canvas_small",
-  canvas_a3: "angem_canvas_a3",
-  canvas_a2: "angem_canvas_a2",
-  framed_print: "angem_framed_print",
-  cushion: "angem_cushion",
-  dog_lead: "angem_dog_lead",
-  tote: "angem_tote_bag",
-  mug: "angem_mug",
-  blanket: "angem_blanket",
-  jigsaw: "angem_jigsaw",
-  dog_ball: "angem_dog_ball",
-  bandana: "angem_bandana",
-  phone_case: "angem_phone_case",
-  notebook: "angem_notebook",
-  photo_book: "angem_photo_book",
-  keyring: "angem_keyring",
-  bauble: "angem_bauble",
-  coaster_set: "angem_coaster_set",
-  water_bottle: "angem_water_bottle",
+  canvas_20:     "angem_canvas_small",
+  canvas_a3:     "angem_canvas_a3",
+  canvas_a2:     "angem_canvas_a2",
+  framed_print:  "angem_framed_print",
+  cushion:       "angem_cushion",
+  dog_lead:      "angem_dog_lead",
+  tote:          "angem_tote_bag",
+  mug:           "angem_mug",
+  blanket:       "angem_blanket",
+  jigsaw:        "angem_jigsaw",
+  dog_ball:      "angem_dog_ball",
+  bandana:       "angem_bandana",
+  phone_case:    "angem_phone_case",
+  notebook:      "angem_notebook",
+  photo_book:    "angem_photo_book",
+  keyring:       "angem_keyring",
+  bauble:        "angem_bauble",
+  coaster_set:   "angem_coaster_set",
+  water_bottle:  "angem_water_bottle",
   desk_calendar: "angem_desk_calendar",
 };
 
@@ -102,47 +102,24 @@ function getRevenueCatApiKey() {
   return REVENUECAT_TEST_API_KEY;
 }
 
-let revenueCatConfigured = false;
-const configListeners: Array<() => void> = [];
-
 export function initializeRevenueCat() {
   const apiKey = getRevenueCatApiKey();
   Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
   Purchases.configure({ apiKey });
-  revenueCatConfigured = true;
-  configListeners.forEach((fn) => fn());
   console.log("Configured RevenueCat");
 }
 
 function useSubscriptionContext() {
-  const [configured, setConfigured] = useState(revenueCatConfigured);
-
-  useEffect(() => {
-    if (configured) return;
-    const listener = () => setConfigured(true);
-    configListeners.push(listener);
-    return () => {
-      const i = configListeners.indexOf(listener);
-      if (i > -1) configListeners.splice(i, 1);
-    };
-  }, [configured]);
-
   const customerInfoQuery = useQuery({
     queryKey: ["revenuecat", "customer-info"],
     queryFn: () => Purchases.getCustomerInfo(),
     staleTime: 60_000,
-    enabled: configured,
-    retry: 3,
-    retryDelay: 500,
   });
 
   const offeringsQuery = useQuery({
     queryKey: ["revenuecat", "offerings"],
     queryFn: () => Purchases.getOfferings(),
     staleTime: 300_000,
-    enabled: configured,
-    retry: 3,
-    retryDelay: 500,
   });
 
   const purchaseMutation = useMutation({
