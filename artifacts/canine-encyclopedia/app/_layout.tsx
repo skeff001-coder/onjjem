@@ -11,12 +11,12 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { Alert } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AppProvider } from "@/context/AppContext";
-// RevenueCat temporarily disabled — isolation test to confirm/rule out
-// as the cause of the native SIGABRT crash on launch.
+import { SubscriptionProvider, initializeRevenueCat } from "@/lib/revenuecat";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -56,6 +56,14 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
+  useEffect(() => {
+    try {
+      initializeRevenueCat();
+    } catch (err: any) {
+      Alert.alert("RevenueCat Unavailable", err?.message ?? "Unknown error");
+    }
+  }, []);
+
   if (!fontsLoaded && !fontError) return null;
 
   return (
@@ -63,9 +71,13 @@ export default function RootLayout() {
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <AppProvider>
-              <RootLayoutNav />
-            </AppProvider>
+            <KeyboardProvider>
+              <AppProvider>
+                <SubscriptionProvider>
+                  <RootLayoutNav />
+                </SubscriptionProvider>
+              </AppProvider>
+            </KeyboardProvider>
           </GestureHandlerRootView>
         </QueryClientProvider>
       </ErrorBoundary>
