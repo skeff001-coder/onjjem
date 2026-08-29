@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-// react-native-purchases import removed — JSC crash isolation test
+import Purchases from "react-native-purchases";
 import { useColors } from "@/hooks/useColors";
 import { useSubscription } from "@/lib/revenuecat";
 import { useApp } from "@/context/AppContext";
@@ -77,8 +77,14 @@ const SOCIALS = [
   { id: "more",      label: "More",      emoji: "↗️",  color: "#c9a84c", bg: "#c9a84c18" },
 ] as const;
 
-async function trackShare(_platform: string, _breed: string) {
-  // RevenueCat attribute tracking temporarily disabled — JSC crash isolation test
+async function trackShare(platform: string, breed: string) {
+  try {
+    await Purchases.setAttributes({
+      last_share_platform: platform,
+      last_share_breed: breed,
+      shared_app: "true",
+    });
+  } catch {}
 }
 
 function buildShareText(breed: string, dogName: string) {
