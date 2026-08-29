@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "canine-encyclopedia",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "87",
+      "buildNumber": "88",
       "deploymentTarget": "12.0",
       "usesAppleSignIn": true,
       "infoPlist": {
@@ -30,8 +30,7 @@
         "NSPhotoLibraryUsageDescription": "That's My Dog! accesses your photos so you can choose a dog image for breed identification.",
         "NSPhotoLibraryAddUsageDescription": "That's My Dog! saves identified dog portraits to your photo library.",
         "ITSAppUsesNonExemptEncryption": false
-      },
-      "jsEngine": "jsc"
+      }
     },
     "android": {
       "package": "com.onjjem.canineencyclopedia",
