@@ -225,15 +225,27 @@ activeOpacity={0.88}
 
 <View style={s.mugImageRow}>
 
-<Image source={{ uri: "https://onjjem.com/products/magic-mug.jpg" }} style={s.mugImageHalf} resizeMode="cover" />
+<Image source={{ uri: "https://onjjem.com/products/magic-mug.jpg" }} style={s.mugImageHalf} resizeMode="contain" />
 
-<Image source={{ uri: "https://onjjem.com/products/Magicbaby.jpg" }} style={s.mugImageHalf} resizeMode="cover" />
+<Image source={{ uri: "https://onjjem.com/products/Magicbaby.jpg" }} style={s.mugImageHalf} resizeMode="contain" />
 
 </View>
 
 <Text style={s.mugDesc}>
 
-Starts solid black. Pour in a hot drink and your photo appears in full colour - like magic.
+Add hot water. Watch the magic. ✨
+
+</Text>
+
+<Text style={s.mugDescSub}>
+
+Prank the family. Surprise your partner. The perfect gift for birthdays, anniversaries, Christmas, or their favourite footballer obsession.
+
+</Text>
+
+<Text style={s.mugDescSub}>
+
+Made with state-of-the-art thermochromic technology and stunning HD print quality — genuinely top of the range.
 
 </Text>
 
@@ -476,11 +488,13 @@ mugLabel: { fontSize: 9, color: GOLD, letterSpacing: 2.5, fontWeight: "700" },
 
 mugTitle: { fontSize: 14, color: "#FFF5E0", fontWeight: "800" },
 
-mugImageRow: { flexDirection: "row", gap: 4, marginVertical: 8, borderRadius: 8, overflow: "hidden" },
+mugImageRow: { flexDirection: "row", gap: 4, marginVertical: 8, borderRadius: 8, overflow: "hidden", backgroundColor: "#0F0A04" },
 
-mugImageHalf: { flex: 1, height: 140 },
+mugImageHalf: { flex: 1, height: 140, backgroundColor: "#0F0A04" },
 
-mugDesc: { fontSize: 11, color: "rgba(245,237,216,0.75)", lineHeight: 16 },
+mugDesc: { fontSize: 13, color: "#F3D078", fontWeight: "800" },
+
+mugDescSub: { fontSize: 11, color: "rgba(245,237,216,0.75)", lineHeight: 16, marginTop: 6 },
 
 mugBtn: { backgroundColor: GOLD, borderRadius: 8, paddingVertical: 8, paddingHorizontal: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, marginTop: 2 },
 
