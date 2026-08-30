@@ -23,10 +23,6 @@ function NativeTabLayout() {
         <Icon sf={{ default: "pawprint", selected: "pawprint.fill" }} />
         <Label>My Pack</Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="shop">
-        <Icon sf={{ default: "bag", selected: "bag.fill" }} />
-        <Label>That's My Dog!</Label>
-      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }
@@ -89,18 +85,8 @@ function ClassicTabLayout() {
         }}
       />
       <Tabs.Screen
-        name="shop"
-        options={{
-          title: "That's My Dog!",
-          tabBarIcon: ({ color }) =>
-            isIOS ? (
-              <SymbolView name="bag.fill" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="bag-outline" size={22} color={color} />
-            ),
-        }}
-      />
       <Tabs.Screen name="encyclopedia" options={{ href: null }} />
+      <Tabs.Screen name="shop" options={{ href: null }} />
     </Tabs>
   );
 }
