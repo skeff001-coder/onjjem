@@ -23,7 +23,7 @@ function getResend(): Resend | null {
   return new Resend(apiKey);
 }
 
-const FROM = () => `ONJJEM Photo Restoration <${process.env.EMAIL_FROM ?? "onboarding@resend.dev"}>`;
+const FROM = () => `ONJJEM <${process.env.EMAIL_FROM ?? "onboarding@resend.dev"}>`;
 const ADMIN = () => process.env.EMAIL_ADMIN ?? "";
 
 // ── Shared design tokens ──────────────────────────────────────────────────────
@@ -64,7 +64,7 @@ function baseTemplate(preheader: string, body: string): string {
         <table role="presentation" cellpadding="0" cellspacing="0">
           <tr>
             <td style="border-bottom:2px solid ${GOLD};padding-bottom:10px;text-align:center">
-              <span style="font-size:11px;letter-spacing:.22em;color:${GOLD};opacity:.7;text-transform:uppercase;display:block;margin-bottom:6px">London · Est. 2025</span>
+              <span style="font-size:11px;letter-spacing:.22em;color:${GOLD};opacity:.7;text-transform:uppercase;display:block;margin-bottom:6px">London · Est. 2026</span>
               <span style="font-size:28px;font-weight:700;letter-spacing:.12em;color:#FAF7F2;text-transform:uppercase">ONJJEM</span>
             </td>
           </tr>
@@ -82,7 +82,7 @@ function baseTemplate(preheader: string, body: string): string {
       <!-- Footer -->
       <tr><td align="center" style="padding-top:32px">
         <p style="font-size:11px;color:${MUTED};margin:0 0 6px">
-          ONJJEM Photo Restoration · London, United Kingdom
+          ONJJEM · London, United Kingdom
         </p>
         <p style="font-size:11px;color:${MUTED};margin:0">
           <a href="https://onjjem.com/privacy" style="color:${MUTED}">Privacy Policy</a>
@@ -460,17 +460,16 @@ export async function sendWelcomeEmail(toEmail: string, discountCode: string): P
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 28px">
         <tr>
           <td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:1px">
-            <a href="https://onjjem.com/#tool"
+            <a href="https://onjjem.com"
               style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 32px;font-family:Georgia,serif;font-size:15px;font-weight:700;color:#F5D78E;text-decoration:none;letter-spacing:.03em">
-              ✦ &nbsp;Restore a Photo Now
+              ✦ &nbsp;Shop Now
             </a>
           </td>
         </tr>
       </table>
 
       <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
-        Upload any old, blurry, or black-and-white photo and see it brought back to life in seconds.
-        Then order it as a luxury print, canvas, cushion or jigsaw — delivered straight to your door from our London studio.
+        Upload any photo and turn it into a beautiful, personalised gift — canvas prints, magic mugs, jigsaws, photo frames and much more, delivered straight to your door.
       </p>
     </td></tr>
     <tr><td style="height:1px;background:rgba(201,150,12,0.15)"></td></tr>
@@ -486,7 +485,7 @@ export async function sendWelcomeEmail(toEmail: string, discountCode: string): P
   const { error } = await resend.emails.send({
     from: FROM(),
     to: toEmail,
-    subject: "Your 10% welcome discount — ONJJEM Photo Restoration ✦",
+    subject: "Your 10% welcome discount — ONJJEM ✦",
     html: baseTemplate(
       "Welcome! Your exclusive 10% discount code is inside.",
       body,
