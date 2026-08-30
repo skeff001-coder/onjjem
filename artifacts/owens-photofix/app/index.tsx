@@ -53,7 +53,7 @@ const REVIEWS = [
 
 { name: "Claire M, Birmingham", product: "Canvas Print", text: "Got a canvas of my daughter for my husband and he cried when he opened it. Absolutely beautiful quality." },
 
-{ name: "James T, Manchester", product: "Magic Photo Mug", text: "Ordered a magic mug with my sons favourite footballer on it. He could not believe it when he opened it - his face was a picture!" },
+{ name: "James T, Manchester", product: "ChromaCoat Mug", text: "Ordered a ChromaCoat Mug with my sons favourite footballer on it. He could not believe it when he opened it - his face was a picture!" },
 
 { name: "Sarah K, Edinburgh", product: "Photo Jigsaw", text: "The jigsaw of our family holiday photo was stunning. Every piece perfect. Arrived so quickly. Brilliant company." },
 
@@ -66,7 +66,7 @@ export default function HomeScreen() {
 const insets = useSafeAreaInsets();
 
 const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=gifts");
-const openMugShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=kitchen-magic&product=Magic+Photo+Mug");
+const openMugShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=kitchen-magic&product=ChromaCoat+Mug");
 
 return (
 
@@ -221,7 +221,7 @@ activeOpacity={0.88}
 
 <Text style={s.mugLabel}>OUR BESTSELLER</Text>
 
-<Text style={s.mugTitle}>The Magic Photo Mug</Text>
+<Text style={s.mugTitle}>The ChromaCoat Mug</Text>
 
 <Text style={s.mugDesc}>
 
@@ -231,7 +231,7 @@ Starts solid black. Pour in a hot drink and your photo appears in full colour - 
 
 <TouchableOpacity style={s.mugBtn} onPress={openMugShop} activeOpacity={0.85}>
 
-<Text style={s.mugBtnText}>Order The Magic Mug - £14.99</Text>
+<Text style={s.mugBtnText}>Order The ChromaCoat Mug - £14.99</Text>
 
 <Ionicons name="chevron-forward" size={14} color="#0A0804" />
 
