@@ -3,17 +3,24 @@ import { sendOrderConfirmation } from "../email/mailer";
 
 const router = Router();
 
-// Temporary test route — visit /api/test-email?to=youremail@example.com
-// to send a sample order confirmation email and confirm the Gmail setup
+// Temporary test route - visit /api/test-email?to=youremail@example.com
+// to send a sample order confirmation email and confirm the email setup
 // is working correctly. Safe to delete once confirmed.
 router.get("/test-email", async (req: Request, res: Response) => {
-  const to = (req.query.to as string) || process.env.EMAIL_ADMIN || process.env.EMAIL_USER;
+  console.log("🔍 DEBUG: /test-email route hit");
+  
+  const to = (req.query.to as string);
+  console.log("🔍 DEBUG: Email recipient:", to);
+  
   if (!to) {
-    res.status(400).json({ error: "No recipient email available — pass ?to=your@email.com" });
+    console.log("🔍 DEBUG: No 'to' parameter provided");
+    res.status(400).json({ error: "No recipient email provided" });
     return;
   }
 
   try {
+    console.log("🔍 DEBUG: Calling sendOrderConfirmation with:", { to });
+    
     await sendOrderConfirmation({
       customerName: "Test Customer",
       customerEmail: to,
@@ -29,8 +36,15 @@ router.get("/test-email", async (req: Request, res: Response) => {
       stripeSessionId: "test_session_123456789",
       bonusCard: false,
     });
-    res.json({ success: true, message: `Test email sent to ${to} — check your inbox (and spam folder).` });
+
+    console.log("🔍 DEBUG: sendOrderConfirmation succeeded");
+    res.json({ success: true, message: "Test email sent successfully!" });
   } catch (e: any) {
+    console.error("🔍 DEBUG: Email error caught:", {
+      message: e?.message,
+      stack: e?.stack,
+      fullError: e,
+    });
     res.status(500).json({
       error: "Failed to send test email",
       details: e?.message,
