@@ -179,9 +179,9 @@ export default function CartoonScreen() {
         {phase === "paywall" && (
           <View style={s.startCard}>
             <Ionicons name="sparkles" size={40} color="#C9960C" />
-            <Text style={s.startTitle}>See Your Cartoon First</Text>
+            <Text style={s.startTitle}>Bespoke Custom Cartoon Illustrated Artwork</Text>
             <Text style={s.paywallSubtitle}>
-              Get one free preview of your own photo as a cartoon — then add it to any gift for just £1.99
+              A bespoke, one-of-a-kind cartoon illustration of your photo — created as a surprise for just £1.99 when you order any gift.
             </Text>
 
             <Text style={s.sampleLabel}>Real customer results — this is what yours could look like</Text>
