@@ -495,3 +495,70 @@ export async function sendWelcomeEmail(toEmail: string, discountCode: string): P
 
   logger.info({ to: toEmail }, "Welcome email sent");
 }
+
+// ── Bespoke Cartoon Artwork delivery ───────────────────────────────────────────
+
+export interface CartoonImageData {
+  customerName: string;
+  customerEmail: string;
+  productName: string;
+  cartoonBase64: string;
+  cartoonMimeType: string;
+}
+
+export async function sendCartoonImage(data: CartoonImageData): Promise<void> {
+  const resend = getResend();
+  if (!resend) {
+    logger.warn("RESEND_API_KEY not set — skipping cartoon image email");
+    return;
+  }
+
+  const ext = data.cartoonMimeType.includes("png") ? "png" : "jpg";
+
+  const body = `
+    <tr><td style="height:4px;background:linear-gradient(90deg,${GOLD},#F0C040,${GOLD})"></td></tr>
+    <tr><td style="padding:40px 40px 32px">
+
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:24px">
+        <tr><td style="width:56px;height:56px;background:rgba(201,150,12,0.12);border:1px solid rgba(201,150,12,0.3);border-radius:50%;text-align:center;vertical-align:middle;font-size:26px">
+          ✨
+        </td></tr>
+      </table>
+
+      <h1 style="font-size:26px;color:#FAF7F2;margin:0 0 8px;font-weight:700">Your Bespoke Cartoon Artwork</h1>
+      <p style="font-size:15px;color:${MUTED};margin:0 0 28px;line-height:1.6">
+        Hi ${data.customerName.split(" ")[0]}, here's your one-of-a-kind cartoon illustration — created especially for your ${data.productName}. It's attached to this email for you to keep.
+      </p>
+
+      <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
+        Your ${data.productName} featuring this artwork is already on its way to our print studio.
+      </p>
+
+    </td></tr>
+    <tr><td style="height:1px;background:rgba(201,150,12,0.15)"></td></tr>
+    <tr><td style="padding:20px 40px;text-align:center">
+      <p style="font-size:12px;color:${MUTED};margin:0">
+        Printed with care in the United Kingdom 🇬🇧
+      </p>
+    </td></tr>
+  `;
+
+  const { error } = await resend.emails.send({
+    from: FROM(),
+    to: data.customerEmail,
+    subject: `✨ Your Bespoke Cartoon Artwork is here!`,
+    html: baseTemplate(
+      `Your one-of-a-kind cartoon illustration is attached.`,
+      body,
+    ),
+    attachments: [
+      {
+        filename: `onjjem-cartoon.${ext}`,
+        content: data.cartoonBase64,
+      },
+    ],
+  });
+  if (error) throw new Error(error.message);
+
+  logger.info({ to: data.customerEmail }, "Cartoon image email sent");
+}
