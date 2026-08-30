@@ -1,6 +1,6 @@
 import { getUncachableStripeClient } from "./stripeClient";
 import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
-import { sendOrderConfirmation, sendAdminNotification } from "./email/mailer";
+import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage } from "./email/mailer";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
@@ -158,6 +158,17 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
       fulfilmentStatus,
       bonusCard,
     }),
+    ...(meta?.["cartoon_addon"] === "true" && photoBase64
+      ? [
+          sendCartoonImage({
+            customerName,
+            customerEmail: email,
+            productName,
+            cartoonBase64: photoBase64,
+            cartoonMimeType: "image/png",
+          }),
+        ]
+      : []),
   ]);
 }
 
