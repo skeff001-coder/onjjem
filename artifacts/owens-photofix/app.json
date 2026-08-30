@@ -2,7 +2,7 @@
   "expo": {
     "name": "ONJJEM Photo Restoration",
     "slug": "owens-photofix",
-    "version": "2.0.7",
+    "version": "2.0.8",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "owens-photofix",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.photorestoration",
-      "buildNumber": "177",
+      "buildNumber": "178",
       "privacyPolicyUrl": "https://skeff001-coder.github.io/PRIVACY-POLICY-FOR-ONJJEM/",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
@@ -62,7 +62,6 @@
         }
       ]
     ],
-
     "experiments": {
       "typedRoutes": true,
       "baseUrl": "/mobile"
