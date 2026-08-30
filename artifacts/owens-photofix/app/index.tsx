@@ -223,6 +223,14 @@ activeOpacity={0.88}
 
 <Text style={s.mugTitle}>The ChromaCoat Mug</Text>
 
+<View style={s.mugImageRow}>
+
+<Image source={{ uri: "https://onjjem.com/products/magic-mug.jpg" }} style={s.mugImageHalf} resizeMode="cover" />
+
+<Image source={{ uri: "https://onjjem.com/products/Magicbaby.jpg" }} style={s.mugImageHalf} resizeMode="cover" />
+
+</View>
+
 <Text style={s.mugDesc}>
 
 Starts solid black. Pour in a hot drink and your photo appears in full colour - like magic.
@@ -468,7 +476,9 @@ mugLabel: { fontSize: 9, color: GOLD, letterSpacing: 2.5, fontWeight: "700" },
 
 mugTitle: { fontSize: 14, color: "#FFF5E0", fontWeight: "800" },
 
-mugImage: { width: "100%", height: 200, borderRadius: 8, marginVertical: 8 },
+mugImageRow: { flexDirection: "row", gap: 4, marginVertical: 8, borderRadius: 8, overflow: "hidden" },
+
+mugImageHalf: { flex: 1, height: 140 },
 
 mugDesc: { fontSize: 11, color: "rgba(245,237,216,0.75)", lineHeight: 16 },
 
