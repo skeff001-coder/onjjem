@@ -26,7 +26,8 @@
     "stripe": "^17.0.0",
     "drizzle-orm": "^0.40.0",
     "pg": "^8.20.0",
-    "drizzle-zod": "^0.8.3"
+    "drizzle-zod": "^0.8.3",
+    "resend": "^4.0.0",
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
