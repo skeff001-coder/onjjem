@@ -136,7 +136,7 @@ export default function CartoonScreen() {
     setAssets([]);
   };
 
-  const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=gifts");
+  const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=canvas");
   const openSettings = () => Linking.openSettings();
 
   return (
@@ -195,7 +195,7 @@ export default function CartoonScreen() {
             </Text>
 
             <TouchableOpacity
-              onPress={() => WebBrowser.openBrowserAsync("https://onjjem.com/?category=gifts&cartoonify=1#cartoonify")}
+              onPress={() => WebBrowser.openBrowserAsync("https://onjjem.com/?category=canvas&cartoonify=1#cartoonify")}
               style={s.websiteCtaButton}
             >
               <Ionicons name="color-wand-outline" size={20} color="#0F0D09" />
@@ -425,3 +425,4 @@ const s = StyleSheet.create({
   printBtnText: { color: "#0F0D09", fontFamily: "Inter_700Bold", fontSize: 15 },
   printNote: { fontSize: 12, color: "rgba(245,237,216,0.55)", textAlign: "center", paddingHorizontal: 30 },
 });
+
