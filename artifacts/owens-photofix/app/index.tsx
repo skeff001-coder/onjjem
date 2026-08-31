@@ -392,11 +392,11 @@ goldLine: { width: 50, height: 1.5, backgroundColor: GOLD, opacity: 0.5 },
 
 brandWrap: { width: "100%", height: 105, alignItems: "center", justifyContent: "center" },
 
-brandShadow: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#5A3F0A", letterSpacing: -1.5, width: "100%", textAlign: "center", top: 12 },
+brandShadow: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#5A3F0A", letterSpacing: -1.36, width: "100%", textAlign: "center", top: 12 },
 
-brandMid: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#B8781E", letterSpacing: -1.5, width: "100%", textAlign: "center", top: 6 },
+brandMid: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#B8781E", letterSpacing: -1.36, width: "100%", textAlign: "center", top: 6 },
 
-brandTop: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#FFF6DD", letterSpacing: -1.5, width: "100%", textAlign: "center", top: 0 },
+brandTop: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: Platform.select({ ios: "Arial Black", android: "sans-serif-black" }), color: "#FFF6DD", letterSpacing: -1.36, width: "100%", textAlign: "center", top: 0 },
 
 tagline: { fontSize: 14, color: "#F5D78E", letterSpacing: 1, textAlign: "center" },
 
