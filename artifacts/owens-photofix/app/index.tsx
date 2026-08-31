@@ -65,7 +65,7 @@ export default function HomeScreen() {
 
 const insets = useSafeAreaInsets();
 
-const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=gifts");
+const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=canvas");
 const openMugShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=kitchen-magic&product=ChromaCoat+Mug");
 
 return (
