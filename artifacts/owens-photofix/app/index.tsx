@@ -98,21 +98,30 @@ showsVerticalScrollIndicator={false}
 
 <Text style={s.tagline}>Personalised Photo Gift Specialists</Text>
 
-<Text style={s.subTagline}>Made in Britain | Delivered to Your Door</Text>
-
 <View style={s.goldLine} />
 
 </View>
 
-<View style={s.accolade}>
+<View style={s.simpleSteps}>
 
-<Text style={s.accoladeTitle}>Turn Your Photos Into Beautiful Gifts</Text>
+<View style={s.simpleStep}>
+<Text style={s.simpleStepNum}>1</Text>
+<Text style={s.simpleStepLabel}>Choose Your Gift</Text>
+</View>
 
-<Text style={s.accoladeBody}>
+<Text style={s.simpleStepArrow}>→</Text>
 
-Canvas prints, magic mugs, jigsaws, cartoons & more — handcrafted from your own photos.
+<View style={s.simpleStep}>
+<Text style={s.simpleStepNum}>2</Text>
+<Text style={s.simpleStepLabel}>Upload Your Picture</Text>
+</View>
 
-</Text>
+<Text style={s.simpleStepArrow}>→</Text>
+
+<View style={s.simpleStep}>
+<Text style={s.simpleStepNum}>3</Text>
+<Text style={s.simpleStepLabel}>We Do The Rest</Text>
+</View>
 
 </View>
 
@@ -391,13 +400,39 @@ brandTop: { position: "absolute", fontSize: 84, fontWeight: "900", fontFamily: P
 
 tagline: { fontSize: 14, color: "#F5D78E", letterSpacing: 1, textAlign: "center" },
 
-subTagline: { fontSize: 11, color: "rgba(245,215,142,0.45)", textAlign: "center" },
+simpleSteps: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  flexWrap: "wrap",
+  gap: 10,
+  backgroundColor: "rgba(184,137,42,0.08)",
+  borderWidth: 1,
+  borderColor: "rgba(184,137,42,0.25)",
+  borderRadius: 16,
+  paddingVertical: 16,
+  paddingHorizontal: 10,
+  marginBottom: 18,
+},
 
-accolade: { backgroundColor: "#1A1206", borderWidth: 1.5, borderColor: "rgba(201,150,12,0.5)", borderRadius: 12, padding: 16, gap: 10 },
+simpleStep: { alignItems: "center", gap: 4, minWidth: 78 },
 
-accoladeTitle: { fontSize: 15, fontWeight: "700", color: GOLD, letterSpacing: 0.3 },
+simpleStepNum: {
+  width: 26,
+  height: 26,
+  borderRadius: 13,
+  backgroundColor: GOLD,
+  color: "#1A1206",
+  fontSize: 13,
+  fontWeight: "800",
+  textAlign: "center",
+  lineHeight: 26,
+  overflow: "hidden",
+},
 
-accoladeBody: { fontSize: 13, color: "rgba(245,237,216,0.8)", lineHeight: 21 },
+simpleStepLabel: { fontSize: 11.5, fontWeight: "700", color: "#F3E9D6", textAlign: "center" },
+
+simpleStepArrow: { color: "rgba(184,137,42,0.5)", fontSize: 16 },
 
 primaryCta: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 15, alignItems: "center", marginBottom: 18 },
 
