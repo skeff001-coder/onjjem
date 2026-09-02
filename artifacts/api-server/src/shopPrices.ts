@@ -65,7 +65,7 @@ export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
   "photo-tile-5x7": { name: 'Framed Photo Tiles (5x7 inch)', pricePence: 1799 },
   "photo-tile-8x8": { name: 'Framed Photo Tiles (8x8 inch)', pricePence: 2099 },
   "photo-tile-8x10": { name: 'Framed Photo Tiles (8x10 inch)', pricePence: 2199 },
-  "magic-mug": { name: 'Magic Photo Mug (11oz Heat-Activated Mug)', pricePence: 1499 },
+  "magic-mug": { name: 'ChromaCoat Mug (11oz Heat-Activated Mug)', pricePence: 1799 },
   "mug-11oz": { name: 'Photo Mugs (11oz Mug)', pricePence: 1199 },
   "mug-15oz": { name: 'Photo Mugs (15oz Large Mug)', pricePence: 2099 },
   "coaster-1pk": { name: 'Photo Coasters (Single Coaster)', pricePence: 499 },
