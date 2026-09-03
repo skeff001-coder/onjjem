@@ -89,7 +89,7 @@ function baseTemplate(preheader: string, body: string): string {
           &nbsp;·&nbsp;
           <a href="https://onjjem.com/support" style="color:${MUTED}">Support</a>
           &nbsp;·&nbsp;
-          <a href="mailto:orders@onjjem.co.uk" style="color:${MUTED}">orders@onjjem.co.uk</a>
+          <a href="mailto:hello@onjjem.com" style="color:${MUTED}">hello@onjjem.com</a>
         </p>
       </td></tr>
 
@@ -206,7 +206,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
       <!-- CTA -->
       <table role="presentation" cellpadding="0" cellspacing="0">
         <tr><td style="background:${GOLD};border-radius:8px;padding:14px 28px">
-          <a href="mailto:orders@onjjem.co.uk?subject=Order%20${data.stripeSessionId.slice(-12).toUpperCase()}"
+          <a href="mailto:hello@onjjem.com?subject=Order%20${data.stripeSessionId.slice(-12).toUpperCase()}"
             style="color:#12100B;font-size:14px;font-weight:700;letter-spacing:.04em;text-decoration:none">
             Questions? Contact Us
           </a>
