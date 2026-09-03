@@ -209,8 +209,11 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     let cartoonBase64: string | undefined;
     if (body.addCartoon && body.photoBase64) {
       try {
+        const rawBase64 = body.photoBase64.includes(",")
+          ? body.photoBase64.split(",")[1]
+          : body.photoBase64;
         cartoonBase64 = await regenerateCartoonForOrder(
-          body.photoBase64,
+          rawBase64,
           "image/jpeg"
         );
       } catch (err) {
