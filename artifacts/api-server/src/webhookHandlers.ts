@@ -25,11 +25,15 @@ async function ensurePhotoStore(): Promise<void> {
 export async function storePhoto(
   token: string,
   photoBase64: string,
+  cartoonBase64?: string,
 ): Promise<void> {
   await ensurePhotoStore();
+  // If a cartoon version was successfully generated, that's what gets
+  // printed on the physical order — not the original uploaded photo.
+  const finalPhoto = cartoonBase64 || photoBase64;
   await db.execute(sql`
     INSERT INTO pending_photos (token, photo_b64)
-    VALUES (${token}, ${photoBase64})
+    VALUES (${token}, ${finalPhoto})
     ON CONFLICT (token) DO UPDATE SET photo_b64 = EXCLUDED.photo_b64, created_at = NOW()
   `);
 }
