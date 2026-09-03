@@ -196,7 +196,7 @@ export class WebhookHandlers {
       throw new Error("Payload must be a Buffer");
     }
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripe = new Stripe(process.env.STRIPE_KEY_TEMP);
 
     let event;
     try {
