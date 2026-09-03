@@ -197,56 +197,57 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
         limit: 1,
       });
 
-      const price = priceList.data[0];
-
-      if (!price) {
-        res.status(404).json({ error: "No active price for this product. Please contact orders@onjjem.co.uk." });
+      if (!priceList.data[0]) {
+        res.status(404).json({ error: "Price not found. Please contact orders@onjjem.co.uk." });
         return;
       }
 
-      lineItem = { price: price.id, quantity: 1 };
+      lineItem = { price: priceList.data[0].id, quantity: 1 };
     }
 
-    // Store the customer's photo so the webhook can retrieve it after payment.
-    // If they're adding the cartoon upgrade, regenerate a fresh, clean
-    // (non-watermarked) version here — the version they saw during the free
-    // preview was watermarked and isn't fit for printing.
-    let photoToken: string | null = null;
-    let photoToStore = body.photoBase64;
+    // ── Handle cartoon addon (if applicable) ─────────────────────────────────
+    let cartoonBase64: string | undefined;
     if (body.addCartoon && body.photoBase64) {
       try {
-        const rawBase64 = body.photoBase64.includes(",")
-          ? body.photoBase64.split(",")[1]
-          : body.photoBase64;
-        photoToStore = await regenerateCartoonForOrder(rawBase64, "image/jpeg");
+        cartoonBase64 = await regenerateCartoonForOrder(
+          body.photoBase64,
+          "image/jpeg"
+        );
       } catch (err) {
-        req.log.error({ err }, "Cartoon regeneration for order failed — falling back to original photo");
+        req.log.error(
+          { err },
+          "cartoon regeneration failed but proceeding without it"
+        );
       }
     }
-    if (photoToStore) {
-      photoToken = crypto.randomUUID();
-      await storePhoto(photoToken, photoToStore);
+
+    // ── Store photo(s) + generate token ──────────────────────────────────────
+    let photoToken: string | undefined;
+    if (body.photoBase64) {
+      photoToken = crypto.randomBytes(16).toString("hex");
+      await storePhoto(photoToken, body.photoBase64, cartoonBase64);
     }
 
-    const origin = `${req.protocol}://${req.get("host")}`;
+    // ── Build line items (always include product; add cartoon if paid) ───────
+    const lineItems: Parameters<typeof stripe.checkout.sessions.create>[0]["line_items"] = [
+      lineItem as any,
+    ];
 
-    // Add the cartoon transformation as its own line item so it shows up
-    // clearly on the customer's receipt as a separate charge, not folded
-    // invisibly into the product price.
-    const lineItems = [lineItem];
     if (body.addCartoon) {
       lineItems.push({
         price_data: {
           currency: "gbp",
           unit_amount: 199, // £1.99
           product_data: {
-            name: "Cartoon Illustration Upgrade",
-            metadata: { sku: "cartoon-addon" },
+            name: "Custom Cartoon Print Upgrade (+£1.99)",
+            metadata: { sku: "cartoon_addon" },
           },
         },
         quantity: 1,
       });
     }
+
+    const origin = `${req.protocol}://${req.get("host")}`;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -269,7 +270,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
           },
         },
       ],
-      success_url: body.successUrl || `${origin}/?order=success`,
+      success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl || `${origin}/#shop`,
       metadata: {
         sku: body.sku,
@@ -347,142 +348,90 @@ router.post("/stripe/subscribe", async (req: Request, res: Response) => {
   }
 });
 
-// ── List active products with prices ─────────────────────────────────────────
-
-router.get("/stripe/products", async (_req: Request, res: Response) => {
-  try {
-    const rows = await db.execute(sql`
-      SELECT
-        p.id AS product_id,
-        p.name AS product_name,
-        p.description AS product_description,
-        p.metadata AS product_metadata,
-        pr.id AS price_id,
-        pr.unit_amount,
-        pr.currency,
-        pr.recurring,
-        pr.metadata AS price_metadata
-      FROM stripe.products p
-      LEFT JOIN stripe.prices pr ON pr.product = p.id AND pr.active = true
-      WHERE p.active = true
-      ORDER BY p.name, pr.unit_amount
-    `);
-
-    const map = new Map<string, {
-      id: string;
-      name: string;
-      description: string | null;
-      metadata: Record<string, string>;
-      prices: { id: string; unit_amount: number; currency: string; recurring: unknown }[];
-    }>();
-
-    for (const row of rows.rows) {
-      const pid = row.product_id as string;
-      if (!map.has(pid)) {
-        map.set(pid, {
-          id: pid,
-          name: row.product_name as string,
-          description: row.product_description as string | null,
-          metadata: (row.product_metadata as Record<string, string>) ?? {},
-          prices: [],
-        });
-      }
-      if (row.price_id) {
-        map.get(pid)!.prices.push({
-          id: row.price_id as string,
-          unit_amount: row.unit_amount as number,
-          currency: row.currency as string,
-          recurring: row.recurring,
-        });
-      }
-    }
-
-    res.json({ data: Array.from(map.values()) });
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    res.status(500).json({ error: msg });
-  }
-});
-
-// ── Redeem a free gift earned in-app (e.g. WUD's £2.99 bundle postcard) ──────
-// Creates a £0 Stripe Checkout session (via a reusable 100%-off coupon) so
-// the customer can enter their shipping address through Stripe's existing,
-// trusted UI. The photo is stored the same way as normal orders, and the
-// existing webhook fulfils it through Prodigi automatically — this endpoint
-// only ever needs to exist here, no changes needed anywhere else.
-
-const REDEEMABLE_GIFTS: Record<string, { name: string; pricePence: number }> = {
-  "wud-gift-postcard":   { name: "Premium Gloss Personalised Postcard (Bundle Gift)", pricePence: 499  },
-  "onjjem-gift-postcard": { name: "Premium Gloss Personalised Postcard (5-Pack Gift)", pricePence: 499  },
-  "wud-sticker-small":   { name: "Personalised Pet Sticker (My Dog's Shop)",  pricePence: 399  },
-  "wud-sticker-xl":      { name: "XL Pet Vinyl Sticker 14×14\" (My Dog's Shop)", pricePence: 2099 },
-  "wud-magic-mug":       { name: "Magic Colour-Change Mug (My Dog's Shop)",   pricePence: 1499 },
-  "wud-bandanna":        { name: "Personalised Dog Bandanna (My Dog's Shop)", pricePence: 1999 },
-  "wud-jigsaw":          { name: "30-Piece Photo Jigsaw (My Dog's Shop)",     pricePence: 2499 },
-  "wud-invitation-card": { name: "Personalised Invitation Card (My Dog's Shop)", pricePence: 499 },
-};
+// ── Redeem free postcard gift ────────────────────────────────────────────────
 
 router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
   const body = req.body as {
     giftSku?: string;
     photoBase64?: string;
     dogName?: string;
-    overridePrice?: number;
     successUrl?: string;
     cancelUrl?: string;
+    couponCode?: string;
   };
 
-  if (!body.giftSku || !body.photoBase64) {
-    res.status(400).json({ error: "giftSku and photoBase64 are required" });
+  if (!body.giftSku) {
+    res.status(400).json({ error: "giftSku is required" });
     return;
   }
-
-  const gift = REDEEMABLE_GIFTS[body.giftSku];
-  if (!gift) {
-    res.status(400).json({ error: "This item is not redeemable as a gift." });
-    return;
-  }
-
-  // Allow the app to pass a discounted price (e.g. 15% bundle discount).
-  // Never allow the price to go below zero or exceed the catalogue price.
-  const finalPrice = body.overridePrice != null
-    ? Math.max(0, Math.min(body.overridePrice, gift.pricePence))
-    : gift.pricePence;
 
   try {
     const stripe = await getUncachableStripeClient();
 
-    let sessionDiscounts: { coupon: string }[] = [];
-    if (finalPrice === 0) {
-      const COUPON_ID = "wud-free-gift-100";
-      try {
-        await stripe.coupons.retrieve(COUPON_ID);
-      } catch {
-        await stripe.coupons.create({
-          id: COUPON_ID,
-          percent_off: 100,
-          duration: "once",
-          name: "Free Gift",
-        });
+    // ── Resolve gift price from server catalog ───────────────────────────────
+    const catalogEntry = SHOP_SKU_PRICES[body.giftSku];
+    let finalPrice: number;
+
+    if (catalogEntry) {
+      finalPrice = catalogEntry.pricePence;
+    } else {
+      // Fallback to Stripe product lookup
+      const searchResults = await stripe.products.search({
+        query: `active:"true" AND metadata["sku"]:"${body.giftSku}"`,
+        limit: 1,
+      });
+      const product = searchResults.data[0];
+
+      if (!product) {
+        res.status(404).json({ error: "Gift product not found." });
+        return;
       }
-      sessionDiscounts = [{ coupon: COUPON_ID }];
+
+      const priceList = await stripe.prices.list({
+        product: product.id,
+        active: true,
+        limit: 1,
+      });
+
+      if (!priceList.data[0]) {
+        res.status(404).json({ error: "Gift price not found." });
+        return;
+      }
+
+      finalPrice = priceList.data[0].unit_amount || 0;
     }
 
-    const photoToken = crypto.randomUUID();
-    await storePhoto(photoToken, body.photoBase64);
+    // ── Handle photo storage + coupons ───────────────────────────────────────
+    let photoToken: string | undefined;
+    if (body.photoBase64) {
+      photoToken = crypto.randomBytes(16).toString("hex");
+      await storePhoto(photoToken, body.photoBase64);
+    }
+
+    const sessionDiscounts: { coupon: string }[] = [];
+    if (body.couponCode) {
+      const coupon = await stripe.coupons.retrieve(body.couponCode);
+      if (coupon && coupon.valid) {
+        sessionDiscounts.push({ coupon: body.couponCode });
+      }
+    }
+
+    // ── Fetch gift details for product_data ──────────────────────────────────
+    const gift = Object.values(SHOP_SKU_PRICES).find(
+      (p) => p.sku === body.giftSku,
+    );
 
     const origin = `${req.protocol}://${req.get("host")}`;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      ...(finalPrice === 0 ? { payment_method_collection: "if_required" } : {}),
       line_items: [
         {
           price_data: {
             currency: "gbp",
             unit_amount: finalPrice,
             product_data: {
-              name: gift.name,
+              name: gift?.name || "Free Gift Postcard",
               metadata: { sku: body.giftSku },
             },
           },
@@ -526,6 +475,43 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Unknown error";
     req.log.error({ msg }, "stripe/redeem-gift error");
+    res.status(500).json({ error: msg });
+  }
+});
+
+// ── Fetch Stripe session details for GA4 purchase tracking ───────────────────
+// Called by the frontend after successful checkout to log item-level data
+router.get("/stripe/session/:sessionId", async (req: Request, res: Response) => {
+  try {
+    const { sessionId } = req.params;
+    if (!sessionId) {
+      res.status(400).json({ error: "session_id required" });
+      return;
+    }
+    const stripe = await getUncachableStripeClient();
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ["line_items", "line_items.data.price.product"],
+    });
+    res.status(200).json({
+      id: session.id,
+      amount_total: session.amount_total,
+      currency: session.currency,
+      payment_status: session.payment_status,
+      line_items: {
+        data: session.line_items?.data?.map((item: any) => ({
+          quantity: item.quantity,
+          price: {
+            unit_amount: item.price?.unit_amount,
+            product: {
+              id: item.price?.product?.id,
+              name: item.price?.product?.name,
+            },
+          },
+        })) || [],
+      },
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Could not retrieve session";
     res.status(500).json({ error: msg });
   }
 });
