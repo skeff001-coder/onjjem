@@ -126,6 +126,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     cancelUrl?: string;
     addCartoon?: boolean;
     cartoonEmail?: string;
+    confirmedCartoonBase64?: string;
   };
 
   if (!body.sku) {
@@ -207,7 +208,12 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
 
     // ── Handle cartoon addon (if applicable) ─────────────────────────────────
     let cartoonBase64: string | undefined;
-    if (body.addCartoon && body.photoBase64) {
+    if (body.addCartoon && body.confirmedCartoonBase64) {
+      // Customer already saw and approved this exact result during the free
+      // preview step — use it directly rather than generating a fresh,
+      // potentially different-looking version now.
+      cartoonBase64 = body.confirmedCartoonBase64;
+    } else if (body.addCartoon && body.photoBase64) {
       try {
         const rawBase64 = body.photoBase64.includes(",")
           ? body.photoBase64.split(",")[1]
