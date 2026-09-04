@@ -7,13 +7,14 @@ import { join } from "path";
 const router = Router();
 
 // ── Free preview tracking ────────────────────────────────────────────────────
-// Up to 2 free watermarked previews per email address (their first go, plus
-// one retry if they don't like the result) — capped further by a limit per
-// IP address (so someone can't just type a new fake email each time).
+// One free watermarked preview per email address — trying a different result
+// after that is a paid £1.99 attempt, not another free retry — capped
+// further by a limit per IP address (so someone can't just type a new fake
+// email each time).
 const DATA_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || "/tmp";
 const DATA_FILE = join(DATA_DIR, "cartoonify_free_previews.json");
 const MAX_PREVIEWS_PER_IP_PER_DAY = 6;
-const MAX_PREVIEWS_PER_EMAIL = 2;
+const MAX_PREVIEWS_PER_EMAIL = 1;
 
 function readStore(): { emails: Record<string, number>; ipDaily: Record<string, { day: string; count: number }> } {
   try {
