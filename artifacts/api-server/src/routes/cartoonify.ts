@@ -165,30 +165,29 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
   // If this is a free preview request, enforce up to 2 tries per email
   // (their first go, plus one retry) AND a per-IP daily cap, so someone
   // can't just type a new fake email each time for unlimited free previews.
-  let remaining = 0;
+  // Email is optional — if not given, IP limiting alone still applies.
+  let remaining = MAX_PREVIEWS_PER_EMAIL;
   if (watermark) {
-    if (!email) {
-      res.status(400).json({ error: "Email is required for a free preview" });
-      return;
-    }
-    remaining = emailPreviewsRemaining(email);
-    if (remaining <= 0) {
-      res.json({ alreadyUsed: true });
-      return;
-    }
     const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
     if (hasIpExceededDailyLimit(ip)) {
       res.json({ alreadyUsed: true, limitReason: "too_many_from_this_device" });
       return;
+    }
+    if (email) {
+      remaining = emailPreviewsRemaining(email);
+      if (remaining <= 0) {
+        res.json({ alreadyUsed: true });
+        return;
+      }
     }
   }
 
   try {
     const result = await generateCartoon(base64Image, mimeType);
 
-    if (watermark && email) {
+    if (watermark) {
       const watermarkedBase64 = await addWatermark(result.base64Image, result.mimeType);
-      recordEmailPreview(email);
+      if (email) recordEmailPreview(email);
       const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
       recordIpPreview(ip);
       res.json({
