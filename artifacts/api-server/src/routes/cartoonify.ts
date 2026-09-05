@@ -163,6 +163,12 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
     return;
   }
 
+  // The frontend sends a full data URL (data:image/jpeg;base64,...) — Gemini
+  // needs just the raw base64 data, or it rejects the request entirely.
+  const rawBase64Image = base64Image.includes(",")
+    ? base64Image.split(",")[1]
+    : base64Image;
+
   // If this is a free preview request, enforce up to 2 tries per email
   // (their first go, plus one retry) AND a per-IP daily cap, so someone
   // can't just type a new fake email each time for unlimited free previews.
@@ -184,7 +190,7 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
   }
 
   try {
-    const result = await generateCartoon(base64Image, mimeType);
+    const result = await generateCartoon(rawBase64Image, mimeType);
 
     if (watermark) {
       const watermarkedBase64 = await addWatermark(result.base64Image, result.mimeType);
