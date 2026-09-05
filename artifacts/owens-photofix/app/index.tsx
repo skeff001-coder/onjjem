@@ -65,8 +65,8 @@ export default function HomeScreen() {
 
 const insets = useSafeAreaInsets();
 
-const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=canvas");
-const openMugShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=kitchen-magic&product=ChromaCoat+Mug");
+const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=canvas-premium");
+const openMugShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=households&product=ChromaCoat+Mug");
 
 return (
 
@@ -106,21 +106,17 @@ showsVerticalScrollIndicator={false}
 
 <View style={s.simpleStep}>
 <Text style={s.simpleStepNum}>1</Text>
-<Text style={s.simpleStepLabel}>Choose Your Gift</Text>
+<Text style={s.simpleStepLabel}>Visit Shop</Text>
 </View>
-
-<Text style={s.simpleStepArrow}>→</Text>
 
 <View style={s.simpleStep}>
 <Text style={s.simpleStepNum}>2</Text>
-<Text style={s.simpleStepLabel}>Upload Your Picture</Text>
+<Text style={s.simpleStepLabel}>Upload Pic</Text>
 </View>
-
-<Text style={s.simpleStepArrow}>→</Text>
 
 <View style={s.simpleStep}>
 <Text style={s.simpleStepNum}>3</Text>
-<Text style={s.simpleStepLabel}>We Do The Rest</Text>
+<Text style={s.simpleStepLabel}>We Create</Text>
 </View>
 
 </View>
@@ -260,7 +256,7 @@ Made with state-of-the-art thermochromic technology and stunning HD print qualit
 
 <TouchableOpacity style={s.mugBtn} onPress={openMugShop} activeOpacity={0.85}>
 
-<Text style={s.mugBtnText}>Order The ChromaCoat Mug - £14.99</Text>
+<Text style={s.mugBtnText}>Order The ChromaCoat Mug - £17.99</Text>
 
 <Ionicons name="chevron-forward" size={14} color="#0A0804" />
 
@@ -432,7 +428,6 @@ simpleStepNum: {
 
 simpleStepLabel: { fontSize: 11.5, fontWeight: "700", color: "#F3E9D6", textAlign: "center" },
 
-simpleStepArrow: { color: "rgba(184,137,42,0.5)", fontSize: 16 },
 
 primaryCta: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 15, alignItems: "center", marginBottom: 18 },
 
