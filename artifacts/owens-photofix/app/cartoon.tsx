@@ -136,7 +136,7 @@ export default function CartoonScreen() {
     setAssets([]);
   };
 
-  const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=canvas");
+  const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=canvas-premium");
   const openSettings = () => Linking.openSettings();
 
   return (
@@ -179,9 +179,9 @@ export default function CartoonScreen() {
         {phase === "paywall" && (
           <View style={s.startCard}>
             <Ionicons name="sparkles" size={40} color="#C9960C" />
-            <Text style={s.startTitle}>Bespoke Custom Cartoon Illustrated Artwork</Text>
+            <Text style={s.startTitle}>Cartoon Fun!</Text>
             <Text style={s.paywallSubtitle}>
-              A bespoke, one-of-a-kind cartoon illustration of your photo — created as a surprise for just £1.99 when you order any gift.
+              See a free preview of your photo as a cartoon before you decide — love it? Add the full version to any gift for just £1.99.
             </Text>
 
             <Text style={s.sampleLabel}>Real customer results — this is what yours could look like</Text>
@@ -195,7 +195,7 @@ export default function CartoonScreen() {
             </Text>
 
             <TouchableOpacity
-              onPress={() => WebBrowser.openBrowserAsync("https://onjjem.com/?category=canvas&cartoonify=1#cartoonify")}
+              onPress={() => WebBrowser.openBrowserAsync("https://onjjem.com/?category=households&product=ChromaCoat+Mug")}
               style={s.websiteCtaButton}
             >
               <Ionicons name="color-wand-outline" size={20} color="#0F0D09" />
