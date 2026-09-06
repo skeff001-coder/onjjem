@@ -15,12 +15,6 @@ export interface CatalogEntry {
 }
 
 export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
-  "GLOBAL-CAN-A5": { name: 'Premium Stretched Canvas Wall Art (Small - A5)', pricePence: 3999 },
-  "GLOBAL-CAN-A4": { name: 'Premium Stretched Canvas Wall Art (Small - A4)', pricePence: 4499 },
-  "GLOBAL-CAN-A3": { name: 'Premium Stretched Canvas Wall Art (Medium - A3)', pricePence: 5999 },
-  "GLOBAL-CAN-A2": { name: 'Premium Stretched Canvas Wall Art (Medium - A2)', pricePence: 7999 },
-  "GLOBAL-CAN-A1": { name: 'Premium Stretched Canvas Wall Art (Large - A1)', pricePence: 10999 },
-  "GLOBAL-CAN-A0": { name: 'Premium Stretched Canvas Wall Art (Large - A0)', pricePence: 13999 },
   "ECO-CAN-8X8": { name: 'Friendly Recycled Eco Canvas (Small - 8x8 inch)', pricePence: 2499 },
   "ECO-CAN-8X12": { name: 'Friendly Recycled Eco Canvas (Small - 8x12 inch)', pricePence: 2699 },
   "ECO-CAN-12X12": { name: 'Friendly Recycled Eco Canvas (Medium - 12x12 inch)', pricePence: 2999 },
