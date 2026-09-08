@@ -23,13 +23,18 @@ async function regenerateCartoonForOrder(base64Image: string, mimeType: string):
       { inlineData: { mimeType, data: base64Image } },
       {
         text:
-          "Redraw this photo as a warm, high-quality Pixar/Disney-style " +
-          "3D animated cartoon illustration. Keep the subject clearly " +
-          "recognisable (same pose, same distinguishing features) but " +
-          "reimagined with soft cartoon shading, big expressive eyes if " +
-          "there's a face or animal in the photo, and a gentle, family-friendly " +
-          "art style. Keep the background simple and complementary, not busy. " +
-          "Output only the image, no text.",
+          "Completely transform this photo into a vibrant, high-quality 3D " +
+          "animated movie character illustration, in the bold style of a " +
+          "modern Pixar or DreamWorks film — NOT a lightly-edited photo. " +
+          "Genuinely redraw and stylise every feature: large expressive " +
+          "eyes, smooth simplified skin/fur shading, a slightly exaggerated " +
+          "and appealing character design, and rich, saturated cartoon " +
+          "colours. The person or animal should still be recognisable by " +
+          "their pose, colouring, and distinguishing features, but the " +
+          "final image must clearly read as a professional animated " +
+          "character, not a filtered photograph. Use a simple, " +
+          "complementary background that doesn't distract from the " +
+          "character. Output only the image, no text.",
       },
     ],
     config: { responseModalities: ["IMAGE"] },
@@ -278,6 +283,17 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
             },
           },
         },
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: 1499, currency: "gbp" },
+            display_name: "International Shipping",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 5 },
+              maximum: { unit: "business_day", value: 14 },
+            },
+          },
+        },
       ],
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl || `${origin}/#shop`,
@@ -461,6 +477,17 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
             delivery_estimate: {
               minimum: { unit: "business_day", value: 3 },
               maximum: { unit: "business_day", value: 5 },
+            },
+          },
+        },
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: 1499, currency: "gbp" },
+            display_name: "International Shipping",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 5 },
+              maximum: { unit: "business_day", value: 14 },
             },
           },
         },
