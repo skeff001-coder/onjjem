@@ -15,6 +15,9 @@ export interface CatalogEntry {
 }
 
 export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
+  "giftcard-20": { name: 'ONJJEM Digital Gift Card (£20)', pricePence: 2000 },
+  "giftcard-30": { name: 'ONJJEM Digital Gift Card (£30)', pricePence: 3000 },
+  "giftcard-50": { name: 'ONJJEM Digital Gift Card (£50)', pricePence: 5000 },
   "ECO-CAN-8X8": { name: 'Friendly Recycled Eco Canvas (Small - 8x8 inch)', pricePence: 2499 },
   "ECO-CAN-8X12": { name: 'Friendly Recycled Eco Canvas (Small - 8x12 inch)', pricePence: 2699 },
   "ECO-CAN-12X12": { name: 'Friendly Recycled Eco Canvas (Medium - 12x12 inch)', pricePence: 2999 },
