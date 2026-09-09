@@ -103,5 +103,6 @@ export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
   "water-bottle-copper-navy": { name: 'Personalised Insulated Water Bottle (Navy)', pricePence: 2999 },
   "water-bottle-copper-red": { name: 'Personalised Insulated Water Bottle (Red)', pricePence: 2999 },
   "water-bottle-copper-lime": { name: 'Personalised Insulated Water Bottle (Lime)', pricePence: 2999 },
+  "CLASSIC-POST-GLOS-6X4": { name: 'Photo Postcard (6x4 inch, Gloss)', pricePence: 299 },
   "photo-print-5x5": { name: '5x5 Inch Personalised Photo Print (Unframed)', pricePence: 699 },
 };
