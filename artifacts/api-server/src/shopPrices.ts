@@ -87,8 +87,6 @@ export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
   "budget-poster-a1-landscape": { name: 'Budget Poster (A1 / Landscape)', pricePence: 2499 },
   "budget-poster-a0-portrait": { name: 'Budget Poster (A0 / Portrait)', pricePence: 2799 },
   "budget-poster-a0-landscape": { name: 'Budget Poster (A0 / Landscape)', pricePence: 2799 },
-  "BAP-8X12": { name: "Display Board Print (Small - A4, 8\" x 12\")", pricePence: 599 },
-  "BAP-12X17": { name: "Display Board Print (Medium - A3, 12\" x 17\")", pricePence: 899 },
   "pet-tag-round": { name: 'Pet Tags (Round Tag)', pricePence: 1399 },
   "pet-tag-bone": { name: 'Pet Tags (Bone Shape Tag)', pricePence: 1399 },
   "tattoo-s": { name: 'Temporary Tattoos (Small (5cm x 7.5cm))', pricePence: 1199 },
