@@ -1,6 +1,6 @@
 import { getUncachableStripeClient } from "./stripeClient";
 import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
-import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage } from "./email/mailer";
+import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail } from "./email/mailer";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
@@ -48,6 +48,55 @@ async function retrieveAndDeletePhoto(token: string): Promise<string | null> {
 
 // ── Checkout completed → fulfilment ───────────────────────────────────────────
 
+async function handleGiftCardPurchase(sessionId: string, sku: string, email: string): Promise<void> {
+  if (!email) {
+    logger.warn({ sessionId }, "Gift card purchase has no email — cannot deliver code");
+    return;
+  }
+
+  const amountBySku: Record<string, number> = {
+    "giftcard-20": 2000,
+    "giftcard-30": 3000,
+    "giftcard-50": 5000,
+  };
+  const amountPence = amountBySku[sku];
+  if (!amountPence) {
+    logger.error({ sessionId, sku }, "Unknown gift card SKU");
+    return;
+  }
+
+  try {
+    const stripe = await getUncachableStripeClient();
+
+    // Genuine, real Stripe coupon worth the exact gift card amount, off a
+    // single order, usable once — this is what actually gets redeemed.
+    const coupon = await stripe.coupons.create({
+      amount_off: amountPence,
+      currency: "gbp",
+      duration: "once",
+      max_redemptions: 1,
+      name: `ONJJEM Gift Card (£${(amountPence / 100).toFixed(2)})`,
+    });
+
+    const code = "GIFT" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    await stripe.promotionCodes.create({
+      coupon: coupon.id,
+      code,
+      max_redemptions: 1,
+    });
+
+    await sendGiftCardEmail({
+      email,
+      code,
+      amount: (amountPence / 100).toFixed(2),
+    });
+
+    logger.info({ sessionId, email, code }, "Gift card code generated and sent");
+  } catch (err) {
+    logger.error({ err, sessionId }, "Gift card generation failed");
+  }
+}
+
 async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   const stripe = await getUncachableStripeClient();
 
@@ -61,6 +110,17 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     (session["customer_email"] as string | undefined) ??
     "";
 
+  const meta = session["metadata"] as Record<string, string> | undefined;
+  const earlySku = meta?.["sku"] ?? "";
+
+  // Gift cards are digital — no photo, no shipping address, no Prodigi order.
+  // Handle them completely separately before any of the physical-order logic
+  // below (which would otherwise skip the order entirely for lacking an address).
+  if (earlySku.startsWith("giftcard-")) {
+    await handleGiftCardPurchase(sessionId, earlySku, email);
+    return;
+  }
+
   const collectedInfo = session["collected_information"] as Record<string, unknown> | undefined;
   const shippingDetails = (session["shipping_details"] ??
     collectedInfo?.["shipping_details"]) as Record<string, unknown> | undefined;
@@ -72,7 +132,6 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     return;
   }
 
-  const meta = session["metadata"] as Record<string, string> | undefined;
   const photoToken = meta?.["photo_token"] ?? null;
 
   let photoBase64 = "";
