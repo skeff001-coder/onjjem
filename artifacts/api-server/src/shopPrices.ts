@@ -74,7 +74,7 @@ export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
   "jigsaw-252": { name: 'Photo Jigsaw (252 pieces (The Rainy Day Choice))', pricePence: 2999 },
   "jigsaw-500": { name: 'Photo Jigsaw (500 pieces (The Weekend Challenge))', pricePence: 3499 },
   "jigsaw-1000": { name: 'Photo Jigsaw (1000 pieces (The Ultimate Puzzle))', pricePence: 3799 },
-  "playing-cards": { name: 'Personalised Photo Playing Cards (Full Deck)', pricePence: 1799 },
+  "playing-cards": { name: 'Satin-Finish Personalised Photo Cards (Full Deck)', pricePence: 1699 },
   "budget-poster-a5-portrait": { name: 'Budget Poster (A5 / Portrait)', pricePence: 1899 },
   "budget-poster-a5-landscape": { name: 'Budget Poster (A5 / Landscape)', pricePence: 1899 },
   "budget-poster-a4-portrait": { name: 'Budget Poster (A4 / Portrait)', pricePence: 1899 },
