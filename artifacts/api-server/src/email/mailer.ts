@@ -562,3 +562,53 @@ export async function sendCartoonImage(data: CartoonImageData): Promise<void> {
 
   logger.info({ to: data.customerEmail }, "Cartoon image email sent");
 }
+
+// ── Digital Gift Card delivery ─────────────────────────────────────────────────
+
+export interface GiftCardEmailData {
+  email: string;
+  code: string;
+  amount: string;
+}
+
+export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> {
+  const resend = getResend();
+  if (!resend) {
+    logger.warn("RESEND_API_KEY not set — skipping gift card email");
+    return;
+  }
+
+  const body = `
+    <tr><td style="height:4px;background:linear-gradient(90deg,${GOLD},#F0C040,${GOLD})"></td></tr>
+    <tr><td style="padding:40px 40px 32px">
+      <h1 style="font-size:26px;color:#FAF7F2;margin:0 0 8px;font-weight:700">Your ONJJEM Gift Card</h1>
+      <p style="font-size:15px;color:${MUTED};margin:0 0 28px;line-height:1.6">
+        Thank you for your purchase! Here's your gift card, ready to give or use.
+      </p>
+      <div style="background:${SURFACE};border:1px dashed ${GOLD};border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">
+        <p style="font-size:13px;color:${MUTED};margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Gift Card Value</p>
+        <p style="font-size:32px;color:${GOLD};margin:0 0 16px;font-weight:800">£${data.amount}</p>
+        <p style="font-size:13px;color:${MUTED};margin:0 0 6px">Redemption Code</p>
+        <p style="font-size:22px;color:#FAF7F2;margin:0;font-weight:800;letter-spacing:2px;font-family:monospace">${data.code}</p>
+      </div>
+      <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
+        To use this gift card, simply enter the code above in the promo code box at checkout on
+        <a href="https://onjjem.com" style="color:${GOLD}">onjjem.com</a> — the value will be deducted
+        from your order automatically. This code can be used once, on a single order.
+      </p>
+    </td></tr>
+  `;
+
+  const { error } = await resend.emails.send({
+    from: FROM(),
+    to: data.email,
+    subject: `🎁 Your ONJJEM Gift Card (£${data.amount})`,
+    html: baseTemplate(
+      `Your £${data.amount} ONJJEM gift card is ready to use.`,
+      body,
+    ),
+  });
+  if (error) throw new Error(error.message);
+
+  logger.info({ to: data.email }, "Gift card email sent");
+}
