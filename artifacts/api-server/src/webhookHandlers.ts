@@ -137,6 +137,25 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   let photoBase64 = "";
   if (photoToken) {
     photoBase64 = (await retrieveAndDeletePhoto(photoToken)) ?? "";
+    // Many phone cameras store photos with the pixels in one orientation and
+    // an EXIF "Orientation" tag telling viewers to rotate for display — the
+    // photo looks correct on the customer's phone, but printing the raw
+    // pixels without applying that rotation can result in a sideways or
+    // incorrectly-cropped print. sharp's .rotate() with no arguments reads
+    // the EXIF tag and physically applies the correct rotation.
+    if (photoBase64) {
+      try {
+        const sharp = (await import("sharp")).default;
+        const commaIdx = photoBase64.indexOf(",");
+        const prefix = commaIdx >= 0 ? photoBase64.slice(0, commaIdx + 1) : "data:image/jpeg;base64,";
+        const rawBase64 = commaIdx >= 0 ? photoBase64.slice(commaIdx + 1) : photoBase64;
+        const inputBuffer = Buffer.from(rawBase64, "base64");
+        const correctedBuffer = await sharp(inputBuffer).rotate().toBuffer();
+        photoBase64 = prefix + correctedBuffer.toString("base64");
+      } catch (err) {
+        logger.warn({ err }, "EXIF auto-rotation failed — using photo as uploaded");
+      }
+    }
   }
 
   let sku = meta?.["sku"] ?? "";
