@@ -185,7 +185,12 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     (details?.["name"] as string | undefined) ??
     "Customer";
 
-  const shippingAddress = {
+  // If the customer chose to send this directly to someone else, their
+  // typed recipient details take priority over whatever address Stripe
+  // collected from the payer — the payer's own address is just for billing
+  // in that case, not where the item should actually be delivered.
+  let recipientMessage: string | undefined;
+  let shippingAddress = {
     name: customerName,
     line1: (addr["line1"] as string | undefined) ?? "",
     line2: addr["line2"] as string | undefined,
@@ -193,6 +198,33 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     postal_code: (addr["postal_code"] as string | undefined) ?? "",
     country: (addr["country"] as string | undefined) ?? "GB",
   };
+
+  const recipientJson = meta?.["recipient_json"];
+  if (recipientJson) {
+    try {
+      const recipient = JSON.parse(recipientJson) as {
+        name?: string;
+        line1?: string;
+        line2?: string;
+        city?: string;
+        postcode?: string;
+        message?: string;
+      };
+      if (recipient.line1 && recipient.city && recipient.postcode) {
+        shippingAddress = {
+          name: recipient.name || "Recipient",
+          line1: recipient.line1,
+          line2: recipient.line2,
+          city: recipient.city,
+          postal_code: recipient.postcode,
+          country: shippingAddress.country, // recipient form is UK-only for now
+        };
+        recipientMessage = recipient.message;
+      }
+    } catch (err) {
+      logger.warn({ err }, "Could not parse recipient_json — falling back to payer's address");
+    }
+  }
 
   let productName = sku;
   try {
@@ -239,6 +271,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
       bolOrderId,
       fulfilmentStatus,
       bonusCard,
+      recipientMessage,
     }),
     ...(meta?.["cartoon_addon"] === "true" && photoBase64
       ? [
