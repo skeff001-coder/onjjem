@@ -132,6 +132,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     addCartoon?: boolean;
     cartoonEmail?: string;
     confirmedCartoonBase64?: string;
+    international?: boolean;
   };
 
   if (!body.sku) {
@@ -269,11 +270,12 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       mode: "payment",
       allow_promotion_codes: true,
       shipping_address_collection: {
-        allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"],
+        allowed_countries: body.international
+          ? ["US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"]
+          : ["GB"],
       },
       shipping_options: [
-        { shipping_rate: "shr_1U88e4LkpMwsJmFN2uGD9IvH" }, // Free UK shipping
-        { shipping_rate: "shr_1UEeO9LkpMwsJmFNVCYOdr52" }, // International delivery
+        { shipping_rate: body.international ? "shr_1UEeO9LkpMwsJmFNVCYOdr52" : "shr_1U88e4LkpMwsJmFN2uGD9IvH" },
       ],
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl || `${origin}/#shop`,
@@ -363,6 +365,7 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
     successUrl?: string;
     cancelUrl?: string;
     couponCode?: string;
+    international?: boolean;
   };
 
   if (!body.giftSku) {
@@ -446,11 +449,12 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
       mode: "payment",
       ...(sessionDiscounts.length > 0 ? { discounts: sessionDiscounts } : {}),
       shipping_address_collection: {
-        allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"],
+        allowed_countries: body.international
+          ? ["US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"]
+          : ["GB"],
       },
       shipping_options: [
-        { shipping_rate: "shr_1U88e4LkpMwsJmFN2uGD9IvH" }, // Free UK shipping
-        { shipping_rate: "shr_1UEeO9LkpMwsJmFNVCYOdr52" }, // International delivery
+        { shipping_rate: body.international ? "shr_1UEeO9LkpMwsJmFNVCYOdr52" : "shr_1U88e4LkpMwsJmFN2uGD9IvH" },
       ],
       success_url: body.successUrl || `${origin}/?gift=claimed`,
       cancel_url: body.cancelUrl || `${origin}/`,
