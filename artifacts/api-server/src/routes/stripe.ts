@@ -133,6 +133,14 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     cartoonEmail?: string;
     confirmedCartoonBase64?: string;
     international?: boolean;
+    recipient?: {
+      name?: string;
+      line1?: string;
+      line2?: string;
+      city?: string;
+      postcode?: string;
+      message?: string;
+    };
   };
 
   if (!body.sku) {
@@ -289,6 +297,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
         sku: body.sku,
         ...(photoToken ? { photo_token: photoToken } : {}),
         ...(body.addCartoon ? { cartoon_addon: "true" } : {}),
+        ...(body.recipient ? { recipient_json: JSON.stringify(body.recipient).slice(0, 490) } : {}),
       },
       custom_text: {
         submit: {
