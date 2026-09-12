@@ -275,7 +275,13 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
           : ["GB"],
       },
       shipping_options: [
-        { shipping_rate: body.international ? "shr_1UEeO9LkpMwsJmFNVCYOdr52" : "shr_1U88e4LkpMwsJmFN2uGD9IvH" },
+        {
+          shipping_rate: body.international
+            ? (body.sku === "CLASSIC-POST-GLOS-6X4"
+                ? "shr_1UEtVZLkpMwsJmFNIQcFuntm" // International Postcard Delivery — £4.99
+                : "shr_1UEeO9LkpMwsJmFNVCYOdr52") // International delivery — £14.99
+            : "shr_1U88e4LkpMwsJmFN2uGD9IvH", // Free UK shipping
+        },
       ],
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl || `${origin}/#shop`,
