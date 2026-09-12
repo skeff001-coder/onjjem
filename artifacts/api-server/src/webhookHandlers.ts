@@ -1,6 +1,6 @@
 import { getUncachableStripeClient } from "./stripeClient";
 import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
-import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail } from "./email/mailer";
+import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail, sendApronLoyaltyEmail } from "./email/mailer";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
@@ -47,6 +47,33 @@ async function retrieveAndDeletePhoto(token: string): Promise<string | null> {
 }
 
 // ── Checkout completed → fulfilment ───────────────────────────────────────────
+
+async function sendApronLoyaltyDiscount(sessionId: string, email: string): Promise<void> {
+  try {
+    const stripe = await getUncachableStripeClient();
+
+    // Genuine, real Stripe coupon — 15% off, usable once, on a single order.
+    const coupon = await stripe.coupons.create({
+      percent_off: 15,
+      duration: "once",
+      max_redemptions: 1,
+      name: "Apron Loyalty — 15% Off",
+    });
+
+    const code = "APRON15-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    await stripe.promotionCodes.create({
+      coupon: coupon.id,
+      code,
+      max_redemptions: 1,
+    });
+
+    await sendApronLoyaltyEmail({ email, code });
+
+    logger.info({ sessionId, email, code }, "Apron loyalty discount code generated and sent");
+  } catch (err) {
+    logger.error({ err, sessionId }, "Apron loyalty discount generation failed");
+  }
+}
 
 async function handleGiftCardPurchase(sessionId: string, sku: string, email: string): Promise<void> {
   if (!email) {
@@ -119,6 +146,16 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   if (earlySku.startsWith("giftcard-")) {
     await handleGiftCardPurchase(sessionId, earlySku, email);
     return;
+  }
+
+  // Apron buyers get a genuine 15%-off code for a second apron, emailed
+  // separately — this is instead of a bundled two-item order, since our
+  // fulfilment currently sends one physical item per order. The apron
+  // itself still goes through the normal fulfilment flow below.
+  if ((earlySku === "H-APR-CA-WTIE" || earlySku === "H-APR-AA-BTIE") && email) {
+    void sendApronLoyaltyDiscount(sessionId, email).catch((err) => {
+      logger.error({ err, sessionId }, "Apron loyalty discount generation failed");
+    });
   }
 
   const collectedInfo = session["collected_information"] as Record<string, unknown> | undefined;
