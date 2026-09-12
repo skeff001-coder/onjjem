@@ -272,28 +272,8 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
         allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"],
       },
       shipping_options: [
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: { amount: 0, currency: "gbp" },
-            display_name: "Free UK Delivery",
-            delivery_estimate: {
-              minimum: { unit: "business_day", value: 3 },
-              maximum: { unit: "business_day", value: 5 },
-            },
-          },
-        },
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: { amount: 1499, currency: "gbp" },
-            display_name: "International Shipping",
-            delivery_estimate: {
-              minimum: { unit: "business_day", value: 5 },
-              maximum: { unit: "business_day", value: 14 },
-            },
-          },
-        },
+        { shipping_rate: "shr_1U88e4LkpMwsJmFN2uGD9IvH" }, // Free UK shipping
+        { shipping_rate: "shr_1UEeO9LkpMwsJmFNVCYOdr52" }, // International delivery
       ],
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl || `${origin}/#shop`,
@@ -469,28 +449,8 @@ router.post("/stripe/redeem-gift", async (req: Request, res: Response) => {
         allowed_countries: ["GB", "US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"],
       },
       shipping_options: [
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: { amount: 0, currency: "gbp" },
-            display_name: "Free UK Delivery",
-            delivery_estimate: {
-              minimum: { unit: "business_day", value: 3 },
-              maximum: { unit: "business_day", value: 5 },
-            },
-          },
-        },
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: { amount: 1499, currency: "gbp" },
-            display_name: "International Shipping",
-            delivery_estimate: {
-              minimum: { unit: "business_day", value: 5 },
-              maximum: { unit: "business_day", value: 14 },
-            },
-          },
-        },
+        { shipping_rate: "shr_1U88e4LkpMwsJmFN2uGD9IvH" }, // Free UK shipping
+        { shipping_rate: "shr_1UEeO9LkpMwsJmFNVCYOdr52" }, // International delivery
       ],
       success_url: body.successUrl || `${origin}/?gift=claimed`,
       cancel_url: body.cancelUrl || `${origin}/`,
