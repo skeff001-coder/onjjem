@@ -261,6 +261,7 @@ export interface AdminNotificationData {
   bolOrderId?: string | null;
   fulfilmentStatus: "auto" | "queued";
   bonusCard?: boolean;
+  recipientMessage?: string;
 }
 
 export async function sendAdminNotification(data: AdminNotificationData): Promise<void> {
@@ -311,6 +312,7 @@ export async function sendAdminNotification(data: AdminNotificationData): Promis
             ["Amount", amount],
             ["Stripe Session", data.stripeSessionId],
             ["Ship to", addrLines.replace(/\n/g, "<br>")],
+            ...(data.recipientMessage ? [["Gift message", data.recipientMessage]] : []),
           ].map(([label, value]) => `
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:14px">
               <tr>
