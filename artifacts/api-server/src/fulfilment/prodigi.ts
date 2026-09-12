@@ -105,6 +105,8 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // entirely, meaning every order for this product failed at fulfilment and
   // sat in fulfilment_queue as 'failed' rather than being sent to Prodigi —
   // check the queue for any past orders needing manual resubmission.
+  "H-APR-CA-WTIE": { sku: "H-APR-CA-WTIE", sizing: "fillPrintArea" },
+  "H-APR-AA-BTIE": { sku: "H-APR-AA-BTIE", sizing: "fillPrintArea" },
   "magic-mug": { sku: "H-MUG-11OZ-CC", sizing: "fillPrintArea" },
 
   // ── Pet Tags ─────────────────────────────────────────────────────────────────
