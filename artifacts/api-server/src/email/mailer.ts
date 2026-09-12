@@ -614,3 +614,52 @@ export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> 
 
   logger.info({ to: data.email }, "Gift card email sent");
 }
+
+// ── Apron loyalty discount delivery ─────────────────────────────────────────
+
+export interface ApronLoyaltyEmailData {
+  email: string;
+  code: string;
+}
+
+export async function sendApronLoyaltyEmail(data: ApronLoyaltyEmailData): Promise<void> {
+  const resend = getResend();
+  if (!resend) {
+    logger.warn("RESEND_API_KEY not set — skipping apron loyalty email");
+    return;
+  }
+
+  const body = `
+    <tr><td style="height:4px;background:linear-gradient(90deg,${GOLD},#F0C040,${GOLD})"></td></tr>
+    <tr><td style="padding:40px 40px 32px">
+      <h1 style="font-size:26px;color:#FAF7F2;margin:0 0 8px;font-weight:700">Thanks for your apron order! 🧑‍🍳</h1>
+      <p style="font-size:15px;color:${MUTED};margin:0 0 28px;line-height:1.6">
+        Getting a matching one for someone else? Here's 15% off your next apron, on us.
+      </p>
+      <div style="background:${SURFACE};border:1px dashed ${GOLD};border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">
+        <p style="font-size:13px;color:${MUTED};margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Your Discount</p>
+        <p style="font-size:32px;color:${GOLD};margin:0 0 16px;font-weight:800">15% Off</p>
+        <p style="font-size:13px;color:${MUTED};margin:0 0 6px">Redemption Code</p>
+        <p style="font-size:22px;color:#FAF7F2;margin:0;font-weight:800;letter-spacing:2px;font-family:monospace">${data.code}</p>
+      </div>
+      <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
+        Simply enter the code above in the promo code box at checkout on
+        <a href="https://onjjem.com" style="color:${GOLD}">onjjem.com</a> when you order your next apron —
+        perfect for a genuine matching "Mummy &amp; Me" set. This code can be used once, on a single order.
+      </p>
+    </td></tr>
+  `;
+
+  const { error } = await resend.emails.send({
+    from: FROM(),
+    to: data.email,
+    subject: `🧑‍🍳 15% Off Your Next Apron`,
+    html: baseTemplate(
+      `Here's 15% off your next ONJJEM apron order.`,
+      body,
+    ),
+  });
+  if (error) throw new Error(error.message);
+
+  logger.info({ to: data.email }, "Apron loyalty email sent");
+}
