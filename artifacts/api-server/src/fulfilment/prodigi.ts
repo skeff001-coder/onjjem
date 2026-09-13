@@ -32,6 +32,28 @@ import { ObjectStorageService } from "../lib/objectStorage";
 //                Jigsaws require ["jigsaw", "lid"] — customer photo is printed on both.
 //
 export interface ProdigiProduct {
+  "ECO-CAN-8X8": { sku: "ECO-CAN-8X8", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "ECO-CAN-8X12": { sku: "ECO-CAN-8X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "ECO-CAN-12X12": { sku: "ECO-CAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "ECO-CAN-12X16": { sku: "ECO-CAN-12X16", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "ECO-CAN-16X24": { sku: "ECO-CAN-16X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "ECO-CAN-20X30": { sku: "ECO-CAN-20X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "ECO-ROL-8X8": { sku: "ECO-ROL-8X8", sizing: "fillPrintArea" },
+  "ECO-ROL-10X10": { sku: "ECO-ROL-10X10", sizing: "fillPrintArea" },
+  "ECO-ROL-12X12": { sku: "ECO-ROL-12X12", sizing: "fillPrintArea" },
+  "ECO-ROL-12X16": { sku: "ECO-ROL-12X16", sizing: "fillPrintArea" },
+  "ECO-ROL-16X24": { sku: "ECO-ROL-16X24", sizing: "fillPrintArea" },
+  "ECO-ROL-20X30": { sku: "ECO-ROL-20X30", sizing: "fillPrintArea" },
+  "GLOBAL-SLIMCAN-6X6": { sku: "GLOBAL-SLIMCAN-6X6", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "GLOBAL-SLIMCAN-8X8": { sku: "GLOBAL-SLIMCAN-8X8", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "GLOBAL-SLIMCAN-12X12": { sku: "GLOBAL-SLIMCAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "GLOBAL-SLIMCAN-24X20": { sku: "GLOBAL-SLIMCAN-24X20", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "GLOBAL-SLIMCAN-30X30": { sku: "GLOBAL-SLIMCAN-30X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "GLOBAL-SLIMCAN-43X87": { sku: "GLOBAL-SLIMCAN-43X87", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "CLASSIC-POST-GLOS-6X4": { sku: "CLASSIC-POST-GLOS-6X4", sizing: "fillPrintArea" },
+  "GLOBAL-ANKLE-SOCKS": { sku: "GLOBAL-ANKLE-SOCKS", sizing: "fillPrintArea" },
+  "PATCH-ROUND": { sku: "PATCH-ROUND", sizing: "fillPrintArea" },
+  "PATCH-SQUARE": { sku: "PATCH-SQUARE", sizing: "fillPrintArea" },
   sku: string;
   copies?: number;
   sizing?: "fillPrintArea" | "fitPrintArea";
