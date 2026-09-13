@@ -59,6 +59,8 @@ export const SHOP_SKU_PRICES: Record<string, CatalogEntry> = {
   "photo-tile-8x10": { name: 'Framed Photo Tiles (8x10 inch)', pricePence: 1699 },
   "H-APR-CA-WTIE": { name: "Personalised Chef's Apron (Child Size)", pricePence: 1995 },
   "H-APR-AA-BTIE": { name: "Personalised Chef's Apron (Adult Size)", pricePence: 2449 },
+  "PATCH-ROUND": { name: 'Custom Fabric Patch Badge (Round)', pricePence: 899 },
+  "PATCH-SQUARE": { name: 'Custom Fabric Patch Badge (Square)', pricePence: 899 },
   "magic-mug": { name: 'ChromaCoat Mug (11oz Heat-Activated Mug)', pricePence: 1799 },
   "mug-11oz": { name: 'Photo Mugs (11oz Mug)', pricePence: 1199 },
   "mug-15oz": { name: 'Photo Mugs (15oz Large Mug)', pricePence: 2099 },
