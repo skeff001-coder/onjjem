@@ -23,18 +23,25 @@ async function regenerateCartoonForOrder(base64Image: string, mimeType: string):
       { inlineData: { mimeType, data: base64Image } },
       {
         text:
-          "Completely transform this photo into a vibrant, high-quality 3D " +
-          "animated movie character illustration, in the bold style of a " +
-          "modern Pixar or DreamWorks film — NOT a lightly-edited photo. " +
-          "Genuinely redraw and stylise every feature: large expressive " +
-          "eyes, smooth simplified skin/fur shading, a slightly exaggerated " +
-          "and appealing character design, and rich, saturated cartoon " +
-          "colours. The person or animal should still be recognisable by " +
-          "their pose, colouring, and distinguishing features, but the " +
-          "final image must clearly read as a professional animated " +
-          "character, not a filtered photograph. Use a simple, " +
-          "complementary background that doesn't distract from the " +
-          "character. Output only the image, no text.",
+          "Completely redraw this photo from scratch as a professional 3D " +
+          "animated character illustration, in the polished style of a " +
+          "modern Pixar or DreamWorks film. This must NOT look like the " +
+          "original photo with a filter or minor edits applied — it must " +
+          "look like a genuine, hand-crafted animated character. " +
+          "Specifically: smooth and simplify the skin/fur texture into " +
+          "clean animated shading with soft gradients (no visible pores, " +
+          "wrinkles, or photographic texture), simplify and stylise the " +
+          "hair into clumped, sculpted animated strands, gently enlarge " +
+          "and stylise the eyes with glossy animated highlights, soften " +
+          "and round the nose and other facial features into a friendly " +
+          "animated proportion, and apply rich, warm, saturated cartoon " +
+          "colour grading throughout the whole image, not just the face. " +
+          "Keep the subject's pose, clothing colours, and general " +
+          "identity recognisable, but the final result must clearly and " +
+          "unmistakably read as an animated character on first glance, " +
+          "not a photo with eyes edited. Use a simple, softly blurred " +
+          "background that doesn't distract from the character. Output " +
+          "only the image, no text.",
       },
     ],
     config: { responseModalities: ["IMAGE"] },
