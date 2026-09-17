@@ -49,12 +49,12 @@ export const SHOP_SKU_PRICES = {
   "CLASSIC-POST-GLOS-6X4": { name: "Photo Postcard (Glossy 6x4)", pricePence: 199 },
 
   // Museum Fine Art Prints (Art-Print series)
-  "art-print-5x7": { name: "Museum Fine Art Print (5x7)", pricePence: 1199 },
-  "art-print-8x10": { name: "Museum Fine Art Print (8x10)", pricePence: 1799 },
-  "art-print-11x14": { name: "Museum Fine Art Print (11x14)", pricePence: 2499 },
-  "art-print-12x16": { name: "Museum Fine Art Print (12x16)", pricePence: 2999 },
-  "art-print-24x32": { name: "Museum Fine Art Print (24x32)", pricePence: 5999 },
-  "art-print-36x48": { name: "Museum Fine Art Print (36x48)", pricePence: 9999 },
+  "art-print-5x7": { name: "Museum Fine Art Print (5x7)", pricePence: 999 },
+  "art-print-8x10": { name: "Museum Fine Art Print (8x10)", pricePence: 1499 },
+  "art-print-11x14": { name: "Museum Fine Art Print (11x14)", pricePence: 1999 },
+  "art-print-12x16": { name: "Museum Fine Art Print (12x16)", pricePence: 2499 },
+  "art-print-24x32": { name: "Museum Fine Art Print (24x32)", pricePence: 2999 },
+  "art-print-36x48": { name: "Museum Fine Art Print (36x48)", pricePence: 3499 },
 
   // Metallic Foil Prints (Art-Foil series)
   "art-foil-a4-gold": { name: "Metallic Foil Print (A4, Gold)", pricePence: 1999 },
