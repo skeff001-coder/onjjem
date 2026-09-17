@@ -1,8 +1,10 @@
-// STTK184 Kids' Premium Organic T-Shirt — Cartoon Edition
-// 30 SKUs: 5 sizes × 6 colors
-// Price: £16.99 (1699 pence)
-
 export const SHOP_SKU_PRICES = {
+  // ========================================
+  // STTK184 Kids' Premium Organic T-Shirt — Cartoon Edition
+  // 30 SKUs: 5 sizes × 6 colors
+  // Price: £16.99 (1699 pence)
+  // ========================================
+
   // 3-4 Years
   "TEE-STTK184-3Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, White)", pricePence: 1699 },
   "TEE-STTK184-3Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Black)", pricePence: 1699 },
@@ -42,4 +44,28 @@ export const SHOP_SKU_PRICES = {
   "TEE-STTK184-12Y-RED": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Fire Red)", pricePence: 1699 },
   "TEE-STTK184-12Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Royal Blue)", pricePence: 1699 },
   "TEE-STTK184-12Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Cotton Pink)", pricePence: 1699 },
+
+  // ========================================
+  // Fleece Blankets — Custom Photo Printing
+  // 10 SKUs: 4 sizes × 3 colors (Giant white only)
+  // Prodigi H-BLA series
+  // ========================================
+
+  // SMALL 28x28" (70x70cm) — £44.99
+  "H-BLA-PBSWHITE": { name: "Custom Photo Fleece Blanket (Small, White Backing)", pricePence: 4499 },
+  "H-BLA-PBSBLUE": { name: "Custom Photo Fleece Blanket (Small, Baby Blue Backing)", pricePence: 4499 },
+  "H-BLA-PBSPINK": { name: "Custom Photo Fleece Blanket (Small, Pastel Pink Backing)", pricePence: 4499 },
+
+  // MEDIUM 26x40" (60x100cm) — £47.99
+  "H-BLA-PBMWHITE": { name: "Custom Photo Fleece Blanket (Medium, White Backing)", pricePence: 4799 },
+  "H-BLA-PBMBLUE": { name: "Custom Photo Fleece Blanket (Medium, Baby Blue Backing)", pricePence: 4799 },
+  "H-BLA-PBMPINK": { name: "Custom Photo Fleece Blanket (Medium, Pastel Pink Backing)", pricePence: 4799 },
+
+  // LARGE 40x60" (100x150cm) — £57.99
+  "H-BLA-PBLWHITE": { name: "Custom Photo Fleece Blanket (Large, White Backing)", pricePence: 5799 },
+  "H-BLA-PBLBLUE": { name: "Custom Photo Fleece Blanket (Large, Baby Blue Backing)", pricePence: 5799 },
+  "H-BLA-PBLPINK": { name: "Custom Photo Fleece Blanket (Large, Pastel Pink Backing)", pricePence: 5799 },
+
+  // GIANT 59x50" (150x127cm) — £84.99 — White reverse only
+  "H-BLA-MINK-LARGE": { name: "Custom Photo Fleece Blanket (Giant, White Reverse)", pricePence: 8499 },
 };
