@@ -170,13 +170,23 @@ export const SHOP_SKU_PRICES = {
 
   "HOOD-JH001B-12Y-WHITE": { name: "Cartoon Kids' Hoodie (12-14 Years, White)", pricePence: 2199 },
   "HOOD-JH001B-12Y-BLACK": { name: "Cartoon Kids' Hoodie (12-14 Years, Black)", pricePence: 2199 },
+  "SWEAT-JH030B-3Y-WHITE": { name: "Cartoon Kids' Sweatshirt (3-4 Years, White)", pricePence: 2199 },
+  "SWEAT-JH030B-3Y-BLACK": { name: "Cartoon Kids' Sweatshirt (3-4 Years, Black)", pricePence: 2199 },
+  "SWEAT-JH030B-5Y-WHITE": { name: "Cartoon Kids' Sweatshirt (5-6 Years, White)", pricePence: 2199 },
+  "SWEAT-JH030B-5Y-BLACK": { name: "Cartoon Kids' Sweatshirt (5-6 Years, Black)", pricePence: 2199 },
+  "SWEAT-JH030B-7Y-WHITE": { name: "Cartoon Kids' Sweatshirt (7-8 Years, White)", pricePence: 2199 },
+  "SWEAT-JH030B-7Y-BLACK": { name: "Cartoon Kids' Sweatshirt (7-8 Years, Black)", pricePence: 2199 },
+  "SWEAT-JH030B-9Y-WHITE": { name: "Cartoon Kids' Sweatshirt (9-11 Years, White)", pricePence: 2199 },
+  "SWEAT-JH030B-9Y-BLACK": { name: "Cartoon Kids' Sweatshirt (9-11 Years, Black)", pricePence: 2199 },
+  "SWEAT-JH030B-12Y-WHITE": { name: "Cartoon Kids' Sweatshirt (12-14 Years, White)", pricePence: 2199 },
+  "SWEAT-JH030B-12Y-BLACK": { name: "Cartoon Kids' Sweatshirt (12-14 Years, Black)", pricePence: 2199 },
 
   // Kids Jigsaws
-  "jigsaw-30": { name: "Cartoon Jigsaw Puzzle (30 pieces)", pricePence: 799 },
-  "jigsaw-110": { name: "Cartoon Jigsaw Puzzle (110 pieces)", pricePence: 1099 },
-  "jigsaw-252": { name: "Cartoon Jigsaw Puzzle (252 pieces)", pricePence: 1299 },
-  "jigsaw-500": { name: "Cartoon Jigsaw Puzzle (500 pieces)", pricePence: 1699 },
-  "jigsaw-1000": { name: "Cartoon Jigsaw Puzzle (1000 pieces)", pricePence: 1999 },
+  "jigsaw-30": { name: "Cartoon Jigsaw Puzzle (30 pieces)", pricePence: 2199 },
+  "jigsaw-110": { name: "Cartoon Jigsaw Puzzle (110 pieces)", pricePence: 2499 },
+  "jigsaw-252": { name: "Cartoon Jigsaw Puzzle (252 pieces)", pricePence: 2799 },
+  "jigsaw-500": { name: "Cartoon Jigsaw Puzzle (500 pieces)", pricePence: 2999 },
+  "jigsaw-1000": { name: "Cartoon Jigsaw Puzzle (1000 pieces)", pricePence: 3499 },
 
   // Playing Cards
   "playing-cards": { name: "Cartoon Playing Cards (Deck)", pricePence: 999 },
