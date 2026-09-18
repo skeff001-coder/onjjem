@@ -190,8 +190,8 @@ export const SHOP_SKU_PRICES = {
   "pet-tag-round": { name: "Photo Pet Tag (Round)", pricePence: 699 },
 
   // Patches
-  "PATCH-ROUND": { name: "Custom Photo Patch (Round)", pricePence: 499 },
-  "PATCH-SQUARE": { name: "Custom Photo Patch (Square)", pricePence: 499 },
+  "PATCH-ROUND": { name: "Custom Photo Patch (Round)", pricePence: 899 },
+  "PATCH-SQUARE": { name: "Custom Photo Patch (Square)", pricePence: 899 },
 
   // Temporary Tattoos
   "tattoo-s": { name: "Temporary Photo Tattoo (Small)", pricePence: 299 },
@@ -218,6 +218,7 @@ export const SHOP_SKU_PRICES = {
 
   "ONJJEM-BABY-BIB-WHI": { name: "Velcro Baby Bib (White)", pricePence: 750 },
   "ONJJEM-BAR-BLADE-ALUM": { name: "Aluminium Blade Bottle Opener", pricePence: 799 },
+  "ONJJEM-WIRELESS-CHARGER": { name: "Personalised Wireless Charger", pricePence: 1799 },
   "ONJJEM-HWB-2L-PLUSH": { name: "TCQ 2L Hot Water Bottle", pricePence: 1849 },
   "ONJJEM-XMAS-STOCKING-RED": { name: "Luxury Velvet Red Christmas Stocking", pricePence: 1599 },
   "ONJJEM-XMAS-SACK-RED": { name: "Red Velvet Christmas Sack", pricePence: 1999 },
