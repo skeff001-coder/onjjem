@@ -57,14 +57,16 @@ export const SHOP_SKU_PRICES = {
   "art-print-36x48": { name: "Museum Fine Art Print (36x48)", pricePence: 3499 },
 
   // Metallic Foil Prints (Art-Foil series)
-  "art-foil-a4-gold": { name: "Metallic Foil Print (A4, Gold)", pricePence: 1999 },
-  "art-foil-a4-silver": { name: "Metallic Foil Print (A4, Silver)", pricePence: 1999 },
-  "art-foil-a3-gold": { name: "Metallic Foil Print (A3, Gold)", pricePence: 2999 },
-  "art-foil-a3-silver": { name: "Metallic Foil Print (A3, Silver)", pricePence: 2999 },
-  "art-foil-a2-gold": { name: "Metallic Foil Print (A2, Gold)", pricePence: 4499 },
-  "art-foil-a2-silver": { name: "Metallic Foil Print (A2, Silver)", pricePence: 4499 },
-  "art-foil-a1-gold": { name: "Metallic Foil Print (A1, Gold)", pricePence: 5999 },
-  "art-foil-a1-silver": { name: "Metallic Foil Print (A1, Silver)", pricePence: 5999 },
+  "ART-FOIL-GOL-4X6": { name: "Metallic Foil Print (4x6, Gold)", pricePence: 799 },
+  "ART-FOIL-SIL-4X6": { name: "Metallic Foil Print (4x6, Silver)", pricePence: 799 },
+  "ART-FOIL-GOL-12X12": { name: "Metallic Foil Print (30x30cm, Gold)", pricePence: 1599 },
+  "ART-FOIL-SIL-12X12": { name: "Metallic Foil Print (30x30cm, Silver)", pricePence: 1599 },
+  "ART-FOIL-GOL-20X28": { name: "Metallic Foil Print (50x70cm, Gold)", pricePence: 1599 },
+  "ART-FOIL-SIL-20X28": { name: "Metallic Foil Print (50x70cm, Silver)", pricePence: 1599 },
+  "ART-FOIL-GOL-A3": { name: "Metallic Foil Print (A3, Gold)", pricePence: 1899 },
+  "ART-FOIL-SIL-A3": { name: "Metallic Foil Print (A3, Silver)", pricePence: 1899 },
+  "ART-FOIL-GOL-A2": { name: "Metallic Foil Print (A2, Gold)", pricePence: 2699 },
+  "ART-FOIL-SIL-A2": { name: "Metallic Foil Print (A2, Silver)", pricePence: 2699 },
 
   // Eco Canvas (Eco-Can series)
   "ECO-CAN-8X8": { name: "Eco Canvas (8x8)", pricePence: 1499 },
