@@ -251,16 +251,16 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // (Gold/Silver) is baked directly into the SKU itself, not a separate
   // attribute — each colour+size combination is its own distinct SKU.
   // ⚠️ Silver 24x24 SKU wasn't confirmed on the spec sheet — using the Gold
-  // 24x24 SKU as the best guess. Verify with Prodigi before relying on this
-  // one specifically for a real order.
-  "art-foil-a4-gold":        { sku: "ART-FOIL-GOL-A4",     sizing: "fillPrintArea" },
-  "art-foil-a4-silver":      { sku: "ART-FOIL-SIL-A4",     sizing: "fillPrintArea" },
-  "art-foil-a3-gold":        { sku: "ART-FOIL-GOL-A3",     sizing: "fillPrintArea" },
-  "art-foil-a3-silver":      { sku: "ART-FOIL-SIL-A3",     sizing: "fillPrintArea" },
-  "art-foil-a2-gold":        { sku: "ART-FOIL-GOL-A2",     sizing: "fillPrintArea" },
-  "art-foil-a2-silver":      { sku: "ART-FOIL-SIL-A2",     sizing: "fillPrintArea" },
-  "art-foil-a1-gold":        { sku: "ART-FOIL-GOL-A1",     sizing: "fillPrintArea" },
-  "art-foil-a1-silver":      { sku: "ART-FOIL-SIL-A1",     sizing: "fillPrintArea" },
+  "ART-FOIL-GOL-4X6":        { sku: "ART-FOIL-GOL-4X6",   sizing: "fillPrintArea" },
+  "ART-FOIL-SIL-4X6":        { sku: "ART-FOIL-SIL-4X6",   sizing: "fillPrintArea" },
+  "ART-FOIL-GOL-12X12":      { sku: "ART-FOIL-GOL-12X12", sizing: "fillPrintArea" },
+  "ART-FOIL-SIL-12X12":      { sku: "ART-FOIL-SIL-12X12", sizing: "fillPrintArea" },
+  "ART-FOIL-GOL-20X28":      { sku: "ART-FOIL-GOL-20X28", sizing: "fillPrintArea" },
+  "ART-FOIL-SIL-20X28":      { sku: "ART-FOIL-SIL-20X28", sizing: "fillPrintArea" },
+  "ART-FOIL-GOL-A3":         { sku: "ART-FOIL-GOL-A3",    sizing: "fillPrintArea" },
+  "ART-FOIL-SIL-A3":         { sku: "ART-FOIL-SIL-A3",    sizing: "fillPrintArea" },
+  "ART-FOIL-GOL-A2":         { sku: "ART-FOIL-GOL-A2",    sizing: "fillPrintArea" },
+  "ART-FOIL-SIL-A2":         { sku: "ART-FOIL-SIL-A2",    sizing: "fillPrintArea" },
 
   // ── Premium Glow in the Dark Poster (Specialist Range) ────────────────────────
   // ART-GITD-* SKUs from Prodigi spec sheet (2026-08). Same family prefix as
