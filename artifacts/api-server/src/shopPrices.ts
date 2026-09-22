@@ -186,11 +186,11 @@ export const SHOP_SKU_PRICES = {
   "PATCH-SQUARE": { name: "Custom Photo Patch (Square)", pricePence: 899 },
 
   // Temporary Tattoos
-  "tattoo-s": { name: "Temporary Photo Tattoo (Small)", pricePence: 299 },
-  "tattoo-m": { name: "Temporary Photo Tattoo (Medium)", pricePence: 399 },
-  "tattoo-l": { name: "Temporary Photo Tattoo (Large)", pricePence: 499 },
-  "tattoo-xl": { name: "Temporary Photo Tattoo (XL)", pricePence: 699 },
-  "tattoo-xxl": { name: "Temporary Photo Tattoo (XXL)", pricePence: 899 },
+  "tattoo-s": { name: "Temporary Photo Tattoo (Small)", pricePence: 999 },
+  "tattoo-m": { name: "Temporary Photo Tattoo (Medium)", pricePence: 1299 },
+  "tattoo-l": { name: "Temporary Photo Tattoo (Large)", pricePence: 1699 },
+  "tattoo-xl": { name: "Temporary Photo Tattoo (XL)", pricePence: 1999 },
+  "tattoo-xxl": { name: "Temporary Photo Tattoo (XXL)", pricePence: 2299 },
 
   // Socks
   "GLOBAL-ANKLE-SOCKS": { name: "Custom Photo Ankle Socks", pricePence: 1199 },
