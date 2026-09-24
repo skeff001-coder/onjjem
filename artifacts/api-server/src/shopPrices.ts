@@ -46,7 +46,7 @@ export const SHOP_SKU_PRICES = {
   // ========================================
 
   // Photo Postcards
-  "CLASSIC-POST-GLOS-6X4": { name: "Photo Postcard (Glossy 6x4)", pricePence: 199 },
+  "CLASSIC-POST-GLOS-6X4": { name: "Photo Postcard (Glossy 6x4)", pricePence: 299 },
 
   // Museum Fine Art Prints (Art-Print series)
   "art-print-5x7": { name: "Museum Fine Art Print (5x7)", pricePence: 999 },
