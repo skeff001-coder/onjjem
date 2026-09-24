@@ -3,8 +3,8 @@ export const SHOP_SKU_PRICES = {
   // HOUSEHOLD PRODUCTS (Prodigi)
   // ========================================
 
-  // ChromaCoat Magic Mug
-  "magic-mug": { name: "ChromaCoat Heat-Activated Mug (11oz)", pricePence: 1799 },
+  // Heat Transfer Colour Changing Mug (11oz)
+  "H-MUG-11OZ-CC": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 990 },
 
   // Photo Mugs
   "mug-11oz": { name: "Photo Mug (11oz)", pricePence: 1199 },
@@ -18,28 +18,22 @@ export const SHOP_SKU_PRICES = {
   "tea-towel-poly": { name: "Premium Kitchen Towel (Polyester)", pricePence: 1499 },
   "tea-towel-cotton": { name: "Premium Kitchen Towel (Cotton Twill)", pricePence: 1899 },
 
-  // Photo Magnets
-  "magnet-fridge-3x2": { name: "Fridge Magnet (3x2)", pricePence: 899 },
-  "magnet-fridge-6x4": { name: "Fridge Magnet (6x4)", pricePence: 999 },
-  "magnet-acrylic-2x3": { name: "Acrylic Magnet (2x3)", pricePence: 1299 },
-  "magnet-square-4x4": { name: "Square Magnet (4x4)", pricePence: 1199 },
-  "magnet-square-6x6": { name: "Square Magnet (6x6)", pricePence: 1799 },
+  // Photo Magnets (Single Image Only)
+  "M-MAG-FRI-3X2": { name: "Fridge Magnet (3x2\", 8x5cm) — PROMO SPECIAL", pricePence: 699 },
+  "M-MAG-FRI-4X6": { name: "Fridge Magnet (6x4\", 15x10cm)", pricePence: 899 },
+  "MAG-1-15X15": { name: "Fridge Magnet (6x6\", 15x15cm)", pricePence: 1499 },
 
   // Aprons (Prodigi H-APR series)
   "H-APR-CA-WTIE": { name: "Child Apron with Tie", pricePence: 1995 },
   "H-APR-AA-BTIE": { name: "Adult Apron with Tie", pricePence: 2449 },
 
-  // Fleece Blankets (Prodigi H-BLA series)
-  "H-BLA-PBSWHITE": { name: "Custom Photo Fleece Blanket (Small 28x28\", White Backing)", pricePence: 4499 },
-  "H-BLA-PBSBLUE": { name: "Custom Photo Fleece Blanket (Small 28x28\", Baby Blue Backing)", pricePence: 4499 },
-  "H-BLA-PBSPINK": { name: "Custom Photo Fleece Blanket (Small 28x28\", Pastel Pink Backing)", pricePence: 4499 },
-  "H-BLA-PBMWHITE": { name: "Custom Photo Fleece Blanket (Medium 26x40\", White Backing)", pricePence: 4799 },
-  "H-BLA-PBMBLUE": { name: "Custom Photo Fleece Blanket (Medium 26x40\", Baby Blue Backing)", pricePence: 4799 },
-  "H-BLA-PBMPINK": { name: "Custom Photo Fleece Blanket (Medium 26x40\", Pastel Pink Backing)", pricePence: 4799 },
-  "H-BLA-PBLWHITE": { name: "Custom Photo Fleece Blanket (Large 40x60\", White Backing)", pricePence: 5799 },
-  "H-BLA-PBLBLUE": { name: "Custom Photo Fleece Blanket (Large 40x60\", Baby Blue Backing)", pricePence: 5799 },
-  "H-BLA-PBLPINK": { name: "Custom Photo Fleece Blanket (Large 40x60\", Pastel Pink Backing)", pricePence: 5799 },
-  "H-BLA-MINK-LARGE": { name: "Custom Photo Fleece Blanket (Giant 59x50\", White Reverse)", pricePence: 8499 },
+  // Fleece Blankets (Prodigi H-BLA series) — UK ONLY
+  "H-BLA-PBSWHITE": { name: "Custom Photo Fleece Blanket (Small 28x28\", White Backing)", pricePence: 4999 },
+  "H-BLA-PBMPINK": { name: "Custom Photo Fleece Blanket (Medium 26x40\", Pastel Pink Backing)", pricePence: 5299 },
+  "H-BLA-PBMWHITE": { name: "Custom Photo Fleece Blanket (Medium 26x40\", White Backing)", pricePence: 5299 },
+  "H-BLA-PBLWHITE": { name: "Custom Photo Fleece Blanket (Large 40x60\", White Backing)", pricePence: 6099 },
+  "H-BLA-PBLPINK": { name: "Custom Photo Fleece Blanket (Large 40x60\", Pastel Pink Backing)", pricePence: 6099 },
+  "H-BLA-MINK-LARGE": { name: "Custom Photo Fleece Blanket (Giant 150x127cm, White Reverse)", pricePence: 8399 },
 
   // ========================================
   // PRINTS (Prodigi)
@@ -56,17 +50,11 @@ export const SHOP_SKU_PRICES = {
   "art-print-24x32": { name: "Museum Fine Art Print (24x32)", pricePence: 2999 },
   "art-print-36x48": { name: "Museum Fine Art Print (36x48)", pricePence: 3499 },
 
-  // Metallic Foil Prints (Art-Foil series)
-  "ART-FOIL-GOL-4X6": { name: "Metallic Foil Print (4x6, Gold)", pricePence: 799 },
-  "ART-FOIL-SIL-4X6": { name: "Metallic Foil Print (4x6, Silver)", pricePence: 799 },
-  "ART-FOIL-GOL-12X12": { name: "Metallic Foil Print (30x30cm, Gold)", pricePence: 1599 },
-  "ART-FOIL-SIL-12X12": { name: "Metallic Foil Print (30x30cm, Silver)", pricePence: 1599 },
-  "ART-FOIL-GOL-20X28": { name: "Metallic Foil Print (50x70cm, Gold)", pricePence: 1599 },
-  "ART-FOIL-SIL-20X28": { name: "Metallic Foil Print (50x70cm, Silver)", pricePence: 1599 },
-  "ART-FOIL-GOL-A3": { name: "Metallic Foil Print (A3, Gold)", pricePence: 1899 },
-  "ART-FOIL-SIL-A3": { name: "Metallic Foil Print (A3, Silver)", pricePence: 1899 },
-  "ART-FOIL-GOL-A2": { name: "Metallic Foil Print (A2, Gold)", pricePence: 2699 },
-  "ART-FOIL-SIL-A2": { name: "Metallic Foil Print (A2, Silver)", pricePence: 2699 },
+  // Gold Metallic Poster (Art-Foil series)
+  "ART-FOIL-GOL-A4": { name: "Gold Metallic Poster (A4)", pricePence: 1499 },
+  "ART-FOIL-GOL-A3": { name: "Gold Metallic Poster (A3)", pricePence: 1999 },
+  "ART-FOIL-GOL-A2": { name: "Gold Metallic Poster (A2)", pricePence: 3390 },
+  "ART-FOIL-GOL-A1": { name: "Gold Metallic Poster (A1)", pricePence: 3999 },
 
   // Eco Canvas (Eco-Can series)
   "ECO-CAN-8X8": { name: "Eco Canvas (8x8)", pricePence: 1499 },
@@ -154,12 +142,6 @@ export const SHOP_SKU_PRICES = {
   "TEE-STTK184-12Y-RED": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Fire Red)", pricePence: 1699 },
   "TEE-STTK184-12Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Royal Blue)", pricePence: 1699 },
   "TEE-STTK184-12Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Cotton Pink)", pricePence: 1699 },
-
-  // Kids Hoodies (JH001B — 10 SKUs: 5 sizes × 2 colors)
-
-
-
-
 
   // Kids Jigsaws
   "jigsaw-30": { name: "Cartoon Jigsaw Puzzle (30 pieces)", pricePence: 2199 },
