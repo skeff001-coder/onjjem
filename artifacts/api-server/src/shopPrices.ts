@@ -99,18 +99,16 @@ export const SHOP_SKU_PRICES = {
   "art-gitd-premium-a1": { name: "Glow Poster (A1)", pricePence: 4999 },
 
   // Budget Poster (Budget-Poster series)
-  "budget-poster-a5-portrait": { name: "Budget Poster (A5, Portrait)", pricePence: 499 },
-  "budget-poster-a5-landscape": { name: "Budget Poster (A5, Landscape)", pricePence: 499 },
-  "budget-poster-a4-portrait": { name: "Budget Poster (A4, Portrait)", pricePence: 799 },
-  "budget-poster-a4-landscape": { name: "Budget Poster (A4, Landscape)", pricePence: 799 },
-  "budget-poster-a3-portrait": { name: "Budget Poster (A3, Portrait)", pricePence: 1299 },
-  "budget-poster-a3-landscape": { name: "Budget Poster (A3, Landscape)", pricePence: 1299 },
-  "budget-poster-a2-portrait": { name: "Budget Poster (A2, Portrait)", pricePence: 1799 },
-  "budget-poster-a2-landscape": { name: "Budget Poster (A2, Landscape)", pricePence: 1799 },
-  "budget-poster-a1-portrait": { name: "Budget Poster (A1, Portrait)", pricePence: 2499 },
-  "budget-poster-a1-landscape": { name: "Budget Poster (A1, Landscape)", pricePence: 2499 },
-  "budget-poster-a0-portrait": { name: "Budget Poster (A0, Portrait)", pricePence: 3499 },
-  "budget-poster-a0-landscape": { name: "Budget Poster (A0, Landscape)", pricePence: 3499 },
+  "budget-poster-a4-portrait": { name: "Budget Poster (A4, Portrait)", pricePence: 1199 },
+  "budget-poster-a4-landscape": { name: "Budget Poster (A4, Landscape)", pricePence: 1199 },
+  "budget-poster-a2-portrait": { name: "Budget Poster (A2, Portrait)", pricePence: 1699 },
+  "budget-poster-a2-landscape": { name: "Budget Poster (A2, Landscape)", pricePence: 1699 },
+  "budget-poster-a1-portrait": { name: "Budget Poster (A1, Portrait)", pricePence: 1899 },
+  "budget-poster-a1-landscape": { name: "Budget Poster (A1, Landscape)", pricePence: 1899 },
+  "budget-poster-50x70-portrait": { name: "Budget Poster (50x70cm, Portrait)", pricePence: 1599 },
+  "budget-poster-50x70-landscape": { name: "Budget Poster (50x70cm, Landscape)", pricePence: 1599 },
+  "budget-poster-70x100-portrait": { name: "Budget Poster (70x100cm, Portrait)", pricePence: 1999 },
+  "budget-poster-70x100-landscape": { name: "Budget Poster (70x100cm, Landscape)", pricePence: 1999 },
 
   // Photo Tiles
   "photo-tile-5x7": { name: "Photo Tile (5x7)", pricePence: 999 },
