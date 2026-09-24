@@ -289,30 +289,20 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // Glow in the Dark Poster — A1 added, CONFIRMED (ART-GITD-A1, same family as A2-A4 above)
   "art-gitd-premium-a1": { sku: "ART-GITD-A1", sizing: "fillPrintArea" },
 
-  // Budget Art Paper — SKUs CONFIRMED from real Prodigi basket screenshots
-  "budget-art-paper-8x8": { sku: "ART-FAP-BAP-8X8", sizing: "fillPrintArea" },
-  "budget-art-paper-12x16": { sku: "ART-FAP-BAP-12X16", sizing: "fillPrintArea" },
-  "budget-art-paper-18x24": { sku: "ART-FAP-BAP-18X24", sizing: "fillPrintArea" },
-  "budget-art-paper-40x40": { sku: "ART-FAP-BAP-40X40", sizing: "fillPrintArea" },
-
-  // Budget Poster — consolidated product, replaces old budget-poster-a0..a5.
-  // ⚠️ UNVALIDATED orientation attribute — same base SKU per size, distinguished
-  // by an "orientation" attribute. Key/value names are a best guess following
-  // the pattern used elsewhere in this file, not individually confirmed
-  // against the live API. Test one order of each orientation before relying
-  // on this for real customers.
-  "budget-poster-a5-portrait":  { sku: "GLOBAL-BLP-A5", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
-  "budget-poster-a5-landscape": { sku: "GLOBAL-BLP-A5", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+  // Budget Poster — simplified to only the sizes with genuinely confirmed
+  // real costs from actual Prodigi basket screenshots. Budget Art Paper
+  // (a separate, confusing duplicate line) has been retired — it was never
+  // live on the website or backend pricing, only dead code here.
   "budget-poster-a4-portrait":  { sku: "GLOBAL-BLP-A4", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
   "budget-poster-a4-landscape": { sku: "GLOBAL-BLP-A4", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
-  "budget-poster-a3-portrait":  { sku: "GLOBAL-BLP-A3", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
-  "budget-poster-a3-landscape": { sku: "GLOBAL-BLP-A3", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
   "budget-poster-a2-portrait":  { sku: "GLOBAL-BLP-A2", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
   "budget-poster-a2-landscape": { sku: "GLOBAL-BLP-A2", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
   "budget-poster-a1-portrait":  { sku: "GLOBAL-BLP-A1", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
   "budget-poster-a1-landscape": { sku: "GLOBAL-BLP-A1", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
-  "budget-poster-a0-portrait":  { sku: "GLOBAL-BLP-A0", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
-  "budget-poster-a0-landscape": { sku: "GLOBAL-BLP-A0", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+  "budget-poster-50x70-portrait":  { sku: "GLOBAL-BLP-20X28", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
+  "budget-poster-50x70-landscape": { sku: "GLOBAL-BLP-20X28", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+  "budget-poster-70x100-portrait":  { sku: "GLOBAL-BLP-70X100", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
+  "budget-poster-70x100-landscape": { sku: "GLOBAL-BLP-70X100", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
 
   // Eco Rolled Canvas — 4 new larger sizes. 24x47/28x40 CONFIRMED from your
   // Prodigi screenshots (ECO-ROL-24X47, ECO-ROL-28X40). 16x20/20x20 follow
