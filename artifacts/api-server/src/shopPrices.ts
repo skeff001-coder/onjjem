@@ -4,7 +4,7 @@ export const SHOP_SKU_PRICES = {
   // ========================================
 
   // Heat Transfer Colour Changing Mug (11oz) — LIMITED TIME SALE
-  "H-MUG-11OZ-CC": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 1299 },
+  "magic-mug": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 1299 },
 
   // Photo Mugs
   "mug-11oz": { name: "Photo Mug (11oz, Full Wrap)", pricePence: 1499 },
