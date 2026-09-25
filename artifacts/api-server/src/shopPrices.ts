@@ -12,6 +12,19 @@ export const SHOP_SKU_PRICES = {
 
   // Wooden Coasters
   "coaster-2pk": { name: "Custom Wooden Coasters (Set of 2)", pricePence: 1199 },
+  "magnet-fridge-3x2": { name: "Photo Magnets (Fridge Magnet 3x2)", pricePence: 899 },
+  "magnet-fridge-6x4": { name: "Photo Magnets (Fridge Magnet 6x4)", pricePence: 999 },
+  "magnet-acrylic-2x3": { name: "Photo Magnets (Acrylic Magnet 2x3)", pricePence: 1299 },
+  "magnet-square-4x4": { name: "Photo Magnets (Square Magnet 4x4)", pricePence: 1199 },
+  "magnet-square-6x6": { name: "Photo Magnets (Square Magnet 6x6)", pricePence: 1799 },
+  "ART-FOIL-GOL-4X6": { name: "Metallic Foil Print (4x6, Gold)", pricePence: 799 },
+  "ART-FOIL-SIL-4X6": { name: "Metallic Foil Print (4x6, Silver)", pricePence: 799 },
+  "ART-FOIL-GOL-12X12": { name: "Metallic Foil Print (30x30cm, Gold)", pricePence: 1599 },
+  "ART-FOIL-SIL-12X12": { name: "Metallic Foil Print (30x30cm, Silver)", pricePence: 1599 },
+  "ART-FOIL-GOL-20X28": { name: "Metallic Foil Print (50x70cm, Gold)", pricePence: 1599 },
+  "ART-FOIL-SIL-20X28": { name: "Metallic Foil Print (50x70cm, Silver)", pricePence: 1599 },
+  "ART-FOIL-SIL-A3": { name: "Metallic Foil Print (A3, Silver)", pricePence: 1899 },
+  "ART-FOIL-SIL-A2": { name: "Metallic Foil Print (A2, Silver)", pricePence: 2699 },
   "coaster-4pk": { name: "Custom Wooden Coasters (Set of 4)", pricePence: 1699 },
 
   // Tea Towels
