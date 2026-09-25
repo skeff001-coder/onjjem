@@ -198,4 +198,4 @@ export const SHOP_SKU_PRICES = {
 };
 
 // Export total SKU count for reference
-export const SKU_COUNT = Object.keys(SHOP_SKU_PRICES).length;
+export const SKU_COUNT = Object.keys(SHOP_SKU_PRICES).length
