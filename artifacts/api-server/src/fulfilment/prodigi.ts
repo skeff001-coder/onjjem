@@ -112,6 +112,22 @@ export interface ProdigiProduct {
 }
 
 export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
+  // ── Winter Warmers ──────────────────────────────────────────────────────────
+  // ⚠️ UNVERIFIED: these 7 products had real, confirmed backend PRICING already
+  // set up, but genuinely NO fulfilment mapping existed anywhere — meaning
+  // orders would have taken payment successfully but never reached Prodigi.
+  // The SKU values below are placeholders (same as our own internal SKU) —
+  // verify each one against Prodigi's real product page before trusting a
+  // live order to it.
+  "ONJJEM-HWB-2L-PLUSH": { sku: "ONJJEM-HWB-2L-PLUSH", sizing: "fillPrintArea" },
+  "H-BLA-PBSWHITE": { sku: "H-BLA-PBSWHITE", sizing: "fillPrintArea" },
+  "H-BLA-PBMWHITE": { sku: "H-BLA-PBMWHITE", sizing: "fillPrintArea" },
+  "H-BLA-PBMPINK": { sku: "H-BLA-PBMPINK", sizing: "fillPrintArea" },
+  "H-BLA-PBLWHITE": { sku: "H-BLA-PBLWHITE", sizing: "fillPrintArea" },
+  "H-BLA-PBLPINK": { sku: "H-BLA-PBLPINK", sizing: "fillPrintArea" },
+  "H-BLA-MINK-LARGE": { sku: "H-BLA-MINK-LARGE", sizing: "fillPrintArea" },
+
+
   // ── Stretched Canvas ────────────────────────────────────────────────────────
   // SKU format: GLOBAL-CAN-{Ax} (A0–A5 standard sizes). wrap attribute required.
   // ⚠️ UNVALIDATED against live Prodigi API — pulled from Prodigi's product
