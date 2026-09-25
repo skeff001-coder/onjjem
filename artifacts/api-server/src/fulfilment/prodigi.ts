@@ -112,6 +112,45 @@ export interface ProdigiProduct {
 }
 
 export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
+  // ── Christmas — genuinely confirmed missing from fulfilment despite being
+  // real, live, priced Prodigi products. Would have taken payment and never
+  // reached print.
+  "ONJJEM-XMAS-STOCKING-RED": { sku: "ONJJEM-XMAS-STOCKING-RED", sizing: "fillPrintArea" },
+  "ONJJEM-XMAS-SACK-RED": { sku: "ONJJEM-XMAS-SACK-RED", sizing: "fillPrintArea" },
+  // ── Kids Cartoon T-Shirt — genuinely confirmed ZERO fulfilment entries
+  // existed for any of the 30 real, priced variants.
+  "TEE-STTK184-3Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
+  "TEE-STTK184-3Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
+  "TEE-STTK184-3Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
+  "TEE-STTK184-3Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
+  "TEE-STTK184-3Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
+  "TEE-STTK184-3Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
+  "TEE-STTK184-5Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
+  "TEE-STTK184-5Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
+  "TEE-STTK184-5Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
+  "TEE-STTK184-5Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
+  "TEE-STTK184-5Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
+  "TEE-STTK184-5Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
+  "TEE-STTK184-7Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
+  "TEE-STTK184-7Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
+  "TEE-STTK184-7Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
+  "TEE-STTK184-7Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
+  "TEE-STTK184-7Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
+  "TEE-STTK184-7Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
+  "TEE-STTK184-9Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
+  "TEE-STTK184-9Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
+  "TEE-STTK184-9Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
+  "TEE-STTK184-9Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
+  "TEE-STTK184-9Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
+  "TEE-STTK184-9Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
+  "TEE-STTK184-12Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
+  "TEE-STTK184-12Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
+  "TEE-STTK184-12Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
+  "TEE-STTK184-12Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
+  "TEE-STTK184-12Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
+  "TEE-STTK184-12Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
+
+
   // ── Winter Warmers ──────────────────────────────────────────────────────────
   // ⚠️ UNVERIFIED: these 7 products had real, confirmed backend PRICING already
   // set up, but genuinely NO fulfilment mapping existed anywhere — meaning
