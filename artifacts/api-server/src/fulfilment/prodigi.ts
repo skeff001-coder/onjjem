@@ -101,7 +101,6 @@ export interface ProdigiProduct {
   "GLOBAL-SLIMCAN-30X30": { sku: "GLOBAL-SLIMCAN-30X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "GLOBAL-SLIMCAN-43X87": { sku: "GLOBAL-SLIMCAN-43X87", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
   "CLASSIC-POST-GLOS-6X4": { sku: "CLASSIC-POST-GLOS-6X4", sizing: "fillPrintArea" },
-  "GLOBAL-ANKLE-SOCKS": { sku: "GLOBAL-ANKLE-SOCKS", sizing: "fillPrintArea" },
   "PATCH-ROUND": { sku: "PATCH-ROUND", sizing: "fillPrintArea" },
   "PATCH-SQUARE": { sku: "PATCH-SQUARE", sizing: "fillPrintArea" },
   sku: string;
