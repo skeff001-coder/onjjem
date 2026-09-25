@@ -186,7 +186,6 @@ export const SHOP_SKU_PRICES = {
   "tattoo-xxl": { name: "Temporary Photo Tattoo (XXL)", pricePence: 2299 },
 
   // Socks
-  "GLOBAL-ANKLE-SOCKS": { name: "Custom Photo Ankle Socks", pricePence: 1199 },
 
   // ========================================
   // GIFT CARDS
