@@ -38,6 +38,7 @@ export interface ProdigiProduct {
   attributes?: Record<string, string>;
   printAreas?: string[]; // defaults to ["default"]; jigsaws need ["jigsaw","lid"]
   bundle?: string[];     // extra website SKUs printed with the same photo in the same order
+  shipping?: "Budget";   // cheaper Prodigi service for this product (used when every item in the order allows it)
 }
 
 export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
@@ -45,128 +46,133 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // pasted by mistake — they were never reachable, so these products could
   // take payment but never reach Prodigi (postcard, patches, canvases, hoodies,
   // sweatshirts). Fixed 2026-09-26.
-  "SWEAT-AWS-JH030B-WHI-3Y4Y": { sku: "SWEAT-AWS-JH030B-WHI-3Y4Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-WHI-5Y6Y": { sku: "SWEAT-AWS-JH030B-WHI-5Y6Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-WHI-7Y8Y": { sku: "SWEAT-AWS-JH030B-WHI-7Y8Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-WHI-9Y11": { sku: "SWEAT-AWS-JH030B-WHI-9Y11", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-WHI-1213": { sku: "SWEAT-AWS-JH030B-WHI-1213", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-BLK-3Y4Y": { sku: "SWEAT-AWS-JH030B-BLK-3Y4Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-BLK-5Y6Y": { sku: "SWEAT-AWS-JH030B-BLK-5Y6Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-BLK-7Y8Y": { sku: "SWEAT-AWS-JH030B-BLK-7Y8Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-BLK-9Y11": { sku: "SWEAT-AWS-JH030B-BLK-9Y11", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-BLK-1213": { sku: "SWEAT-AWS-JH030B-BLK-1213", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-HGR-3Y4Y": { sku: "SWEAT-AWS-JH030B-HGR-3Y4Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-HGR-5Y6Y": { sku: "SWEAT-AWS-JH030B-HGR-5Y6Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-HGR-7Y8Y": { sku: "SWEAT-AWS-JH030B-HGR-7Y8Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-HGR-9Y11": { sku: "SWEAT-AWS-JH030B-HGR-9Y11", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-HGR-1213": { sku: "SWEAT-AWS-JH030B-HGR-1213", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RED-3Y4Y": { sku: "SWEAT-AWS-JH030B-RED-3Y4Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RED-5Y6Y": { sku: "SWEAT-AWS-JH030B-RED-5Y6Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RED-7Y8Y": { sku: "SWEAT-AWS-JH030B-RED-7Y8Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RED-9Y11": { sku: "SWEAT-AWS-JH030B-RED-9Y11", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RED-1213": { sku: "SWEAT-AWS-JH030B-RED-1213", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RBL-3Y4Y": { sku: "SWEAT-AWS-JH030B-RBL-3Y4Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RBL-5Y6Y": { sku: "SWEAT-AWS-JH030B-RBL-5Y6Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RBL-7Y8Y": { sku: "SWEAT-AWS-JH030B-RBL-7Y8Y", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RBL-9Y11": { sku: "SWEAT-AWS-JH030B-RBL-9Y11", sizing: "fillPrintArea" },
-  "SWEAT-AWS-JH030B-RBL-1213": { sku: "SWEAT-AWS-JH030B-RBL-1213", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-WHI-3Y4Y": { sku: "HOOD-AWD-JH001B-WHI-3Y4Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-WHI-5Y6Y": { sku: "HOOD-AWD-JH001B-WHI-5Y6Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-WHI-7Y8Y": { sku: "HOOD-AWD-JH001B-WHI-7Y8Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-WHI-9Y11": { sku: "HOOD-AWD-JH001B-WHI-9Y11", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-WHI-1213": { sku: "HOOD-AWD-JH001B-WHI-1213", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-BLK-3Y4Y": { sku: "HOOD-AWD-JH001B-BLK-3Y4Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-BLK-5Y6Y": { sku: "HOOD-AWD-JH001B-BLK-5Y6Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-BLK-7Y8Y": { sku: "HOOD-AWD-JH001B-BLK-7Y8Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-BLK-9Y11": { sku: "HOOD-AWD-JH001B-BLK-9Y11", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-BLK-1213": { sku: "HOOD-AWD-JH001B-BLK-1213", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-HGR-3Y4Y": { sku: "HOOD-AWD-JH001B-HGR-3Y4Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-HGR-5Y6Y": { sku: "HOOD-AWD-JH001B-HGR-5Y6Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-HGR-7Y8Y": { sku: "HOOD-AWD-JH001B-HGR-7Y8Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-HGR-9Y11": { sku: "HOOD-AWD-JH001B-HGR-9Y11", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-HGR-1213": { sku: "HOOD-AWD-JH001B-HGR-1213", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RED-3Y4Y": { sku: "HOOD-AWD-JH001B-RED-3Y4Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RED-5Y6Y": { sku: "HOOD-AWD-JH001B-RED-5Y6Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RED-7Y8Y": { sku: "HOOD-AWD-JH001B-RED-7Y8Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RED-9Y11": { sku: "HOOD-AWD-JH001B-RED-9Y11", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RED-1213": { sku: "HOOD-AWD-JH001B-RED-1213", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RBL-3Y4Y": { sku: "HOOD-AWD-JH001B-RBL-3Y4Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RBL-5Y6Y": { sku: "HOOD-AWD-JH001B-RBL-5Y6Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RBL-7Y8Y": { sku: "HOOD-AWD-JH001B-RBL-7Y8Y", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RBL-9Y11": { sku: "HOOD-AWD-JH001B-RBL-9Y11", sizing: "fillPrintArea" },
-  "HOOD-AWD-JH001B-RBL-1213": { sku: "HOOD-AWD-JH001B-RBL-1213", sizing: "fillPrintArea" },
-  "ECO-CAN-8X8": { sku: "ECO-CAN-8X8", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "ECO-CAN-8X12": { sku: "ECO-CAN-8X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "ECO-CAN-12X12": { sku: "ECO-CAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "ECO-CAN-12X16": { sku: "ECO-CAN-12X16", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "ECO-CAN-16X24": { sku: "ECO-CAN-16X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "ECO-CAN-20X30": { sku: "ECO-CAN-20X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "ECO-ROL-8X8": { sku: "ECO-ROL-8X8", sizing: "fillPrintArea" },
-  "ECO-ROL-10X10": { sku: "ECO-ROL-10X10", sizing: "fillPrintArea" },
-  "ECO-ROL-12X12": { sku: "ECO-ROL-12X12", sizing: "fillPrintArea" },
-  "ECO-ROL-12X16": { sku: "ECO-ROL-12X16", sizing: "fillPrintArea" },
-  "ECO-ROL-16X24": { sku: "ECO-ROL-16X24", sizing: "fillPrintArea" },
-  "ECO-ROL-20X30": { sku: "ECO-ROL-20X30", sizing: "fillPrintArea" },
-  "GLOBAL-SLIMCAN-6X6": { sku: "GLOBAL-SLIMCAN-6X6", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "GLOBAL-SLIMCAN-8X8": { sku: "GLOBAL-SLIMCAN-8X8", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "GLOBAL-SLIMCAN-12X12": { sku: "GLOBAL-SLIMCAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "GLOBAL-SLIMCAN-24X20": { sku: "GLOBAL-SLIMCAN-24X20", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "GLOBAL-SLIMCAN-30X30": { sku: "GLOBAL-SLIMCAN-30X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "GLOBAL-SLIMCAN-43X87": { sku: "GLOBAL-SLIMCAN-43X87", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "CLASSIC-POST-GLOS-6X4": { sku: "CLASSIC-POST-GLOS-6X4", sizing: "fillPrintArea" },
-  "PATCH-ROUND": { sku: "PATCH-ROUND", sizing: "fillPrintArea" },
-  "PATCH-SQUARE": { sku: "PATCH-SQUARE", sizing: "fillPrintArea" },
+  "SWEAT-AWS-JH030B-WHI-3Y4Y": { sku: "SWEAT-AWS-JH030B-WHI-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-WHI-5Y6Y": { sku: "SWEAT-AWS-JH030B-WHI-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-WHI-7Y8Y": { sku: "SWEAT-AWS-JH030B-WHI-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-WHI-9Y11": { sku: "SWEAT-AWS-JH030B-WHI-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-WHI-1213": { sku: "SWEAT-AWS-JH030B-WHI-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-BLK-3Y4Y": { sku: "SWEAT-AWS-JH030B-BLK-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-BLK-5Y6Y": { sku: "SWEAT-AWS-JH030B-BLK-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-BLK-7Y8Y": { sku: "SWEAT-AWS-JH030B-BLK-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-BLK-9Y11": { sku: "SWEAT-AWS-JH030B-BLK-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-BLK-1213": { sku: "SWEAT-AWS-JH030B-BLK-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-HGR-3Y4Y": { sku: "SWEAT-AWS-JH030B-HGR-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-HGR-5Y6Y": { sku: "SWEAT-AWS-JH030B-HGR-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-HGR-7Y8Y": { sku: "SWEAT-AWS-JH030B-HGR-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-HGR-9Y11": { sku: "SWEAT-AWS-JH030B-HGR-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-HGR-1213": { sku: "SWEAT-AWS-JH030B-HGR-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RED-3Y4Y": { sku: "SWEAT-AWS-JH030B-RED-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RED-5Y6Y": { sku: "SWEAT-AWS-JH030B-RED-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RED-7Y8Y": { sku: "SWEAT-AWS-JH030B-RED-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RED-9Y11": { sku: "SWEAT-AWS-JH030B-RED-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RED-1213": { sku: "SWEAT-AWS-JH030B-RED-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RBL-3Y4Y": { sku: "SWEAT-AWS-JH030B-RBL-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RBL-5Y6Y": { sku: "SWEAT-AWS-JH030B-RBL-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RBL-7Y8Y": { sku: "SWEAT-AWS-JH030B-RBL-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RBL-9Y11": { sku: "SWEAT-AWS-JH030B-RBL-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "SWEAT-AWS-JH030B-RBL-1213": { sku: "SWEAT-AWS-JH030B-RBL-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-WHI-3Y4Y": { sku: "HOOD-AWD-JH001B-WHI-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-WHI-5Y6Y": { sku: "HOOD-AWD-JH001B-WHI-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-WHI-7Y8Y": { sku: "HOOD-AWD-JH001B-WHI-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-WHI-9Y11": { sku: "HOOD-AWD-JH001B-WHI-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-WHI-1213": { sku: "HOOD-AWD-JH001B-WHI-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-BLK-3Y4Y": { sku: "HOOD-AWD-JH001B-BLK-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-BLK-5Y6Y": { sku: "HOOD-AWD-JH001B-BLK-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-BLK-7Y8Y": { sku: "HOOD-AWD-JH001B-BLK-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-BLK-9Y11": { sku: "HOOD-AWD-JH001B-BLK-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-BLK-1213": { sku: "HOOD-AWD-JH001B-BLK-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-HGR-3Y4Y": { sku: "HOOD-AWD-JH001B-HGR-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-HGR-5Y6Y": { sku: "HOOD-AWD-JH001B-HGR-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-HGR-7Y8Y": { sku: "HOOD-AWD-JH001B-HGR-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-HGR-9Y11": { sku: "HOOD-AWD-JH001B-HGR-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-HGR-1213": { sku: "HOOD-AWD-JH001B-HGR-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RED-3Y4Y": { sku: "HOOD-AWD-JH001B-RED-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RED-5Y6Y": { sku: "HOOD-AWD-JH001B-RED-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RED-7Y8Y": { sku: "HOOD-AWD-JH001B-RED-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RED-9Y11": { sku: "HOOD-AWD-JH001B-RED-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RED-1213": { sku: "HOOD-AWD-JH001B-RED-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RBL-3Y4Y": { sku: "HOOD-AWD-JH001B-RBL-3Y4Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RBL-5Y6Y": { sku: "HOOD-AWD-JH001B-RBL-5Y6Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RBL-7Y8Y": { sku: "HOOD-AWD-JH001B-RBL-7Y8Y", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RBL-9Y11": { sku: "HOOD-AWD-JH001B-RBL-9Y11", sizing: "fillPrintArea", shipping: "Budget" },
+  "HOOD-AWD-JH001B-RBL-1213": { sku: "HOOD-AWD-JH001B-RBL-1213", sizing: "fillPrintArea", shipping: "Budget" },
+  "ECO-CAN-8X8": { sku: "ECO-CAN-8X8", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "ECO-CAN-8X12": { sku: "ECO-CAN-8X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "ECO-CAN-12X12": { sku: "ECO-CAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "ECO-CAN-12X16": { sku: "ECO-CAN-12X16", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "ECO-CAN-16X24": { sku: "ECO-CAN-16X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "ECO-CAN-20X30": { sku: "ECO-CAN-20X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "ECO-ROL-8X8": { sku: "ECO-ROL-8X8", sizing: "fillPrintArea", shipping: "Budget" },
+  "ECO-ROL-10X10": { sku: "ECO-ROL-10X10", sizing: "fillPrintArea", shipping: "Budget" },
+  "ECO-ROL-12X12": { sku: "ECO-ROL-12X12", sizing: "fillPrintArea", shipping: "Budget" },
+  "ECO-ROL-12X16": { sku: "ECO-ROL-12X16", sizing: "fillPrintArea", shipping: "Budget" },
+  "ECO-ROL-16X24": { sku: "ECO-ROL-16X24", sizing: "fillPrintArea", shipping: "Budget" },
+  "ECO-ROL-20X30": { sku: "ECO-ROL-20X30", sizing: "fillPrintArea", shipping: "Budget" },
+  "GLOBAL-SLIMCAN-6X6": { sku: "GLOBAL-SLIMCAN-6X6", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "GLOBAL-SLIMCAN-8X8": { sku: "GLOBAL-SLIMCAN-8X8", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "GLOBAL-SLIMCAN-12X12": { sku: "GLOBAL-SLIMCAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "GLOBAL-SLIMCAN-24X20": { sku: "GLOBAL-SLIMCAN-24X20", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "GLOBAL-SLIMCAN-30X30": { sku: "GLOBAL-SLIMCAN-30X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "GLOBAL-SLIMCAN-43X87": { sku: "GLOBAL-SLIMCAN-43X87", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "CLASSIC-POST-GLOS-6X4": { sku: "CLASSIC-POST-GLOS-6X4", sizing: "fillPrintArea", shipping: "Budget" },
+  "PATCH-ROUND": { sku: "PATCH-ROUND", sizing: "fillPrintArea", shipping: "Budget" },
+  "PATCH-SQUARE": { sku: "PATCH-SQUARE", sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Christmas (Prodigi, UK-made) ─────────────────────────────────────────
-  "xmas-bauble":          { sku: "XMAS-PLAS-BAUB", sizing: "fillPrintArea" },
-  "xmas-ornament-square": { sku: "XMAS-ALUM-SQ",   sizing: "fillPrintArea" },
-  "xmas-sack":            { sku: "XMAS-SACK",      sizing: "fillPrintArea" },
+  // Budget delivery: £3.20 vs £6.45 Standard for these small items (Prodigi GB, 2026-09-26)
+  "xmas-bauble":          { sku: "XMAS-PLAS-BAUB", sizing: "fillPrintArea", shipping: "Budget" },
+  "xmas-ornament-square": { sku: "XMAS-ALUM-SQ",   sizing: "fillPrintArea", shipping: "Budget" },
+  "xmas-sack":            { sku: "XMAS-SACK",      sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Cushions & towels (Prodigi, UK) ─────────────────────────────────────
-  "cushion-12-single": { sku: "GLOBAL-CUSH-12X12-LIN",      sizing: "fillPrintArea" },
-  "cushion-18-double": { sku: "GLOBAL-CUSH-18X18-LIN-DUAL", sizing: "fillPrintArea" },
-  "towel-bath":        { sku: "H-TOW-BATH",                 sizing: "fillPrintArea" },
+  "cushion-12-single": { sku: "GLOBAL-CUSH-12X12-LIN",      sizing: "fillPrintArea", shipping: "Budget" },
+  "cushion-18-double": { sku: "GLOBAL-CUSH-18X18-LIN-DUAL", sizing: "fillPrintArea", shipping: "Budget" },
+  "towel-bath":        { sku: "H-TOW-BATH",                 sizing: "fillPrintArea", shipping: "Budget" },
+
+  // ── Kiss-cut stickers, bigger sizes (Prodigi GB, checked 2026-09-26)
+  "sticker-large": { sku: "GLOBAL-STI-8_5X8_5-G", sizing: "fillPrintArea", shipping: "Budget" },
+  "sticker-xl":    { sku: "GLOBAL-STI-14X14-G",   sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Halloween / kids bundles — one photo, several products, one order ─────
-  "halloween-pocket-pack": { sku: "GLOBAL-STI-3X4-G", sizing: "fillPrintArea", bundle: ["magnet-fridge-3x2"] },
-  "halloween-fridge-pack": { sku: "MAG-1-15X15", sizing: "fillPrintArea", bundle: ["wud-sticker-small", "magnet-fridge-3x2"] },
+  "halloween-pocket-pack": { sku: "GLOBAL-STI-3X4-G", sizing: "fillPrintArea", bundle: ["magnet-fridge-3x2"], shipping: "Budget" },
+  "halloween-fridge-pack": { sku: "MAG-1-15X15", sizing: "fillPrintArea", bundle: ["wud-sticker-small", "magnet-fridge-3x2"], shipping: "Budget" },
   // ── Christmas — genuinely confirmed missing from fulfilment despite being
   // real, live, priced Prodigi products. Would have taken payment and never
   // reached print.
-  "ONJJEM-XMAS-STOCKING-RED": { sku: "ONJJEM-XMAS-STOCKING-RED", sizing: "fillPrintArea" },
-  "ONJJEM-XMAS-SACK-RED": { sku: "ONJJEM-XMAS-SACK-RED", sizing: "fillPrintArea" },
+  "ONJJEM-XMAS-STOCKING-RED": { sku: "ONJJEM-XMAS-STOCKING-RED", sizing: "fillPrintArea", shipping: "Budget" },
+  "ONJJEM-XMAS-SACK-RED": { sku: "ONJJEM-XMAS-SACK-RED", sizing: "fillPrintArea", shipping: "Budget" },
   // ── Kids Cartoon T-Shirt — genuinely confirmed ZERO fulfilment entries
   // existed for any of the 30 real, priced variants.
-  "TEE-STTK184-3Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
-  "TEE-STTK184-3Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
-  "TEE-STTK184-3Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
-  "TEE-STTK184-3Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
-  "TEE-STTK184-3Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
-  "TEE-STTK184-3Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
-  "TEE-STTK184-5Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
-  "TEE-STTK184-5Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
-  "TEE-STTK184-5Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
-  "TEE-STTK184-5Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
-  "TEE-STTK184-5Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
-  "TEE-STTK184-5Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
-  "TEE-STTK184-7Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
-  "TEE-STTK184-7Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
-  "TEE-STTK184-7Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
-  "TEE-STTK184-7Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
-  "TEE-STTK184-7Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
-  "TEE-STTK184-7Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
-  "TEE-STTK184-9Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
-  "TEE-STTK184-9Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
-  "TEE-STTK184-9Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
-  "TEE-STTK184-9Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
-  "TEE-STTK184-9Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
-  "TEE-STTK184-9Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
-  "TEE-STTK184-12Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" } },
-  "TEE-STTK184-12Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" } },
-  "TEE-STTK184-12Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" } },
-  "TEE-STTK184-12Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" } },
-  "TEE-STTK184-12Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" } },
-  "TEE-STTK184-12Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" } },
+  "TEE-STTK184-3Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" }, shipping: "Budget" },
+  "TEE-STTK184-3Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" }, shipping: "Budget" },
+  "TEE-STTK184-3Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" }, shipping: "Budget" },
+  "TEE-STTK184-3Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" }, shipping: "Budget" },
+  "TEE-STTK184-3Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" }, shipping: "Budget" },
+  "TEE-STTK184-3Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" }, shipping: "Budget" },
+  "TEE-STTK184-5Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" }, shipping: "Budget" },
+  "TEE-STTK184-5Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" }, shipping: "Budget" },
+  "TEE-STTK184-5Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" }, shipping: "Budget" },
+  "TEE-STTK184-5Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" }, shipping: "Budget" },
+  "TEE-STTK184-5Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" }, shipping: "Budget" },
+  "TEE-STTK184-5Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" }, shipping: "Budget" },
+  "TEE-STTK184-7Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" }, shipping: "Budget" },
+  "TEE-STTK184-7Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" }, shipping: "Budget" },
+  "TEE-STTK184-7Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" }, shipping: "Budget" },
+  "TEE-STTK184-7Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" }, shipping: "Budget" },
+  "TEE-STTK184-7Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" }, shipping: "Budget" },
+  "TEE-STTK184-7Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" }, shipping: "Budget" },
+  "TEE-STTK184-9Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" }, shipping: "Budget" },
+  "TEE-STTK184-9Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" }, shipping: "Budget" },
+  "TEE-STTK184-9Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" }, shipping: "Budget" },
+  "TEE-STTK184-9Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" }, shipping: "Budget" },
+  "TEE-STTK184-9Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" }, shipping: "Budget" },
+  "TEE-STTK184-9Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" }, shipping: "Budget" },
+  "TEE-STTK184-12Y-WHITE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "White" }, shipping: "Budget" },
+  "TEE-STTK184-12Y-BLACK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Black" }, shipping: "Budget" },
+  "TEE-STTK184-12Y-HEATHER": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Heather Grey" }, shipping: "Budget" },
+  "TEE-STTK184-12Y-RED": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Fire Red" }, shipping: "Budget" },
+  "TEE-STTK184-12Y-ROYALBLUE": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Royal Blue" }, shipping: "Budget" },
+  "TEE-STTK184-12Y-PINK": { sku: "TEE-STTK184", sizing: "fillPrintArea", attributes: { color: "Cotton Pink" }, shipping: "Budget" },
 
 
   // ── Winter Warmers ──────────────────────────────────────────────────────────
@@ -176,13 +182,13 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // The SKU values below are placeholders (same as our own internal SKU) —
   // verify each one against Prodigi's real product page before trusting a
   // live order to it.
-  "ONJJEM-HWB-2L-PLUSH": { sku: "ONJJEM-HWB-2L-PLUSH", sizing: "fillPrintArea" },
-  "H-BLA-PBSWHITE": { sku: "H-BLA-PBSWHITE", sizing: "fillPrintArea" },
-  "H-BLA-PBMWHITE": { sku: "H-BLA-PBMWHITE", sizing: "fillPrintArea" },
-  "H-BLA-PBMPINK": { sku: "H-BLA-PBMPINK", sizing: "fillPrintArea" },
-  "H-BLA-PBLWHITE": { sku: "H-BLA-PBLWHITE", sizing: "fillPrintArea" },
-  "H-BLA-PBLPINK": { sku: "H-BLA-PBLPINK", sizing: "fillPrintArea" },
-  "H-BLA-MINK-LARGE": { sku: "H-BLA-MINK-LARGE", sizing: "fillPrintArea" },
+  "ONJJEM-HWB-2L-PLUSH": { sku: "ONJJEM-HWB-2L-PLUSH", sizing: "fillPrintArea", shipping: "Budget" },
+  "H-BLA-PBSWHITE": { sku: "H-BLA-PBSWHITE", sizing: "fillPrintArea", shipping: "Budget" },
+  "H-BLA-PBMWHITE": { sku: "H-BLA-PBMWHITE", sizing: "fillPrintArea", shipping: "Budget" },
+  "H-BLA-PBMPINK": { sku: "H-BLA-PBMPINK", sizing: "fillPrintArea", shipping: "Budget" },
+  "H-BLA-PBLWHITE": { sku: "H-BLA-PBLWHITE", sizing: "fillPrintArea", shipping: "Budget" },
+  "H-BLA-PBLPINK": { sku: "H-BLA-PBLPINK", sizing: "fillPrintArea", shipping: "Budget" },
+  "H-BLA-MINK-LARGE": { sku: "H-BLA-MINK-LARGE", sizing: "fillPrintArea", shipping: "Budget" },
 
 
   // ── Stretched Canvas ────────────────────────────────────────────────────────
@@ -190,24 +196,24 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ⚠️ UNVALIDATED against live Prodigi API — pulled from Prodigi's product
   // page listing on 2026-08-02, not confirmed via Quotes API yet. Test one
   // real order per size before trusting this for customer checkout.
-  "canvas-stretched-a5": { sku: "GLOBAL-CAN-A5", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-a4": { sku: "GLOBAL-CAN-A4", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-a3": { sku: "GLOBAL-CAN-A3", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-a2": { sku: "GLOBAL-CAN-A2", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-a1": { sku: "GLOBAL-CAN-A1", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "canvas-stretched-a0": { sku: "GLOBAL-CAN-A0", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "canvas-stretched-a5": { sku: "GLOBAL-CAN-A5", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "canvas-stretched-a4": { sku: "GLOBAL-CAN-A4", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "canvas-stretched-a3": { sku: "GLOBAL-CAN-A3", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "canvas-stretched-a2": { sku: "GLOBAL-CAN-A2", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "canvas-stretched-a1": { sku: "GLOBAL-CAN-A1", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "canvas-stretched-a0": { sku: "GLOBAL-CAN-A0", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
 
   // ── Eco Canvas ──────────────────────────────────────────────────────────────
   // ECO-CAN-* requires wrap attribute (same as stretched canvas).
-  "eco-canvas-8x12":  { sku: "ECO-CAN-8X12",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "eco-canvas-12x12": { sku: "ECO-CAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "eco-canvas-12x18": { sku: "ECO-CAN-12X18", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "eco-canvas-16x16": { sku: "ECO-CAN-16X16", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "eco-canvas-16x24": { sku: "ECO-CAN-16X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "eco-canvas-8x12":  { sku: "ECO-CAN-8X12",  sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "eco-canvas-12x12": { sku: "ECO-CAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "eco-canvas-12x18": { sku: "ECO-CAN-12X18", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "eco-canvas-16x16": { sku: "ECO-CAN-16X16", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "eco-canvas-16x24": { sku: "ECO-CAN-16X24", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
   // ⚠️ UNVALIDATED — follows the established ECO-CAN-{size} naming pattern
   // but not individually confirmed against the live API.
-  "eco-canvas-20x20": { sku: "ECO-CAN-20X20", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "eco-canvas-20x30": { sku: "ECO-CAN-20X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "eco-canvas-20x20": { sku: "ECO-CAN-20X20", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "eco-canvas-20x30": { sku: "ECO-CAN-20X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
 
   // ── Eco Rolled Canvas ───────────────────────────────────────────────────────
   // ECO-ROL-* unframed rolled prints, no attribute required.
@@ -215,14 +221,14 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Eco Rolled Canvas ───────────────────────────────────────────────────────
   // ECO-ROL-* unframed rolled prints, no attribute required.
   // All 8 sizes CONFIRMED against Prodigi's own size/price listing.
-  "eco-rolled-10x10": { sku: "ECO-ROL-10X10", sizing: "fillPrintArea" },
-  "eco-rolled-10x12": { sku: "ECO-ROL-10X12", sizing: "fillPrintArea" },
-  "eco-rolled-11x14": { sku: "ECO-ROL-11X14", sizing: "fillPrintArea" },
-  "eco-rolled-12x12": { sku: "ECO-ROL-12X12", sizing: "fillPrintArea" },
-  "eco-rolled-12x16": { sku: "ECO-ROL-12X16", sizing: "fillPrintArea" },
-  "eco-rolled-12x18": { sku: "ECO-ROL-12X18", sizing: "fillPrintArea" },
-  "eco-rolled-10x20": { sku: "ECO-ROL-10X20", sizing: "fillPrintArea" },
-  "eco-rolled-12x24": { sku: "ECO-ROL-12X24", sizing: "fillPrintArea" },
+  "eco-rolled-10x10": { sku: "ECO-ROL-10X10", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-10x12": { sku: "ECO-ROL-10X12", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-11x14": { sku: "ECO-ROL-11X14", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-12x12": { sku: "ECO-ROL-12X12", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-12x16": { sku: "ECO-ROL-12X16", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-12x18": { sku: "ECO-ROL-12X18", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-10x20": { sku: "ECO-ROL-10X20", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-12x24": { sku: "ECO-ROL-12X24", sizing: "fillPrintArea", shipping: "Budget" },
 
   // These two are CONFIRMED (not guessed) - real SKUs from Prodigi's own
   // size/price listing. Note the actual dimensions are 17x23.4" and
@@ -230,19 +236,19 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   // ── Framed Photo Tiles ──────────────────────────────────────────────────────
   // PHOTIL-FRA-* requires color attribute: "white" | "black".
-  "photo-tile-5x7":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "black" } },
-  "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "photo-tile-5x7":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
+  "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
+  "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
 
   // ── Playing Cards ───────────────────────────────────────────────────────────
-  "playing-cards": { sku: "PLAY-CARD", sizing: "fillPrintArea" },
+  "playing-cards": { sku: "PLAY-CARD", sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Photo Mugs ──────────────────────────────────────────────────────────────
   // Validated against Prodigi live API on 2026-06-01.
   // GLOBAL-MUG-W: 11oz, multi-region (UK/US/DE), best for international orders.
   // H-MUG-15OZ-W: 15oz large ceramic, UK lab.
-  "mug-11oz": { sku: "GLOBAL-MUG-W",  sizing: "fillPrintArea" },
-  "mug-15oz": { sku: "H-MUG-15OZ-W", sizing: "fillPrintArea" },
+  "mug-11oz": { sku: "GLOBAL-MUG-W",  sizing: "fillPrintArea", shipping: "Budget" },
+  "mug-15oz": { sku: "H-MUG-15OZ-W", sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Magic Photo Mug (heat-reveal colour-changing) ──────────────────────────
   // H-MUG-11OZ-CC: 11oz heat-activated gloss mug, confirmed via live Prodigi
@@ -250,57 +256,57 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // entirely, meaning every order for this product failed at fulfilment and
   // sat in fulfilment_queue as 'failed' rather than being sent to Prodigi —
   // check the queue for any past orders needing manual resubmission.
-  "H-APR-CA-WTIE": { sku: "H-APR-CA-WTIE", sizing: "fillPrintArea" },
-  "H-APR-AA-BTIE": { sku: "H-APR-AA-BTIE", sizing: "fillPrintArea" },
-  "magic-mug": { sku: "H-MUG-11OZ-CC", sizing: "fillPrintArea" },
+  "H-APR-CA-WTIE": { sku: "H-APR-CA-WTIE", sizing: "fillPrintArea", shipping: "Budget" },
+  "H-APR-AA-BTIE": { sku: "H-APR-AA-BTIE", sizing: "fillPrintArea", shipping: "Budget" },
+  "magic-mug": { sku: "H-MUG-11OZ-CC", sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Pet Tags ─────────────────────────────────────────────────────────────────
   // Aluminium, dye-sublimated, UK lab. Both validated live on 2026-06-01.
   // PET-MET-ROUND: 3.2x3.9cm round tag, £5.00. PET-MET-BONE: 2.8x3.8cm bone, £5.00.
-  "pet-tag-round": { sku: "PET-MET-ROUND", sizing: "fillPrintArea" },
-  "pet-tag-bone":  { sku: "PET-MET-BONE",  sizing: "fillPrintArea" },
+  "pet-tag-round": { sku: "PET-MET-ROUND", sizing: "fillPrintArea", shipping: "Budget" },
+  "pet-tag-bone":  { sku: "PET-MET-BONE",  sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Tea Towels ───────────────────────────────────────────────────────────────
   // SKU prefix confirmed via Prodigi products API (/v4.0/products/H-TEATOWEL).
   // UK lab: 18.5x27.5" (50x70cm) cotton, £12.00 base. Sandbox returns
   // NotAvailable (sandbox limitation) but product is valid on live API.
-  "tea-towel-poly":   { sku: "H-TEATOWEL-POLY-19_5X31_5",   sizing: "fillPrintArea" },
-  "tea-towel-cotton": { sku: "H-TEATOWEL-COTTON-19_5X31_5", sizing: "fillPrintArea" },
+  "tea-towel-poly":   { sku: "H-TEATOWEL-POLY-19_5X31_5",   sizing: "fillPrintArea", shipping: "Budget" },
+  "tea-towel-cotton": { sku: "H-TEATOWEL-COTTON-19_5X31_5", sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Wooden Coasters ─────────────────────────────────────────────────────────
   // UK lab (H-COAST-*). All 4x4" square with cork underside.
   // Validated against Prodigi live API on 2026-06-01.
-  "coaster-1pk": { sku: "H-COAST-1PK", sizing: "fillPrintArea" },
-  "coaster-2pk": { sku: "H-COAST-2PK", sizing: "fillPrintArea" },
-  "coaster-4pk": { sku: "H-COAST-4PK", sizing: "fillPrintArea" },
-  "coaster-6pk": { sku: "H-COAST-6PK", sizing: "fillPrintArea" },
+  "coaster-1pk": { sku: "H-COAST-1PK", sizing: "fillPrintArea", shipping: "Budget" },
+  "coaster-2pk": { sku: "H-COAST-2PK", sizing: "fillPrintArea", shipping: "Budget" },
+  "coaster-4pk": { sku: "H-COAST-4PK", sizing: "fillPrintArea", shipping: "Budget" },
+  "coaster-6pk": { sku: "H-COAST-6PK", sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Magnets ─────────────────────────────────────────────────────────────────
   // All five SKUs validated against Prodigi live API on 2026-06-01.
   // ACR = acrylic fridge magnet, FRI = standard fridge magnet, MAG-1 = square.
-  "magnet-acrylic-2x3":  { sku: "M-MAG-ACR-4X6",  sizing: "fillPrintArea" }, // 2"×3" acrylic
-  "magnet-fridge-3x2":   { sku: "M-MAG-FRI-3X2",  sizing: "fillPrintArea" }, // 3"×2"
-  "magnet-fridge-6x4":   { sku: "M-MAG-FRI-4X6",  sizing: "fillPrintArea" }, // 6"×4"
-  "magnet-square-4x4":   { sku: "MAG-1-10X10",     sizing: "fillPrintArea" }, // 4"×4" (10×10cm)
-  "magnet-square-6x6":   { sku: "MAG-1-15X15",     sizing: "fillPrintArea" }, // 6"×6" (15×15cm)
+  "magnet-acrylic-2x3":  { sku: "M-MAG-ACR-4X6",  sizing: "fillPrintArea", shipping: "Budget" }, // 2"×3" acrylic
+  "magnet-fridge-3x2":   { sku: "M-MAG-FRI-3X2",  sizing: "fillPrintArea", shipping: "Budget" }, // 3"×2"
+  "magnet-fridge-6x4":   { sku: "M-MAG-FRI-4X6",  sizing: "fillPrintArea", shipping: "Budget" }, // 6"×4"
+  "magnet-square-4x4":   { sku: "MAG-1-10X10",     sizing: "fillPrintArea", shipping: "Budget" }, // 4"×4" (10×10cm)
+  "magnet-square-6x6":   { sku: "MAG-1-15X15",     sizing: "fillPrintArea", shipping: "Budget" }, // 6"×6" (15×15cm)
 
   // ── Jigsaw Puzzles ───────────────────────────────────────────────────────────
   // JIGSAW-PUZZLE-* SKUs validated against Prodigi live API on 2026-06-02.
   // All require printAreas: ["jigsaw", "lid"] — customer photo prints on both.
-  "jigsaw-30":   { sku: "JIGSAW-PUZZLE-30",   sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 30pc, 250×200mm
-  "jigsaw-110":  { sku: "JIGSAW-PUZZLE-110",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 110pc, 250×200mm
-  "jigsaw-252":  { sku: "JIGSAW-PUZZLE-252",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 252pc, 375×285mm
-  "jigsaw-500":  { sku: "JIGSAW-PUZZLE-500",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 500pc, 530×390mm
-  "jigsaw-1000": { sku: "JIGSAW-PUZZLE-1000", sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] }, // 1000pc, 765×525mm
+  "jigsaw-30":   { sku: "JIGSAW-PUZZLE-30",   sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" }, // 30pc, 250×200mm
+  "jigsaw-110":  { sku: "JIGSAW-PUZZLE-110",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" }, // 110pc, 250×200mm
+  "jigsaw-252":  { sku: "JIGSAW-PUZZLE-252",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" }, // 252pc, 375×285mm
+  "jigsaw-500":  { sku: "JIGSAW-PUZZLE-500",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" }, // 500pc, 530×390mm
+  "jigsaw-1000": { sku: "JIGSAW-PUZZLE-1000", sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" }, // 1000pc, 765×525mm
 
   // ── Temporary Tattoos ───────────────────────────────────────────────────────
   // GLOBAL-TATT-* SKUs validated against Prodigi live API on 2026-06-02.
   // Skin-safe waterslide film, lasts up to one week, easy to apply and remove.
-  "tattoo-s":   { sku: "GLOBAL-TATT-S",   sizing: "fillPrintArea" }, // 2×3" (5×7.5cm)
-  "tattoo-m":   { sku: "GLOBAL-TATT-M",   sizing: "fillPrintArea" }, // 3×4" (7.5×10cm)
-  "tattoo-l":   { sku: "GLOBAL-TATT-L",   sizing: "fillPrintArea" }, // 4×6" (10×15cm)
-  "tattoo-xl":  { sku: "GLOBAL-TATT-XL",  sizing: "fillPrintArea" }, // 8×8" (20×20cm)
-  "tattoo-xxl": { sku: "GLOBAL-TATT-XXL", sizing: "fillPrintArea" }, // 12×12" (30×30cm)
+  "tattoo-s":   { sku: "GLOBAL-TATT-S",   sizing: "fillPrintArea", shipping: "Budget" }, // 2×3" (5×7.5cm)
+  "tattoo-m":   { sku: "GLOBAL-TATT-M",   sizing: "fillPrintArea", shipping: "Budget" }, // 3×4" (7.5×10cm)
+  "tattoo-l":   { sku: "GLOBAL-TATT-L",   sizing: "fillPrintArea", shipping: "Budget" }, // 4×6" (10×15cm)
+  "tattoo-xl":  { sku: "GLOBAL-TATT-XL",  sizing: "fillPrintArea", shipping: "Budget" }, // 8×8" (20×20cm)
+  "tattoo-xxl": { sku: "GLOBAL-TATT-XXL", sizing: "fillPrintArea", shipping: "Budget" }, // 12×12" (30×30cm)
 
   // ── Glow in the Dark Posters ───────────────────────────────────────
   // GLOBAL-GLOW-* SKUs from Prodigi catalog (2026-06-02).
@@ -312,55 +318,55 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Museum-Grade Fine Art Print ──────────────────────────────────────────────
   // ART-FAP-SAP-* SKUs from Prodigi spec sheet (2026-08). Flat fine art print,
   // no attributes required.
-  "art-print-5x7":   { sku: "ART-FAP-SAP-5X7",   sizing: "fillPrintArea" },
-  "art-print-8x10":  { sku: "ART-FAP-SAP-8X10",  sizing: "fillPrintArea" },
-  "art-print-11x14": { sku: "ART-FAP-SAP-11X14", sizing: "fillPrintArea" },
-  "art-print-12x16": { sku: "ART-FAP-SAP-12X16", sizing: "fillPrintArea" },
-  "art-print-24x32": { sku: "ART-FAP-SAP-24X32", sizing: "fillPrintArea" },
-  "art-print-36x48": { sku: "ART-FAP-SAP-36X48", sizing: "fillPrintArea" },
+  "art-print-5x7":   { sku: "ART-FAP-SAP-5X7",   sizing: "fillPrintArea", shipping: "Budget" },
+  "art-print-8x10":  { sku: "ART-FAP-SAP-8X10",  sizing: "fillPrintArea", shipping: "Budget" },
+  "art-print-11x14": { sku: "ART-FAP-SAP-11X14", sizing: "fillPrintArea", shipping: "Budget" },
+  "art-print-12x16": { sku: "ART-FAP-SAP-12X16", sizing: "fillPrintArea", shipping: "Budget" },
+  "art-print-24x32": { sku: "ART-FAP-SAP-24X32", sizing: "fillPrintArea", shipping: "Budget" },
+  "art-print-36x48": { sku: "ART-FAP-SAP-36X48", sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Premium Metallic Foil Art Print ───────────────────────────────────────────
   // ART-FOIL-GOL-*/ART-FOIL-SIL-* SKUs from Prodigi spec sheet (2026-08). Colour
   // (Gold/Silver) is baked directly into the SKU itself, not a separate
   // attribute — each colour+size combination is its own distinct SKU.
   // ⚠️ Silver 24x24 SKU wasn't confirmed on the spec sheet — using the Gold
-  "ART-FOIL-GOL-4X6":        { sku: "ART-FOIL-GOL-4X6",   sizing: "fillPrintArea" },
-  "ART-FOIL-SIL-4X6":        { sku: "ART-FOIL-SIL-4X6",   sizing: "fillPrintArea" },
-  "ART-FOIL-GOL-12X12":      { sku: "ART-FOIL-GOL-12X12", sizing: "fillPrintArea" },
-  "ART-FOIL-SIL-12X12":      { sku: "ART-FOIL-SIL-12X12", sizing: "fillPrintArea" },
-  "ART-FOIL-GOL-20X28":      { sku: "ART-FOIL-GOL-20X28", sizing: "fillPrintArea" },
-  "ART-FOIL-SIL-20X28":      { sku: "ART-FOIL-SIL-20X28", sizing: "fillPrintArea" },
-  "ART-FOIL-GOL-A3":         { sku: "ART-FOIL-GOL-A3",    sizing: "fillPrintArea" },
-  "ART-FOIL-SIL-A3":         { sku: "ART-FOIL-SIL-A3",    sizing: "fillPrintArea" },
-  "ART-FOIL-GOL-A2":         { sku: "ART-FOIL-GOL-A2",    sizing: "fillPrintArea" },
-  "ART-FOIL-SIL-A2":         { sku: "ART-FOIL-SIL-A2",    sizing: "fillPrintArea" },
+  "ART-FOIL-GOL-4X6":        { sku: "ART-FOIL-GOL-4X6",   sizing: "fillPrintArea", shipping: "Budget" },
+  "ART-FOIL-SIL-4X6":        { sku: "ART-FOIL-SIL-4X6",   sizing: "fillPrintArea", shipping: "Budget" },
+  "ART-FOIL-GOL-12X12":      { sku: "ART-FOIL-GOL-12X12", sizing: "fillPrintArea", shipping: "Budget" },
+  "ART-FOIL-SIL-12X12":      { sku: "ART-FOIL-SIL-12X12", sizing: "fillPrintArea", shipping: "Budget" },
+  "ART-FOIL-GOL-20X28":      { sku: "ART-FOIL-GOL-20X28", sizing: "fillPrintArea", shipping: "Budget" },
+  "ART-FOIL-SIL-20X28":      { sku: "ART-FOIL-SIL-20X28", sizing: "fillPrintArea", shipping: "Budget" },
+  "ART-FOIL-GOL-A3":         { sku: "ART-FOIL-GOL-A3",    sizing: "fillPrintArea", shipping: "Budget" },
+  "ART-FOIL-SIL-A3":         { sku: "ART-FOIL-SIL-A3",    sizing: "fillPrintArea", shipping: "Budget" },
+  "ART-FOIL-GOL-A2":         { sku: "ART-FOIL-GOL-A2",    sizing: "fillPrintArea", shipping: "Budget" },
+  "ART-FOIL-SIL-A2":         { sku: "ART-FOIL-SIL-A2",    sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Premium Glow in the Dark Poster (Specialist Range) ────────────────────────
   // ART-GITD-* SKUs from Prodigi spec sheet (2026-08). Same family prefix as
   // the standard glow poster above, but these are distinct, non-overlapping
   // size SKUs — confirmed no collision with the existing glow-* entries.
-  "art-gitd-premium-a4":     { sku: "ART-GITD-A4",    sizing: "fillPrintArea" },
-  "art-gitd-premium-a3":     { sku: "ART-GITD-A3",    sizing: "fillPrintArea" },
-  "art-gitd-premium-a2":     { sku: "ART-GITD-A2",    sizing: "fillPrintArea" },
+  "art-gitd-premium-a4":     { sku: "ART-GITD-A4",    sizing: "fillPrintArea", shipping: "Budget" },
+  "art-gitd-premium-a3":     { sku: "ART-GITD-A3",    sizing: "fillPrintArea", shipping: "Budget" },
+  "art-gitd-premium-a2":     { sku: "ART-GITD-A2",    sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Rigid Display Board (Exoboard/Foamex) ─────────────────────────────────────
   // GLOBAL-EXOBOARD-* SKUs from Prodigi spec sheet (2026-08). Rigid PVC/foam
   // board, no attributes required for a standard rectangular print.
-  "exoboard-200x300":  { sku: "GLOBAL-EXOBOARD-200X300",  sizing: "fillPrintArea" },
-  "exoboard-297x420":  { sku: "GLOBAL-EXOBOARD-297X420",  sizing: "fillPrintArea" },
-  "exoboard-400x500":  { sku: "GLOBAL-EXOBOARD-400X500",  sizing: "fillPrintArea" },
-  "exoboard-450x600":  { sku: "GLOBAL-EXOBOARD-450X600",  sizing: "fillPrintArea" },
-  "exoboard-594x841":  { sku: "GLOBAL-EXOBOARD-594X841",  sizing: "fillPrintArea" },
-  "exoboard-600x800":  { sku: "GLOBAL-EXOBOARD-600X800",  sizing: "fillPrintArea" },
-  "exoboard-700x1000": { sku: "GLOBAL-EXOBOARD-700X1000", sizing: "fillPrintArea" },
-  "exoboard-841x1189": { sku: "GLOBAL-EXOBOARD-841X1189", sizing: "fillPrintArea" },
-  "exoboard-210x297":  { sku: "GLOBAL-EXOBOARD-210X297",  sizing: "fillPrintArea" },
-  "exoboard-300x400":  { sku: "GLOBAL-EXOBOARD-300X400",  sizing: "fillPrintArea" },
+  "exoboard-200x300":  { sku: "GLOBAL-EXOBOARD-200X300",  sizing: "fillPrintArea", shipping: "Budget" },
+  "exoboard-297x420":  { sku: "GLOBAL-EXOBOARD-297X420",  sizing: "fillPrintArea", shipping: "Budget" },
+  "exoboard-400x500":  { sku: "GLOBAL-EXOBOARD-400X500",  sizing: "fillPrintArea", shipping: "Budget" },
+  "exoboard-450x600":  { sku: "GLOBAL-EXOBOARD-450X600",  sizing: "fillPrintArea", shipping: "Budget" },
+  "exoboard-594x841":  { sku: "GLOBAL-EXOBOARD-594X841",  sizing: "fillPrintArea", shipping: "Budget" },
+  "exoboard-600x800":  { sku: "GLOBAL-EXOBOARD-600X800",  sizing: "fillPrintArea", shipping: "Budget" },
+  "exoboard-700x1000": { sku: "GLOBAL-EXOBOARD-700X1000", sizing: "fillPrintArea", shipping: "Budget" },
+  "exoboard-841x1189": { sku: "GLOBAL-EXOBOARD-841X1189", sizing: "fillPrintArea", shipping: "Budget" },
+  "exoboard-210x297":  { sku: "GLOBAL-EXOBOARD-210X297",  sizing: "fillPrintArea", shipping: "Budget" },
+  "exoboard-300x400":  { sku: "GLOBAL-EXOBOARD-300X400",  sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── New products added this session (2026-08-13) ──────────────────────────────
 
   // Glow in the Dark Poster — A1 added, CONFIRMED (ART-GITD-A1, same family as A2-A4 above)
-  "art-gitd-premium-a1": { sku: "ART-GITD-A1", sizing: "fillPrintArea" },
+  "art-gitd-premium-a1": { sku: "ART-GITD-A1", sizing: "fillPrintArea", shipping: "Budget" },
 
   // Budget Poster — simplified to only the sizes with genuinely confirmed
   // real costs from actual Prodigi basket screenshots. Budget Art Paper
@@ -370,53 +376,53 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // SKUs don't exist, so every poster order would have failed). Checked against
   // Prodigi's GB price list 2026-09-26. Portrait/landscape is handled on the
   // website (landscape pictures are turned before upload), so no attributes.
-  "poster-a3":     { sku: "ART-FAP-BAP-A3",    sizing: "fillPrintArea" },
-  "poster-a2":     { sku: "ART-FAP-BAP-A2",    sizing: "fillPrintArea" },
-  "poster-50x70":  { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea" },
-  "poster-a1":     { sku: "ART-FAP-BAP-A1",    sizing: "fillPrintArea" },
-  "poster-70x100": { sku: "ART-FAP-BAP-28X40", sizing: "fillPrintArea" },
+  "poster-a3":     { sku: "ART-FAP-BAP-A3",    sizing: "fillPrintArea", shipping: "Budget" },
+  "poster-a2":     { sku: "ART-FAP-BAP-A2",    sizing: "fillPrintArea", shipping: "Budget" },
+  "poster-50x70":  { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea", shipping: "Budget" },
+  "poster-a1":     { sku: "ART-FAP-BAP-A1",    sizing: "fillPrintArea", shipping: "Budget" },
+  "poster-70x100": { sku: "ART-FAP-BAP-28X40", sizing: "fillPrintArea", shipping: "Budget" },
   // Old poster keys kept so any old link still prints correctly
-  "budget-poster-a4-portrait":  { sku: "ART-FAP-BAP-A4", sizing: "fillPrintArea" },
-  "budget-poster-a4-landscape": { sku: "ART-FAP-BAP-A4", sizing: "fillPrintArea" },
-  "budget-poster-a2-portrait":  { sku: "ART-FAP-BAP-A2", sizing: "fillPrintArea" },
-  "budget-poster-a2-landscape": { sku: "ART-FAP-BAP-A2", sizing: "fillPrintArea" },
-  "budget-poster-a1-portrait":  { sku: "ART-FAP-BAP-A1", sizing: "fillPrintArea" },
-  "budget-poster-a1-landscape": { sku: "ART-FAP-BAP-A1", sizing: "fillPrintArea" },
-  "budget-poster-50x70-portrait":  { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea" },
-  "budget-poster-50x70-landscape": { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea" },
-  "budget-poster-70x100-portrait":  { sku: "ART-FAP-BAP-28X40", sizing: "fillPrintArea" },
-  "budget-poster-70x100-landscape": { sku: "ART-FAP-BAP-28X40", sizing: "fillPrintArea" },
+  "budget-poster-a4-portrait":  { sku: "ART-FAP-BAP-A4", sizing: "fillPrintArea", shipping: "Budget" },
+  "budget-poster-a4-landscape": { sku: "ART-FAP-BAP-A4", sizing: "fillPrintArea", shipping: "Budget" },
+  "budget-poster-a2-portrait":  { sku: "ART-FAP-BAP-A2", sizing: "fillPrintArea", shipping: "Budget" },
+  "budget-poster-a2-landscape": { sku: "ART-FAP-BAP-A2", sizing: "fillPrintArea", shipping: "Budget" },
+  "budget-poster-a1-portrait":  { sku: "ART-FAP-BAP-A1", sizing: "fillPrintArea", shipping: "Budget" },
+  "budget-poster-a1-landscape": { sku: "ART-FAP-BAP-A1", sizing: "fillPrintArea", shipping: "Budget" },
+  "budget-poster-50x70-portrait":  { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea", shipping: "Budget" },
+  "budget-poster-50x70-landscape": { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea", shipping: "Budget" },
+  "budget-poster-70x100-portrait":  { sku: "ART-FAP-BAP-28X40", sizing: "fillPrintArea", shipping: "Budget" },
+  "budget-poster-70x100-landscape": { sku: "ART-FAP-BAP-28X40", sizing: "fillPrintArea", shipping: "Budget" },
 
   // Photo wall stickers (repositionable, matte) — Prodigi GB price list 2026-09-26
-  "wall-sticker-a3":   { sku: "WALL-STKR-A3",        sizing: "fillPrintArea" },
-  "wall-sticker-a2":   { sku: "WALL-STKR-A2",        sizing: "fillPrintArea" },
-  "wall-sticker-a1":   { sku: "WALL-STKR-A1",        sizing: "fillPrintArea" },
-  "wall-sticker-100":  { sku: "WALL-STKR-1000X1000", sizing: "fillPrintArea" },
+  "wall-sticker-a3":   { sku: "WALL-STKR-A3",        sizing: "fillPrintArea", shipping: "Budget" },
+  "wall-sticker-a2":   { sku: "WALL-STKR-A2",        sizing: "fillPrintArea", shipping: "Budget" },
+  "wall-sticker-a1":   { sku: "WALL-STKR-A1",        sizing: "fillPrintArea", shipping: "Budget" },
+  "wall-sticker-100":  { sku: "WALL-STKR-1000X1000", sizing: "fillPrintArea", shipping: "Budget" },
 
   // Extra museum print size
-  "art-print-18x24": { sku: "ART-FAP-SAP-18X24", sizing: "fillPrintArea" },
+  "art-print-18x24": { sku: "ART-FAP-SAP-18X24", sizing: "fillPrintArea", shipping: "Budget" },
 
   // Eco Rolled Canvas — 4 new larger sizes. 24x47/28x40 CONFIRMED from your
   // Prodigi screenshots (ECO-ROL-24X47, ECO-ROL-28X40). 16x20/20x20 follow
   // the same established ECO-ROL-{size} naming pattern but weren't
   // individually visible in your screenshots — check before a real order.
-  "eco-rolled-16x20": { sku: "ECO-ROL-16X20", sizing: "fillPrintArea" },
-  "eco-rolled-20x20": { sku: "ECO-ROL-20X20", sizing: "fillPrintArea" },
-  "eco-rolled-24x47": { sku: "ECO-ROL-24X47", sizing: "fillPrintArea" },
-  "eco-rolled-28x40": { sku: "ECO-ROL-28X40", sizing: "fillPrintArea" },
+  "eco-rolled-16x20": { sku: "ECO-ROL-16X20", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-20x20": { sku: "ECO-ROL-20X20", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-24x47": { sku: "ECO-ROL-24X47", sizing: "fillPrintArea", shipping: "Budget" },
+  "eco-rolled-28x40": { sku: "ECO-ROL-28X40", sizing: "fillPrintArea", shipping: "Budget" },
 
   // Photo Print — SKU CONFIRMED from real Prodigi test-checkout (GLOBAL-PHO-5X5, Gloss)
-  "photo-print-5x5": { sku: "GLOBAL-PHO-5X5", sizing: "fillPrintArea", attributes: { finish: "Gloss" } },
+  "photo-print-5x5": { sku: "GLOBAL-PHO-5X5", sizing: "fillPrintArea", attributes: { finish: "Gloss" }, shipping: "Budget" },
 
   // Printed Shower Towel — SKU CONFIRMED from real Prodigi basket screenshot (H-TOW-SHWR)
-  "printed-towel-shower": { sku: "H-TOW-SHWR", sizing: "fillPrintArea" },
+  "printed-towel-shower": { sku: "H-TOW-SHWR", sizing: "fillPrintArea", shipping: "Budget" },
 
   // Slim Canvas — replaces old sizes entirely. All 4 SKUs CONFIRMED from
   // your real Prodigi test-basket screenshots.
-  "slim-canvas-6x6":   { sku: "GLOBAL-SLIMCAN-6X6",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-12x12": { sku: "GLOBAL-SLIMCAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-30x30": { sku: "GLOBAL-SLIMCAN-30X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
-  "slim-canvas-43x87": { sku: "GLOBAL-SLIMCAN-43X87", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" } },
+  "slim-canvas-6x6":   { sku: "GLOBAL-SLIMCAN-6X6",   sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "slim-canvas-12x12": { sku: "GLOBAL-SLIMCAN-12X12", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "slim-canvas-30x30": { sku: "GLOBAL-SLIMCAN-30X30", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
+  "slim-canvas-43x87": { sku: "GLOBAL-SLIMCAN-43X87", sizing: "fillPrintArea", attributes: { wrap: "ImageWrap" }, shipping: "Budget" },
 
   // Personalised Insulated Water Bottle — ⚠️ UNVALIDATED colour attribute.
   // Base SKU (650ML-WATER-BOTTLE) and the fact that colour is a dropdown
@@ -424,22 +430,22 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // key/values Prodigi's API expects are a best guess. Black/White
   // intentionally omitted — Prodigi lists them out of stock until Jan 2026.
   // Test one real order before relying on this for real customers.
-  "water-bottle-copper-grey": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Grey" } },
-  "water-bottle-copper-navy": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Navy" } },
-  "water-bottle-copper-red":  { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Red" } },
-  "water-bottle-copper-lime": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Lime" } },
+  "water-bottle-copper-grey": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Grey" }, shipping: "Budget" },
+  "water-bottle-copper-navy": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Navy" }, shipping: "Budget" },
+  "water-bottle-copper-red":  { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Red" }, shipping: "Budget" },
+  "water-bottle-copper-lime": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "Lime" }, shipping: "Budget" },
 
   // ── WUD "My Dog's Shop" products ─────────────────────────────────────────────
   // Physical rewards ordered through the WUD app's native Stripe checkout.
   // These are not listed on the public onjjem.com shop catalogue.
-  "wud-gift-postcard":    { sku: "CLASSIC-POST-GLOS-6X4",  sizing: "fillPrintArea" },
-  "onjjem-gift-postcard": { sku: "CLASSIC-POST-GLOS-6X4",  sizing: "fillPrintArea" },
-  "wud-sticker-small":    { sku: "GLOBAL-STI-3X4-G",        sizing: "fillPrintArea" },
-  "wud-sticker-xl":       { sku: "GLOBAL-STI-14X14-G",      sizing: "fillPrintArea" },
-  "wud-magic-mug":        { sku: "H-MUG-11OZ-CC",           sizing: "fillPrintArea" },
-  "wud-bandanna":         { sku: "PET-BANDANA-MED",          sizing: "fillPrintArea" },
-  "wud-jigsaw":           { sku: "JIGSAW-PUZZLE-30",         sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"] },
-  "wud-invitation-card":  { sku: "CLASSIC-INV",              sizing: "fillPrintArea" },
+  "wud-gift-postcard":    { sku: "CLASSIC-POST-GLOS-6X4",  sizing: "fillPrintArea", shipping: "Budget" },
+  "onjjem-gift-postcard": { sku: "CLASSIC-POST-GLOS-6X4",  sizing: "fillPrintArea", shipping: "Budget" },
+  "wud-sticker-small":    { sku: "GLOBAL-STI-3X4-G",        sizing: "fillPrintArea", shipping: "Budget" },
+  "wud-sticker-xl":       { sku: "GLOBAL-STI-14X14-G",      sizing: "fillPrintArea", shipping: "Budget" },
+  "wud-magic-mug":        { sku: "H-MUG-11OZ-CC",           sizing: "fillPrintArea", shipping: "Budget" },
+  "wud-bandanna":         { sku: "PET-BANDANA-MED",          sizing: "fillPrintArea", shipping: "Budget" },
+  "wud-jigsaw":           { sku: "JIGSAW-PUZZLE-30",         sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" },
+  "wud-invitation-card":  { sku: "CLASSIC-INV",              sizing: "fillPrintArea", shipping: "Budget" },
 };
 
 
@@ -524,6 +530,13 @@ async function photoToPublicUrl(photoBase64: string): Promise<string> {
 
   const storage = new ObjectStorageService();
   return storage.uploadBufferAndGetSignedUrl(buffer, { contentType });
+}
+
+// Use Budget delivery only when every product in the parcel allows it.
+function orderShippingMethod(order: FulfilmentOrder): string {
+  const skus = [order.sku, ...(order.extraItems ?? []).map((i) => i.sku)];
+  const allBudget = skus.every((s) => PRODIGI_PRODUCTS[s]?.shipping === "Budget");
+  return allBudget ? "Budget" : SHIPPING_METHOD;
 }
 
 // ── Submit order to Prodigi Print API ─────────────────────────────────────────
@@ -612,7 +625,7 @@ async function submitToProdigi(
 
   const payload = {
     merchantReference: order.stripeSessionId,
-    shippingMethod: SHIPPING_METHOD,
+    shippingMethod: orderShippingMethod(order),
     recipient: {
       name: order.shippingAddress.name,
       email: order.customerEmail || undefined,
@@ -627,15 +640,26 @@ async function submitToProdigi(
     items,
   };
 
-  const resp = await fetch(`${prodigiBaseUrl()}/v4.0/orders`, {
-    method: "POST",
-    headers: {
-      "X-API-Key": apiKey,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(30_000),
-  });
+  const post = (body: typeof payload) =>
+    fetch(`${prodigiBaseUrl()}/v4.0/orders`, {
+      method: "POST",
+      headers: {
+        "X-API-Key": apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(30_000),
+    });
+
+  let resp = await post(payload);
+
+  // Safety net: if Prodigi won't send this order by Budget, send it Standard
+  // instead so the customer's order never gets stuck.
+  if (!resp.ok && payload.shippingMethod === "Budget" && resp.status >= 400 && resp.status < 500) {
+    const firstError = await resp.text().catch(() => "");
+    logger.warn({ firstError: firstError.slice(0, 300), stripeSession: order.stripeSessionId }, "Budget delivery refused — retrying with Standard");
+    resp = await post({ ...payload, shippingMethod: SHIPPING_METHOD });
+  }
 
   if (!resp.ok) {
     const body = await resp.text().catch(() => "");
