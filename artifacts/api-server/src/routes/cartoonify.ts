@@ -79,7 +79,43 @@ function getAI() {
   return new GoogleGenAI({ apiKey });
 }
 
-async function generateCartoon(base64Image: string, mimeType: string) {
+// ── Seasonal styles ──────────────────────────────────────────────────────────
+// Extra instructions added to the main prompt when the page asks for a theme.
+const STYLE_EXTRAS: Record<string, string> = {
+  halloween:
+    " THEME: Halloween. Dress the subject in a cute, friendly Halloween " +
+    "costume that suits them (for example a little witch hat, a pumpkin " +
+    "outfit, a friendly vampire cape or cat ears). Replace the background " +
+    "with a cosy Halloween night: glowing jack-o'-lanterns, autumn leaves, " +
+    "a big orange full moon, a few friendly cartoon bats and warm orange and " +
+    "purple lighting. Keep it cheerful and cute, never scary or gory, " +
+    "suitable for young children.",
+  christmas:
+    " THEME: Christmas. Dress the subject in a cosy festive outfit (for " +
+    "example a Santa hat, an elf hat or a Christmas jumper). Replace the " +
+    "background with a warm Christmas scene: twinkling fairy lights, a " +
+    "decorated tree, wrapped presents and gentle falling snow. Cheerful, " +
+    "cosy and suitable for all ages.",
+};
+
+// ── Preview cache ────────────────────────────────────────────────────────────
+// The free preview and the paid final version must be the SAME picture. We
+// keep the clean (unwatermarked) version of each preview for 2 hours, so the
+// final request returns exactly what the customer approved instead of
+// generating a new, different-looking cartoon.
+const PREVIEW_TTL_MS = 2 * 60 * 60 * 1000;
+const previewCache = new Map<string, { base64Image: string; mimeType: string; at: number }>();
+function cachePreview(result: { base64Image: string; mimeType: string }): string {
+  const now = Date.now();
+  for (const [key, value] of previewCache) {
+    if (now - value.at > PREVIEW_TTL_MS) previewCache.delete(key);
+  }
+  const id = Math.random().toString(36).slice(2) + now.toString(36);
+  previewCache.set(id, { ...result, at: now });
+  return id;
+}
+
+async function generateCartoon(base64Image: string, mimeType: string, style?: string) {
   const ai = getAI();
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-image",
@@ -105,7 +141,8 @@ async function generateCartoon(base64Image: string, mimeType: string) {
           "unmistakably read as an animated character on first glance, " +
           "not a photo with eyes edited. Use a simple, softly blurred " +
           "background that doesn't distract from the character. Output " +
-          "only the image, no text.",
+          "only the image, no text." +
+          (style && STYLE_EXTRAS[style] ? STYLE_EXTRAS[style] : ""),
       },
     ],
     config: {
@@ -163,12 +200,24 @@ async function addWatermark(base64Image: string, mimeType: string): Promise<stri
 }
 
 router.post("/cartoonify", async (req: Request, res: Response) => {
-  const { base64Image, mimeType = "image/jpeg", email, watermark } = req.body as {
+  const { base64Image, mimeType = "image/jpeg", email, watermark, style, previewId } = req.body as {
     base64Image?: string;
     mimeType?: string;
     email?: string;
     watermark?: boolean;
+    style?: string;
+    previewId?: string;
   };
+
+  // Final (paid) version of a preview the customer already approved: return
+  // that exact picture if we still have it.
+  if (!watermark && previewId) {
+    const cached = previewCache.get(previewId);
+    if (cached) {
+      res.json({ base64Image: cached.base64Image, mimeType: cached.mimeType });
+      return;
+    }
+  }
 
   if (!base64Image) {
     res.status(400).json({ error: "base64Image is required" });
@@ -202,7 +251,7 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
   }
 
   try {
-    const result = await generateCartoon(rawBase64Image, mimeType);
+    const result = await generateCartoon(rawBase64Image, mimeType, style);
 
     if (watermark) {
       const watermarkedBase64 = await addWatermark(result.base64Image, result.mimeType);
@@ -212,6 +261,7 @@ router.post("/cartoonify", async (req: Request, res: Response) => {
       res.json({
         base64Image: watermarkedBase64,
         mimeType: "image/png",
+        previewId: cachePreview(result),
         retriesLeft: remaining - 1, // how many more tries after this one
       });
       return;
