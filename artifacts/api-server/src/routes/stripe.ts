@@ -11,6 +11,7 @@ import { storePhoto } from "../webhookHandlers";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { SHOP_SKU_PRICES } from "../shopPrices";
+import { PRODIGI_PRODUCTS } from "../fulfilment/prodigi";
 import { GoogleGenAI } from "@google/genai";
 
 async function regenerateCartoonForOrder(base64Image: string, mimeType: string): Promise<string> {
@@ -317,6 +318,121 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Unknown error";
     req.log.error({ msg }, "stripe/checkout error");
+    res.status(500).json({ error: msg });
+  }
+});
+
+// ── Basket checkout: several gifts, each with its own picture, one order ─────
+// Prices come only from SHOP_SKU_PRICES. Every item must also be mapped for
+// Prodigi, so nothing can be paid for that we can't print. Baskets of 2+
+// gifts get an automatic bundle discount (10% for 2, 15% for 3+) instead of
+// promo codes, so the two can never stack.
+const BUNDLE_COUPONS: Record<number, string> = { 10: "ONJJEM-BUNDLE-10", 15: "ONJJEM-BUNDLE-15" };
+
+router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
+  const body = req.body as {
+    items?: { sku?: string; photoBase64?: string; cartoon?: boolean }[];
+    successUrl?: string;
+    cancelUrl?: string;
+  };
+  const items = Array.isArray(body.items) ? body.items : [];
+  if (items.length === 0) {
+    res.status(400).json({ error: "Your basket is empty." });
+    return;
+  }
+  if (items.length > 8) {
+    res.status(400).json({ error: "Please keep it to 8 gifts per order." });
+    return;
+  }
+  for (const it of items) {
+    const sku = it.sku || "";
+    if (!SHOP_SKU_PRICES[sku as keyof typeof SHOP_SKU_PRICES] || !PRODIGI_PRODUCTS[sku]) {
+      res.status(400).json({ error: `Sorry, "${sku}" can't be ordered in a basket right now.` });
+      return;
+    }
+    if (!it.photoBase64) {
+      res.status(400).json({ error: "One of your gifts is missing its picture." });
+      return;
+    }
+  }
+
+  try {
+    const stripe = await getUncachableStripeClient();
+
+    const lineItems: any[] = [];
+    const metadata: Record<string, string> = {};
+    let firstToken = "";
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      const entry = (SHOP_SKU_PRICES as Record<string, { name: string; pricePence: number }>)[it.sku!];
+      const token = crypto.randomBytes(12).toString("hex");
+      await storePhoto(token, it.photoBase64!);
+      if (i === 0) firstToken = token;
+      else metadata[`item_${i}`] = `${it.sku}|${token}`;
+      lineItems.push({
+        price_data: {
+          currency: "gbp",
+          unit_amount: entry.pricePence,
+          product_data: { name: entry.name, metadata: { sku: it.sku! } },
+        },
+        quantity: 1,
+      });
+      if (it.cartoon) {
+        lineItems.push({
+          price_data: {
+            currency: "gbp",
+            unit_amount: 199,
+            product_data: { name: "Custom Cartoon Upgrade", metadata: { sku: "cartoon_addon" } },
+          },
+          quantity: 1,
+        });
+      }
+    }
+
+    metadata.sku = items[0].sku!;
+    metadata.photo_token = firstToken;
+    metadata.cart_count = String(items.length);
+
+    // Automatic bundle discount
+    const percent = items.length >= 3 ? 15 : items.length === 2 ? 10 : 0;
+    let discounts: { coupon: string }[] | undefined;
+    if (percent) {
+      const couponId = BUNDLE_COUPONS[percent];
+      try {
+        await stripe.coupons.retrieve(couponId);
+      } catch {
+        await stripe.coupons.create({
+          id: couponId,
+          percent_off: percent,
+          duration: "forever",
+          name: `Bundle discount (${percent}% off)`,
+        });
+      }
+      discounts = [{ coupon: couponId }];
+    }
+
+    const origin = `${req.protocol}://${req.get("host")}`;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      ...(discounts ? { discounts } : { allow_promotion_codes: true }),
+      shipping_address_collection: { allowed_countries: ["GB"] },
+      shipping_options: [{ shipping_rate: "shr_1U88e4LkpMwsJmFN2uGD9IvH" }], // Free UK shipping
+      success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: body.cancelUrl || `${origin}/`,
+      metadata,
+      custom_text: {
+        submit: {
+          message: `Your ${items.length > 1 ? items.length + " gifts are" : "gift is"} made to order in the UK and posted together.`,
+        },
+      },
+    });
+
+    res.json({ url: session.url });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    req.log.error({ msg }, "stripe/cart-checkout error");
     res.status(500).json({ error: msg });
   }
 });
