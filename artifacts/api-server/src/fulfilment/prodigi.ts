@@ -122,6 +122,11 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "xmas-ornament-square": { sku: "XMAS-ALUM-SQ",   sizing: "fillPrintArea" },
   "xmas-sack":            { sku: "XMAS-SACK",      sizing: "fillPrintArea" },
 
+  // ── Cushions & towels (Prodigi, UK) ─────────────────────────────────────
+  "cushion-12-single": { sku: "GLOBAL-CUSH-12X12-LIN",      sizing: "fillPrintArea" },
+  "cushion-18-double": { sku: "GLOBAL-CUSH-18X18-LIN-DUAL", sizing: "fillPrintArea" },
+  "towel-bath":        { sku: "H-TOW-BATH",                 sizing: "fillPrintArea" },
+
   // ── Halloween / kids bundles — one photo, several products, one order ─────
   "halloween-pocket-pack": { sku: "GLOBAL-STI-3X4-G", sizing: "fillPrintArea", bundle: ["magnet-fridge-3x2"] },
   "halloween-fridge-pack": { sku: "MAG-1-15X15", sizing: "fillPrintArea", bundle: ["wud-sticker-small", "magnet-fridge-3x2"] },
@@ -361,16 +366,35 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // real costs from actual Prodigi basket screenshots. Budget Art Paper
   // (a separate, confusing duplicate line) has been retired — it was never
   // live on the website or backend pricing, only dead code here.
-  "budget-poster-a4-portrait":  { sku: "GLOBAL-BLP-A4", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
-  "budget-poster-a4-landscape": { sku: "GLOBAL-BLP-A4", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
-  "budget-poster-a2-portrait":  { sku: "GLOBAL-BLP-A2", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
-  "budget-poster-a2-landscape": { sku: "GLOBAL-BLP-A2", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
-  "budget-poster-a1-portrait":  { sku: "GLOBAL-BLP-A1", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
-  "budget-poster-a1-landscape": { sku: "GLOBAL-BLP-A1", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
-  "budget-poster-50x70-portrait":  { sku: "GLOBAL-BLP-20X28", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
-  "budget-poster-50x70-landscape": { sku: "GLOBAL-BLP-20X28", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
-  "budget-poster-70x100-portrait":  { sku: "GLOBAL-BLP-70X100", sizing: "fillPrintArea", attributes: { orientation: "Portrait" } },
-  "budget-poster-70x100-landscape": { sku: "GLOBAL-BLP-70X100", sizing: "fillPrintArea", attributes: { orientation: "Landscape" } },
+  // Budget posters — REAL Prodigi SKUs are ART-FAP-BAP-* (the old GLOBAL-BLP-*
+  // SKUs don't exist, so every poster order would have failed). Checked against
+  // Prodigi's GB price list 2026-09-26. Portrait/landscape is handled on the
+  // website (landscape pictures are turned before upload), so no attributes.
+  "poster-a3":     { sku: "ART-FAP-BAP-A3",    sizing: "fillPrintArea" },
+  "poster-a2":     { sku: "ART-FAP-BAP-A2",    sizing: "fillPrintArea" },
+  "poster-50x70":  { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea" },
+  "poster-a1":     { sku: "ART-FAP-BAP-A1",    sizing: "fillPrintArea" },
+  "poster-70x100": { sku: "ART-FAP-BAP-28X40", sizing: "fillPrintArea" },
+  // Old poster keys kept so any old link still prints correctly
+  "budget-poster-a4-portrait":  { sku: "ART-FAP-BAP-A4", sizing: "fillPrintArea" },
+  "budget-poster-a4-landscape": { sku: "ART-FAP-BAP-A4", sizing: "fillPrintArea" },
+  "budget-poster-a2-portrait":  { sku: "ART-FAP-BAP-A2", sizing: "fillPrintArea" },
+  "budget-poster-a2-landscape": { sku: "ART-FAP-BAP-A2", sizing: "fillPrintArea" },
+  "budget-poster-a1-portrait":  { sku: "ART-FAP-BAP-A1", sizing: "fillPrintArea" },
+  "budget-poster-a1-landscape": { sku: "ART-FAP-BAP-A1", sizing: "fillPrintArea" },
+  "budget-poster-50x70-portrait":  { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea" },
+  "budget-poster-50x70-landscape": { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea" },
+  "budget-poster-70x100-portrait":  { sku: "ART-FAP-BAP-28X40", sizing: "fillPrintArea" },
+  "budget-poster-70x100-landscape": { sku: "ART-FAP-BAP-28X40", sizing: "fillPrintArea" },
+
+  // Photo wall stickers (repositionable, matte) — Prodigi GB price list 2026-09-26
+  "wall-sticker-a3":   { sku: "WALL-STKR-A3",        sizing: "fillPrintArea" },
+  "wall-sticker-a2":   { sku: "WALL-STKR-A2",        sizing: "fillPrintArea" },
+  "wall-sticker-a1":   { sku: "WALL-STKR-A1",        sizing: "fillPrintArea" },
+  "wall-sticker-100":  { sku: "WALL-STKR-1000X1000", sizing: "fillPrintArea" },
+
+  // Extra museum print size
+  "art-print-18x24": { sku: "ART-FAP-SAP-18X24", sizing: "fillPrintArea" },
 
   // Eco Rolled Canvas — 4 new larger sizes. 24x47/28x40 CONFIRMED from your
   // Prodigi screenshots (ECO-ROL-24X47, ECO-ROL-28X40). 16x20/20x20 follow
