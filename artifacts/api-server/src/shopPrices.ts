@@ -4,7 +4,7 @@ export const SHOP_SKU_PRICES = {
   // ========================================
 
   // Heat Transfer Colour Changing Mug (11oz) — LIMITED TIME SALE
-  "magic-mug": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 1299 },
+  "magic-mug": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 1499 },
 
   // Photo Mugs
   "mug-11oz": { name: "Photo Mug (11oz, Full Wrap)", pricePence: 1499 },
@@ -25,6 +25,12 @@ export const SHOP_SKU_PRICES = {
   "xmas-bauble": { name: "Personalised Photo Bauble (8cm)", pricePence: 1899 },
   "xmas-ornament-square": { name: "Personalised Aluminium Tree Ornament (8cm)", pricePence: 1999 },
   "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2999 },
+
+  // Cushions & towels (Prodigi)
+  "cushion-12-single": { name: "Photo Cushion (12x12\", single-sided)", pricePence: 2699 },
+  "cushion-18-double": { name: "Photo Cushion (18x18\", double-sided)", pricePence: 3399 },
+  "printed-towel-shower": { name: "Photo Towel (70x140cm)", pricePence: 3499 },
+  "towel-bath": { name: "Photo Bath Towel (80x160cm)", pricePence: 4199 },
 
   // Halloween / kids bundles (one photo on every item, one order)
   "halloween-pocket-pack": { name: "Halloween Pocket Pack (Sticker + Mini Magnet)", pricePence: 1199 },
@@ -65,15 +71,16 @@ export const SHOP_SKU_PRICES = {
   // ========================================
 
   // Photo Postcards
-  "CLASSIC-POST-GLOS-6X4": { name: "Photo Postcard (Glossy 6x4)", pricePence: 299 },
+  "CLASSIC-POST-GLOS-6X4": { name: "Photo Postcard (Glossy 6x4)", pricePence: 399 },
 
   // Museum Fine Art Prints (Art-Print series)
   "art-print-5x7": { name: "Museum Fine Art Print (5x7)", pricePence: 999 },
-  "art-print-8x10": { name: "Museum Fine Art Print (8x10)", pricePence: 1499 },
+  "art-print-8x10": { name: "Museum Fine Art Print (8x10)", pricePence: 1599 },
   "art-print-11x14": { name: "Museum Fine Art Print (11x14)", pricePence: 1999 },
   "art-print-12x16": { name: "Museum Fine Art Print (12x16)", pricePence: 2499 },
-  "art-print-24x32": { name: "Museum Fine Art Print (24x32)", pricePence: 2999 },
-  "art-print-36x48": { name: "Museum Fine Art Print (36x48)", pricePence: 3499 },
+  "art-print-18x24": { name: "Museum Fine Art Print (18x24)", pricePence: 2799 },
+  "art-print-24x32": { name: "Museum Fine Art Print (24x32)", pricePence: 3499 },
+  "art-print-36x48": { name: "Museum Fine Art Print (36x48)", pricePence: 5499 },
 
   // Gold Metallic Poster (Art-Foil series)
   "ART-FOIL-GOL-A4": { name: "Gold Metallic Poster (A4)", pricePence: 1499 },
@@ -112,16 +119,25 @@ export const SHOP_SKU_PRICES = {
   "art-gitd-premium-a1": { name: "Glow Poster (A1)", pricePence: 4999 },
 
   // Budget Poster (Budget-Poster series)
-  "budget-poster-a4-portrait": { name: "Budget Poster (A4, Portrait)", pricePence: 1199 },
-  "budget-poster-a4-landscape": { name: "Budget Poster (A4, Landscape)", pricePence: 1199 },
-  "budget-poster-a2-portrait": { name: "Budget Poster (A2, Portrait)", pricePence: 1699 },
-  "budget-poster-a2-landscape": { name: "Budget Poster (A2, Landscape)", pricePence: 1699 },
-  "budget-poster-a1-portrait": { name: "Budget Poster (A1, Portrait)", pricePence: 1899 },
-  "budget-poster-a1-landscape": { name: "Budget Poster (A1, Landscape)", pricePence: 1899 },
-  "budget-poster-50x70-portrait": { name: "Budget Poster (50x70cm, Portrait)", pricePence: 1599 },
-  "budget-poster-50x70-landscape": { name: "Budget Poster (50x70cm, Landscape)", pricePence: 1599 },
-  "budget-poster-70x100-portrait": { name: "Budget Poster (70x100cm, Portrait)", pricePence: 1999 },
-  "budget-poster-70x100-landscape": { name: "Budget Poster (70x100cm, Landscape)", pricePence: 1999 },
+  "poster-a3": { name: "Photo Poster (A3)", pricePence: 1749 },
+  "poster-a2": { name: "Photo Poster (A2)", pricePence: 1849 },
+  "poster-50x70": { name: "Photo Poster (50x70cm)", pricePence: 2149 },
+  "poster-a1": { name: "Photo Poster (A1)", pricePence: 2449 },
+  "poster-70x100": { name: "Giant Photo Poster (70x100cm)", pricePence: 2749 },
+  "budget-poster-a4-portrait": { name: "Budget Poster (A4, Portrait)", pricePence: 1449 },
+  "budget-poster-a4-landscape": { name: "Budget Poster (A4, Landscape)", pricePence: 1449 },
+  "budget-poster-a2-portrait": { name: "Budget Poster (A2, Portrait)", pricePence: 1849 },
+  "budget-poster-a2-landscape": { name: "Budget Poster (A2, Landscape)", pricePence: 1849 },
+  "budget-poster-a1-portrait": { name: "Budget Poster (A1, Portrait)", pricePence: 2449 },
+  "budget-poster-a1-landscape": { name: "Budget Poster (A1, Landscape)", pricePence: 2449 },
+  "budget-poster-50x70-portrait": { name: "Budget Poster (50x70cm, Portrait)", pricePence: 2149 },
+  "budget-poster-50x70-landscape": { name: "Budget Poster (50x70cm, Landscape)", pricePence: 2149 },
+  "budget-poster-70x100-portrait": { name: "Budget Poster (70x100cm, Portrait)", pricePence: 2749 },
+  "budget-poster-70x100-landscape": { name: "Budget Poster (70x100cm, Landscape)", pricePence: 2749 },
+  "wall-sticker-a3": { name: "Photo Wall Sticker (A3)", pricePence: 1749 },
+  "wall-sticker-a2": { name: "Photo Wall Sticker (A2)", pricePence: 2149 },
+  "wall-sticker-a1": { name: "Photo Wall Sticker (A1)", pricePence: 2899 },
+  "wall-sticker-100": { name: "Giant Photo Wall Sticker (100x100cm)", pricePence: 4499 },
 
   // Photo Tiles
   "photo-tile-5x7": { name: "Photo Tile (5x7)", pricePence: 999 },
@@ -176,15 +192,15 @@ export const SHOP_SKU_PRICES = {
   "jigsaw-1000": { name: "Cartoon Jigsaw Puzzle (1000 pieces)", pricePence: 3499 },
 
   // Playing Cards
-  "playing-cards": { name: "Cartoon Playing Cards (Deck)", pricePence: 999 },
+  "playing-cards": { name: "Cartoon Playing Cards (Deck)", pricePence: 1699 },
 
   // ========================================
   // FRAMES & GIFTS
   // ========================================
 
   // Gift Tags
-  "pet-tag-bone": { name: "Photo Pet Tag (Bone Shape)", pricePence: 699 },
-  "pet-tag-round": { name: "Photo Pet Tag (Round)", pricePence: 699 },
+  "pet-tag-bone": { name: "Photo Pet Tag (Bone Shape)", pricePence: 1499 },
+  "pet-tag-round": { name: "Photo Pet Tag (Round)", pricePence: 1499 },
 
   // Patches
   "PATCH-ROUND": { name: "Custom Photo Patch (Round)", pricePence: 899 },
