@@ -46,6 +46,23 @@ async function retrieveAndDeletePhoto(token: string): Promise<string | null> {
   return (rows.rows[0]?.photo_b64 as string) ?? null;
 }
 
+// Phones often store photos sideways with an EXIF "rotate me" tag. Apply it so
+// the print comes out the right way up.
+async function applyExifRotation(photoBase64: string): Promise<string> {
+  if (!photoBase64) return photoBase64;
+  try {
+    const sharp = (await import("sharp")).default;
+    const commaIdx = photoBase64.indexOf(",");
+    const prefix = commaIdx >= 0 ? photoBase64.slice(0, commaIdx + 1) : "data:image/jpeg;base64,";
+    const rawBase64 = commaIdx >= 0 ? photoBase64.slice(commaIdx + 1) : photoBase64;
+    const correctedBuffer = await sharp(Buffer.from(rawBase64, "base64")).rotate().toBuffer();
+    return prefix + correctedBuffer.toString("base64");
+  } catch (err) {
+    logger.warn({ err }, "EXIF auto-rotation failed — using photo as uploaded");
+    return photoBase64;
+  }
+}
+
 // ── Checkout completed → fulfilment ───────────────────────────────────────────
 
 async function sendApronLoyaltyDiscount(sessionId: string, email: string): Promise<void> {
@@ -271,6 +288,24 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     if (desc) productName = desc;
   } catch {}
 
+  // Basket orders: collect the other gifts and their pictures
+  const extraItems: { sku: string; photoBase64: string }[] = [];
+  const cartCount = parseInt(meta?.["cart_count"] ?? "1", 10) || 1;
+  for (let i = 1; i < cartCount; i++) {
+    const entry = meta?.[`item_${i}`];
+    if (!entry) continue;
+    const [itemSku, itemToken] = entry.split("|");
+    const itemPhoto = itemToken ? (await retrieveAndDeletePhoto(itemToken)) ?? "" : "";
+    if (!itemSku || !itemPhoto) {
+      logger.error({ sessionId, entry }, "Basket item photo missing — item not sent to Prodigi");
+      continue;
+    }
+    extraItems.push({ sku: itemSku, photoBase64: await applyExifRotation(itemPhoto) });
+  }
+  if (cartCount > 1) {
+    productName = `${cartCount} gifts (basket order)`;
+  }
+
   await fulfilOrder({
     stripeSessionId: sessionId,
     stripePaymentIntentId: typeof paymentIntent === "string" ? paymentIntent : null,
@@ -280,6 +315,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     photoBase64,
     amountPaid,
     currency,
+    ...(extraItems.length ? { extraItems } : {}),
   });
 
   const bolOrderId = await getBolOrderId(sessionId);
