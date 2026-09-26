@@ -463,6 +463,8 @@ export interface FulfilmentOrder {
   photoBase64: string; // full-resolution restored photo (raw base64 or data URL)
   amountPaid: number; // pence
   currency: string;
+  // Basket orders: more gifts in the same parcel, each with its own picture.
+  extraItems?: { sku: string; photoBase64: string }[];
 }
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -574,6 +576,23 @@ async function submitToProdigi(
       sizing: extra.sizing ?? "fillPrintArea",
       ...(extra.attributes ? { attributes: extra.attributes } : {}),
       assets: extraAreas.map((area) => ({ printArea: area, url: imageUrl })),
+    });
+  }
+
+  // ── Basket: each extra gift with its own picture, same parcel ───────────
+  for (const extraItem of order.extraItems ?? []) {
+    const extraProduct = PRODIGI_PRODUCTS[extraItem.sku];
+    if (!extraProduct) {
+      throw new Error(`Basket item "${extraItem.sku}" is not mapped for Prodigi.`);
+    }
+    const extraUrl = await photoToPublicUrl(extraItem.photoBase64);
+    const extraAreas = extraProduct.printAreas ?? ["default"];
+    items.push({
+      sku: extraProduct.sku,
+      copies: extraProduct.copies ?? 1,
+      sizing: extraProduct.sizing ?? "fillPrintArea",
+      ...(extraProduct.attributes ? { attributes: extraProduct.attributes } : {}),
+      assets: extraAreas.map((area) => ({ printArea: area, url: extraUrl })),
     });
   }
 
