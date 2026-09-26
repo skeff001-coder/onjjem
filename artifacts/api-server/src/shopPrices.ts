@@ -17,6 +17,18 @@ export const SHOP_SKU_PRICES = {
   "magnet-acrylic-2x3": { name: "Photo Magnets (Acrylic Magnet 2x3)", pricePence: 1099 },
   "magnet-square-4x4": { name: "Photo Magnets (Square Magnet 4x4)", pricePence: 1149 },
   "magnet-square-6x6": { name: "Photo Magnets (Square Magnet 6x6)", pricePence: 1499 },
+
+  // Kiss-cut vinyl sticker (Prodigi GLOBAL-STI-3X4-G) — pocket-money promo
+  "wud-sticker-small": { name: "Cartoon Photo Sticker (3x4\", Gloss Vinyl)", pricePence: 649 },
+
+  // Christmas (Prodigi)
+  "xmas-bauble": { name: "Personalised Photo Bauble (8cm)", pricePence: 1899 },
+  "xmas-ornament-square": { name: "Personalised Aluminium Tree Ornament (8cm)", pricePence: 1999 },
+  "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2999 },
+
+  // Halloween / kids bundles (one photo on every item, one order)
+  "halloween-pocket-pack": { name: "Halloween Pocket Pack (Sticker + Mini Magnet)", pricePence: 1199 },
+  "halloween-fridge-pack": { name: "Halloween Fridge Pack (Big Magnet + Mini Magnet + Sticker)", pricePence: 2499 },
   "ART-FOIL-GOL-4X6": { name: "Metallic Foil Print (4x6, Gold)", pricePence: 799 },
   "ART-FOIL-SIL-4X6": { name: "Metallic Foil Print (4x6, Silver)", pricePence: 799 },
   "ART-FOIL-GOL-12X12": { name: "Metallic Foil Print (30x30cm, Gold)", pricePence: 1599 },
