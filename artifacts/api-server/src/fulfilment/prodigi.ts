@@ -32,6 +32,19 @@ import { ObjectStorageService } from "../lib/objectStorage";
 //                Jigsaws require ["jigsaw", "lid"] — customer photo is printed on both.
 //
 export interface ProdigiProduct {
+  sku: string;
+  copies?: number;
+  sizing?: "fillPrintArea" | "fitPrintArea";
+  attributes?: Record<string, string>;
+  printAreas?: string[]; // defaults to ["default"]; jigsaws need ["jigsaw","lid"]
+  bundle?: string[];     // extra website SKUs printed with the same photo in the same order
+}
+
+export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
+  // ── Moved here from inside the ProdigiProduct interface, where they had been
+  // pasted by mistake — they were never reachable, so these products could
+  // take payment but never reach Prodigi (postcard, patches, canvases, hoodies,
+  // sweatshirts). Fixed 2026-09-26.
   "SWEAT-AWS-JH030B-WHI-3Y4Y": { sku: "SWEAT-AWS-JH030B-WHI-3Y4Y", sizing: "fillPrintArea" },
   "SWEAT-AWS-JH030B-WHI-5Y6Y": { sku: "SWEAT-AWS-JH030B-WHI-5Y6Y", sizing: "fillPrintArea" },
   "SWEAT-AWS-JH030B-WHI-7Y8Y": { sku: "SWEAT-AWS-JH030B-WHI-7Y8Y", sizing: "fillPrintArea" },
@@ -103,14 +116,15 @@ export interface ProdigiProduct {
   "CLASSIC-POST-GLOS-6X4": { sku: "CLASSIC-POST-GLOS-6X4", sizing: "fillPrintArea" },
   "PATCH-ROUND": { sku: "PATCH-ROUND", sizing: "fillPrintArea" },
   "PATCH-SQUARE": { sku: "PATCH-SQUARE", sizing: "fillPrintArea" },
-  sku: string;
-  copies?: number;
-  sizing?: "fillPrintArea" | "fitPrintArea";
-  attributes?: Record<string, string>;
-  printAreas?: string[]; // defaults to ["default"]; jigsaws need ["jigsaw","lid"]
-}
 
-export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
+  // ── Christmas (Prodigi, UK-made) ─────────────────────────────────────────
+  "xmas-bauble":          { sku: "XMAS-PLAS-BAUB", sizing: "fillPrintArea" },
+  "xmas-ornament-square": { sku: "XMAS-ALUM-SQ",   sizing: "fillPrintArea" },
+  "xmas-sack":            { sku: "XMAS-SACK",      sizing: "fillPrintArea" },
+
+  // ── Halloween / kids bundles — one photo, several products, one order ─────
+  "halloween-pocket-pack": { sku: "GLOBAL-STI-3X4-G", sizing: "fillPrintArea", bundle: ["magnet-fridge-3x2"] },
+  "halloween-fridge-pack": { sku: "MAG-1-15X15", sizing: "fillPrintArea", bundle: ["wud-sticker-small", "magnet-fridge-3x2"] },
   // ── Christmas — genuinely confirmed missing from fulfilment despite being
   // real, live, priced Prodigi products. Would have taken payment and never
   // reached print.
@@ -522,6 +536,22 @@ async function submitToProdigi(
       assets,
     },
   ];
+
+  // ── Bundles: add each extra product, printed with the same photo ────────
+  for (const extraKey of product.bundle ?? []) {
+    const extra = PRODIGI_PRODUCTS[extraKey];
+    if (!extra) {
+      throw new Error(`Bundle "${order.sku}" includes unmapped SKU "${extraKey}".`);
+    }
+    const extraAreas = extra.printAreas ?? ["default"];
+    items.push({
+      sku: extra.sku,
+      copies: extra.copies ?? 1,
+      sizing: extra.sizing ?? "fillPrintArea",
+      ...(extra.attributes ? { attributes: extra.attributes } : {}),
+      assets: extraAreas.map((area) => ({ printArea: area, url: imageUrl })),
+    });
+  }
 
   // ── Bonus: free playing cards on orders ≥ £50 ───────────────────────────
   const bonusCard = order.amountPaid >= 5000;
