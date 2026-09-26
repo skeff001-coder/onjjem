@@ -4,33 +4,36 @@ export const SHOP_SKU_PRICES = {
   // ========================================
 
   // Heat Transfer Colour Changing Mug (11oz) — LIMITED TIME SALE
-  "magic-mug": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 1499 },
+  "magic-mug": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 1399 },
 
   // Photo Mugs
-  "mug-11oz": { name: "Photo Mug (11oz, Full Wrap)", pricePence: 1499 },
-  "mug-15oz": { name: "Photo Mug (15oz Large)", pricePence: 1799 },
+  "mug-11oz": { name: "Photo Mug (11oz, Full Wrap)", pricePence: 1399 },
+  "mug-15oz": { name: "Photo Mug (15oz Large)", pricePence: 1699 },
 
   // Wooden Coasters
-  "coaster-2pk": { name: "Custom Wooden Coasters (Set of 2)", pricePence: 1199 },
+  "coaster-2pk": { name: "Custom Wooden Coasters (Set of 2)", pricePence: 1099 },
   "magnet-fridge-3x2": { name: "Photo Magnets (Fridge Magnet 3x2)", pricePence: 749 },
   "magnet-fridge-6x4": { name: "Photo Magnets (Fridge Magnet 6x4)", pricePence: 899 },
   "magnet-acrylic-2x3": { name: "Photo Magnets (Acrylic Magnet 2x3)", pricePence: 1099 },
   "magnet-square-4x4": { name: "Photo Magnets (Square Magnet 4x4)", pricePence: 1149 },
-  "magnet-square-6x6": { name: "Photo Magnets (Square Magnet 6x6)", pricePence: 1499 },
+  "magnet-square-6x6": { name: "Photo Magnets (Square Magnet 6x6)", pricePence: 1399 },
 
   // Kiss-cut vinyl sticker (Prodigi GLOBAL-STI-3X4-G) — pocket-money promo
-  "wud-sticker-small": { name: "Cartoon Photo Sticker (3x4\", Gloss Vinyl)", pricePence: 649 },
+  "wud-sticker-small": { name: "Cartoon Photo Sticker (3x4\", Gloss Vinyl)", pricePence: 599 },
 
   // Christmas (Prodigi)
-  "xmas-bauble": { name: "Personalised Photo Bauble (8cm)", pricePence: 1899 },
-  "xmas-ornament-square": { name: "Personalised Aluminium Tree Ornament (8cm)", pricePence: 1999 },
-  "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2999 },
+  "xmas-bauble": { name: "Personalised Photo Bauble (8cm)", pricePence: 1349 },
+  "xmas-ornament-square": { name: "Personalised Aluminium Tree Ornament (8cm)", pricePence: 1499 },
+  "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2949 },
 
   // Cushions & towels (Prodigi)
-  "cushion-12-single": { name: "Photo Cushion (12x12\", single-sided)", pricePence: 2699 },
-  "cushion-18-double": { name: "Photo Cushion (18x18\", double-sided)", pricePence: 3399 },
-  "printed-towel-shower": { name: "Photo Towel (70x140cm)", pricePence: 3499 },
-  "towel-bath": { name: "Photo Bath Towel (80x160cm)", pricePence: 4199 },
+  "cushion-12-single": { name: "Photo Cushion (12x12\", single-sided)", pricePence: 2349 },
+  "cushion-18-double": { name: "Photo Cushion (18x18\", double-sided)", pricePence: 3049 },
+  "printed-towel-shower": { name: "Photo Towel (70x140cm)", pricePence: 3199 },
+  "towel-bath": { name: "Photo Bath Towel (80x160cm)", pricePence: 3899 },
+
+  "sticker-large": { name: "Cartoon Photo Sticker (Large 8.5x8.5\", Gloss Vinyl)", pricePence: 1449 },
+  "sticker-xl": { name: "Cartoon Photo Sticker (XL 14x14\", Gloss Vinyl)", pricePence: 1949 },
 
   // Halloween / kids bundles (one photo on every item, one order)
   "halloween-pocket-pack": { name: "Halloween Pocket Pack (Sticker + Mini Magnet)", pricePence: 1199 },
@@ -43,11 +46,11 @@ export const SHOP_SKU_PRICES = {
   "ART-FOIL-SIL-20X28": { name: "Metallic Foil Print (50x70cm, Silver)", pricePence: 1599 },
   "ART-FOIL-SIL-A3": { name: "Metallic Foil Print (A3, Silver)", pricePence: 1899 },
   "ART-FOIL-SIL-A2": { name: "Metallic Foil Print (A2, Silver)", pricePence: 2699 },
-  "coaster-4pk": { name: "Custom Wooden Coasters (Set of 4)", pricePence: 1699 },
+  "coaster-4pk": { name: "Custom Wooden Coasters (Set of 4)", pricePence: 1599 },
 
   // Tea Towels
-  "tea-towel-poly": { name: "Premium Kitchen Towel (Polyester)", pricePence: 1499 },
-  "tea-towel-cotton": { name: "Premium Kitchen Towel (Cotton Twill)", pricePence: 1899 },
+  "tea-towel-poly": { name: "Premium Kitchen Towel (Polyester)", pricePence: 1399 },
+  "tea-towel-cotton": { name: "Premium Kitchen Towel (Cotton Twill)", pricePence: 1799 },
 
   // Photo Magnets (Single Image Only)
   "M-MAG-FRI-3X2": { name: "Fridge Magnet (3x2\", 8x5cm) — PROMO SPECIAL", pricePence: 699 },
@@ -55,16 +58,16 @@ export const SHOP_SKU_PRICES = {
   "MAG-1-15X15": { name: "Fridge Magnet (6x6\", 15x15cm)", pricePence: 1499 },
 
   // Aprons (Prodigi H-APR series)
-  "H-APR-CA-WTIE": { name: "Child Apron with Tie", pricePence: 1995 },
-  "H-APR-AA-BTIE": { name: "Adult Apron with Tie", pricePence: 2449 },
+  "H-APR-CA-WTIE": { name: "Child Apron with Tie", pricePence: 1895 },
+  "H-APR-AA-BTIE": { name: "Adult Apron with Tie", pricePence: 2349 },
 
   // Fleece Blankets (Prodigi H-BLA series) — UK ONLY
-  "H-BLA-PBSWHITE": { name: "Custom Photo Fleece Blanket (Small 28x28\", White Backing)", pricePence: 4999 },
-  "H-BLA-PBMPINK": { name: "Custom Photo Fleece Blanket (Medium 26x40\", Pastel Pink Backing)", pricePence: 5299 },
-  "H-BLA-PBMWHITE": { name: "Custom Photo Fleece Blanket (Medium 26x40\", White Backing)", pricePence: 5299 },
-  "H-BLA-PBLWHITE": { name: "Custom Photo Fleece Blanket (Large 40x60\", White Backing)", pricePence: 6099 },
-  "H-BLA-PBLPINK": { name: "Custom Photo Fleece Blanket (Large 40x60\", Pastel Pink Backing)", pricePence: 6099 },
-  "H-BLA-MINK-LARGE": { name: "Custom Photo Fleece Blanket (Giant 150x127cm, White Reverse)", pricePence: 8399 },
+  "H-BLA-PBSWHITE": { name: "Custom Photo Fleece Blanket (Small 28x28\", White Backing)", pricePence: 4799 },
+  "H-BLA-PBMPINK": { name: "Custom Photo Fleece Blanket (Medium 26x40\", Pastel Pink Backing)", pricePence: 5099 },
+  "H-BLA-PBMWHITE": { name: "Custom Photo Fleece Blanket (Medium 26x40\", White Backing)", pricePence: 5099 },
+  "H-BLA-PBLWHITE": { name: "Custom Photo Fleece Blanket (Large 40x60\", White Backing)", pricePence: 5899 },
+  "H-BLA-PBLPINK": { name: "Custom Photo Fleece Blanket (Large 40x60\", Pastel Pink Backing)", pricePence: 5899 },
+  "H-BLA-MINK-LARGE": { name: "Custom Photo Fleece Blanket (Giant 150x127cm, White Reverse)", pricePence: 8199 },
 
   // ========================================
   // PRINTS (Prodigi)
@@ -74,13 +77,13 @@ export const SHOP_SKU_PRICES = {
   "CLASSIC-POST-GLOS-6X4": { name: "Photo Postcard (Glossy 6x4)", pricePence: 399 },
 
   // Museum Fine Art Prints (Art-Print series)
-  "art-print-5x7": { name: "Museum Fine Art Print (5x7)", pricePence: 999 },
-  "art-print-8x10": { name: "Museum Fine Art Print (8x10)", pricePence: 1599 },
-  "art-print-11x14": { name: "Museum Fine Art Print (11x14)", pricePence: 1999 },
-  "art-print-12x16": { name: "Museum Fine Art Print (12x16)", pricePence: 2499 },
-  "art-print-18x24": { name: "Museum Fine Art Print (18x24)", pricePence: 2799 },
-  "art-print-24x32": { name: "Museum Fine Art Print (24x32)", pricePence: 3499 },
-  "art-print-36x48": { name: "Museum Fine Art Print (36x48)", pricePence: 5499 },
+  "art-print-5x7": { name: "Museum Fine Art Print (5x7)", pricePence: 949 },
+  "art-print-8x10": { name: "Museum Fine Art Print (8x10)", pricePence: 1399 },
+  "art-print-11x14": { name: "Museum Fine Art Print (11x14)", pricePence: 1649 },
+  "art-print-12x16": { name: "Museum Fine Art Print (12x16)", pricePence: 1799 },
+  "art-print-18x24": { name: "Museum Fine Art Print (18x24)", pricePence: 2249 },
+  "art-print-24x32": { name: "Museum Fine Art Print (24x32)", pricePence: 2999 },
+  "art-print-36x48": { name: "Museum Fine Art Print (36x48)", pricePence: 5199 },
 
   // Gold Metallic Poster (Art-Foil series)
   "ART-FOIL-GOL-A4": { name: "Gold Metallic Poster (A4)", pricePence: 1499 },
@@ -119,25 +122,25 @@ export const SHOP_SKU_PRICES = {
   "art-gitd-premium-a1": { name: "Glow Poster (A1)", pricePence: 4999 },
 
   // Budget Poster (Budget-Poster series)
-  "poster-a3": { name: "Photo Poster (A3)", pricePence: 1749 },
-  "poster-a2": { name: "Photo Poster (A2)", pricePence: 1849 },
-  "poster-50x70": { name: "Photo Poster (50x70cm)", pricePence: 2149 },
-  "poster-a1": { name: "Photo Poster (A1)", pricePence: 2449 },
-  "poster-70x100": { name: "Giant Photo Poster (70x100cm)", pricePence: 2749 },
-  "budget-poster-a4-portrait": { name: "Budget Poster (A4, Portrait)", pricePence: 1449 },
-  "budget-poster-a4-landscape": { name: "Budget Poster (A4, Landscape)", pricePence: 1449 },
-  "budget-poster-a2-portrait": { name: "Budget Poster (A2, Portrait)", pricePence: 1849 },
-  "budget-poster-a2-landscape": { name: "Budget Poster (A2, Landscape)", pricePence: 1849 },
-  "budget-poster-a1-portrait": { name: "Budget Poster (A1, Portrait)", pricePence: 2449 },
-  "budget-poster-a1-landscape": { name: "Budget Poster (A1, Landscape)", pricePence: 2449 },
-  "budget-poster-50x70-portrait": { name: "Budget Poster (50x70cm, Portrait)", pricePence: 2149 },
-  "budget-poster-50x70-landscape": { name: "Budget Poster (50x70cm, Landscape)", pricePence: 2149 },
-  "budget-poster-70x100-portrait": { name: "Budget Poster (70x100cm, Portrait)", pricePence: 2749 },
-  "budget-poster-70x100-landscape": { name: "Budget Poster (70x100cm, Landscape)", pricePence: 2749 },
-  "wall-sticker-a3": { name: "Photo Wall Sticker (A3)", pricePence: 1749 },
-  "wall-sticker-a2": { name: "Photo Wall Sticker (A2)", pricePence: 2149 },
-  "wall-sticker-a1": { name: "Photo Wall Sticker (A1)", pricePence: 2899 },
-  "wall-sticker-100": { name: "Giant Photo Wall Sticker (100x100cm)", pricePence: 4499 },
+  "poster-a3": { name: "Photo Poster (A3)", pricePence: 1549 },
+  "poster-a2": { name: "Photo Poster (A2)", pricePence: 1649 },
+  "poster-50x70": { name: "Photo Poster (50x70cm)", pricePence: 1999 },
+  "poster-a1": { name: "Photo Poster (A1)", pricePence: 2299 },
+  "poster-70x100": { name: "Giant Photo Poster (70x100cm)", pricePence: 2599 },
+  "budget-poster-a4-portrait": { name: "Budget Poster (A4, Portrait)", pricePence: 1249 },
+  "budget-poster-a4-landscape": { name: "Budget Poster (A4, Landscape)", pricePence: 1249 },
+  "budget-poster-a2-portrait": { name: "Budget Poster (A2, Portrait)", pricePence: 1649 },
+  "budget-poster-a2-landscape": { name: "Budget Poster (A2, Landscape)", pricePence: 1649 },
+  "budget-poster-a1-portrait": { name: "Budget Poster (A1, Portrait)", pricePence: 2299 },
+  "budget-poster-a1-landscape": { name: "Budget Poster (A1, Landscape)", pricePence: 2299 },
+  "budget-poster-50x70-portrait": { name: "Budget Poster (50x70cm, Portrait)", pricePence: 1999 },
+  "budget-poster-50x70-landscape": { name: "Budget Poster (50x70cm, Landscape)", pricePence: 1999 },
+  "budget-poster-70x100-portrait": { name: "Budget Poster (70x100cm, Portrait)", pricePence: 2599 },
+  "budget-poster-70x100-landscape": { name: "Budget Poster (70x100cm, Landscape)", pricePence: 2599 },
+  "wall-sticker-a3": { name: "Photo Wall Sticker (A3)", pricePence: 1549 },
+  "wall-sticker-a2": { name: "Photo Wall Sticker (A2)", pricePence: 1949 },
+  "wall-sticker-a1": { name: "Photo Wall Sticker (A1)", pricePence: 2749 },
+  "wall-sticker-100": { name: "Giant Photo Wall Sticker (100x100cm)", pricePence: 4299 },
 
   // Photo Tiles
   "photo-tile-5x7": { name: "Photo Tile (5x7)", pricePence: 999 },
@@ -149,69 +152,69 @@ export const SHOP_SKU_PRICES = {
   // ========================================
 
   // Kids T-Shirts (STTK184 — 30 SKUs: 5 sizes × 6 colors)
-  "TEE-STTK184-3Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, White)", pricePence: 1699 },
-  "TEE-STTK184-3Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Black)", pricePence: 1699 },
-  "TEE-STTK184-3Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Heather Grey)", pricePence: 1699 },
-  "TEE-STTK184-3Y-RED": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Fire Red)", pricePence: 1699 },
-  "TEE-STTK184-3Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Royal Blue)", pricePence: 1699 },
-  "TEE-STTK184-3Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Cotton Pink)", pricePence: 1699 },
+  "TEE-STTK184-3Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, White)", pricePence: 1599 },
+  "TEE-STTK184-3Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Black)", pricePence: 1599 },
+  "TEE-STTK184-3Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Heather Grey)", pricePence: 1599 },
+  "TEE-STTK184-3Y-RED": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Fire Red)", pricePence: 1599 },
+  "TEE-STTK184-3Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Royal Blue)", pricePence: 1599 },
+  "TEE-STTK184-3Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (3-4 Years, Cotton Pink)", pricePence: 1599 },
 
-  "TEE-STTK184-5Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, White)", pricePence: 1699 },
-  "TEE-STTK184-5Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Black)", pricePence: 1699 },
-  "TEE-STTK184-5Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Heather Grey)", pricePence: 1699 },
-  "TEE-STTK184-5Y-RED": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Fire Red)", pricePence: 1699 },
-  "TEE-STTK184-5Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Royal Blue)", pricePence: 1699 },
-  "TEE-STTK184-5Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Cotton Pink)", pricePence: 1699 },
+  "TEE-STTK184-5Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, White)", pricePence: 1599 },
+  "TEE-STTK184-5Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Black)", pricePence: 1599 },
+  "TEE-STTK184-5Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Heather Grey)", pricePence: 1599 },
+  "TEE-STTK184-5Y-RED": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Fire Red)", pricePence: 1599 },
+  "TEE-STTK184-5Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Royal Blue)", pricePence: 1599 },
+  "TEE-STTK184-5Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (5-6 Years, Cotton Pink)", pricePence: 1599 },
 
-  "TEE-STTK184-7Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, White)", pricePence: 1699 },
-  "TEE-STTK184-7Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Black)", pricePence: 1699 },
-  "TEE-STTK184-7Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Heather Grey)", pricePence: 1699 },
-  "TEE-STTK184-7Y-RED": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Fire Red)", pricePence: 1699 },
-  "TEE-STTK184-7Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Royal Blue)", pricePence: 1699 },
-  "TEE-STTK184-7Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Cotton Pink)", pricePence: 1699 },
+  "TEE-STTK184-7Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, White)", pricePence: 1599 },
+  "TEE-STTK184-7Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Black)", pricePence: 1599 },
+  "TEE-STTK184-7Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Heather Grey)", pricePence: 1599 },
+  "TEE-STTK184-7Y-RED": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Fire Red)", pricePence: 1599 },
+  "TEE-STTK184-7Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Royal Blue)", pricePence: 1599 },
+  "TEE-STTK184-7Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (7-8 Years, Cotton Pink)", pricePence: 1599 },
 
-  "TEE-STTK184-9Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, White)", pricePence: 1699 },
-  "TEE-STTK184-9Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Black)", pricePence: 1699 },
-  "TEE-STTK184-9Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Heather Grey)", pricePence: 1699 },
-  "TEE-STTK184-9Y-RED": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Fire Red)", pricePence: 1699 },
-  "TEE-STTK184-9Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Royal Blue)", pricePence: 1699 },
-  "TEE-STTK184-9Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Cotton Pink)", pricePence: 1699 },
+  "TEE-STTK184-9Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, White)", pricePence: 1599 },
+  "TEE-STTK184-9Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Black)", pricePence: 1599 },
+  "TEE-STTK184-9Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Heather Grey)", pricePence: 1599 },
+  "TEE-STTK184-9Y-RED": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Fire Red)", pricePence: 1599 },
+  "TEE-STTK184-9Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Royal Blue)", pricePence: 1599 },
+  "TEE-STTK184-9Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (9-11 Years, Cotton Pink)", pricePence: 1599 },
 
-  "TEE-STTK184-12Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, White)", pricePence: 1699 },
-  "TEE-STTK184-12Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Black)", pricePence: 1699 },
-  "TEE-STTK184-12Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Heather Grey)", pricePence: 1699 },
-  "TEE-STTK184-12Y-RED": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Fire Red)", pricePence: 1699 },
-  "TEE-STTK184-12Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Royal Blue)", pricePence: 1699 },
-  "TEE-STTK184-12Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Cotton Pink)", pricePence: 1699 },
+  "TEE-STTK184-12Y-WHITE": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, White)", pricePence: 1599 },
+  "TEE-STTK184-12Y-BLACK": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Black)", pricePence: 1599 },
+  "TEE-STTK184-12Y-HEATHER": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Heather Grey)", pricePence: 1599 },
+  "TEE-STTK184-12Y-RED": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Fire Red)", pricePence: 1599 },
+  "TEE-STTK184-12Y-ROYALBLUE": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Royal Blue)", pricePence: 1599 },
+  "TEE-STTK184-12Y-PINK": { name: "Cartoon Kids' Premium T-Shirt (12-14 Years, Cotton Pink)", pricePence: 1599 },
 
   // Kids Jigsaws
-  "jigsaw-30": { name: "Cartoon Jigsaw Puzzle (30 pieces)", pricePence: 2199 },
-  "jigsaw-110": { name: "Cartoon Jigsaw Puzzle (110 pieces)", pricePence: 2499 },
-  "jigsaw-252": { name: "Cartoon Jigsaw Puzzle (252 pieces)", pricePence: 2799 },
-  "jigsaw-500": { name: "Cartoon Jigsaw Puzzle (500 pieces)", pricePence: 2999 },
-  "jigsaw-1000": { name: "Cartoon Jigsaw Puzzle (1000 pieces)", pricePence: 3499 },
+  "jigsaw-30": { name: "Cartoon Jigsaw Puzzle (30 pieces)", pricePence: 2099 },
+  "jigsaw-110": { name: "Cartoon Jigsaw Puzzle (110 pieces)", pricePence: 2399 },
+  "jigsaw-252": { name: "Cartoon Jigsaw Puzzle (252 pieces)", pricePence: 2699 },
+  "jigsaw-500": { name: "Cartoon Jigsaw Puzzle (500 pieces)", pricePence: 2899 },
+  "jigsaw-1000": { name: "Cartoon Jigsaw Puzzle (1000 pieces)", pricePence: 3399 },
 
   // Playing Cards
-  "playing-cards": { name: "Cartoon Playing Cards (Deck)", pricePence: 1699 },
+  "playing-cards": { name: "Cartoon Playing Cards (Deck)", pricePence: 1599 },
 
   // ========================================
   // FRAMES & GIFTS
   // ========================================
 
   // Gift Tags
-  "pet-tag-bone": { name: "Photo Pet Tag (Bone Shape)", pricePence: 1499 },
-  "pet-tag-round": { name: "Photo Pet Tag (Round)", pricePence: 1499 },
+  "pet-tag-bone": { name: "Photo Pet Tag (Bone Shape)", pricePence: 1199 },
+  "pet-tag-round": { name: "Photo Pet Tag (Round)", pricePence: 1199 },
 
   // Patches
   "PATCH-ROUND": { name: "Custom Photo Patch (Round)", pricePence: 899 },
   "PATCH-SQUARE": { name: "Custom Photo Patch (Square)", pricePence: 899 },
 
   // Temporary Tattoos
-  "tattoo-s": { name: "Temporary Photo Tattoo (Small)", pricePence: 999 },
-  "tattoo-m": { name: "Temporary Photo Tattoo (Medium)", pricePence: 1299 },
-  "tattoo-l": { name: "Temporary Photo Tattoo (Large)", pricePence: 1699 },
-  "tattoo-xl": { name: "Temporary Photo Tattoo (XL)", pricePence: 1999 },
-  "tattoo-xxl": { name: "Temporary Photo Tattoo (XXL)", pricePence: 2299 },
+  "tattoo-s": { name: "Temporary Photo Tattoo (Small)", pricePence: 699 },
+  "tattoo-m": { name: "Temporary Photo Tattoo (Medium)", pricePence: 849 },
+  "tattoo-l": { name: "Temporary Photo Tattoo (Large)", pricePence: 949 },
+  "tattoo-xl": { name: "Temporary Photo Tattoo (XL)", pricePence: 1199 },
+  "tattoo-xxl": { name: "Temporary Photo Tattoo (XXL)", pricePence: 2049 },
 
   // Socks
 
