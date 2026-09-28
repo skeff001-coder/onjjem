@@ -325,9 +325,9 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
 // ── Basket checkout: several gifts, each with its own picture, one order ─────
 // Prices come only from SHOP_SKU_PRICES. Every item must also be mapped for
 // Prodigi, so nothing can be paid for that we can't print. Baskets of 2+
-// gifts get an automatic bundle discount (10% for 2, 15% for 3+) instead of
+// gifts get an automatic bundle discount (10% for 2, 12% for 3+) instead of
 // promo codes, so the two can never stack.
-const BUNDLE_COUPONS: Record<number, string> = { 10: "ONJJEM-BUNDLE-10", 15: "ONJJEM-BUNDLE-15" };
+const BUNDLE_COUPONS: Record<number, string> = { 10: "ONJJEM-BUNDLE-10", 12: "ONJJEM-BUNDLE-12" };
 
 router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
   const body = req.body as {
@@ -394,7 +394,7 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     metadata.cart_count = String(items.length);
 
     // Automatic bundle discount
-    const percent = items.length >= 3 ? 15 : items.length === 2 ? 10 : 0;
+    const percent = items.length >= 3 ? 12 : items.length === 2 ? 10 : 0;
     let discounts: { coupon: string }[] | undefined;
     if (percent) {
       const couponId = BUNDLE_COUPONS[percent];
