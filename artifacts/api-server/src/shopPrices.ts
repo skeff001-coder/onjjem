@@ -22,7 +22,7 @@ export const SHOP_SKU_PRICES = {
   "wud-sticker-small": { name: "Cartoon Photo Sticker (3x4\", Gloss Vinyl)", pricePence: 599 },
 
   // Christmas (Prodigi)
-  "xmas-bauble": { name: "Personalised Photo Bauble (8cm)", pricePence: 1349 },
+  "xmas-bauble": { name: "Personalised Photo Bauble (8cm)", pricePence: 1299 },
   "xmas-ornament-square": { name: "Personalised Aluminium Tree Ornament (8cm)", pricePence: 1499 },
   "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2949 },
 
