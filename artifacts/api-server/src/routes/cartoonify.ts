@@ -185,7 +185,7 @@ async function addWatermark(base64Image: string, mimeType: string): Promise<stri
   const watermarkSvg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
       <g transform="translate(${width / 2} ${height / 2}) rotate(${angle}) scale(${scale}) translate(${-ONJJEM_PATH_W / 2} ${-ONJJEM_PATH_H / 2 - 20})">
-        <path d="${ONJJEM_PATH}" fill="rgba(255,255,255,0.5)" stroke="rgba(0,0,0,0.3)" stroke-width="${2 / scale}"/>
+        <path d="${ONJJEM_PATH}" fill="rgba(255,255,255,0.28)" stroke="rgba(0,0,0,0.15)" stroke-width="${2 / scale}"/>
       </g>
     </svg>
   `;
