@@ -163,9 +163,16 @@ async function generateCartoon(base64Image: string, mimeType: string, style?: st
   };
 }
 
-// Overlays a diagonal repeating "ONJJEM PREVIEW" watermark across the image
-// using Sharp — cheap, fast, and makes the free preview unusable for real
-// printing while still clearly showing the customer what they'd get.
+// "ONJJEM" drawn as a shape (letters from Poppins Bold converted to an SVG
+// path). The server has no fonts installed, so <text> watermarks rendered as
+// empty boxes; a path needs no font and always looks the same.
+const ONJJEM_PATH = "M33 347Q33 244 81.5 162.0Q130 80 212.5 34.0Q295 -12 394 -12Q493 -12 575.5 34.0Q658 80 705.5 162.0Q753 244 753 347Q753 450 705.0 532.5Q657 615 575.0 661.0Q493 707 394 707Q295 707 212.5 661.0Q130 615 81.5 532.5Q33 450 33 347ZM579 347Q579 254 528.5 198.5Q478 143 394 143Q309 143 258.5 198.0Q208 253 208 347Q208 440 258.5 495.5Q309 551 394 551Q478 551 528.5 495.0Q579 439 579 347ZM1516 700H1345L1059 267V700H888V-2H1059L1345 433V-2H1516ZM2120 -2V476Q2120 587 2057.5 647.0Q1995 707 1889 707Q1778 707 1711.0 644.0Q1644 581 1644 465H1814Q1814 509 1832.0 531.5Q1850 554 1884 554Q1915 554 1932.0 534.0Q1949 514 1949 476V-2ZM2738 -2V476Q2738 587 2675.5 647.0Q2613 707 2507 707Q2396 707 2329.0 644.0Q2262 581 2262 465H2432Q2432 509 2450.0 531.5Q2468 554 2502 554Q2533 554 2550.0 534.0Q2567 514 2567 476V-2ZM3087 135V277H3316V409H3087V563H3346V700H2916V-2H3346V135ZM4292 -2V700H4121V279L3964 700H3826L3668 278V700H3497V-2H3699L3896 484L4091 -2Z";
+const ONJJEM_PATH_W = 4393;
+const ONJJEM_PATH_H = 720;
+
+// One large, semi-transparent "ONJJEM" across the middle of the free preview,
+// corner to corner. The customer can still clearly see their cartoon, but the
+// preview can't be used for printing.
 async function addWatermark(base64Image: string, mimeType: string): Promise<string> {
   const inputBuffer = Buffer.from(base64Image, "base64");
   const image = sharp(inputBuffer);
@@ -173,21 +180,13 @@ async function addWatermark(base64Image: string, mimeType: string): Promise<stri
   const width = meta.width ?? 800;
   const height = meta.height ?? 800;
 
+  const scale = (Math.hypot(width, height) * 0.72) / ONJJEM_PATH_W;
+  const angle = (-Math.atan2(height, width) * 180) / Math.PI;
   const watermarkSvg = `
-    <svg width="${width}" height="${height}">
-      <style>
-        .wm { fill: rgba(255,255,255,0.45); font-size: ${Math.round(width / 6)}px; font-family: sans-serif; font-weight: 800; }
-      </style>
-      ${Array.from({ length: 4 })
-        .map((_, row) =>
-          Array.from({ length: 2 })
-            .map(
-              (__, col) =>
-                `<text class="wm" x="${col * width * 0.65 - width * 0.1}" y="${row * height * 0.3 + height * 0.12}" transform="rotate(-30 ${col * width * 0.65} ${row * height * 0.3})">ONJJEM PREVIEW</text>`
-            )
-            .join("")
-        )
-        .join("")}
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+      <g transform="translate(${width / 2} ${height / 2}) rotate(${angle}) scale(${scale}) translate(${-ONJJEM_PATH_W / 2} ${-ONJJEM_PATH_H / 2 - 20})">
+        <path d="${ONJJEM_PATH}" fill="rgba(255,255,255,0.55)" stroke="rgba(0,0,0,0.35)" stroke-width="${3 / scale}"/>
+      </g>
     </svg>
   `;
 
