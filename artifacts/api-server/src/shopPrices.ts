@@ -30,6 +30,7 @@ export const SHOP_SKU_PRICES = {
   "cushion-12-single": { name: "Photo Cushion (12x12\", single-sided)", pricePence: 2349 },
   "cushion-18-double": { name: "Photo Cushion (18x18\", double-sided)", pricePence: 3049 },
   "printed-towel-shower": { name: "Photo Towel (70x140cm)", pricePence: 3199 },
+  "towel-70": { name: "Photo Towel (70x140cm)", pricePence: 2499 },
   "towel-bath": { name: "Photo Bath Towel (80x160cm)", pricePence: 3899 },
 
   "sticker-large": { name: "Cartoon Photo Sticker (Large 8.5x8.5\", Gloss Vinyl)", pricePence: 1449 },

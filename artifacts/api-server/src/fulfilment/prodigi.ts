@@ -128,6 +128,8 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "cushion-12-single": { sku: "GLOBAL-CUSH-12X12-LIN",      sizing: "fillPrintArea", shipping: "Budget" },
   "cushion-18-double": { sku: "GLOBAL-CUSH-18X18-LIN-DUAL", sizing: "fillPrintArea", shipping: "Budget" },
   "towel-bath":        { sku: "H-TOW-BATH",                 sizing: "fillPrintArea", shipping: "Budget" },
+  // Standard 70x140cm printed towel (£13 + VAT, Budget £3.20 + VAT) — sold at £24.99.
+  "towel-70":          { sku: "H-TOW-PTM",                  sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Kiss-cut stickers, bigger sizes (Prodigi GB, checked 2026-09-26)
   "sticker-large": { sku: "GLOBAL-STI-8_5X8_5-G", sizing: "fillPrintArea", shipping: "Budget" },
