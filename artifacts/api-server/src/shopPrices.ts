@@ -75,7 +75,8 @@ export const SHOP_SKU_PRICES = {
   // Christmas (Prodigi)
   "xmas-bauble": { name: "Personalised Photo Bauble (8cm)", pricePence: 1299 },
   "xmas-ornament-square": { name: "Personalised Aluminium Tree Ornament (8cm)", pricePence: 1499 },
-  "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2949 },
+  // Cost £23.16 inc VAT + free delivery. Minimal profit, so no bundle discount.
+  "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2549 },
 
   // Cushions & towels (Prodigi)
   "cushion-12-single": { name: "Photo Cushion (12x12\", single-sided)", pricePence: 2349 },

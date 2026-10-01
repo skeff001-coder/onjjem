@@ -190,4 +190,4 @@ for (const g of US_GARMENTS) {
 
 // Low-margin products: they count towards the bundle deal, but the discount
 // is only taken off the other gifts in the basket.
-export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF") || sku.startsWith("US-CANDLE");
+export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF") || sku.startsWith("US-CANDLE") || sku === "xmas-sack";
