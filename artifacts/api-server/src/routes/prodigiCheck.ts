@@ -30,7 +30,8 @@ router.get("/prodigi-check", async (req, res) => {
   }
   const country = region === "us" ? "US" : "GB";
   const entries = Object.entries(region === "us" ? US_PRODIGI_PRODUCTS : PRODIGI_PRODUCTS)
-    .filter(([k]) => (region === "us" ? true : !k.startsWith("US-")));
+    .filter(([k]) => (region === "us" ? true : !k.startsWith("US-")))
+    .slice(0, req.query.quick ? 6 : undefined);
 
   const results: Record<string, unknown>[] = [];
   const work = entries.slice();
@@ -55,7 +56,9 @@ router.get("/prodigi-check", async (req, res) => {
           body: JSON.stringify(body),
           signal: AbortSignal.timeout(20_000),
         });
-        const j = (await r.json().catch(() => ({}))) as any;
+        const raw = await r.text().catch(() => "");
+        let j: any = {};
+        try { j = JSON.parse(raw); } catch { j = {}; }
         const q = j?.quotes?.[0];
         results.push({
           ourSku,
@@ -67,14 +70,15 @@ router.get("/prodigi-check", async (req, res) => {
           shipsFrom: q?.shipments?.map((s: any) => s?.fulfillmentLocation?.countryCode) ?? null,
           itemCost: q?.costSummary?.items ?? null,
           shippingCost: q?.costSummary?.shipping ?? null,
-          error: r.ok ? undefined : JSON.stringify(j).slice(0, 300),
+          status: r.status,
+          error: r.ok && j?.outcome === "Created" ? undefined : `HTTP ${r.status}: ${raw.slice(0, 250)}`,
         });
       } catch (err) {
         results.push({ ourSku, prodigiSku: p.sku, ok: false, error: String(err) });
       }
     }
   }
-  await Promise.all(Array.from({ length: 6 }, worker));
+  await Promise.all(Array.from({ length: 2 }, worker));
   results.sort((a, b) => Number(a.ok) - Number(b.ok) || String(a.ourSku).localeCompare(String(b.ourSku)));
   const out = {
     env: (process.env.PRODIGI_ENV || "sandbox").toLowerCase(),
@@ -92,7 +96,7 @@ router.get("/prodigi-check", async (req, res) => {
 <h2>Prodigi check (${esc(region.toUpperCase())}, ${esc(out.env)})</h2>
 <p style="font-size:22px">${bad.length === 0 ? "✅" : "❌"} ${results.length - bad.length} of ${results.length} items OK</p>
 <p>Not made in ${esc(country)}: ${esc(out.notShippedFromDestination.join(", ") || "none")}</p>
-${bad.map((r) => `<p><b>${esc(r.ourSku)}</b> (${esc(r.prodigiSku)} ${esc(JSON.stringify(r.attributes))})<br><small>${esc(JSON.stringify(r.failures ?? r.error)).slice(0, 300)}</small></p>`).join("")}`);
+${bad.map((r) => `<p><b>${esc(r.ourSku)}</b> (${esc(r.prodigiSku)} ${esc(JSON.stringify(r.attributes))})<br><small>${esc(r.error)} ${esc(r.failures ? JSON.stringify(r.failures) : "")}</small></p>`).join("")}`);
     return;
   }
   res.json(out);
