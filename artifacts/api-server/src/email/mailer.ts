@@ -665,3 +665,35 @@ export async function sendApronLoyaltyEmail(data: ApronLoyaltyEmailData): Promis
 
   logger.info({ to: data.email }, "Apron loyalty email sent");
 }
+// ── "Finish your order" email (abandoned checkout) ───────────────────────────
+// Sent once, about 2 hours after someone leaves the Stripe payment page.
+export async function sendCartRecovery(data: {
+  customerEmail: string;
+  customerName?: string;
+  recoveryUrl: string;
+  isUSD: boolean;
+}): Promise<void> {
+  const resend = getResend();
+  if (!resend) {
+    logger.warn("RESEND_API_KEY not set — skipping cart recovery email");
+    return;
+  }
+  const hi = data.customerName ? `Hi ${data.customerName.split(" ")[0]},` : "Hi there,";
+  const shipping = data.isUSD ? "made to order in the USA and shipped free" : "made to order in the UK with free delivery";
+  const body = `
+      <p style="font-size:22px;color:${GOLD};margin:0 0 16px;font-weight:700">Your gift is still waiting 🎁</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 16px">${hi}</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 16px">You started an order with ONJJEM but didn't quite finish. We've saved your photo and your choices, so you can pick up right where you left off. It's ${shipping}.</p>
+      <p style="margin:28px 0;text-align:center">
+        <a href="${data.recoveryUrl}" style="display:inline-block;background:${GOLD};color:#12100B;font-weight:700;padding:14px 28px;border-radius:8px;font-family:Arial,sans-serif">Finish my order →</a>
+      </p>
+      <p style="font-size:13px;line-height:1.6;color:${MUTED};margin:0">Any questions? Just reply to this email. This is the only reminder we'll send about this order.</p>`;
+  const { error } = await resend.emails.send({
+    from: FROM(),
+    to: data.customerEmail,
+    subject: "Your ONJJEM gift is still waiting 🎁",
+    html: baseTemplate("We saved your photo. Finish your order in one tap.", body),
+  });
+  if (error) logger.error({ error }, "Cart recovery email failed");
+  else logger.info({ to: data.customerEmail }, "Cart recovery email sent");
+}

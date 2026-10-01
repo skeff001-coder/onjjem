@@ -169,6 +169,14 @@ function usShippingOptions() {
     },
   }];
 }
+// ── "Finish your order" emails ──────────────────────────────────────────────
+// Checkout links expire after 2 hours. Stripe then gives us a recovery link,
+// and webhookHandlers emails it once (see checkout.session.expired).
+const CART_RECOVERY = {
+  consent_collection: { promotions: "auto" as const },
+  after_expiration: { recovery: { enabled: true } },
+  get expires_at() { return Math.floor(Date.now() / 1000) + 2 * 60 * 60; },
+};
 const US_CHECKOUT_NOTE = "Made to order in the USA in 1–3 business days, then shipped free. Most orders arrive within 4–10 business days.";
 
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
@@ -342,6 +350,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       line_items: lineItems,
       mode: "payment",
       allow_promotion_codes: true,
+      ...CART_RECOVERY,
       shipping_address_collection: {
         allowed_countries: isUS ? ["US"] : body.international
           ? ["US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"]
@@ -497,6 +506,7 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
       line_items: lineItems,
       mode: "payment",
       ...(discounts ? { discounts } : { allow_promotion_codes: true }),
+      ...CART_RECOVERY,
       shipping_address_collection: { allowed_countries: isUS ? ["US"] : ["GB"] },
       shipping_options: isUS ? usShippingOptions() : ukShippingOptions(items.map((it) => it.sku || "")), // Free UK, plus Express where available
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,

@@ -1,6 +1,6 @@
 import { getUncachableStripeClient } from "./stripeClient";
 import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
-import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail, sendApronLoyaltyEmail } from "./email/mailer";
+import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail, sendApronLoyaltyEmail, sendCartRecovery } from "./email/mailer";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
@@ -18,7 +18,7 @@ async function ensurePhotoStore(): Promise<void> {
   `);
 
   await db.execute(sql`
-    DELETE FROM pending_photos WHERE created_at < NOW() - INTERVAL '2 hours'
+    DELETE FROM pending_photos WHERE created_at < NOW() - INTERVAL '7 days'
   `);
 }
 
@@ -410,6 +410,31 @@ export class WebhookHandlers {
       { type: event.type, objectId: event.data?.object?.id },
       `Received webhook ${event.type}`,
     );
+
+    if (event.type === "checkout.session.expired") {
+      // Someone left the payment page. Email them their saved checkout link once.
+      try {
+        const sess = event.data.object as Record<string, any>;
+        const email: string | undefined = sess.customer_details?.email ?? sess.customer_email ?? undefined;
+        const url: string | undefined = sess.after_expiration?.recovery?.url ?? undefined;
+        const consent: string | undefined = sess.consent?.promotions ?? undefined;
+        const isUSD = String(sess.currency || "").toLowerCase() === "usd";
+        // UK/EU: only with a ticked opt-in. US: one reminder is fine unless they opted out.
+        const allowed = consent === "opt_in" || (isUSD && consent !== "opt_out");
+        if (email && url && allowed) {
+          await sendCartRecovery({
+            customerEmail: email,
+            customerName: sess.customer_details?.name ?? undefined,
+            recoveryUrl: url,
+            isUSD,
+          });
+        } else {
+          logger.info({ id: sess.id, hasEmail: !!email, hasUrl: !!url, consent }, "Expired checkout: no recovery email sent");
+        }
+      } catch (err) {
+        logger.error({ err: err instanceof Error ? err.message : String(err) }, "Cart recovery handling failed");
+      }
+    }
 
     if (event.type === "checkout.session.completed") {
       const sessionId = event.data.object.id;
