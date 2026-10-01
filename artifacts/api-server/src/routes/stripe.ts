@@ -131,6 +131,28 @@ router.post("/stripe/verify-process", async (req: Request, res: Response) => {
 // (SHOP_SKU_PRICES) — client-supplied amounts are intentionally ignored to
 // prevent price-tampering attacks.
 
+// ── Express delivery ─────────────────────────────────────────────────────────
+// Offered only where Prodigi's Express (tracked, next working day once made)
+// costs us less than the £6.99 we charge. Checked against Prodigi GB price
+// lists 2026-10-01: colour-changing mug H-MUG-11OZ-CC, towel H-TOW-PTM.
+export const EXPRESS_PENCE = 699;
+const EXPRESS_OK = new Set(["magic-mug", "baby-reveal-mug", "towel-70"]);
+const FREE_UK_RATE = "shr_1U88e4LkpMwsJmFN2uGD9IvH";
+function ukShippingOptions(skus: string[]) {
+  const opts: any[] = [{ shipping_rate: FREE_UK_RATE }];
+  if (skus.length && skus.every((s) => EXPRESS_OK.has(s))) {
+    opts.push({
+      shipping_rate_data: {
+        type: "fixed_amount",
+        display_name: "Express: tracked, next working day once made",
+        fixed_amount: { amount: EXPRESS_PENCE, currency: "gbp" },
+        metadata: { onjjem_express: "true" },
+      },
+    });
+  }
+  return opts;
+}
+
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
   const body = req.body as {
     sku?: string;
@@ -291,15 +313,13 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
           ? ["US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"]
           : ["GB"],
       },
-      shipping_options: [
-        {
-          shipping_rate: body.international
-            ? (body.sku === "CLASSIC-POST-GLOS-6X4"
-                ? "shr_1UEtVZLkpMwsJmFNIQcFuntm" // International Postcard Delivery — £4.99
-                : "shr_1UEeO9LkpMwsJmFNVCYOdr52") // International delivery — £14.99
-            : "shr_1U88e4LkpMwsJmFN2uGD9IvH", // Free UK shipping
-        },
-      ],
+      shipping_options: body.international
+        ? [{
+            shipping_rate: body.sku === "CLASSIC-POST-GLOS-6X4"
+              ? "shr_1UEtVZLkpMwsJmFNIQcFuntm" // International Postcard Delivery — £4.99
+              : "shr_1UEeO9LkpMwsJmFNVCYOdr52", // International delivery — £14.99
+          }]
+        : ukShippingOptions([body.sku]), // Free UK, plus Express where available
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl || `${origin}/#shop`,
       metadata: {
@@ -310,7 +330,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       },
       custom_text: {
         submit: {
-          message: "Your restored photo will be printed and dispatched within 3–5 working days.",
+          message: "Made to order in 1–3 working days, then 1–3 days in the post. Most orders arrive within a week.",
         },
       },
     });
@@ -419,13 +439,13 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
       mode: "payment",
       ...(discounts ? { discounts } : { allow_promotion_codes: true }),
       shipping_address_collection: { allowed_countries: ["GB"] },
-      shipping_options: [{ shipping_rate: "shr_1U88e4LkpMwsJmFN2uGD9IvH" }], // Free UK shipping
+      shipping_options: ukShippingOptions(items.map((it) => it.sku || "")), // Free UK, plus Express where available
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl || `${origin}/`,
       metadata,
       custom_text: {
         submit: {
-          message: `Your ${items.length > 1 ? items.length + " gifts are" : "gift is"} made to order in the UK and posted together.`,
+          message: `Your ${items.length > 1 ? items.length + " gifts are" : "gift is"} made to order in the UK and posted together. Most orders arrive within a week.`,
         },
       },
     });

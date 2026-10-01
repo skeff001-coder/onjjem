@@ -306,6 +306,12 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     productName = `${cartCount} gifts (basket order)`;
   }
 
+  // Express delivery: the customer picked our £6.99 Express option at checkout.
+  const shippingCost = session["shipping_cost"] as Record<string, unknown> | undefined;
+  const isExpress = (shippingCost?.["amount_total"] as number | undefined) === 699 &&
+    String((addr?.["country"] as string | undefined) ?? "GB").toUpperCase() === "GB";
+  if (isExpress) logger.info({ sessionId }, "Express delivery requested");
+
   await fulfilOrder({
     stripeSessionId: sessionId,
     stripePaymentIntentId: typeof paymentIntent === "string" ? paymentIntent : null,
@@ -316,6 +322,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     amountPaid,
     currency,
     ...(extraItems.length ? { extraItems } : {}),
+    ...(isExpress ? { express: true } : {}),
   });
 
   const bolOrderId = await getBolOrderId(sessionId);

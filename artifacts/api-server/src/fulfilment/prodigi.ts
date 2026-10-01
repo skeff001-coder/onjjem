@@ -530,6 +530,8 @@ export interface FulfilmentOrder {
   currency: string;
   // Basket orders: more gifts in the same parcel, each with its own picture.
   extraItems?: { sku: string; photoBase64: string }[];
+  // Customer paid for Express delivery at checkout.
+  express?: boolean;
 }
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -593,6 +595,7 @@ async function photoToPublicUrl(photoBase64: string): Promise<string> {
 
 // Use Budget delivery only when every product in the parcel allows it.
 function orderShippingMethod(order: FulfilmentOrder): string {
+  if (order.express) return "Express";
   const skus = [order.sku, ...(order.extraItems ?? []).map((i) => i.sku)];
   const allBudget = skus.every((s) => PRODIGI_PRODUCTS[s]?.shipping === "Budget");
   return allBudget ? "Budget" : SHIPPING_METHOD;
@@ -714,7 +717,7 @@ async function submitToProdigi(
 
   // Safety net: if Prodigi won't send this order by Budget, send it Standard
   // instead so the customer's order never gets stuck.
-  if (!resp.ok && payload.shippingMethod === "Budget" && resp.status >= 400 && resp.status < 500) {
+  if (!resp.ok && (payload.shippingMethod === "Budget" || payload.shippingMethod === "Express") && resp.status >= 400 && resp.status < 500) {
     const firstError = await resp.text().catch(() => "");
     logger.warn({ firstError: firstError.slice(0, 300), stripeSession: order.stripeSessionId }, "Budget delivery refused — retrying with Standard");
     resp = await post({ ...payload, shippingMethod: SHIPPING_METHOD });

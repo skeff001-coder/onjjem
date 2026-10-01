@@ -191,7 +191,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
         ${[
           ["🎨", "Your photo is sent to our UK print studio today"],
-          ["📦", "Printed and dispatched within 3–5 working days"],
+          ["📦", "Made to order in 1–3 working days, then 1–3 days in the post"],
           ["🏠", "Delivered directly to your door"],
         ].map(([icon, text], i) => `
           <tr>
@@ -229,7 +229,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
     to: data.customerEmail,
     subject: `Your ONJJEM order is confirmed ✓`,
     html: baseTemplate(
-      `Your ${data.productName} is being printed — dispatched in 3–5 working days.`,
+      `Your ${data.productName} is being made — most orders arrive within a week.`,
       body,
     ),
   });
