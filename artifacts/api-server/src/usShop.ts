@@ -31,6 +31,10 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-POSTER-18X24": { name: "Matte Poster 18x24\"", priceCents: 3999 }, // $17 + $7.10
   "US-POSTER-24X36": { name: "Matte Poster 24x36\"", priceCents: 5499 }, // $22 + $14.65
 
+  // White ceramic photo mugs — 11oz $10 / 15oz $11 + $6.45 shipping
+  "US-MUG-11": { name: "Photo Mug, 11oz White Ceramic", priceCents: 2499 },
+  "US-MUG-15": { name: "Photo Mug, 15oz White Ceramic", priceCents: 2799 },
+
   // Pickleball paddles — cost $20 / $40 + $14 shipping
   "US-PADDLE-1": { name: "Photo Pickleball Paddle", priceCents: 4999 },
   "US-PADDLE-2": { name: "Photo Pickleball Paddle Set (2 paddles)", priceCents: 7999 },
@@ -54,6 +58,9 @@ export const US_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "US-PRINT-16X20": { sku: "GLOBAL-PHO-16X20-PRO", sizing: "fillPrintArea", attributes: { finish: "Lustre" }, shipping: "Budget" },
   "US-POSTER-18X24": { sku: "GLOBAL-FAP-18X24", sizing: "fillPrintArea", shipping: "Budget" },
   "US-POSTER-24X36": { sku: "GLOBAL-FAP-24X36", sizing: "fillPrintArea", shipping: "Budget" },
+
+  "US-MUG-11": { sku: "GLOBAL-MUG-W", sizing: "fillPrintArea" },
+  "US-MUG-15": { sku: "H-MUG-CERAMIC-150Z", sizing: "fillPrintArea" },
 
   "US-PADDLE-1": { sku: "PICKLE-SGL", sizing: "fillPrintArea" },
   "US-PADDLE-2": { sku: "PICKLE-SET", sizing: "fillPrintArea" },
