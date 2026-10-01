@@ -41,6 +41,19 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   // Mouse mat 8x10" — cost $8 + $6.45 tracked shipping
   "US-MOUSEMAT": { name: "Photo Mouse Mat (8x10\")", priceCents: 2299 },
 
+  // Tumblers & bottles — cost: 20oz straw tumbler $16, 22oz tumbler $22, 32oz bottle $14, + $6.45 tracked
+  "US-TUMB20-WHITE": { name: "Photo Tumbler with Straw 20oz (white)", priceCents: 3499 },
+  "US-TUMB20-BLACK": { name: "Photo Tumbler with Straw 20oz (black)", priceCents: 3499 },
+  "US-TUMB22-WHITE": { name: "Insulated Photo Tumbler 22oz (white)", priceCents: 3999 },
+  "US-TUMB22-BLACK": { name: "Insulated Photo Tumbler 22oz (black)", priceCents: 3999 },
+  "US-TUMB22-RED": { name: "Insulated Photo Tumbler 22oz (red)", priceCents: 3999 },
+  "US-TUMB22-NAVY": { name: "Insulated Photo Tumbler 22oz (navy)", priceCents: 3999 },
+  "US-TUMB22-GREY": { name: "Insulated Photo Tumbler 22oz (grey)", priceCents: 3999 },
+  "US-BOTTLE32-WHITE": { name: "Insulated Photo Water Bottle 32oz (white)", priceCents: 3299 },
+  "US-BOTTLE32-BLACK": { name: "Insulated Photo Water Bottle 32oz (black)", priceCents: 3299 },
+  "US-BOTTLE32-NAVY": { name: "Insulated Photo Water Bottle 32oz (navy)", priceCents: 3299 },
+  "US-BOTTLE32-BLUE": { name: "Insulated Photo Water Bottle 32oz (blue)", priceCents: 3299 },
+
   // Pickleball paddles — cost $20 / $40 + $14 shipping
   "US-PADDLE-1": { name: "Photo Pickleball Paddle", priceCents: 4999 },
   "US-PADDLE-2": { name: "Photo Pickleball Paddle Set (2 paddles)", priceCents: 7999 },
@@ -70,6 +83,18 @@ export const US_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   "US-MOUSEMAT": { sku: "H-MOUSEMAT", sizing: "fillPrintArea" },
   "US-PILLOWCASE": { sku: "GLOBAL-PLWCASE-TAUPE-30X22-STD", sizing: "fillPrintArea" },
+
+  "US-TUMB20-WHITE": { sku: "H-TUMBLER-20OZ", sizing: "fillPrintArea", attributes: { color: "white" } },
+  "US-TUMB20-BLACK": { sku: "H-TUMBLER-20OZ", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "US-TUMB22-WHITE": { sku: "H-TUMBLER-22OZ", sizing: "fillPrintArea", attributes: { color: "white" } },
+  "US-TUMB22-BLACK": { sku: "H-TUMBLER-22OZ", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "US-TUMB22-RED": { sku: "H-TUMBLER-22OZ", sizing: "fillPrintArea", attributes: { color: "red" } },
+  "US-TUMB22-NAVY": { sku: "H-TUMBLER-22OZ", sizing: "fillPrintArea", attributes: { color: "navy" } },
+  "US-TUMB22-GREY": { sku: "H-TUMBLER-22OZ", sizing: "fillPrintArea", attributes: { color: "grey" } },
+  "US-BOTTLE32-WHITE": { sku: "950ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "white" } },
+  "US-BOTTLE32-BLACK": { sku: "950ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "US-BOTTLE32-NAVY": { sku: "950ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "navy" } },
+  "US-BOTTLE32-BLUE": { sku: "950ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "blue" } },
 
   "US-PADDLE-1": { sku: "PICKLE-SGL", sizing: "fillPrintArea" },
   "US-PADDLE-2": { sku: "PICKLE-SET", sizing: "fillPrintArea" },
