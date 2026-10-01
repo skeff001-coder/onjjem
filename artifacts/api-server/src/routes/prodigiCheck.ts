@@ -18,7 +18,8 @@ function baseUrl(): string {
 
 router.get("/prodigi-check", async (req, res) => {
   const region = String(req.query.region || "us").toLowerCase() === "gb" ? "gb" : "us";
-  if (cache && cache.region === region && Date.now() - cache.at < 10 * 60_000) {
+  if (req.query.fresh) cache = null;
+  if (cache && cache.region === region && Date.now() - cache.at < 10 * 60_000 && req.query.view !== "html") {
     res.json(cache.body);
     return;
   }
@@ -84,6 +85,16 @@ router.get("/prodigi-check", async (req, res) => {
     results,
   };
   cache = { at: Date.now(), region, body: out };
+  if (req.query.view === "html") {
+    const bad = results.filter((r) => !r.ok);
+    const esc = (s: unknown) => String(s ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]!));
+    res.type("html").send(`<!doctype html><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:16px system-ui;padding:16px">
+<h2>Prodigi check (${esc(region.toUpperCase())}, ${esc(out.env)})</h2>
+<p style="font-size:22px">${bad.length === 0 ? "✅" : "❌"} ${results.length - bad.length} of ${results.length} items OK</p>
+<p>Not made in ${esc(country)}: ${esc(out.notShippedFromDestination.join(", ") || "none")}</p>
+${bad.map((r) => `<p><b>${esc(r.ourSku)}</b> (${esc(r.prodigiSku)} ${esc(JSON.stringify(r.attributes))})<br><small>${esc(JSON.stringify(r.failures ?? r.error)).slice(0, 300)}</small></p>`).join("")}`);
+    return;
+  }
   res.json(out);
 });
 

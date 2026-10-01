@@ -169,7 +169,8 @@ export const US_GARMENTS: Garment[] = [
   },
   { // Gildan 18500B kids hoodie — $21 + $6.75
     code: "US-KHOOD", prodigiSku: "GLOBAL-HOOD-GIL-18500B", name: "Kids' Photo Hoodie", priceCents: 3999,
-    sizes: [["XS", "xs"], ["S", "s"], ["M", "m"], ["L", "l"], ["XL", "xl"]],
+    // No XS: Prodigi US only makes XS in light pink.
+    sizes: [["S", "s"], ["M", "m"], ["L", "l"], ["XL", "xl"]],
     colours: [["RED", "red"], ["NAVY", "navy blue"], ["WHITE", "arctic white"], ["ORANGE", "orange"], ["PURPLE", "purple"], ["GREY", "dark heather grey"]],
   },
 ];
