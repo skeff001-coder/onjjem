@@ -133,6 +133,24 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // Mouse mat 8x10" (£6 + VAT, Budget £2.25 + VAT) — sold at £14.99.
   "mousemat":          { sku: "GLOBAL-MOUSEMAT",            sizing: "fillPrintArea", shipping: "Budget" },
 
+  // Photo water bottles (Prodigi GB, checked 2026-10-01). 500ml £10 / 650ml £15 + VAT, Budget £3.30 + VAT.
+  "BOTTLE-500-BLACK": { sku: "500ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
+  "BOTTLE-500-BLUE": { sku: "500ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "blue" }, shipping: "Budget" },
+  "BOTTLE-500-RED": { sku: "500ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "red" }, shipping: "Budget" },
+  "BOTTLE-500-SILVER": { sku: "500ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "silver" }, shipping: "Budget" },
+  "BOTTLE-500-WHITE": { sku: "500ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
+  "BOTTLE-650-BLACK": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
+  "BOTTLE-650-WHITE": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
+  "BOTTLE-650-NAVY": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "navy" }, shipping: "Budget" },
+  "BOTTLE-650-RED": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "red" }, shipping: "Budget" },
+  "BOTTLE-650-GREY": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "grey" }, shipping: "Budget" },
+  "BOTTLE-650-LIME": { sku: "650ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "lime" }, shipping: "Budget" },
+  // Large 5.7cm pin badges, same photo on every badge in a pack. Budget £2.30 + VAT.
+  "badge-1": { sku: "PIN-BDG-LRG", sizing: "fillPrintArea", shipping: "Budget" },
+  "badge-5": { sku: "PIN-BDG-LRG-5", sizing: "fillPrintArea", shipping: "Budget" },
+  "badge-10": { sku: "PIN-BDG-LRG-10", sizing: "fillPrintArea", shipping: "Budget" },
+  "badge-20": { sku: "PIN-BDG-LRG-20", sizing: "fillPrintArea", shipping: "Budget" },
+
   // ── Kiss-cut stickers, bigger sizes (Prodigi GB, checked 2026-09-26)
   "sticker-large": { sku: "GLOBAL-STI-8_5X8_5-G", sizing: "fillPrintArea", shipping: "Budget" },
   "sticker-xl":    { sku: "GLOBAL-STI-14X14-G",   sizing: "fillPrintArea", shipping: "Budget" },

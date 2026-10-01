@@ -83,6 +83,23 @@ export const SHOP_SKU_PRICES = {
   "printed-towel-shower": { name: "Photo Towel (70x140cm)", pricePence: 3199 },
   "towel-70": { name: "Photo Towel (70x140cm)", pricePence: 2499 },
   "mousemat": { name: "Photo Mouse Mat (8x10\")", pricePence: 1499 },
+
+  // Photo water bottles + pin badges (2026-10-01)
+  "BOTTLE-500-BLACK": { name: "Photo Water Bottle 500ml (black)", pricePence: 2299 },
+  "BOTTLE-500-BLUE": { name: "Photo Water Bottle 500ml (blue)", pricePence: 2299 },
+  "BOTTLE-500-RED": { name: "Photo Water Bottle 500ml (red)", pricePence: 2299 },
+  "BOTTLE-500-SILVER": { name: "Photo Water Bottle 500ml (silver)", pricePence: 2299 },
+  "BOTTLE-500-WHITE": { name: "Photo Water Bottle 500ml (white)", pricePence: 2299 },
+  "BOTTLE-650-BLACK": { name: "Insulated Photo Water Bottle 650ml (black)", pricePence: 2999 },
+  "BOTTLE-650-WHITE": { name: "Insulated Photo Water Bottle 650ml (white)", pricePence: 2999 },
+  "BOTTLE-650-NAVY": { name: "Insulated Photo Water Bottle 650ml (navy)", pricePence: 2999 },
+  "BOTTLE-650-RED": { name: "Insulated Photo Water Bottle 650ml (red)", pricePence: 2999 },
+  "BOTTLE-650-GREY": { name: "Insulated Photo Water Bottle 650ml (grey)", pricePence: 2999 },
+  "BOTTLE-650-LIME": { name: "Insulated Photo Water Bottle 650ml (lime)", pricePence: 2999 },
+  "badge-1": { name: "Photo Pin Badge (5.7cm)", pricePence: 749 },
+  "badge-5": { name: "5 Photo Pin Badges (5.7cm)", pricePence: 1299 },
+  "badge-10": { name: "10 Photo Pin Badges (5.7cm)", pricePence: 1999 },
+  "badge-20": { name: "20 Photo Pin Badges (5.7cm)", pricePence: 3299 },
   "towel-bath": { name: "Photo Bath Towel (80x160cm)", pricePence: 3899 },
 
   "sticker-large": { name: "Cartoon Photo Sticker (Large 8.5x8.5\", Gloss Vinyl)", pricePence: 1449 },
