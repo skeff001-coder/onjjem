@@ -138,27 +138,27 @@ type Garment = {
 
 export const US_GARMENTS: Garment[] = [
   { // Gildan 64000B kids tee — $11 + $6.75
-    code: "US-KTEE", prodigiSku: "GLOBAL-TEE-GIL-64000B", name: "Kids' Cartoon T-Shirt", priceCents: 2499,
+    code: "US-KTEE", prodigiSku: "GLOBAL-TEE-GIL-64000B", name: "Kids' Photo T-Shirt", priceCents: 2499,
     sizes: [["XS", "xs"], ["S", "s"], ["M", "m"], ["L", "l"], ["XL", "xl"]],
     colours: [["BLACK", "black"], ["ORANGE", "orange"], ["PURPLE", "purple"], ["WHITE", "white"], ["GREY", "sport grey"], ["NAVY", "navy blue"], ["RED", "red"]],
   },
   { // Rabbit Skins 3321 toddler tee — $10–11 + $6.75
-    code: "US-TTEE", prodigiSku: "GLOBAL-TEE-RS-3321", name: "Toddler Cartoon T-Shirt", priceCents: 2499,
+    code: "US-TTEE", prodigiSku: "GLOBAL-TEE-RS-3321", name: "Toddler Photo T-Shirt", priceCents: 2499,
     sizes: [["2T", "2-3 years"], ["3T", "3-4 years"], ["4T", "4-5 years"], ["5T", "5-6 years"]],
     colours: [["BLACK", "black"], ["ORANGE", "orange"], ["PURPLE", "purple"], ["WHITE", "white"], ["PINK", "pink"], ["ROYAL", "royal blue"]],
   },
   { // Rabbit Skins 3322 baby tee — $11 + $6.75
-    code: "US-BTEE", prodigiSku: "GLOBAL-TEE-RS-3322", name: "Baby Cartoon T-Shirt", priceCents: 2499,
+    code: "US-BTEE", prodigiSku: "GLOBAL-TEE-RS-3322", name: "Baby Photo T-Shirt", priceCents: 2499,
     sizes: [["6M", "6-12 months"], ["12M", "12-18 months"]],
     colours: [["WHITE", "white"], ["BLACK", "black"], ["PINK", "pink"], ["LTBLUE", "light blue"]],
   },
   { // District DT6000 adult tee — $11–13 + $10.75
-    code: "US-ATEE", prodigiSku: "TEE-DC-DT6000", name: "Adult Cartoon T-Shirt", priceCents: 2999,
+    code: "US-ATEE", prodigiSku: "TEE-DC-DT6000", name: "Adult Photo T-Shirt", priceCents: 2999,
     sizes: [["S", "s"], ["M", "m"], ["L", "l"], ["XL", "xl"], ["2XL", "2xl"], ["3XL", "3xl"]],
     colours: [["BLACK", "black"], ["WHITE", "white"], ["PURPLE", "purple"], ["RED", "classic red"], ["GREEN", "forest green"], ["NAVY", "navy blue"], ["GREY", "light grey heather"]],
   },
   { // Gildan 18500 adult hoodie — $19–26 + $6.75
-    code: "US-AHOOD", prodigiSku: "HOOD-GIL-18500", name: "Adult Cartoon Hoodie", priceCents: 4499,
+    code: "US-AHOOD", prodigiSku: "HOOD-GIL-18500", name: "Adult Photo Hoodie", priceCents: 4499,
     sizes: [["S", "s"], ["M", "m"], ["L", "l"], ["XL", "xl"], ["2XL", "2xl"], ["3XL", "3xl"]],
     colours: [["RED", "fire red"], ["GREEN", "kelly green"], ["NAVY", "oxford navy"], ["BLACK", "black"], ["WHITE", "arctic white"], ["ORANGE", "orange"], ["GREY", "heather grey"]],
   },
@@ -168,7 +168,7 @@ export const US_GARMENTS: Garment[] = [
     colours: [["RED", "red"], ["NAVY", "navy blue"], ["WHITE", "white"], ["BLACK", "black"], ["GREY", "heather grey"]],
   },
   { // Gildan 18500B kids hoodie — $21 + $6.75
-    code: "US-KHOOD", prodigiSku: "GLOBAL-HOOD-GIL-18500B", name: "Kids' Cartoon Hoodie", priceCents: 3999,
+    code: "US-KHOOD", prodigiSku: "GLOBAL-HOOD-GIL-18500B", name: "Kids' Photo Hoodie", priceCents: 3999,
     sizes: [["XS", "xs"], ["S", "s"], ["M", "m"], ["L", "l"], ["XL", "xl"]],
     colours: [["RED", "red"], ["NAVY", "navy blue"], ["WHITE", "arctic white"], ["ORANGE", "orange"], ["PURPLE", "purple"], ["GREY", "dark heather grey"]],
   },
