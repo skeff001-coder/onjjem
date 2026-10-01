@@ -173,7 +173,6 @@ function usShippingOptions() {
 // Checkout links expire after 2 hours. Stripe then gives us a recovery link,
 // and webhookHandlers emails it once (see checkout.session.expired).
 const CART_RECOVERY = {
-  consent_collection: { promotions: "auto" as const },
   after_expiration: { recovery: { enabled: true } },
   get expires_at() { return Math.floor(Date.now() / 1000) + 2 * 60 * 60; },
 };
