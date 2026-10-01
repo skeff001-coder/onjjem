@@ -4,7 +4,7 @@ export const SHOP_SKU_PRICES = {
   // ========================================
 
   // Heat Transfer Colour Changing Mug (11oz) — LIMITED TIME SALE
-  "magic-mug": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 1399 },
+  "magic-mug": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 1799 },
   "baby-reveal-mug": { name: "Baby Gender Reveal Colour-Changing Mug (11oz)", pricePence: 1999 },
   "XSWEAT-KD-3Y-RED": { name: "Christmas Sweatshirt, Kids (3-4 Years, Fire Red)", pricePence: 2399 },
   "XSWEAT-KD-3Y-GREEN": { name: "Christmas Sweatshirt, Kids (3-4 Years, Kelly Green)", pricePence: 2399 },
