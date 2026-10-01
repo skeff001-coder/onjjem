@@ -60,18 +60,21 @@ router.get("/prodigi-check", async (req, res) => {
         let j: any = {};
         try { j = JSON.parse(raw); } catch { j = {}; }
         const q = j?.quotes?.[0];
+        // "Quote does not include sales tax" is only a note, not a problem.
+        const realIssues = (j?.issues ?? []).filter((i: any) => !/sales tax/i.test(String(i?.description ?? i?.errorCode ?? "")));
         results.push({
           ourSku,
           prodigiSku: p.sku,
           attributes: p.attributes ?? null,
-          ok: r.ok && j?.outcome === "Created",
+          ok: r.ok && !!q && (j?.outcome === "Created" || (j?.outcome === "CreatedWithIssues" && realIssues.length === 0)),
+          issues: realIssues.length ? realIssues : undefined,
           outcome: j?.outcome ?? r.status,
           failures: j?.failures,
           shipsFrom: q?.shipments?.map((s: any) => s?.fulfillmentLocation?.countryCode) ?? null,
           itemCost: q?.costSummary?.items ?? null,
           shippingCost: q?.costSummary?.shipping ?? null,
           status: r.status,
-          error: r.ok && j?.outcome === "Created" ? undefined : `HTTP ${r.status}: ${raw.slice(0, 250)}`,
+          error: r.ok && q && realIssues.length === 0 ? undefined : `HTTP ${r.status}: ${raw.slice(0, 250)}`,
         });
       } catch (err) {
         results.push({ ourSku, prodigiSku: p.sku, ok: false, error: String(err) });
