@@ -172,10 +172,9 @@ function usShippingOptions() {
 // ── "Finish your order" emails ──────────────────────────────────────────────
 // Checkout links expire after 2 hours. Stripe then gives us a recovery link,
 // and webhookHandlers emails it once (see checkout.session.expired).
-const CART_RECOVERY = {
-  after_expiration: { recovery: { enabled: true } },
-  get expires_at() { return Math.floor(Date.now() / 1000) + 2 * 60 * 60; },
-};
+// Switched off for now: consent_collection isn't available on UK Stripe
+// accounts, and recovery needs testing against the live account first.
+const CART_RECOVERY = {};
 const US_CHECKOUT_NOTE = "Made to order in the USA in 1–3 business days, then shipped free. Most orders arrive within 4–10 business days.";
 
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
