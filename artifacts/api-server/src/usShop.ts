@@ -64,6 +64,10 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-CURTAIN": { name: "Photo Shower Curtain 71x74\"", priceCents: 7999 },
   "US-CURTAIN-LINER": { name: "Photo Shower Curtain 71x74\" with Liner", priceCents: 8999 },
 
+  // Golf balls, 6-pack — cost $40 + $14 shipping. Priced near cost to win customers,
+  // so they are excluded from the bundle discount (see NO_BUNDLE_DISCOUNT).
+  "US-GOLF-6": { name: "Photo Golf Balls (6-pack)", priceCents: 5999 },
+
   // Pickleball paddles — cost $20 / $40 + $14 shipping
   "US-PADDLE-1": { name: "Photo Pickleball Paddle", priceCents: 4999 },
   "US-PADDLE-2": { name: "Photo Pickleball Paddle Set (2 paddles)", priceCents: 7999 },
@@ -113,6 +117,8 @@ export const US_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   "US-CURTAIN": { sku: "GLOBAL-SHOWER-NOLINER-71X74", sizing: "fillPrintArea" },
   "US-CURTAIN-LINER": { sku: "H-SHOWER-LINER-71X74", sizing: "fillPrintArea" },
+
+  "US-GOLF-6": { sku: "GOLF-BALLS-6", sizing: "fillPrintArea" },
 
   "US-PADDLE-1": { sku: "PICKLE-SGL", sizing: "fillPrintArea" },
   "US-PADDLE-2": { sku: "PICKLE-SET", sizing: "fillPrintArea" },
@@ -181,3 +187,7 @@ for (const g of US_GARMENTS) {
     }
   }
 }
+
+// Low-margin products: they count towards the bundle deal, but the discount
+// is only taken off the other gifts in the basket.
+export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF");

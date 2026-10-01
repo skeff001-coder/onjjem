@@ -11,7 +11,7 @@ import { storePhoto } from "../webhookHandlers";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { SHOP_SKU_PRICES } from "../shopPrices";
-import { US_SKU_PRICES } from "../usShop";
+import { US_SKU_PRICES, NO_BUNDLE_DISCOUNT } from "../usShop";
 import { PRODIGI_PRODUCTS } from "../fulfilment/prodigi";
 import { GoogleGenAI } from "@google/genai";
 
@@ -458,7 +458,25 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     // Automatic bundle discount
     const percent = items.length >= 3 ? 12 : items.length === 2 ? 10 : 0;
     let discounts: { coupon: string }[] | undefined;
-    if (percent) {
+    const hasExcluded = items.some((it) => NO_BUNDLE_DISCOUNT(it.sku || ""));
+    if (percent && hasExcluded) {
+      // Take the bundle % off the eligible gifts only (one-off amount coupon).
+      const eligible = lineItems.reduce((sum: number, li: any, idx: number) => {
+        const sku = li?.price_data?.product_data?.metadata?.sku as string | undefined;
+        return sku && !NO_BUNDLE_DISCOUNT(sku) ? sum + (li.price_data.unit_amount as number) * (li.quantity || 1) : sum;
+      }, 0);
+      const amountOff = Math.round((eligible * percent) / 100);
+      if (amountOff > 0) {
+        const c = await stripe.coupons.create({
+          amount_off: amountOff,
+          currency: isUS ? "usd" : "gbp",
+          duration: "once",
+          max_redemptions: 1,
+          name: `Bundle discount (${percent}% off)`,
+        });
+        discounts = [{ coupon: c.id }];
+      }
+    } else if (percent) {
       const couponId = BUNDLE_COUPONS[percent];
       try {
         await stripe.coupons.retrieve(couponId);
