@@ -54,6 +54,16 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-BOTTLE32-NAVY": { name: "Insulated Photo Water Bottle 32oz (navy)", priceCents: 3299 },
   "US-BOTTLE32-BLUE": { name: "Insulated Photo Water Bottle 32oz (blue)", priceCents: 3299 },
 
+  // Quilted photo bedspreads — cost Twin $58+$17.25, Full $65+$12.95, Queen $73+$17.25, King $85+$17.25
+  "US-SPREAD-TWIN": { name: "Photo Quilted Bedspread, Twin 68x88\"", priceCents: 11999 },
+  "US-SPREAD-FULL": { name: "Photo Quilted Bedspread, Full 79x79\"", priceCents: 12999 },
+  "US-SPREAD-QUEEN": { name: "Photo Quilted Bedspread, Queen 88x88\"", priceCents: 14999 },
+  "US-SPREAD-KING": { name: "Photo Quilted Bedspread, King 104x88\"", priceCents: 16999 },
+
+  // Shower curtains 71x74" — no liner $45 / with PVC liner $54, + $12.95 tracked
+  "US-CURTAIN": { name: "Photo Shower Curtain 71x74\"", priceCents: 7999 },
+  "US-CURTAIN-LINER": { name: "Photo Shower Curtain 71x74\" with Liner", priceCents: 8999 },
+
   // Pickleball paddles — cost $20 / $40 + $14 shipping
   "US-PADDLE-1": { name: "Photo Pickleball Paddle", priceCents: 4999 },
   "US-PADDLE-2": { name: "Photo Pickleball Paddle Set (2 paddles)", priceCents: 7999 },
@@ -95,6 +105,14 @@ export const US_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "US-BOTTLE32-BLACK": { sku: "950ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "black" } },
   "US-BOTTLE32-NAVY": { sku: "950ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "navy" } },
   "US-BOTTLE32-BLUE": { sku: "950ML-WATER-BOTTLE", sizing: "fillPrintArea", attributes: { color: "blue" } },
+
+  "US-SPREAD-TWIN": { sku: "GLOBAL-SPREAD-GREY-68X88", sizing: "fillPrintArea" },
+  "US-SPREAD-FULL": { sku: "GLOBAL-SPREAD-GREY-79X79", sizing: "fillPrintArea" },
+  "US-SPREAD-QUEEN": { sku: "GLOBAL-SPREAD-GREY-88X88", sizing: "fillPrintArea" },
+  "US-SPREAD-KING": { sku: "GLOBAL-SPREAD-GREY-104X88", sizing: "fillPrintArea" },
+
+  "US-CURTAIN": { sku: "GLOBAL-SHOWER-NOLINER-71X74", sizing: "fillPrintArea" },
+  "US-CURTAIN-LINER": { sku: "H-SHOWER-LINER-71X74", sizing: "fillPrintArea" },
 
   "US-PADDLE-1": { sku: "PICKLE-SGL", sizing: "fillPrintArea" },
   "US-PADDLE-2": { sku: "PICKLE-SET", sizing: "fillPrintArea" },
