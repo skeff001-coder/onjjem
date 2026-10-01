@@ -240,9 +240,10 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   // ── Framed Photo Tiles ──────────────────────────────────────────────────────
   // PHOTIL-FRA-* requires color attribute: "white" | "black".
-  "photo-tile-5x7":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
-  "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
-  "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
+  // Photo tiles: Budget ships from the Netherlands (EUR, customs); use UK Standard instead.
+  "photo-tile-5x7":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "black" } },
 
   // ── Playing Cards ───────────────────────────────────────────────────────────
   "playing-cards": { sku: "PLAY-CARD", sizing: "fillPrintArea", shipping: "Budget" },

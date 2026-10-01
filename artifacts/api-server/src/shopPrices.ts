@@ -195,9 +195,9 @@ export const SHOP_SKU_PRICES = {
   "wall-sticker-100": { name: "Giant Photo Wall Sticker (100x100cm)", pricePence: 4299 },
 
   // Photo Tiles
-  "photo-tile-5x7": { name: "Photo Tile (5x7)", pricePence: 999 },
-  "photo-tile-8x8": { name: "Photo Tile (8x8)", pricePence: 1499 },
-  "photo-tile-8x10": { name: "Photo Tile (8x10)", pricePence: 1699 },
+  "photo-tile-5x7": { name: "Framed Photo Tile (5x7)", pricePence: 2299 },
+  "photo-tile-8x8": { name: "Framed Photo Tile (8x8)", pricePence: 2499 },
+  "photo-tile-8x10": { name: "Framed Photo Tile (8x10)", pricePence: 2599 },
 
   // ========================================
   // KIDS PRODUCTS
