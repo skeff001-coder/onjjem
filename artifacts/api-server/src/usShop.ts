@@ -35,6 +35,9 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-MUG-11": { name: "Photo Mug, 11oz White Ceramic", priceCents: 2499 },
   "US-MUG-15": { name: "Photo Mug, 15oz White Ceramic", priceCents: 2799 },
 
+  // Mouse mat 8x10" — cost $8 + $6.45 tracked shipping
+  "US-MOUSEMAT": { name: "Photo Mouse Mat (8x10\")", priceCents: 2299 },
+
   // Pickleball paddles — cost $20 / $40 + $14 shipping
   "US-PADDLE-1": { name: "Photo Pickleball Paddle", priceCents: 4999 },
   "US-PADDLE-2": { name: "Photo Pickleball Paddle Set (2 paddles)", priceCents: 7999 },
@@ -61,6 +64,8 @@ export const US_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   "US-MUG-11": { sku: "GLOBAL-MUG-W", sizing: "fillPrintArea" },
   "US-MUG-15": { sku: "H-MUG-CERAMIC-150Z", sizing: "fillPrintArea" },
+
+  "US-MOUSEMAT": { sku: "H-MOUSEMAT", sizing: "fillPrintArea" },
 
   "US-PADDLE-1": { sku: "PICKLE-SGL", sizing: "fillPrintArea" },
   "US-PADDLE-2": { sku: "PICKLE-SET", sizing: "fillPrintArea" },
