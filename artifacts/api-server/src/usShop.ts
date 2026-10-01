@@ -15,9 +15,9 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-BLANKET-M": { name: "Photo Fleece Blanket, Medium 50x60\"", priceCents: 6999 },
   "US-BLANKET-L": { name: "Photo Fleece Blanket, Large 60x80\"", priceCents: 8999 },
 
-  // Photo candles — cost $28 + $6.45 shipping
-  "US-CANDLE-OCEAN": { name: "Photo Candle, Ocean Mist & Moss (11oz)", priceCents: 4499 },
-  "US-CANDLE-FIG": { name: "Photo Candle, White Tea & Fig (11oz)", priceCents: 4499 },
+  // Photo candles — cost $28 + $6.45 shipping. Priced near cost, so no bundle discount on these.
+  "US-CANDLE-OCEAN": { name: "Photo Candle, Ocean Mist & Moss (11oz)", priceCents: 3999 },
+  "US-CANDLE-FIG": { name: "Photo Candle, White Tea & Fig (11oz)", priceCents: 3999 },
 
   // Wall clock — cost $22 + $6.45 shipping
   "US-CLOCK-BLACK": { name: "Photo Wall Clock 10\", Black Frame", priceCents: 4499 },
@@ -190,4 +190,4 @@ for (const g of US_GARMENTS) {
 
 // Low-margin products: they count towards the bundle deal, but the discount
 // is only taken off the other gifts in the basket.
-export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF");
+export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF") || sku.startsWith("US-CANDLE");
