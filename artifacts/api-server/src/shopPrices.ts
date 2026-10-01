@@ -5,6 +5,7 @@ export const SHOP_SKU_PRICES = {
 
   // Heat Transfer Colour Changing Mug (11oz) — LIMITED TIME SALE
   "magic-mug": { name: "Heat Transfer Colour Changing Mug (11oz)", pricePence: 1399 },
+  "baby-reveal-mug": { name: "Baby Gender Reveal Colour-Changing Mug (11oz)", pricePence: 1999 },
 
   // Photo Mugs
   "mug-11oz": { name: "Photo Mug (11oz, Full Wrap)", pricePence: 1399 },

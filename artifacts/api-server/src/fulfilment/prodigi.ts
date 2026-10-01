@@ -263,6 +263,8 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "H-APR-CA-WTIE": { sku: "H-APR-CA-WTIE", sizing: "fillPrintArea", shipping: "Budget" },
   "H-APR-AA-BTIE": { sku: "H-APR-AA-BTIE", sizing: "fillPrintArea", shipping: "Budget" },
   "magic-mug": { sku: "H-MUG-11OZ-CC", sizing: "fillPrintArea", shipping: "Budget" },
+  // Same Prodigi colour-changing mug, sold with our baby reveal design at £19.99.
+  "baby-reveal-mug": { sku: "H-MUG-11OZ-CC", sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Pet Tags ─────────────────────────────────────────────────────────────────
   // Aluminium, dye-sublimated, UK lab. Both validated live on 2026-06-01.
