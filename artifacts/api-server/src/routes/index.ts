@@ -8,6 +8,7 @@ import contactRouter from "./contact";
 import freeScanRouter from "./free-scan";
 import cartoonifyRouter from "./cartoonify";
 import testEmailRouter from "./test-email";
+import prodigiCheckRouter from "./prodigiCheck";
 
 const router: IRouter = Router();
 router.use(healthRouter);
@@ -19,5 +20,6 @@ router.use(contactRouter);
 router.use(freeScanRouter);
 router.use(cartoonifyRouter);
 router.use(testEmailRouter);
+router.use(prodigiCheckRouter);
 
 export default router;
