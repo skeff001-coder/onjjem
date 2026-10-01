@@ -118,7 +118,7 @@ router.get("/prodigi-check", (req, res) => {
     return;
   }
   const esc = (s: unknown) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
-  const head = `<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">${job.done ? "" : '<meta http-equiv="refresh" content="5">'}<title>Prodigi check</title><body style="font:16px system-ui;padding:16px;max-width:640px;margin:auto">`;
+  const head = `<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">${job.done ? "" : `<meta http-equiv="refresh" content="5;url=?region=${region}">`}<title>Prodigi check</title><body style="font:16px system-ui;padding:16px;max-width:640px;margin:auto">`;
   if (!job.done) {
     res.type("html").send(`${head}<h2>Prodigi check (${region.toUpperCase()})</h2><p style="font-size:22px">⏳ Checked ${job.productsDone} of ${job.totalProducts} products…</p><p>This page refreshes by itself. It takes about a minute.</p>`);
     return;
