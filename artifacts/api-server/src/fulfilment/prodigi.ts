@@ -128,7 +128,7 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Cushions & towels (Prodigi, UK) ─────────────────────────────────────
   "cushion-12-single": { sku: "GLOBAL-CUSH-12X12-LIN",      sizing: "fillPrintArea", shipping: "Budget" },
   "cushion-18-double": { sku: "GLOBAL-CUSH-18X18-LIN-DUAL", sizing: "fillPrintArea", shipping: "Budget" },
-  "towel-bath":        { sku: "H-TOW-BATH",                 sizing: "fillPrintArea", shipping: "Budget" },
+  "towel-bath":        { sku: "H-TOW-PTL",                  sizing: "fillPrintArea", shipping: "Budget" },
   // Standard 70x140cm printed towel (£13 + VAT, Budget £3.20 + VAT) — sold at £24.99.
   "towel-70":          { sku: "H-TOW-PTM",                  sizing: "fillPrintArea", shipping: "Budget" },
   // Mouse mat 8x10" (£6 + VAT, Budget £2.25 + VAT) — sold at £14.99.
@@ -495,8 +495,8 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // Photo Print — SKU CONFIRMED from real Prodigi test-checkout (GLOBAL-PHO-5X5, Gloss)
   "photo-print-5x5": { sku: "GLOBAL-PHO-5X5", sizing: "fillPrintArea", attributes: { finish: "Gloss" }, shipping: "Budget" },
 
-  // Printed Shower Towel — SKU CONFIRMED from real Prodigi basket screenshot (H-TOW-SHWR)
-  "printed-towel-shower": { sku: "H-TOW-SHWR", sizing: "fillPrintArea", shipping: "Budget" },
+  // Printed Shower Towel 70x140 — Prodigi support (2026-10-01): H-TOW-SHWR = H-TOW-PTM, use PTM
+  "printed-towel-shower": { sku: "H-TOW-PTM", sizing: "fillPrintArea", shipping: "Budget" },
 
   // Slim Canvas — replaces old sizes entirely. All 4 SKUs CONFIRMED from
   // your real Prodigi test-basket screenshots.
