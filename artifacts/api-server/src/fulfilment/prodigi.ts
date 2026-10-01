@@ -22,6 +22,7 @@ import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { logger } from "../lib/logger";
 import { ObjectStorageService } from "../lib/objectStorage";
+import { US_PRODIGI_PRODUCTS } from "../usShop";
 
 // ── SKU → Prodigi product mapping ────────────────────────────────────────────
 // Maps our website SKU to a Prodigi product SKU (+ optional copies/attributes).
@@ -528,6 +529,9 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "wud-invitation-card":  { sku: "CLASSIC-INV",              sizing: "fillPrintArea", shipping: "Budget" },
 };
 
+// US shop products (onjjem.com/us), made and shipped inside the US.
+Object.assign(PRODIGI_PRODUCTS, US_PRODIGI_PRODUCTS);
+
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -538,6 +542,7 @@ export interface FulfilmentAddress {
   city: string;
   postal_code: string;
   country: string;
+  state?: string | null; // required by Prodigi for US addresses
 }
 
 export interface FulfilmentOrder {
@@ -693,7 +698,7 @@ async function submitToProdigi(
   }
 
   // ── Bonus: free playing cards on orders ≥ £50 ───────────────────────────
-  const bonusCard = order.amountPaid >= 5000;
+  const bonusCard = (order.currency || "gbp").toLowerCase() === "gbp" && order.amountPaid >= 5000;
   if (bonusCard) {
     const cardProduct = PRODIGI_PRODUCTS["playing-cards"];
     if (cardProduct) {
@@ -717,6 +722,7 @@ async function submitToProdigi(
         line2: order.shippingAddress.line2 || undefined,
         townOrCity: order.shippingAddress.city,
         postalOrZipCode: order.shippingAddress.postal_code,
+        ...(order.shippingAddress.state ? { stateOrCounty: order.shippingAddress.state } : {}),
         countryCode: order.shippingAddress.country,
       },
     },
@@ -760,7 +766,7 @@ async function submitToProdigi(
 // ── Queue + status helpers ────────────────────────────────────────────────────
 
 async function queueOrder(order: FulfilmentOrder): Promise<void> {
-  const bonusCard = order.amountPaid >= 5000; // free playing cards on orders ≥ £50
+  const bonusCard = (order.currency || "gbp").toLowerCase() === "gbp" && order.amountPaid >= 5000; // free playing cards on orders ≥ £50
   await db.execute(sql`
     INSERT INTO fulfilment_queue
       (stripe_session, sku, customer_email, shipping_json, amount_paid, currency, bonus_card, status)
@@ -824,7 +830,7 @@ export async function fulfilOrder(order: FulfilmentOrder): Promise<void> {
   }
 
   try {
-    const bonusCard = order.amountPaid >= 5000;
+    const bonusCard = (order.currency || "gbp").toLowerCase() === "gbp" && order.amountPaid >= 5000;
     logger.info(
       {
         stripeSession: order.stripeSessionId,

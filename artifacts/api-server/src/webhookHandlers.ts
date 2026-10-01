@@ -232,7 +232,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   const paymentIntent = session["payment_intent"];
   const amountPaid = (session["amount_total"] as number | undefined) ?? 0;
   const currency = (session["currency"] as string | undefined) ?? "gbp";
-  const bonusCard = amountPaid >= 5000;
+  const bonusCard = currency.toLowerCase() === "gbp" && amountPaid >= 5000;
 
   const customerName =
     (shippingDetails?.["name"] as string | undefined) ??
@@ -251,6 +251,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     city: (addr["city"] as string | undefined) ?? "",
     postal_code: (addr["postal_code"] as string | undefined) ?? "",
     country: (addr["country"] as string | undefined) ?? "GB",
+    state: (addr["state"] as string | undefined) ?? null,
   };
 
   const recipientJson = meta?.["recipient_json"];
@@ -272,6 +273,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
           city: recipient.city,
           postal_code: recipient.postcode,
           country: shippingAddress.country, // recipient form is UK-only for now
+          state: shippingAddress.state,
         };
         recipientMessage = recipient.message;
       }

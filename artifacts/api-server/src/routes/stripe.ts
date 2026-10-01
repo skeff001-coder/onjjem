@@ -11,6 +11,7 @@ import { storePhoto } from "../webhookHandlers";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { SHOP_SKU_PRICES } from "../shopPrices";
+import { US_SKU_PRICES } from "../usShop";
 import { PRODIGI_PRODUCTS } from "../fulfilment/prodigi";
 import { GoogleGenAI } from "@google/genai";
 
@@ -153,6 +154,23 @@ function ukShippingOptions(skus: string[]) {
   return opts;
 }
 
+// ── US shop (onjjem.com/us) ─────────────────────────────────────────────────
+// Charged in USD, US addresses only, free US shipping, cartoon always free.
+function usShippingOptions() {
+  return [{
+    shipping_rate_data: {
+      type: "fixed_amount" as const,
+      display_name: "Free US shipping",
+      fixed_amount: { amount: 0, currency: "usd" },
+      delivery_estimate: {
+        minimum: { unit: "business_day" as const, value: 4 },
+        maximum: { unit: "business_day" as const, value: 10 },
+      },
+    },
+  }];
+}
+const US_CHECKOUT_NOTE = "Made to order in the USA in 1–3 business days, then shipped free. Most orders arrive within 4–10 business days.";
+
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
   const body = req.body as {
     sku?: string;
@@ -163,6 +181,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     cartoonEmail?: string;
     confirmedCartoonBase64?: string;
     international?: boolean;
+    region?: string;
     recipient?: {
       name?: string;
       line1?: string;
@@ -175,6 +194,11 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
 
   if (!body.sku) {
     res.status(400).json({ error: "sku is required" });
+    return;
+  }
+  const isUS = body.region === "us";
+  if (isUS && (!US_SKU_PRICES[body.sku] || !PRODIGI_PRODUCTS[body.sku])) {
+    res.status(400).json({ error: `Sorry, "${body.sku}" isn't available in the US shop.` });
     return;
   }
 
@@ -194,9 +218,19 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       quantity: number;
     };
 
-    const catalogEntry = SHOP_SKU_PRICES[body.sku];
+    const catalogEntry = isUS ? undefined : SHOP_SKU_PRICES[body.sku];
 
-    if (catalogEntry) {
+    if (isUS) {
+      const us = US_SKU_PRICES[body.sku];
+      lineItem = {
+        price_data: {
+          currency: "usd",
+          unit_amount: us.priceCents,
+          product_data: { name: us.name, metadata: { sku: body.sku } },
+        },
+        quantity: 1,
+      };
+    } else if (catalogEntry) {
       lineItem = {
         price_data: {
           currency: "gbp",
@@ -287,7 +321,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     ];
 
     // Christmas sweatshirts include the cartoon for free.
-    if (body.addCartoon && !body.sku.startsWith("XSWEAT-")) {
+    if (body.addCartoon && !isUS && !body.sku.startsWith("XSWEAT-")) {
       lineItems.push({
         price_data: {
           currency: "gbp",
@@ -309,11 +343,11 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       mode: "payment",
       allow_promotion_codes: true,
       shipping_address_collection: {
-        allowed_countries: body.international
+        allowed_countries: isUS ? ["US"] : body.international
           ? ["US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"]
           : ["GB"],
       },
-      shipping_options: body.international
+      shipping_options: isUS ? usShippingOptions() : body.international
         ? [{
             shipping_rate: body.sku === "CLASSIC-POST-GLOS-6X4"
               ? "shr_1UEtVZLkpMwsJmFNIQcFuntm" // International Postcard Delivery — £4.99
@@ -327,10 +361,11 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
         ...(photoToken ? { photo_token: photoToken } : {}),
         ...(body.addCartoon ? { cartoon_addon: "true" } : {}),
         ...(body.recipient ? { recipient_json: JSON.stringify(body.recipient).slice(0, 490) } : {}),
+        ...(isUS ? { region: "us" } : {}),
       },
       custom_text: {
         submit: {
-          message: "Made to order in 1–3 working days, then 1–3 days in the post. Most orders arrive within a week.",
+          message: isUS ? US_CHECKOUT_NOTE : "Made to order in 1–3 working days, then 1–3 days in the post. Most orders arrive within a week.",
         },
       },
     });
@@ -355,7 +390,9 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     items?: { sku?: string; photoBase64?: string; cartoon?: boolean }[];
     successUrl?: string;
     cancelUrl?: string;
+    region?: string;
   };
+  const isUS = body.region === "us";
   const items = Array.isArray(body.items) ? body.items : [];
   if (items.length === 0) {
     res.status(400).json({ error: "Your basket is empty." });
@@ -367,7 +404,8 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
   }
   for (const it of items) {
     const sku = it.sku || "";
-    if (!SHOP_SKU_PRICES[sku as keyof typeof SHOP_SKU_PRICES] || !PRODIGI_PRODUCTS[sku]) {
+    const priced = isUS ? !!US_SKU_PRICES[sku] : !!SHOP_SKU_PRICES[sku as keyof typeof SHOP_SKU_PRICES];
+    if (!priced || !PRODIGI_PRODUCTS[sku]) {
       res.status(400).json({ error: `Sorry, "${sku}" can't be ordered in a basket right now.` });
       return;
     }
@@ -385,20 +423,22 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     let firstToken = "";
     for (let i = 0; i < items.length; i++) {
       const it = items[i];
-      const entry = (SHOP_SKU_PRICES as Record<string, { name: string; pricePence: number }>)[it.sku!];
+      const entry = isUS
+        ? { name: US_SKU_PRICES[it.sku!].name, pricePence: US_SKU_PRICES[it.sku!].priceCents }
+        : (SHOP_SKU_PRICES as Record<string, { name: string; pricePence: number }>)[it.sku!];
       const token = crypto.randomBytes(12).toString("hex");
       await storePhoto(token, it.photoBase64!);
       if (i === 0) firstToken = token;
       else metadata[`item_${i}`] = `${it.sku}|${token}`;
       lineItems.push({
         price_data: {
-          currency: "gbp",
+          currency: isUS ? "usd" : "gbp",
           unit_amount: entry.pricePence,
           product_data: { name: entry.name, metadata: { sku: it.sku! } },
         },
         quantity: 1,
       });
-      if (it.cartoon && !(it.sku || "").startsWith("XSWEAT-")) {
+      if (it.cartoon && !isUS && !(it.sku || "").startsWith("XSWEAT-")) {
         lineItems.push({
           price_data: {
             currency: "gbp",
@@ -413,6 +453,7 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     metadata.sku = items[0].sku!;
     metadata.photo_token = firstToken;
     metadata.cart_count = String(items.length);
+    if (isUS) metadata.region = "us";
 
     // Automatic bundle discount
     const percent = items.length >= 3 ? 12 : items.length === 2 ? 10 : 0;
@@ -438,14 +479,14 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
       line_items: lineItems,
       mode: "payment",
       ...(discounts ? { discounts } : { allow_promotion_codes: true }),
-      shipping_address_collection: { allowed_countries: ["GB"] },
-      shipping_options: ukShippingOptions(items.map((it) => it.sku || "")), // Free UK, plus Express where available
+      shipping_address_collection: { allowed_countries: isUS ? ["US"] : ["GB"] },
+      shipping_options: isUS ? usShippingOptions() : ukShippingOptions(items.map((it) => it.sku || "")), // Free UK, plus Express where available
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl || `${origin}/`,
       metadata,
       custom_text: {
         submit: {
-          message: `Your ${items.length > 1 ? items.length + " gifts are" : "gift is"} made to order in the UK and posted together. Most orders arrive within a week.`,
+          message: isUS ? US_CHECKOUT_NOTE : `Your ${items.length > 1 ? items.length + " gifts are" : "gift is"} made to order in the UK and posted together. Most orders arrive within a week.`,
         },
       },
     });

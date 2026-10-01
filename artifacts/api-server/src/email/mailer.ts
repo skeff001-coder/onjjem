@@ -126,7 +126,8 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
     return;
   }
 
-  const amount = `£${(data.amountPaid / 100).toFixed(2)}`;
+  const isUSD = (data.currency || "").toLowerCase() === "usd";
+  const amount = `${isUSD ? "$" : "£"}${(data.amountPaid / 100).toFixed(2)}`;
   const addrLines = [
     data.shippingAddress.line1,
     data.shippingAddress.line2,
@@ -190,8 +191,8 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
       <p style="font-size:10px;letter-spacing:.18em;color:${MUTED};text-transform:uppercase;margin:0 0 14px">What happens next</p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
         ${[
-          ["🎨", "Your photo is sent to our UK print studio today"],
-          ["📦", "Made to order in 1–3 working days, then 1–3 days in the post"],
+          ["🎨", isUSD ? "Your photo is sent to our US print studio today" : "Your photo is sent to our UK print studio today"],
+          ["📦", isUSD ? "Made to order in 1–3 business days, then shipped free (usually 4–10 business days in total)" : "Made to order in 1–3 working days, then 1–3 days in the post"],
           ["🏠", "Delivered directly to your door"],
         ].map(([icon, text], i) => `
           <tr>
@@ -272,7 +273,8 @@ export async function sendAdminNotification(data: AdminNotificationData): Promis
     return;
   }
 
-  const amount = `£${(data.amountPaid / 100).toFixed(2)}`;
+  const isUSD = (data.currency || "").toLowerCase() === "usd";
+  const amount = `${isUSD ? "$" : "£"}${(data.amountPaid / 100).toFixed(2)}`;
   const addrLines = [
     data.shippingAddress.line1,
     data.shippingAddress.line2,
