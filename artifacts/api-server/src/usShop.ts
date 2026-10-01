@@ -156,6 +156,11 @@ export const US_GARMENTS: Garment[] = [
     sizes: [["S", "s"], ["M", "m"], ["L", "l"], ["XL", "xl"], ["2XL", "2xl"], ["3XL", "3xl"]],
     colours: [["RED", "fire red"], ["GREEN", "kelly green"], ["NAVY", "oxford navy"], ["BLACK", "black"], ["WHITE", "arctic white"], ["ORANGE", "orange"], ["GREY", "heather grey"]],
   },
+  { // Gildan 18000B kids crew sweatshirt — $15–16 + $6.75
+    code: "US-KSWEAT", prodigiSku: "GLOBAL-SWEAT-GIL-18000B", name: "Kids' Christmas Sweatshirt", priceCents: 3299,
+    sizes: [["XS", "xs"], ["S", "s"], ["M", "m"], ["L", "l"], ["XL", "xl"]],
+    colours: [["RED", "red"], ["NAVY", "navy blue"], ["WHITE", "white"], ["BLACK", "black"], ["GREY", "heather grey"]],
+  },
   { // Gildan 18500B kids hoodie — $21 + $6.75
     code: "US-KHOOD", prodigiSku: "GLOBAL-HOOD-GIL-18500B", name: "Kids' Cartoon Hoodie", priceCents: 3999,
     sizes: [["XS", "xs"], ["S", "s"], ["M", "m"], ["L", "l"], ["XL", "xl"]],
