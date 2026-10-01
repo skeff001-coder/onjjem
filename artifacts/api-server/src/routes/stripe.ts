@@ -136,7 +136,7 @@ router.post("/stripe/verify-process", async (req: Request, res: Response) => {
 // costs us less than the £6.99 we charge. Checked against Prodigi GB price
 // lists 2026-10-01: colour-changing mug H-MUG-11OZ-CC, towel H-TOW-PTM.
 export const EXPRESS_PENCE = 699;
-const EXPRESS_OK = new Set(["magic-mug", "baby-reveal-mug", "towel-70"]);
+const EXPRESS_OK = new Set(["magic-mug", "baby-reveal-mug", "towel-70", "mousemat"]);
 const FREE_UK_RATE = "shr_1U88e4LkpMwsJmFN2uGD9IvH";
 function ukShippingOptions(skus: string[]) {
   const opts: any[] = [{ shipping_rate: FREE_UK_RATE }];
