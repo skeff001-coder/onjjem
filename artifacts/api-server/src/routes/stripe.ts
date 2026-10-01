@@ -264,7 +264,8 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       lineItem as any,
     ];
 
-    if (body.addCartoon) {
+    // Christmas sweatshirts include the cartoon for free.
+    if (body.addCartoon && !body.sku.startsWith("XSWEAT-")) {
       lineItems.push({
         price_data: {
           currency: "gbp",
@@ -377,7 +378,7 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
         },
         quantity: 1,
       });
-      if (it.cartoon) {
+      if (it.cartoon && !(it.sku || "").startsWith("XSWEAT-")) {
         lineItems.push({
           price_data: {
             currency: "gbp",
