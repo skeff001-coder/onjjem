@@ -35,6 +35,9 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-MUG-11": { name: "Photo Mug, 11oz White Ceramic", priceCents: 2499 },
   "US-MUG-15": { name: "Photo Mug, 15oz White Ceramic", priceCents: 2799 },
 
+  // Trick-or-treat pillowcase, standard 30x22" — cost $18 + $12.95 shipping
+  "US-PILLOWCASE": { name: "Photo Pillowcase (Standard 30x22\")", priceCents: 3999 },
+
   // Mouse mat 8x10" — cost $8 + $6.45 tracked shipping
   "US-MOUSEMAT": { name: "Photo Mouse Mat (8x10\")", priceCents: 2299 },
 
@@ -66,6 +69,7 @@ export const US_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "US-MUG-15": { sku: "H-MUG-CERAMIC-150Z", sizing: "fillPrintArea" },
 
   "US-MOUSEMAT": { sku: "H-MOUSEMAT", sizing: "fillPrintArea" },
+  "US-PILLOWCASE": { sku: "GLOBAL-PLWCASE-TAUPE-30X22-STD", sizing: "fillPrintArea" },
 
   "US-PADDLE-1": { sku: "PICKLE-SGL", sizing: "fillPrintArea" },
   "US-PADDLE-2": { sku: "PICKLE-SET", sizing: "fillPrintArea" },
