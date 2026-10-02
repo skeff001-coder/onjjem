@@ -127,7 +127,17 @@ router.get("/prodigi-check", (req, res) => {
 <h2>Prodigi check (${region.toUpperCase()}, ${esc((process.env.PRODIGI_ENV || "sandbox").toLowerCase())})</h2>
 <p style="font-size:22px">${bad.length === 0 ? "✅" : "❌"} ${results.length - bad.length} of ${results.length} items OK</p>
 <p>${job.totalProducts} Prodigi products checked, including that each one ships to ${region === "us" ? "the US" : "the UK"}.</p>
-${bad.map((r) => `<p><b>${esc(r.ourSku)}</b> (${esc(r.prodigiSku)} ${esc(JSON.stringify(r.attributes))})<br><small>${esc(r.error)}</small></p>`).join("")}`);
+${(() => {
+  const g = new Map<string, { n: number; err: string; ex: string[] }>();
+  for (const r of bad) {
+    const e = /EntityNotFound|doesn't know/.test(r.error || "") ? "Prodigi doesn't have this product (404)" : String(r.error).slice(0, 90);
+    const x = g.get(r.prodigiSku) ?? { n: 0, err: e, ex: [] };
+    x.n++; if (x.ex.length < 2) x.ex.push(r.ourSku);
+    g.set(r.prodigiSku, x);
+  }
+  return [...g].map(([k, v]) => `<p style="margin:.6em 0"><b>${esc(k)}</b> ×${v.n}<br><small>${esc(v.err)}<br>e.g. ${esc(v.ex.join(", "))}</small></p>`).join("");
+})()}
+`);
 });
 
 export default router;
