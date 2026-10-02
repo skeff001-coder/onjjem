@@ -2,7 +2,7 @@
 // Town names in team colours, with the child's name and number. No club names,
 // crests, nicknames or official fonts (see onjjem_football_spec).
 // Gildan 64000B kids tee, UK lab: £8–9 + £2.25 Budget, +VAT = max £13.50.
-// £17.99 keeps ~£1.90 profit after the 12% bundle discount.
+// Cost £8-9 +20% VAT +£2.25 Budget ship ≈ £12.30-13.50. £15.99 ≈ £2 profit, so bundle-exempt.
 import type { ProdigiProduct } from "./fulfilment/prodigi";
 
 export const FOOTBALL_TOWNS: [code: string, town: string, shirt: string][] = [
@@ -24,7 +24,7 @@ export const FOOTBALL_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {};
 for (const [code, town, shirt] of FOOTBALL_TOWNS) {
   for (const [sz, prodigiSize] of SIZES) {
     const sku = `FTEE-${code}-${sz}`;
-    FOOTBALL_SKU_PRICES[sku] = { name: `Kids' ${town} Football T-Shirt (${prodigiSize}, ${shirt})`, pricePence: 1799 };
+    FOOTBALL_SKU_PRICES[sku] = { name: `Kids' ${town} Football T-Shirt (${prodigiSize}, ${shirt})`, pricePence: 1599 };
     FOOTBALL_PRODIGI_PRODUCTS[sku] = {
       sku: "GLOBAL-TEE-GIL-64000B",
       sizing: "fitPrintArea",
