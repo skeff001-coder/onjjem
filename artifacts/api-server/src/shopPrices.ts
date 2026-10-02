@@ -1,3 +1,4 @@
+import { FOOTBALL_SKU_PRICES } from "./footballShop";
 export const SHOP_SKU_PRICES = {
   // ========================================
   // HOUSEHOLD PRODUCTS (Prodigi)
@@ -309,6 +310,9 @@ export const SHOP_SKU_PRICES = {
   "ONJJEM-XMAS-STOCKING-RED": { name: "Luxury Velvet Red Christmas Stocking", pricePence: 1599 },
   "ONJJEM-XMAS-SACK-RED": { name: "Red Velvet Christmas Sack", pricePence: 1999 },
   "ONJJEM-WIRELESS-CHARGER-WHEAT": { name: "Wheatstraw Wireless Charger", pricePence: 2699 },
+
+  // Kids' town football T-shirts (generated in footballShop.ts)
+  ...FOOTBALL_SKU_PRICES,
 };
 
 // Export total SKU count for reference
