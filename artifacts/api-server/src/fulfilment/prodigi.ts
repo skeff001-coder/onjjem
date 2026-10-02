@@ -166,8 +166,6 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Christmas — genuinely confirmed missing from fulfilment despite being
   // real, live, priced Prodigi products. Would have taken payment and never
   // reached print.
-  "ONJJEM-XMAS-STOCKING-RED": { sku: "ONJJEM-XMAS-STOCKING-RED", sizing: "fillPrintArea", shipping: "Budget" },
-  "ONJJEM-XMAS-SACK-RED": { sku: "ONJJEM-XMAS-SACK-RED", sizing: "fillPrintArea", shipping: "Budget" },
   // ── Kids Cartoon T-Shirt — genuinely confirmed ZERO fulfilment entries
   // existed for any of the 30 real, priced variants.
   // Prodigi SKU is TEE-SS-STTK909 (Stanley/Stella Mini Creator 2.0 STTK184).
@@ -211,7 +209,6 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // The SKU values below are placeholders (same as our own internal SKU) —
   // verify each one against Prodigi's real product page before trusting a
   // live order to it.
-  "ONJJEM-HWB-2L-PLUSH": { sku: "ONJJEM-HWB-2L-PLUSH", sizing: "fillPrintArea", shipping: "Budget" },
   "H-BLA-PBSWHITE": { sku: "H-BLA-PBSWHITE", sizing: "fillPrintArea", shipping: "Budget" },
   "H-BLA-PBMWHITE": { sku: "H-BLA-PBMWHITE", sizing: "fillPrintArea", shipping: "Budget" },
   "H-BLA-PBMPINK": { sku: "H-BLA-PBMPINK", sizing: "fillPrintArea", shipping: "Budget" },

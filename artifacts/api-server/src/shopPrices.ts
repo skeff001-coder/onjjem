@@ -298,18 +298,7 @@ export const SHOP_SKU_PRICES = {
   "giftcard-30": { name: "ONJJEM Gift Card (£30)", pricePence: 3000 },
   "giftcard-50": { name: "ONJJEM Gift Card (£50)", pricePence: 5000 },
 
-  // ========================================
-  // IMPRINTABLE.IO PRODUCTS
-  // (Manual Fulfillment — No Public API)
-  // ========================================
 
-  "ONJJEM-BABY-BIB-WHI": { name: "Velcro Baby Bib (White)", pricePence: 750 },
-  "ONJJEM-BAR-BLADE-ALUM": { name: "Aluminium Blade Bottle Opener", pricePence: 799 },
-  "ONJJEM-WIRELESS-CHARGER": { name: "Personalised Wireless Charger", pricePence: 1799 },
-  "ONJJEM-HWB-2L-PLUSH": { name: "TCQ 2L Hot Water Bottle", pricePence: 1849 },
-  "ONJJEM-XMAS-STOCKING-RED": { name: "Luxury Velvet Red Christmas Stocking", pricePence: 1599 },
-  "ONJJEM-XMAS-SACK-RED": { name: "Red Velvet Christmas Sack", pricePence: 1999 },
-  "ONJJEM-WIRELESS-CHARGER-WHEAT": { name: "Wheatstraw Wireless Charger", pricePence: 2699 },
 
   // Kids' town football T-shirts (generated in footballShop.ts)
   ...FOOTBALL_SKU_PRICES,
