@@ -479,7 +479,6 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "wud-magic-mug":        { sku: "H-MUG-11OZ-CC",           sizing: "fillPrintArea", shipping: "Budget" },
   "wud-bandanna":         { sku: "PET-BANDANA-MED",          sizing: "fillPrintArea", shipping: "Budget" },
   "wud-jigsaw":           { sku: "JIGSAW-PUZZLE-30",         sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" },
-  "wud-invitation-card":  { sku: "CLASSIC-INV",              sizing: "fillPrintArea", shipping: "Budget" },
 };
 
 // US shop products (onjjem.com/us), made and shipped inside the US.
