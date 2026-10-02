@@ -77,6 +77,8 @@ export const SHOP_SKU_PRICES = {
   "xmas-ornament-square": { name: "Personalised Aluminium Tree Ornament (8cm)", pricePence: 1499 },
   // Cost £23.16 inc VAT + free delivery. Minimal profit, so no bundle discount.
   // Light woven tote 42x37cm (H-BAG-LTOTE): £10 + £4.30 Standard, +VAT = £17.16. Minimal profit, no bundle discount.
+  // Canvas tote 36x47cm (H-BAG-CTB): £15 + £3.20 Budget, +VAT = £21.84
+  "tote-canvas": { name: "Personalised Canvas Photo Tote Bag (36x47cm)", pricePence: 2799 },
   "trick-bag": { name: "Personalised Trick-or-Treat Tote Bag (42x37cm)", pricePence: 1999 },
   "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2549 },
 
