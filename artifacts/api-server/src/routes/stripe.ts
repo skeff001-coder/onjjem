@@ -175,6 +175,11 @@ function usShippingOptions() {
 // Switched off for now: consent_collection isn't available on UK Stripe
 // accounts, and recovery needs testing against the live account first.
 const CART_RECOVERY = {};
+// Halloween special (UK): the cartoon is free on the Halloween page's gifts,
+// matching the "the cartoon was FREE" promise in our TikTok videos.
+const HALLOWEEN_FREE_CARTOON = (sku: string) =>
+  sku.startsWith("TEE-STTK184-") ||
+  ["halloween-fridge-pack", "halloween-pocket-pack", "magic-mug", "magnet-fridge-3x2", "wud-sticker-small"].includes(sku);
 const US_CHECKOUT_NOTE = "Made to order in the USA in 1–3 business days, then shipped free. Most orders arrive within 4–10 business days.";
 
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
@@ -188,6 +193,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     confirmedCartoonBase64?: string;
     international?: boolean;
     region?: string;
+    cartoonFree?: boolean;
     recipient?: {
       name?: string;
       line1?: string;
@@ -327,7 +333,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     ];
 
     // Christmas sweatshirts include the cartoon for free.
-    if (body.addCartoon && !isUS && !body.sku.startsWith("XSWEAT-")) {
+    if (body.addCartoon && !isUS && !body.sku.startsWith("XSWEAT-") && !(body.cartoonFree && HALLOWEEN_FREE_CARTOON(body.sku))) {
       lineItems.push({
         price_data: {
           currency: "gbp",
@@ -394,7 +400,7 @@ const BUNDLE_COUPONS: Record<number, string> = { 10: "ONJJEM-BUNDLE-10", 12: "ON
 
 router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
   const body = req.body as {
-    items?: { sku?: string; photoBase64?: string; cartoon?: boolean }[];
+    items?: { sku?: string; photoBase64?: string; cartoon?: boolean; cartoonFree?: boolean }[];
     successUrl?: string;
     cancelUrl?: string;
     region?: string;
@@ -445,7 +451,7 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
         },
         quantity: 1,
       });
-      if (it.cartoon && !isUS && !(it.sku || "").startsWith("XSWEAT-")) {
+      if (it.cartoon && !isUS && !(it.sku || "").startsWith("XSWEAT-") && !(it.cartoonFree && HALLOWEEN_FREE_CARTOON(it.sku || ""))) {
         lineItems.push({
           price_data: {
             currency: "gbp",
