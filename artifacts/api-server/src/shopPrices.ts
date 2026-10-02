@@ -122,7 +122,6 @@ export const SHOP_SKU_PRICES = {
   "ART-FOIL-SIL-20X28": { name: "Metallic Foil Print (50x70cm, Silver)", pricePence: 1599 },
   "ART-FOIL-SIL-A3": { name: "Metallic Foil Print (A3, Silver)", pricePence: 1899 },
   "ART-FOIL-SIL-A2": { name: "Metallic Foil Print (A2, Silver)", pricePence: 2699 },
-  "coaster-4pk": { name: "Custom Wooden Coasters (Set of 4)", pricePence: 1599 },
 
   // Tea Towels
   "tea-towel-poly": { name: "Premium Kitchen Towel (Polyester)", pricePence: 1399 },
@@ -171,7 +170,6 @@ export const SHOP_SKU_PRICES = {
   "ECO-CAN-8X8": { name: "Eco Canvas (8x8)", pricePence: 1499 },
   "ECO-CAN-8X12": { name: "Eco Canvas (8x12)", pricePence: 1799 },
   "ECO-CAN-12X12": { name: "Eco Canvas (12x12)", pricePence: 2199 },
-  "ECO-CAN-12X16": { name: "Eco Canvas (12x16)", pricePence: 2699 },
   "ECO-CAN-16X24": { name: "Eco Canvas (16x24)", pricePence: 4299 },
   "ECO-CAN-20X30": { name: "Eco Canvas (20x30)", pricePence: 5999 },
 
@@ -187,7 +185,6 @@ export const SHOP_SKU_PRICES = {
   "GLOBAL-SLIMCAN-6X6": { name: "Slim Canvas (6x6)", pricePence: 1199 },
   "GLOBAL-SLIMCAN-8X8": { name: "Slim Canvas (8x8)", pricePence: 1599 },
   "GLOBAL-SLIMCAN-12X12": { name: "Slim Canvas (12x12)", pricePence: 2199 },
-  "GLOBAL-SLIMCAN-24X20": { name: "Slim Canvas (24x20)", pricePence: 4199 },
   "GLOBAL-SLIMCAN-30X30": { name: "Slim Canvas (30x30)", pricePence: 5999 },
   "GLOBAL-SLIMCAN-43X87": { name: "Slim Canvas (43x87)", pricePence: 9999 },
 
