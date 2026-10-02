@@ -67,6 +67,12 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   // Woven tote 17x18" — cost $28 + $12.95 shipping. Near cost, so no bundle discount.
   "US-TOTE": { name: "Woven Photo Tote Bag 17x18\"", priceCents: 4599 },
 
+  // Printed wall tapestries (microfiber, hemmed) — cost XS $16+$12.95, S $25+$12.95, M $35+$12.95, L $53+$17.25
+  "US-TAP-XS": { name: "Photo Wall Tapestry, Extra Small 26x36\"", priceCents: 4499 },
+  "US-TAP-S": { name: "Photo Wall Tapestry, Small 51x60\"", priceCents: 5499 },
+  "US-TAP-M": { name: "Photo Wall Tapestry, Medium 68x80\"", priceCents: 6999 },
+  "US-TAP-L": { name: "Photo Wall Tapestry, Large 88x104\"", priceCents: 9999 },
+
   // Golf balls, 6-pack — cost $40 + $14 shipping (+ US sales tax Prodigi may add). Priced near cost to win customers,
   // so they are excluded from the bundle discount (see NO_BUNDLE_DISCOUNT).
   "US-GOLF-6": { name: "Photo Golf Balls (6-pack)", priceCents: 6299 },
@@ -120,6 +126,11 @@ export const US_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   "US-CURTAIN": { sku: "GLOBAL-SHOWER-NOLINER-71X74", sizing: "fillPrintArea" },
   "US-CURTAIN-LINER": { sku: "H-SHOWER-LINER-71X74", sizing: "fillPrintArea" },
+
+  "US-TAP-XS": { sku: "GLOBAL-TAP-XS", sizing: "fillPrintArea" },
+  "US-TAP-S": { sku: "GLOBAL-TAP-S", sizing: "fillPrintArea" },
+  "US-TAP-M": { sku: "GLOBAL-TAP-M", sizing: "fillPrintArea" },
+  "US-TAP-L": { sku: "GLOBAL-TAP-L", sizing: "fillPrintArea" },
 
   "US-GOLF-6": { sku: "GOLF-BALLS-6", sizing: "fillPrintArea" },
   "US-TOTE": { sku: "GLOBAL-TOTE-17X18", sizing: "fillPrintArea" },
