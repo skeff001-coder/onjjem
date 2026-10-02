@@ -75,6 +75,11 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "xmas-sack":            { sku: "XMAS-SACK",      sizing: "fillPrintArea", shipping: "Budget" },
   // Light woven tote, UK lab (Standard only, no Budget service)
   "tote-canvas":          { sku: "H-BAG-CTB",      sizing: "fillPrintArea", shipping: "Budget" },
+  "trick-bag-BLK": { sku: "H-BAG-LTOTE", sizing: "fillPrintArea", attributes: { color: "black" } },
+  "trick-bag-BUR": { sku: "H-BAG-LTOTE", sizing: "fillPrintArea", attributes: { color: "burgundy" } },
+  "trick-bag-ANT": { sku: "H-BAG-LTOTE", sizing: "fillPrintArea", attributes: { color: "anthracite" } },
+  "trick-bag-BLU": { sku: "H-BAG-LTOTE", sizing: "fillPrintArea", attributes: { color: "caribbean blue" } },
+  "trick-bag-PNK": { sku: "H-BAG-LTOTE", sizing: "fillPrintArea", attributes: { color: "cotton pink" } },
   "trick-bag":            { sku: "H-BAG-LTOTE",    sizing: "fillPrintArea", attributes: { color: "black" } },
 
   // ── Cushions & towels (Prodigi, UK) ─────────────────────────────────────

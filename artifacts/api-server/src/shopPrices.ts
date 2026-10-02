@@ -80,6 +80,11 @@ export const SHOP_SKU_PRICES = {
   // Light woven tote 42x37cm (H-BAG-LTOTE): £10 + £4.30 Standard, +VAT = £17.16. Minimal profit, no bundle discount.
   // Canvas tote 36x47cm (H-BAG-CTB): £15 + £3.20 Budget, +VAT = £21.84
   "tote-canvas": { name: "Personalised Canvas Photo Tote Bag (36x47cm)", pricePence: 2799 },
+  "trick-bag-BLK": { name: "Personalised Trick-or-Treat Tote Bag, Black (42x37cm)", pricePence: 1999 },
+  "trick-bag-BUR": { name: "Personalised Trick-or-Treat Tote Bag, Burgundy (42x37cm)", pricePence: 1999 },
+  "trick-bag-ANT": { name: "Personalised Trick-or-Treat Tote Bag, Dark grey (42x37cm)", pricePence: 1999 },
+  "trick-bag-BLU": { name: "Personalised Trick-or-Treat Tote Bag, Caribbean blue (42x37cm)", pricePence: 1999 },
+  "trick-bag-PNK": { name: "Personalised Trick-or-Treat Tote Bag, Pink (42x37cm)", pricePence: 1999 },
   "trick-bag": { name: "Personalised Trick-or-Treat Tote Bag (42x37cm)", pricePence: 1999 },
   "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2549 },
 
