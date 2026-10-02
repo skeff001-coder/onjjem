@@ -64,6 +64,9 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-CURTAIN": { name: "Photo Shower Curtain 71x74\"", priceCents: 7999 },
   "US-CURTAIN-LINER": { name: "Photo Shower Curtain 71x74\" with Liner", priceCents: 8999 },
 
+  // Woven tote 17x18" — cost $28 + $12.95 shipping. Near cost, so no bundle discount.
+  "US-TOTE": { name: "Woven Photo Tote Bag 17x18\"", priceCents: 4599 },
+
   // Golf balls, 6-pack — cost $40 + $14 shipping (+ US sales tax Prodigi may add). Priced near cost to win customers,
   // so they are excluded from the bundle discount (see NO_BUNDLE_DISCOUNT).
   "US-GOLF-6": { name: "Photo Golf Balls (6-pack)", priceCents: 6299 },
@@ -119,6 +122,7 @@ export const US_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "US-CURTAIN-LINER": { sku: "H-SHOWER-LINER-71X74", sizing: "fillPrintArea" },
 
   "US-GOLF-6": { sku: "GOLF-BALLS-6", sizing: "fillPrintArea" },
+  "US-TOTE": { sku: "GLOBAL-TOTE-17X18", sizing: "fillPrintArea" },
 
   "US-PADDLE-1": { sku: "PICKLE-SGL", sizing: "fillPrintArea" },
   "US-PADDLE-2": { sku: "PICKLE-SET", sizing: "fillPrintArea" },
@@ -191,4 +195,4 @@ for (const g of US_GARMENTS) {
 
 // Low-margin products: they count towards the bundle deal, but the discount
 // is only taken off the other gifts in the basket.
-export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF") || sku.startsWith("US-CANDLE") || sku === "xmas-sack" || sku === "trick-bag";
+export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF") || sku.startsWith("US-CANDLE") || sku === "US-TOTE" || sku === "xmas-sack" || sku === "trick-bag";
