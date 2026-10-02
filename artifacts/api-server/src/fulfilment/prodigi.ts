@@ -124,6 +124,8 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "xmas-bauble":          { sku: "XMAS-PLAS-BAUB", sizing: "fillPrintArea", shipping: "Budget" },
   "xmas-ornament-square": { sku: "XMAS-ALUM-SQ",   sizing: "fillPrintArea", shipping: "Budget" },
   "xmas-sack":            { sku: "XMAS-SACK",      sizing: "fillPrintArea", shipping: "Budget" },
+  // Light woven tote, UK lab (Standard only, no Budget service)
+  "trick-bag":            { sku: "H-BAG-LTOTE",    sizing: "fillPrintArea" },
 
   // ── Cushions & towels (Prodigi, UK) ─────────────────────────────────────
   "cushion-12-single": { sku: "GLOBAL-CUSH-12X12-LIN",      sizing: "fillPrintArea", shipping: "Budget" },

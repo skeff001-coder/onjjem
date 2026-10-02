@@ -76,6 +76,8 @@ export const SHOP_SKU_PRICES = {
   "xmas-bauble": { name: "Personalised Photo Bauble (8cm)", pricePence: 1299 },
   "xmas-ornament-square": { name: "Personalised Aluminium Tree Ornament (8cm)", pricePence: 1499 },
   // Cost £23.16 inc VAT + free delivery. Minimal profit, so no bundle discount.
+  // Light woven tote 42x37cm (H-BAG-LTOTE): £10 + £4.30 Standard, +VAT = £17.16. Minimal profit, no bundle discount.
+  "trick-bag": { name: "Personalised Trick-or-Treat Tote Bag (42x37cm)", pricePence: 1999 },
   "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2549 },
 
   // Cushions & towels (Prodigi)

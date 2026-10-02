@@ -179,7 +179,7 @@ const CART_RECOVERY = {};
 // matching the "the cartoon was FREE" promise in our TikTok videos.
 const HALLOWEEN_FREE_CARTOON = (sku: string) =>
   sku.startsWith("TEE-STTK184-") ||
-  ["halloween-fridge-pack", "halloween-pocket-pack", "magic-mug", "magnet-fridge-3x2", "wud-sticker-small"].includes(sku);
+  ["halloween-fridge-pack", "halloween-pocket-pack", "trick-bag", "magic-mug", "magnet-fridge-3x2", "wud-sticker-small"].includes(sku);
 const US_CHECKOUT_NOTE = "Made to order in the USA in 1–3 business days, then shipped free. Most orders arrive within 4–10 business days.";
 
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
