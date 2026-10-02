@@ -88,8 +88,10 @@ const STYLE_EXTRAS: Record<string, string> = {
     "outfit, a friendly vampire cape or cat ears). Replace the background " +
     "with a cosy Halloween night: glowing jack-o'-lanterns, autumn leaves, " +
     "a big orange full moon, a few friendly cartoon bats and warm orange and " +
-    "purple lighting. Keep it cheerful and cute, never scary or gory, " +
-    "suitable for young children.",
+    "purple lighting, all drawn in the same 3D animated style as the " +
+    "characters. Keep it cheerful and cute, never scary or gory, " +
+    "suitable for young children. The theme must not make anyone look " +
+    "less cartoon-like: every face is still a fully animated character.",
   christmas:
     " THEME: Christmas. Dress the subject in a cosy festive outfit (for " +
     "example a Santa hat, an elf hat or a Christmas jumper). Replace the " +
@@ -139,9 +141,15 @@ async function generateCartoon(base64Image: string, mimeType: string, style?: st
           "Keep the subject's pose, clothing colours, and general " +
           "identity recognisable, but the final result must clearly and " +
           "unmistakably read as an animated character on first glance, " +
-          "not a photo with eyes edited. Use a simple, softly blurred " +
-          "background that doesn't distract from the character. Output " +
-          "only the image, no text." +
+          "not a photo with eyes edited. EVERY person and animal in the " +
+          "picture must be redrawn this way, including adults and elderly " +
+          "people: no face may stay photographic or realistic. Older " +
+          "people become warm, friendly animated grandparents with soft " +
+          "rounded features, not realistic wrinkles. The background must " +
+          "be redrawn in the same animated style too, never left as a " +
+          "photo. Remove any watermarks, logos or text from the original. " +
+          "Use a simple, softly blurred background that doesn't distract " +
+          "from the characters. Output only the image, no text." +
           (style && STYLE_EXTRAS[style] ? STYLE_EXTRAS[style] : ""),
       },
     ],
