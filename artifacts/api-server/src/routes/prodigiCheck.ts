@@ -130,7 +130,7 @@ router.get("/prodigi-check", (req, res) => {
 ${(() => {
   const g = new Map<string, { n: number; err: string; ex: string[] }>();
   for (const r of bad) {
-    const e = /EntityNotFound|doesn't know/.test(r.error || "") ? "Prodigi doesn't have this product (404)" : String(r.error).slice(0, 90);
+    const e = /EntityNotFound|doesn't know/.test(r.error || "") ? "Prodigi doesn't have this product (404)" : String(r.error).slice(0, 400);
     const x = g.get(r.prodigiSku) ?? { n: 0, err: e, ex: [] };
     x.n++; if (x.ex.length < 2) x.ex.push(r.ourSku);
     g.set(r.prodigiSku, x);
