@@ -139,7 +139,8 @@ async function generateCartoon(base64Image: string, mimeType: string, style?: st
           "animated proportion, and apply rich, warm, saturated cartoon " +
           "colour grading throughout the whole image, not just the face. " +
           "Keep the subject's pose, clothing colours, and general " +
-          "identity recognisable, but the final result must clearly and " +
+          "identity recognisable (for pets, keep the exact fur colours and " +
+          "markings: never change a grey or white animal into a ginger one), but the final result must clearly and " +
           "unmistakably read as an animated character on first glance, " +
           "not a photo with eyes edited. EVERY person and animal in the " +
           "picture must be redrawn this way, including adults and elderly " +
