@@ -293,6 +293,12 @@ export const SHOP_SKU_PRICES = {
   // Socks
 
   // ========================================
+  // WALL TAPESTRIES (Prodigi GLOBAL-TAP-*, microfiber, hemmed)
+  "tapestry-xs": { name: "Photo Wall Tapestry, Extra Small (26x36\")", pricePence: 3999 },
+  "tapestry-s": { name: "Photo Wall Tapestry, Small (51x60\")", pricePence: 4999 },
+  "tapestry-m": { name: "Photo Wall Tapestry, Medium (68x80\")", pricePence: 6499 },
+  "tapestry-l": { name: "Photo Wall Tapestry, Large (88x104\")", pricePence: 8999 },
+
   // GIFT CARDS
   // ========================================
 
