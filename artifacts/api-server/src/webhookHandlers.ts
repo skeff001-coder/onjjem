@@ -1,6 +1,6 @@
 import { getUncachableStripeClient } from "./stripeClient";
 import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
-import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail, sendApronLoyaltyEmail, sendCartRecovery } from "./email/mailer";
+import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail, sendApronLoyaltyEmail, sendTapestryCreditEmail, sendCartRecovery } from "./email/mailer";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
@@ -92,6 +92,34 @@ async function sendApronLoyaltyDiscount(sessionId: string, email: string): Promi
   }
 }
 
+// Tapestry buyers get a real one-time Stripe gift code: $5 on the two small
+// sizes, $10 on the two large ones. Minimum order $25 so it can't cover a whole cheap item.
+async function sendTapestryCredit(sessionId: string, sku: string, email: string): Promise<void> {
+  try {
+    const dollars = sku === "US-TAP-M" || sku === "US-TAP-L" ? 10 : 5;
+    const stripe = await getUncachableStripeClient();
+    const coupon = await stripe.coupons.create({
+      amount_off: dollars * 100,
+      currency: "usd",
+      duration: "once",
+      max_redemptions: 1,
+      name: `Tapestry thank-you gift card ($${dollars})`,
+    });
+    const code = "TAP" + dollars + "-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    await stripe.promotionCodes.create({
+      coupon: coupon.id,
+      code,
+      max_redemptions: 1,
+      expires_at: Math.floor(Date.now() / 1000) + 180 * 24 * 3600,
+      restrictions: { minimum_amount: 2500, minimum_amount_currency: "usd" },
+    });
+    await sendTapestryCreditEmail({ email, code, dollars });
+    logger.info({ sessionId, email, code }, "Tapestry credit code generated and sent");
+  } catch (err) {
+    logger.error({ err, sessionId }, "Tapestry credit generation failed");
+  }
+}
+
 async function handleGiftCardPurchase(sessionId: string, sku: string, email: string): Promise<void> {
   if (!email) {
     logger.warn({ sessionId }, "Gift card purchase has no email — cannot deliver code");
@@ -172,6 +200,12 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   if ((earlySku === "H-APR-CA-WTIE" || earlySku === "H-APR-AA-BTIE") && email) {
     void sendApronLoyaltyDiscount(sessionId, email).catch((err) => {
       logger.error({ err, sessionId }, "Apron loyalty discount generation failed");
+    });
+  }
+
+  if (earlySku.startsWith("US-TAP-") && email) {
+    void sendTapestryCredit(sessionId, earlySku, email).catch((err) => {
+      logger.error({ err, sessionId }, "Tapestry credit generation failed");
     });
   }
 

@@ -665,6 +665,46 @@ export async function sendApronLoyaltyEmail(data: ApronLoyaltyEmailData): Promis
 
   logger.info({ to: data.email }, "Apron loyalty email sent");
 }
+// ── Tapestry thank-you credit delivery ──────────────────────────────────────
+
+export async function sendTapestryCreditEmail(data: { email: string; code: string; dollars: number }): Promise<void> {
+  const resend = getResend();
+  if (!resend) {
+    logger.warn("RESEND_API_KEY not set — skipping tapestry credit email");
+    return;
+  }
+
+  const body = `
+    <tr><td style="height:4px;background:linear-gradient(90deg,${GOLD},#F0C040,${GOLD})"></td></tr>
+    <tr><td style="padding:40px 40px 32px">
+      <h1 style="font-size:26px;color:#FAF7F2;margin:0 0 8px;font-weight:700">Thank you for your tapestry order! 🏔️</h1>
+      <p style="font-size:15px;color:${MUTED};margin:0 0 28px;line-height:1.6">
+        Here's a free $${data.dollars} gift card to spend on anything else at ONJJEM, as a thank you.
+      </p>
+      <div style="background:${SURFACE};border:1px dashed ${GOLD};border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">
+        <p style="font-size:13px;color:${MUTED};margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Your Gift Card</p>
+        <p style="font-size:32px;color:${GOLD};margin:0 0 16px;font-weight:800">$${data.dollars} Off</p>
+        <p style="font-size:13px;color:${MUTED};margin:0 0 6px">Redemption Code</p>
+        <p style="font-size:22px;color:#FAF7F2;margin:0;font-weight:800;letter-spacing:2px;font-family:monospace">${data.code}</p>
+      </div>
+      <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
+        Enter the code in the promo code box at checkout on
+        <a href="https://onjjem.com/us/" style="color:${GOLD}">onjjem.com</a>. It works once, on any order of $25 or more, and is valid for 6 months.
+      </p>
+    </td></tr>
+  `;
+
+  const { error } = await resend.emails.send({
+    from: FROM(),
+    to: data.email,
+    subject: `🎁 Your free $${data.dollars} ONJJEM gift card`,
+    html: baseTemplate(`Your free $${data.dollars} gift card, a thank-you for your tapestry order.`, body),
+  });
+  if (error) throw new Error(error.message);
+
+  logger.info({ to: data.email }, "Tapestry credit email sent");
+}
+
 // ── "Finish your order" email (abandoned checkout) ───────────────────────────
 // Sent once, about 2 hours after someone leaves the Stripe payment page.
 export async function sendCartRecovery(data: {
