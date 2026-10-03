@@ -354,6 +354,15 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       line_items: lineItems,
       mode: "payment",
       allow_promotion_codes: true,
+      ...(isUS && body.sku.startsWith("US-TAP-")
+        ? {
+            custom_text: {
+              submit: {
+                message: `🎁 Free gift card included! We'll email you a $${body.sku === "US-TAP-M" || body.sku === "US-TAP-L" ? 10 : 5} gift code after your order.`,
+              },
+            },
+          }
+        : {}),
       ...CART_RECOVERY,
       shipping_address_collection: {
         allowed_countries: isUS ? ["US"] : body.international
