@@ -224,6 +224,16 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "black" } },
   "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "black" } },
 
+  // ── Greeting cards (folded, sent to the customer with a blank envelope) ────
+  // Prodigi's flat sheet is 4 portrait panels in a row with ~30px bleed at each
+  // end of each half: [outer rear | OUTER FRONT] cut [inner front | inner back].
+  // The photo fills the outer-front panel (2nd quarter); everything else is white.
+  // Sizes from GET /v4.0/products/{sku} (printAreaSizes.default), 8 Oct 2026.
+  "card-7x5": { sku: "GLOBAL-GRE-MOH-7X5-BLA", sizing: "fillPrintArea", shipping: "Budget",
+    cardLayout: { width: 6118, height: 2161, front: { left: 1530, top: 0, width: 1529, height: 2161 } } },
+  "card-giant-a4": { sku: "GLOBAL-GRE-MOH-A4-BLA", sizing: "fillPrintArea", shipping: "Budget",
+    cardLayout: { width: 10039, height: 3566, front: { left: 2510, top: 0, width: 2510, height: 3566 } } },
+
   // ── Playing Cards ───────────────────────────────────────────────────────────
   "playing-cards": { sku: "PLAY-CARD", sizing: "fillPrintArea", shipping: "Budget" },
 

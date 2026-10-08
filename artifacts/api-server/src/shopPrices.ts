@@ -268,6 +268,10 @@ export const SHOP_SKU_PRICES = {
   "jigsaw-500": { name: "Cartoon Jigsaw Puzzle (500 pieces)", pricePence: 2899 },
   "jigsaw-1000": { name: "Cartoon Jigsaw Puzzle (1000 pieces)", pricePence: 3399 },
 
+  // Greeting cards
+  "card-7x5": { name: "Photo Greeting Card (7x5)", pricePence: 599 },
+  "card-giant-a4": { name: "GIANT Photo Greeting Card (A4)", pricePence: 999 },
+
   // Playing Cards
   "playing-cards": { name: "Cartoon Playing Cards (Deck)", pricePence: 1599 },
 
