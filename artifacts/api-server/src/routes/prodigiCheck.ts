@@ -141,3 +141,22 @@ ${(() => {
 });
 
 export default router;
+
+// Read-only: the exact print areas and sizes Prodigi expects for one product.
+// Open /api/prodigi-spec?sku=GLOBAL-GRE-MOH-7X5-BLA  (nothing is ordered).
+router.get("/prodigi-spec", async (req, res) => {
+  const apiKey = process.env.PRODIGI_API_KEY;
+  const sku = String(req.query.sku || "").trim();
+  if (!apiKey) { res.status(500).send("No Prodigi key set"); return; }
+  if (!/^[A-Z0-9-]{3,60}$/i.test(sku)) { res.status(400).send("Add ?sku=PRODIGI-SKU"); return; }
+  const r = await getProduct(apiKey, sku);
+  const p = r.body?.product ?? {};
+  const v = (p.variants ?? [])[0] ?? {};
+  const summary = {
+    sku, status: r.status, description: p.description,
+    printAreas: v.printAreaSizes ?? p.printAreas ?? null,
+    attributes: p.attributes ?? null,
+    variantAttributes: v.attributes ?? null,
+  };
+  res.type("text/plain").send(JSON.stringify(summary, null, 2) + "\n\n--- full ---\n" + r.raw.slice(0, 6000));
+});
