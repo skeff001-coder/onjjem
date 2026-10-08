@@ -508,6 +508,7 @@ export interface CartoonImageData {
   productName: string;
   cartoonBase64: string;
   cartoonMimeType: string;
+  extraCartoons?: string[];
 }
 
 export async function sendCartoonImage(data: CartoonImageData): Promise<void> {
@@ -529,9 +530,9 @@ export async function sendCartoonImage(data: CartoonImageData): Promise<void> {
         </td></tr>
       </table>
 
-      <h1 style="font-size:26px;color:#FAF7F2;margin:0 0 8px;font-weight:700">Your Bespoke Cartoon Artwork</h1>
+      <h1 style="font-size:26px;color:#FAF7F2;margin:0 0 8px;font-weight:700">🎁 Your free gift: your cartoon</h1>
       <p style="font-size:15px;color:${MUTED};margin:0 0 28px;line-height:1.6">
-        Hi ${data.customerName.split(" ")[0]}, here's your one-of-a-kind cartoon illustration — created especially for your ${data.productName}. It's attached to this email for you to keep.
+        Hi ${data.customerName.split(" ")[0]}, thank you for your order! As a little thank-you, here's your one-of-a-kind cartoon as a digital file — it's attached to this email to keep. Save it to your phone and use it as a wallpaper or profile picture.
       </p>
 
       <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
@@ -550,7 +551,7 @@ export async function sendCartoonImage(data: CartoonImageData): Promise<void> {
   const { error } = await resend.emails.send({
     from: FROM(),
     to: data.customerEmail,
-    subject: `✨ Your Bespoke Cartoon Artwork is here!`,
+    subject: `🎁 Your free gift: your cartoon to keep`,
     html: baseTemplate(
       `Your one-of-a-kind cartoon illustration is attached.`,
       body,
@@ -560,6 +561,7 @@ export async function sendCartoonImage(data: CartoonImageData): Promise<void> {
         filename: `onjjem-cartoon.${ext}`,
         content: data.cartoonBase64,
       },
+      ...(data.extraCartoons ?? []).map((c, i) => ({ filename: `onjjem-cartoon-${i + 2}.${ext}`, content: c })),
     ],
   });
   if (error) throw new Error(error.message);

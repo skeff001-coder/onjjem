@@ -474,6 +474,9 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
 
     metadata.sku = items[0].sku!;
     metadata.photo_token = firstToken;
+    // Which basket gifts are cartoons, so the buyer gets their free digital copy.
+    const cartoonIdx = items.map((it, i) => (it.cartoon ? String(i) : "")).filter(Boolean);
+    if (cartoonIdx.length) metadata.cartoon_items = cartoonIdx.join(",");
     metadata.cart_count = String(items.length);
     if (isUS) metadata.region = "us";
 

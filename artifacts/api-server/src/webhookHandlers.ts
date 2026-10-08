@@ -327,6 +327,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   // Basket orders: collect the other gifts and their pictures
   const extraItems: { sku: string; photoBase64: string }[] = [];
   const cartCount = parseInt(meta?.["cart_count"] ?? "1", 10) || 1;
+  const extraIndex: number[] = [];
   for (let i = 1; i < cartCount; i++) {
     const entry = meta?.[`item_${i}`];
     if (!entry) continue;
@@ -337,6 +338,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
       continue;
     }
     extraItems.push({ sku: itemSku, photoBase64: await applyExifRotation(itemPhoto) });
+    extraIndex.push(i);
   }
   if (cartCount > 1) {
     productName = `${cartCount} gifts (basket order)`;
@@ -364,6 +366,13 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   const bolOrderId = await getBolOrderId(sessionId);
   const fulfilmentStatus = bolOrderId ? "auto" : "queued";
 
+  // Free gift: every cartoon in the order goes to the buyer as a digital file.
+  const cartoonSet = new Set(String(meta?.["cartoon_items"] ?? "").split(",").filter(Boolean).map(Number));
+  if (meta?.["cartoon_addon"] === "true") cartoonSet.add(0);
+  const cartoonFiles: string[] = [];
+  if (cartoonSet.has(0) && photoBase64) cartoonFiles.push(photoBase64);
+  extraItems.forEach((it, k) => { if (cartoonSet.has(extraIndex[k])) cartoonFiles.push(it.photoBase64); });
+
   await Promise.allSettled([
     sendOrderConfirmation({
       customerName,
@@ -389,14 +398,15 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
       bonusCard,
       recipientMessage,
     }),
-    ...(meta?.["cartoon_addon"] === "true" && photoBase64
+    ...(cartoonFiles.length
       ? [
           sendCartoonImage({
             customerName,
             customerEmail: email,
             productName,
-            cartoonBase64: photoBase64,
+            cartoonBase64: cartoonFiles[0],
             cartoonMimeType: "image/png",
+            extraCartoons: cartoonFiles.slice(1),
           }),
         ]
       : []),
