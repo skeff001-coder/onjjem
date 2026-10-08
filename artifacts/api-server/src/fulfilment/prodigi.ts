@@ -19,6 +19,7 @@
  * All SKUs validated against the LIVE Prodigi API on 2026-06-01.
  */
 import { db } from "@workspace/db";
+import sharp from "sharp";
 import { sql } from "drizzle-orm";
 import { logger } from "../lib/logger";
 import { ObjectStorageService } from "../lib/objectStorage";
@@ -41,6 +42,9 @@ export interface ProdigiProduct {
   printAreas?: string[]; // defaults to ["default"]; jigsaws need ["jigsaw","lid"]
   bundle?: string[];     // extra website SKUs printed with the same photo in the same order
   shipping?: "Budget";   // cheaper Prodigi service for this product (used when every item in the order allows it)
+  // Folded greeting cards: Prodigi prints one flat sheet. Our photo goes only
+  // in the front panel; the rest of the sheet stays white. Sizes in pixels.
+  cardLayout?: { width: number; height: number; front: { left: number; top: number; width: number; height: number } };
 }
 
 export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
@@ -571,6 +575,20 @@ async function photoToPublicUrl(photoBase64: string): Promise<string> {
   return storage.uploadBufferAndGetSignedUrl(buffer, { contentType });
 }
 
+// Greeting cards: put the customer's picture on the front panel of the flat sheet.
+async function cardArtwork(product: ProdigiProduct, photoBase64: string): Promise<string> {
+  const L = product.cardLayout;
+  if (!L) return photoBase64;
+  const m = photoBase64.match(/^data:[^;]+;base64,(.+)$/);
+  const input = Buffer.from(m ? m[1] : photoBase64, "base64");
+  const front = await sharp(input).rotate().resize(L.front.width, L.front.height, { fit: "cover" }).toBuffer();
+  const sheet = await sharp({ create: { width: L.width, height: L.height, channels: 3, background: "#ffffff" } })
+    .composite([{ input: front, left: L.front.left, top: L.front.top }])
+    .jpeg({ quality: 95 })
+    .toBuffer();
+  return "data:image/jpeg;base64," + sheet.toString("base64");
+}
+
 // Use Budget delivery only when every product in the parcel allows it.
 function orderShippingMethod(order: FulfilmentOrder): string {
   if (order.express) return "Express";
@@ -593,7 +611,8 @@ async function submitToProdigi(
     );
   }
 
-  const imageUrl = await photoToPublicUrl(order.photoBase64);
+  const rawUrl = await photoToPublicUrl(order.photoBase64);
+  const imageUrl = product.cardLayout ? await photoToPublicUrl(await cardArtwork(product, order.photoBase64)) : rawUrl;
 
   // Build assets array — most products use a single "default" print area;
   // jigsaws (and any future multi-area products) need one entry per area.
@@ -638,7 +657,7 @@ async function submitToProdigi(
     if (!extraProduct) {
       throw new Error(`Basket item "${extraItem.sku}" is not mapped for Prodigi.`);
     }
-    const extraUrl = await photoToPublicUrl(extraItem.photoBase64);
+    const extraUrl = await photoToPublicUrl(await cardArtwork(extraProduct, extraItem.photoBase64));
     const extraAreas = extraProduct.printAreas ?? ["default"];
     items.push({
       sku: extraProduct.sku,
@@ -658,7 +677,7 @@ async function submitToProdigi(
         sku: cardProduct.sku,
         copies: 1,
         sizing: cardProduct.sizing ?? "fillPrintArea",
-        assets,
+        assets: (cardProduct.printAreas ?? ["default"]).map((area) => ({ printArea: area, url: rawUrl })),
       });
     }
   }
