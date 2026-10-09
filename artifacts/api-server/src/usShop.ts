@@ -16,8 +16,8 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-BLANKET-L": { name: "Photo Fleece Blanket, Large 60x80\"", priceCents: 8999 },
 
   // Photo candles — cost $28 + $6.45 shipping (+ US sales tax Prodigi may add). Priced near cost, so no bundle discount on these.
-  "US-CANDLE-OCEAN": { name: "Photo Candle, Ocean Mist & Moss (11oz)", priceCents: 4199 },
-  "US-CANDLE-FIG": { name: "Photo Candle, White Tea & Fig (11oz)", priceCents: 4199 },
+  "US-CANDLE-OCEAN": { name: "Photo Candle, Ocean Mist & Moss (11oz)", priceCents: 4399 },
+  "US-CANDLE-FIG": { name: "Photo Candle, White Tea & Fig (11oz)", priceCents: 4399 },
 
   // Wall clock — cost $22 + $6.45 shipping
   "US-CLOCK-BLACK": { name: "Photo Wall Clock 10\", Black Frame", priceCents: 4499 },
@@ -65,7 +65,7 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-CURTAIN-LINER": { name: "Photo Shower Curtain 71x74\" with Liner", priceCents: 8999 },
 
   // Woven tote 17x18" — cost $28 + $12.95 shipping. Near cost, so no bundle discount.
-  "US-TOTE": { name: "Woven Photo Tote Bag 17x18\"", priceCents: 4599 },
+  "US-TOTE": { name: "Woven Photo Tote Bag 17x18\"", priceCents: 5099 },
 
   // Printed wall tapestries (microfiber, hemmed) — cost XS $16+$12.95, S $25+$12.95, M $35+$12.95, L $53+$17.25
   "US-TAP-XS": { name: "Photo Wall Tapestry, Extra Small 26x36\"", priceCents: 4499 },
@@ -75,7 +75,7 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
 
   // Golf balls, 6-pack — cost $40 + $14 shipping (+ US sales tax Prodigi may add). Priced near cost to win customers,
   // so they are excluded from the bundle discount (see NO_BUNDLE_DISCOUNT).
-  "US-GOLF-6": { name: "Photo Golf Balls (6-pack)", priceCents: 6299 },
+  "US-GOLF-6": { name: "Photo Golf Balls (6-pack)", priceCents: 6599 },
 
   // Pickleball paddles — cost $20 / $40 + $14 shipping
   "US-PADDLE-1": { name: "Photo Pickleball Paddle", priceCents: 4999 },

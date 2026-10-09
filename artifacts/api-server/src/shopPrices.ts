@@ -80,12 +80,12 @@ export const SHOP_SKU_PRICES = {
   // Light woven tote 42x37cm (H-BAG-LTOTE): £10 + £4.30 Standard, +VAT = £17.16. Minimal profit, no bundle discount.
   // Canvas tote 36x47cm (H-BAG-CTB): £15 + £3.20 Budget, +VAT = £21.84
   "tote-canvas": { name: "Personalised Canvas Photo Tote Bag (36x47cm)", pricePence: 2799 },
-  "trick-bag-BLK": { name: "Personalised Trick-or-Treat Tote Bag, Black (42x37cm)", pricePence: 1999 },
-  "trick-bag-BUR": { name: "Personalised Trick-or-Treat Tote Bag, Burgundy (42x37cm)", pricePence: 1999 },
-  "trick-bag-ANT": { name: "Personalised Trick-or-Treat Tote Bag, Dark grey (42x37cm)", pricePence: 1999 },
-  "trick-bag-BLU": { name: "Personalised Trick-or-Treat Tote Bag, Caribbean blue (42x37cm)", pricePence: 1999 },
-  "trick-bag-PNK": { name: "Personalised Trick-or-Treat Tote Bag, Pink (42x37cm)", pricePence: 1999 },
-  "trick-bag": { name: "Personalised Trick-or-Treat Tote Bag (42x37cm)", pricePence: 1999 },
+  "trick-bag-BLK": { name: "Personalised Trick-or-Treat Tote Bag, Black (42x37cm)", pricePence: 2199 },
+  "trick-bag-BUR": { name: "Personalised Trick-or-Treat Tote Bag, Burgundy (42x37cm)", pricePence: 2199 },
+  "trick-bag-ANT": { name: "Personalised Trick-or-Treat Tote Bag, Dark grey (42x37cm)", pricePence: 2199 },
+  "trick-bag-BLU": { name: "Personalised Trick-or-Treat Tote Bag, Caribbean blue (42x37cm)", pricePence: 2199 },
+  "trick-bag-PNK": { name: "Personalised Trick-or-Treat Tote Bag, Pink (42x37cm)", pricePence: 2199 },
+  "trick-bag": { name: "Personalised Trick-or-Treat Tote Bag (42x37cm)", pricePence: 2199 },
   "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2549 },
 
   // Cushions & towels (Prodigi)
@@ -145,9 +145,9 @@ export const SHOP_SKU_PRICES = {
   "H-BLA-PBSWHITE": { name: "Custom Photo Fleece Blanket (Small 28x28\", White Backing)", pricePence: 4799 },
   "H-BLA-PBMPINK": { name: "Custom Photo Fleece Blanket (Medium 26x40\", Pastel Pink Backing)", pricePence: 5099 },
   "H-BLA-PBMWHITE": { name: "Custom Photo Fleece Blanket (Medium 26x40\", White Backing)", pricePence: 5099 },
-  "H-BLA-PBLWHITE": { name: "Custom Photo Fleece Blanket (Large 40x60\", White Backing)", pricePence: 5899 },
-  "H-BLA-PBLPINK": { name: "Custom Photo Fleece Blanket (Large 40x60\", Pastel Pink Backing)", pricePence: 5899 },
-  "H-BLA-MINK-LARGE": { name: "Custom Photo Fleece Blanket (Giant 150x127cm, White Reverse)", pricePence: 8199 },
+  "H-BLA-PBLWHITE": { name: "Custom Photo Fleece Blanket (Large 40x60\", White Backing)", pricePence: 5999 },
+  "H-BLA-PBLPINK": { name: "Custom Photo Fleece Blanket (Large 40x60\", Pastel Pink Backing)", pricePence: 5999 },
+  "H-BLA-MINK-LARGE": { name: "Custom Photo Fleece Blanket (Giant 150x127cm, White Reverse)", pricePence: 8599 },
 
   // ========================================
   // PRINTS (Prodigi)
@@ -288,7 +288,7 @@ export const SHOP_SKU_PRICES = {
   "PATCH-SQUARE": { name: "Custom Photo Patch (Square)", pricePence: 899 },
 
   // Temporary Tattoos
-  "tattoo-s": { name: "Temporary Photo Tattoo (Small)", pricePence: 699 },
+  "tattoo-s": { name: "Temporary Photo Tattoo (Small)", pricePence: 799 },
   "tattoo-m": { name: "Temporary Photo Tattoo (Medium)", pricePence: 849 },
   "tattoo-l": { name: "Temporary Photo Tattoo (Large)", pricePence: 949 },
   "tattoo-xl": { name: "Temporary Photo Tattoo (XL)", pricePence: 1199 },
