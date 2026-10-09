@@ -127,6 +127,8 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
   }
 
   const amountBySku: Record<string, number> = {
+    "giftcard-5": 500,
+    "giftcard-10": 1000,
     "giftcard-20": 2000,
     "giftcard-30": 3000,
     "giftcard-50": 5000,
