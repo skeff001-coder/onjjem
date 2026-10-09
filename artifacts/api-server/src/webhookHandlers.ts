@@ -132,6 +132,8 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
     "giftcard-20": 2000,
     "giftcard-30": 3000,
     "giftcard-50": 5000,
+    "giftcard-75": 7500,
+    "giftcard-100": 10000,
   };
   const amountPence = amountBySku[sku];
   if (!amountPence) {

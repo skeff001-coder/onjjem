@@ -305,6 +305,8 @@ export const SHOP_SKU_PRICES = {
   "giftcard-20": { name: "ONJJEM Gift Card (£20)", pricePence: 2000 },
   "giftcard-30": { name: "ONJJEM Gift Card (£30)", pricePence: 3000 },
   "giftcard-50": { name: "ONJJEM Gift Card (£50)", pricePence: 5000 },
+  "giftcard-75": { name: "ONJJEM Gift Card (£75)", pricePence: 7500 },
+  "giftcard-100": { name: "ONJJEM Gift Card (£100)", pricePence: 10000 },
 
 
 
