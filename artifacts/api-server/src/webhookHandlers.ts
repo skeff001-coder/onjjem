@@ -270,7 +270,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   const paymentIntent = session["payment_intent"];
   const amountPaid = (session["amount_total"] as number | undefined) ?? 0;
   const currency = (session["currency"] as string | undefined) ?? "gbp";
-  const bonusCard = currency.toLowerCase() === "gbp" && amountPaid >= 5000;
+  const bonusCard = false; // free playing cards bonus switched off 9 Oct 2026
 
   const customerName =
     (shippingDetails?.["name"] as string | undefined) ??

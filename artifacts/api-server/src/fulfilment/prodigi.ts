@@ -679,7 +679,7 @@ async function submitToProdigi(
   }
 
   // ── Bonus: free playing cards on orders ≥ £50 ───────────────────────────
-  const bonusCard = (order.currency || "gbp").toLowerCase() === "gbp" && order.amountPaid >= 5000;
+  const bonusCard = false; // free playing cards bonus switched off 9 Oct 2026
   if (bonusCard) {
     const cardProduct = PRODIGI_PRODUCTS["playing-cards"];
     if (cardProduct) {
@@ -747,7 +747,7 @@ async function submitToProdigi(
 // ── Queue + status helpers ────────────────────────────────────────────────────
 
 async function queueOrder(order: FulfilmentOrder): Promise<void> {
-  const bonusCard = (order.currency || "gbp").toLowerCase() === "gbp" && order.amountPaid >= 5000; // free playing cards on orders ≥ £50
+  const bonusCard = false; // free playing cards bonus switched off 9 Oct 2026 // free playing cards on orders ≥ £50
   await db.execute(sql`
     INSERT INTO fulfilment_queue
       (stripe_session, sku, customer_email, shipping_json, amount_paid, currency, bonus_card, status)
@@ -811,7 +811,7 @@ export async function fulfilOrder(order: FulfilmentOrder): Promise<void> {
   }
 
   try {
-    const bonusCard = (order.currency || "gbp").toLowerCase() === "gbp" && order.amountPaid >= 5000;
+    const bonusCard = false; // free playing cards bonus switched off 9 Oct 2026
     logger.info(
       {
         stripeSession: order.stripeSessionId,
