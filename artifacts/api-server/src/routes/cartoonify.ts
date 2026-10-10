@@ -119,13 +119,18 @@ function cachePreview(result: { base64Image: string; mimeType: string }): string
 
 async function generateCartoon(base64Image: string, mimeType: string, style?: string) {
   const ai = getAI();
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash-image",
+  // Nano Banana 2 follows instructions (glasses, facial hair, age) better.
+  // If it fails for any reason, fall back to the older model so previews never break.
+  const request = (model: string) => ai.models.generateContent({
+    model,
     contents: [
       { inlineData: { mimeType, data: base64Image } },
       {
         text:
           "Turn the person or pet in this photo into a highly stylised 3D " +
+          "animated-film caricature. It must clearly look like an animated " +
+          "movie character on first glance, never a photo with edits. " +
+          "Make a highly stylised 3D " +
           "caricature of the same person or pet, with expressive features and " +
           "playful exaggeration: a slightly larger head, bigger expressive " +
           "eyes, a warm characterful smile. Rendered in a smooth, polished " +
@@ -146,6 +151,12 @@ async function generateCartoon(base64Image: string, mimeType: string, style?: st
       responseModalities: ["IMAGE"],
     },
   });
+  let response;
+  try {
+    response = await request(process.env.CARTOON_MODEL || "gemini-3.1-flash-image");
+  } catch (err) {
+    response = await request("gemini-2.5-flash-image");
+  }
 
   const parts = response.candidates?.[0]?.content?.parts ?? [];
   const imagePart = parts.find((p: any) => p.inlineData);
