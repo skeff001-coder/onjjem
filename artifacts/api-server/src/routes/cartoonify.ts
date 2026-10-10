@@ -88,7 +88,7 @@ const STYLE_EXTRAS: Record<string, string> = {
     "outfit, a friendly vampire cape or cat ears). Replace the background " +
     "with a cosy Halloween night: glowing jack-o'-lanterns, autumn leaves, " +
     "a big orange full moon, a few friendly cartoon bats and warm orange and " +
-    "purple lighting, all drawn in the same 3D animated style as the " +
+    "purple lighting, all drawn in the same cartoon style as the " +
     "characters. Keep it cheerful and cute, never scary or gory, " +
     "suitable for young children. The theme must not make anyone look " +
     "less cartoon-like: every face is still a fully animated character.",
@@ -125,32 +125,26 @@ async function generateCartoon(base64Image: string, mimeType: string, style?: st
       { inlineData: { mimeType, data: base64Image } },
       {
         text:
-          "Completely redraw this photo from scratch as a professional 3D " +
-          "animated character illustration, in the polished style of a " +
-          "modern Pixar or DreamWorks film. This must NOT look like the " +
-          "original photo with a filter or minor edits applied — it must " +
-          "look like a genuine, hand-crafted animated character. " +
-          "Specifically: smooth and simplify the skin/fur texture into " +
-          "clean animated shading with soft gradients (no visible pores, " +
-          "wrinkles, or photographic texture), simplify and stylise the " +
-          "hair into clumped, sculpted animated strands, gently enlarge " +
-          "and stylise the eyes with glossy animated highlights, soften " +
-          "and round the nose and other facial features into a friendly " +
-          "animated proportion, and apply rich, warm, saturated cartoon " +
-          "colour grading throughout the whole image, not just the face. " +
-          "Keep the subject's pose, clothing colours, and general " +
-          "identity recognisable (for pets, keep the exact fur colours and " +
-          "markings: never change a grey or white animal into a ginger one), but the final result must clearly and " +
-          "unmistakably read as an animated character on first glance, " +
-          "not a photo with eyes edited. EVERY person and animal in the " +
-          "picture must be redrawn this way, including adults and elderly " +
-          "people: no face may stay photographic or realistic. Older " +
-          "people become warm, friendly animated grandparents with soft " +
-          "rounded features, not realistic wrinkles. The background must " +
-          "be redrawn in the same animated style too, never left as a " +
-          "photo. Remove any watermarks, logos or text from the original. " +
-          "Use a simple, softly blurred background that doesn't distract " +
-          "from the characters. Output only the image, no text." +
+          "Redraw this photo as a bold, fun, classic hand-drawn 2D cartoon, " +
+          "like a frame from a cheerful Saturday-morning cartoon show. It must " +
+          "look DRAWN, never like the original photo with a filter or edited " +
+          "eyes. Use thick, clean black outlines, flat bright colours with " +
+          "simple cel shading, and no photographic texture anywhere. " +
+          "EXAGGERATE like a real cartoonist: make heads noticeably bigger, " +
+          "eyes big, round and expressive with white highlights, smiles wide " +
+          "and full of personality, noses and features simplified into fun " +
+          "rounded shapes, and give everyone a lively, playful expression " +
+          "and a slightly bouncy, animated pose. Ornaments, figurines, " +
+          "statues and toys become living cartoon characters, not ceramic " +
+          "or plastic. Keep it recognisable: the same number of people and " +
+          "animals, their clothing colours, hair colour and key features " +
+          "(for pets, keep the exact fur colours and markings: never change a " +
+          "grey or white animal into a ginger one). Every face, including " +
+          "adults and elderly people, must be fully cartoon: older people " +
+          "become warm, smiley cartoon grandparents. Redraw the background " +
+          "as a simple, colourful cartoon background in the same style, never " +
+          "left as a photo. Remove any watermarks, logos or text from the " +
+          "original. Family-friendly. Output only the image, no text." +
           (style && STYLE_EXTRAS[style] ? STYLE_EXTRAS[style] : ""),
       },
     ],
