@@ -125,26 +125,20 @@ async function generateCartoon(base64Image: string, mimeType: string, style?: st
       { inlineData: { mimeType, data: base64Image } },
       {
         text:
-          "Redraw this photo as a bold, fun, classic hand-drawn 2D cartoon, " +
-          "like a frame from a cheerful Saturday-morning cartoon show. It must " +
-          "look DRAWN, never like the original photo with a filter or edited " +
-          "eyes. Use thick, clean black outlines, flat bright colours with " +
-          "simple cel shading, and no photographic texture anywhere. " +
-          "EXAGGERATE like a real cartoonist: make heads noticeably bigger, " +
-          "eyes big, round and expressive with white highlights, smiles wide " +
-          "and full of personality, noses and features simplified into fun " +
-          "rounded shapes, and give everyone a lively, playful expression " +
-          "and a slightly bouncy, animated pose. Ornaments, figurines, " +
-          "statues and toys become living cartoon characters, not ceramic " +
-          "or plastic. Keep it recognisable: the same number of people and " +
-          "animals, their clothing colours, hair colour and key features " +
-          "(for pets, keep the exact fur colours and markings: never change a " +
-          "grey or white animal into a ginger one). Every face, including " +
-          "adults and elderly people, must be fully cartoon: older people " +
-          "become warm, smiley cartoon grandparents. Redraw the background " +
-          "as a simple, colourful cartoon background in the same style, never " +
-          "left as a photo. Remove any watermarks, logos or text from the " +
-          "original. Family-friendly. Output only the image, no text." +
+          "Turn the person or pet in this photo into a highly stylised 3D " +
+          "caricature of the same person or pet, with expressive features and " +
+          "playful exaggeration: a slightly larger head, bigger expressive " +
+          "eyes, a warm characterful smile. Rendered in a smooth, polished " +
+          "animated-film style with clean materials and soft lighting. It " +
+          "must be the SAME person, instantly recognisable to their family: " +
+          "keep their real age, face shape, hairstyle and hair colour, skin " +
+          "tone, any beard, moustache or stubble, and glasses in exactly the " +
+          "same shape and colour. Pets keep their exact breed, fur colours " +
+          "and markings. Keep everyone who is in the photo. Ornaments, " +
+          "figurines and statues become living animated characters, not " +
+          "ceramic. Replace the background with a simple, softly lit, " +
+          "colourful animated background. Remove any watermarks, logos, " +
+          "phone screens or text. Family-friendly. Output only the image." +
           (style && STYLE_EXTRAS[style] ? STYLE_EXTRAS[style] : ""),
       },
     ],
