@@ -135,7 +135,9 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
     "giftcard-75": 7500,
     "giftcard-100": 10000,
   };
-  const amountPence = amountBySku[sku];
+  const isUSCard = sku.startsWith("us-giftcard-");
+  const usCents: Record<string, number> = { "us-giftcard-10": 1000, "us-giftcard-25": 2500, "us-giftcard-50": 5000, "us-giftcard-75": 7500, "us-giftcard-100": 10000 };
+  const amountPence = isUSCard ? usCents[sku] : amountBySku[sku];
   if (!amountPence) {
     logger.error({ sessionId, sku }, "Unknown gift card SKU");
     return;
@@ -148,10 +150,10 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
     // single order, usable once — this is what actually gets redeemed.
     const coupon = await stripe.coupons.create({
       amount_off: amountPence,
-      currency: "gbp",
+      currency: isUSCard ? "usd" : "gbp",
       duration: "once",
       max_redemptions: 1,
-      name: `ONJJEM Gift Card (£${(amountPence / 100).toFixed(2)})`,
+      name: `ONJJEM Gift Card (${isUSCard ? "$" : "£"}${(amountPence / 100).toFixed(2)})`,
     });
 
     const code = "GIFT" + Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -165,6 +167,7 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
       email,
       code,
       amount: (amountPence / 100).toFixed(2),
+      currency: isUSCard ? "usd" : "gbp",
     });
 
     logger.info({ sessionId, email, code }, "Gift card code generated and sent");
@@ -192,7 +195,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   // Gift cards are digital — no photo, no shipping address, no Prodigi order.
   // Handle them completely separately before any of the physical-order logic
   // below (which would otherwise skip the order entirely for lacking an address).
-  if (earlySku.startsWith("giftcard-")) {
+  if (earlySku.startsWith("giftcard-") || earlySku.startsWith("us-giftcard-")) {
     await handleGiftCardPurchase(sessionId, earlySku, email);
     return;
   }

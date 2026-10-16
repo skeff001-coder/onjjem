@@ -575,6 +575,7 @@ export interface GiftCardEmailData {
   email: string;
   code: string;
   amount: string;
+  currency?: "gbp" | "usd";
 }
 
 export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> {
@@ -584,6 +585,9 @@ export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> 
     return;
   }
 
+  const sym = data.currency === "usd" ? "$" : "£";
+  const shop = data.currency === "usd" ? "https://onjjem.com/us/" : "https://onjjem.com";
+  const shopLabel = data.currency === "usd" ? "onjjem.com/us" : "onjjem.com";
   const body = `
     <tr><td style="height:4px;background:linear-gradient(90deg,${GOLD},#F0C040,${GOLD})"></td></tr>
     <tr><td style="padding:40px 40px 32px">
@@ -593,13 +597,13 @@ export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> 
       </p>
       <div style="background:${SURFACE};border:1px dashed ${GOLD};border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">
         <p style="font-size:13px;color:${MUTED};margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Gift Card Value</p>
-        <p style="font-size:32px;color:${GOLD};margin:0 0 16px;font-weight:800">£${data.amount}</p>
+        <p style="font-size:32px;color:${GOLD};margin:0 0 16px;font-weight:800">${sym}${data.amount}</p>
         <p style="font-size:13px;color:${MUTED};margin:0 0 6px">Redemption Code</p>
         <p style="font-size:22px;color:#FAF7F2;margin:0;font-weight:800;letter-spacing:2px;font-family:monospace">${data.code}</p>
       </div>
       <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
         To use this gift card, simply enter the code above in the promo code box at checkout on
-        <a href="https://onjjem.com" style="color:${GOLD}">onjjem.com</a> — the value will be deducted
+        <a href="${shop}" style="color:${GOLD}">${shopLabel}</a> — the value will be deducted
         from your order automatically. This code can be used once, on a single order.
       </p>
     </td></tr>
@@ -608,9 +612,9 @@ export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> 
   const { error } = await resend.emails.send({
     from: FROM(),
     to: data.email,
-    subject: `🎁 Your ONJJEM Gift Card (£${data.amount})`,
+    subject: `🎁 Your ONJJEM Gift Card (${sym}${data.amount})`,
     html: baseTemplate(
-      `Your £${data.amount} ONJJEM gift card is ready to use.`,
+      `Your ${sym}${data.amount} ONJJEM gift card is ready to use.`,
       body,
     ),
   });
@@ -753,7 +757,7 @@ export async function sendGiveawayConfirmation(data: { email: string; name: stri
     <tr><td style="padding:36px 40px 28px">
       <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">Giveaway entry confirmed 🎁</p>
       <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 18px;line-height:1.25">You're in, ${esc(data.name)}! Good luck to ${esc(data.petName)} 🍀</h1>
-      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">The winner is picked at random after <b>8pm UK time (3pm ET) on Sunday 1 November 2026</b>, and we'll email them by Monday 2 November. The prize is a surprise bundle of personalised gifts starring their pet as a cartoon, posted free.</p>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">The winner is picked at random after <b>8pm UK time (3pm ET) on Sunday 1 November 2026</b>, and we'll email them by Monday 2 November. The prize is a £40 ONJJEM gift card ($50 in the US) to put their pet on anything they like.</p>
       <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 22px">While you wait, see ${esc(data.petName)} as a cartoon right now. It's free and takes seconds.</p>
       ${data.country === "US" ? "" : `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:-10px 0 22px">🎁 As a thank you for entering, your cartoon is <b>FREE</b> on any gift until 30 November (normally £1.99). Just order from the same phone or computer you entered on.</p>`}
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:1px">

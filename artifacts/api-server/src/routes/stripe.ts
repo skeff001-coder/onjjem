@@ -11,7 +11,7 @@ import { storePhoto } from "../webhookHandlers";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { SHOP_SKU_PRICES } from "../shopPrices";
-import { US_SKU_PRICES, NO_BUNDLE_DISCOUNT } from "../usShop";
+import { US_SKU_PRICES, NO_BUNDLE_DISCOUNT, US_GIFT_CARDS } from "../usShop";
 import { PRODIGI_PRODUCTS } from "../fulfilment/prodigi";
 import { GoogleGenAI } from "@google/genai";
 
@@ -768,6 +768,38 @@ router.get("/stripe/session/:sessionId", async (req: Request, res: Response) => 
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Could not retrieve session";
+    res.status(500).json({ error: msg });
+  }
+});
+
+// US gift cards: digital, no shipping address needed. The webhook emails a one-time USD code.
+router.post("/stripe/gift-card-checkout", async (req: Request, res: Response) => {
+  const body = req.body as { sku?: string; successUrl?: string; cancelUrl?: string };
+  const sku = body.sku || "";
+  const cents = US_GIFT_CARDS[sku];
+  if (!cents) { res.status(400).json({ error: "Unknown gift card." }); return; }
+  try {
+    const stripe = await getUncachableStripeClient();
+    const origin = `${req.protocol}://${req.get("host")}`;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: [{
+        price_data: {
+          currency: "usd",
+          unit_amount: cents,
+          product_data: { name: `ONJJEM Gift Card ($${cents / 100})`, metadata: { sku } },
+        },
+        quantity: 1,
+      }],
+      success_url: body.successUrl || `${origin}/us/?order=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: body.cancelUrl || `${origin}/us/gift-cards`,
+      metadata: { sku, region: "us" },
+      custom_text: { submit: { message: "Your gift card code is emailed to you straight after payment. It works on onjjem.com/us." } },
+    });
+    res.json({ url: session.url });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
     res.status(500).json({ error: msg });
   }
 });

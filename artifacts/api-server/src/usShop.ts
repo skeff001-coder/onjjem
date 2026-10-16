@@ -207,3 +207,12 @@ for (const g of US_GARMENTS) {
 // Low-margin products: they count towards the bundle deal, but the discount
 // is only taken off the other gifts in the basket.
 export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF") || sku.startsWith("US-CANDLE") || sku === "US-TOTE" || sku === "xmas-sack" || sku.startsWith("trick-bag") || sku.startsWith("FTEE-");
+
+// US gift cards (digital, emailed as a one-time Stripe code that works on the US shop only).
+export const US_GIFT_CARDS: Record<string, number> = {
+  "us-giftcard-10": 1000,
+  "us-giftcard-25": 2500,
+  "us-giftcard-50": 5000,
+  "us-giftcard-75": 7500,
+  "us-giftcard-100": 10000,
+};
