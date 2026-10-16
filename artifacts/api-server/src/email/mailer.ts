@@ -768,13 +768,15 @@ export async function sendGiveawayConfirmation(data: { email: string; name: stri
   if (error) throw new Error(error.message);
 }
 
-export async function sendGiveawayAdminEntry(data: { email: string; name: string; petName: string; country: string; marketing: boolean; total: number }): Promise<void> {
+export async function sendGiveawayAdminEntry(data: { email: string; name: string; petName: string; country: string; marketing: boolean; total: number; photo?: string | null }): Promise<void> {
   const resend = getResend(); const adminEmail = ADMIN();
   if (!resend || !adminEmail) return;
   const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
   const body = `<tr><td style="padding:28px 32px">
     <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 10px">New giveaway entry · #${data.total}</p>
-    <p style="font-size:15px;color:${TEXT};line-height:1.8;margin:0">${esc(data.name)} (${esc(data.email)})<br>Pet: ${esc(data.petName)}<br>Country: ${esc(data.country)}<br>Marketing emails OK: ${data.marketing ? "yes" : "no"}</p>
+    <p style="font-size:15px;color:${TEXT};line-height:1.8;margin:0">${esc(data.name)} (${esc(data.email)})<br>Pet: ${esc(data.petName)}<br>Country: ${esc(data.country)}<br>Marketing emails OK: ${data.marketing ? "yes" : "no"}<br>Pet photo: ${data.photo ? "attached 📎" : "none"}</p>
   </td></tr>`;
-  await resend.emails.send({ from: FROM(), to: adminEmail, subject: `🎁 Giveaway entry #${data.total}: ${data.petName}`, html: baseTemplate("New giveaway entry", body) });
+  const pm = data.photo ? /^data:image\/([a-z]+);base64,(.*)$/.exec(data.photo) : null;
+  await resend.emails.send({ from: FROM(), to: adminEmail, subject: `🎁 Giveaway entry #${data.total}: ${data.petName}`, html: baseTemplate("New giveaway entry", body),
+    attachments: pm ? [{ filename: `${data.petName.replace(/[^a-z0-9]+/gi, "-") || "pet"}.${pm[1] === "jpeg" ? "jpg" : pm[1]}`, content: pm[2] }] : undefined });
 }
