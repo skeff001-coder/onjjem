@@ -753,7 +753,7 @@ export async function sendGiveawayConfirmation(data: { email: string; name: stri
     <tr><td style="padding:36px 40px 28px">
       <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">Giveaway entry confirmed 🎁</p>
       <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 18px;line-height:1.25">You're in, ${esc(data.name)}! Good luck to ${esc(data.petName)} 🍀</h1>
-      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">The winner is picked at random after <b>8pm UK time (3pm ET) on Sunday 18 October 2026</b>, and we'll email them by Monday 19 October. The prize is a poster of their pet as a cartoon, posted free.</p>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">The winner is picked at random after <b>8pm UK time (3pm ET) on Sunday 1 November 2026</b>, and we'll email them by Monday 2 November. The prize is a poster of their pet as a cartoon, posted free.</p>
       <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 22px">While you wait, see ${esc(data.petName)} as a cartoon right now. It's free and takes seconds.</p>
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:1px">
         <a href="${cartoonUrl}" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 32px;font-family:Georgia,serif;font-size:15px;font-weight:700;color:#F5D78E;text-decoration:none">✦ &nbsp;See my pet as a cartoon</a>

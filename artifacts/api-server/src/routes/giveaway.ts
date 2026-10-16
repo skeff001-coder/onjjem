@@ -6,9 +6,9 @@ import { sendGiveawayConfirmation, sendGiveawayAdminEntry } from "../email/maile
 import { logger } from "../lib/logger";
 
 // Giveaway, Oct 2026: free entry by web form (alongside comments on social posts).
-// Closes Sun 18 Oct 2026, 8pm UK (19:00 UTC).
+// Closes Sun 1 Nov 2026, 8pm UK (20:00 UTC).
 const router = Router();
-const CLOSES = new Date("2026-10-18T19:00:00Z");
+const CLOSES = new Date("2026-11-01T20:00:00Z");
 const ipHits = new Map<string, { day: string; n: number }>();
 
 async function ensureTable(): Promise<void> {
