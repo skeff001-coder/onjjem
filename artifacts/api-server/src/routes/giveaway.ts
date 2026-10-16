@@ -43,7 +43,7 @@ router.post("/giveaway-entry", async (req: Request, res: Response) => {
     if (!m || b.photo.length > 4_500_000) { res.status(400).json({ error: "That photo couldn't be used. Please try a different one (or enter without a photo)." }); return; }
     photo = b.photo;
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !name || !petName) { res.status(400).json({ error: "Please fill in your name, your pet's name and a valid email." }); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !name || !petName) { res.status(400).json({ error: "Please fill in your name, who's in your photo and a valid email." }); return; }
   if (country !== "GB" && country !== "US") { res.status(400).json({ error: "The giveaway is open to the UK and the US only." }); return; }
   if (!adult) { res.status(400).json({ error: "You must be 18 or over to enter." }); return; }
 
