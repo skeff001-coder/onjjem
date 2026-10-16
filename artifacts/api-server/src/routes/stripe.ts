@@ -180,6 +180,14 @@ const CART_RECOVERY = {};
 const HALLOWEEN_FREE_CARTOON = (sku: string) =>
   sku.startsWith("TEE-STTK184-") || sku.startsWith("trick-bag") ||
   ["halloween-fridge-pack", "halloween-pocket-pack", "magic-mug", "magnet-fridge-3x2", "wud-sticker-small"].includes(sku);
+// Giveaway entrants (Oct 2026) get the cartoon free on any gift until 30 Nov 2026.
+async function isGiveawayEntrant(email?: string): Promise<boolean> {
+  if (!email || Date.now() > Date.parse("2026-11-30T23:59:59Z")) return false;
+  try {
+    const r = await db.execute(sql`SELECT 1 FROM giveaway_entries WHERE email = ${email.trim().toLowerCase()} LIMIT 1`);
+    return r.rows.length > 0;
+  } catch { return false; }
+}
 const US_CHECKOUT_NOTE = "Made to order in the USA in 1–3 business days, then shipped free. Most orders arrive within 4–10 business days.";
 
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
@@ -194,6 +202,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     international?: boolean;
     region?: string;
     cartoonFree?: boolean;
+    giveawayEmail?: string;
     recipient?: {
       name?: string;
       line1?: string;
@@ -333,7 +342,8 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     ];
 
     // Christmas sweatshirts include the cartoon for free.
-    if (body.addCartoon && !isUS && !body.sku.startsWith("XSWEAT-") && !(body.cartoonFree && HALLOWEEN_FREE_CARTOON(body.sku))) {
+    const gwFreeCartoon = body.addCartoon && !isUS ? await isGiveawayEntrant(body.giveawayEmail) : false;
+    if (body.addCartoon && !isUS && !body.sku.startsWith("XSWEAT-") && !(body.cartoonFree && HALLOWEEN_FREE_CARTOON(body.sku)) && !gwFreeCartoon) {
       lineItems.push({
         price_data: {
           currency: "gbp",
@@ -413,6 +423,7 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     successUrl?: string;
     cancelUrl?: string;
     region?: string;
+    giveawayEmail?: string;
   };
   const isUS = body.region === "us";
   const items = Array.isArray(body.items) ? body.items : [];
@@ -440,6 +451,7 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
   try {
     const stripe = await getUncachableStripeClient();
 
+    const gwFreeCartoonBasket = !isUS && items.some((x) => x.cartoon) ? await isGiveawayEntrant(body.giveawayEmail) : false;
     const lineItems: any[] = [];
     const metadata: Record<string, string> = {};
     let firstToken = "";
@@ -460,7 +472,7 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
         },
         quantity: 1,
       });
-      if (it.cartoon && !isUS && !(it.sku || "").startsWith("XSWEAT-") && !(it.cartoonFree && HALLOWEEN_FREE_CARTOON(it.sku || ""))) {
+      if (it.cartoon && !isUS && !(it.sku || "").startsWith("XSWEAT-") && !(it.cartoonFree && HALLOWEEN_FREE_CARTOON(it.sku || "")) && !gwFreeCartoonBasket) {
         lineItems.push({
           price_data: {
             currency: "gbp",
