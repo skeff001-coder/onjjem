@@ -105,6 +105,22 @@ router.get("/giveaway-draw", async (req: Request, res: Response) => {
   }
 });
 
+// Owner-only: list every web-form entry. /api/giveaway-entries?key=YOURKEY
+router.get("/giveaway-entries", async (req: Request, res: Response) => {
+  const key = process.env.GIVEAWAY_KEY;
+  if (!key || req.query.key !== key) { res.status(403).send("Forbidden: add ?key= with your GIVEAWAY_KEY"); return; }
+  try {
+    await ensureTable();
+    const r = await db.execute(sql`SELECT name, email, pet_name, country, marketing, entered_at, (photo IS NOT NULL) AS has_photo FROM giveaway_entries ORDER BY entered_at`);
+    const esc = (v: unknown) => String(v ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
+    const k = encodeURIComponent(String(req.query.key));
+    const rows = (r.rows as any[]).map((e, i) => `<tr><td>${i + 1}</td><td><b>${esc(e.name)}</b><br><small>${esc(e.email)}</small></td><td>${esc(e.country)}</td><td>${new Date(e.entered_at).toLocaleString("en-GB", { timeZone: "Europe/London", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</td><td>${e.marketing ? "✅" : "–"}</td><td>${e.has_photo ? `<a href="/api/giveaway-photo?key=${k}&email=${encodeURIComponent(e.email)}">📸 view</a>` : "–"}</td></tr>`).join("");
+    res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Giveaway entries</title><body style="font:15px system-ui;padding:14px;max-width:760px;margin:auto"><h2>🎁 Giveaway entries: ${r.rows.length}</h2><p style="color:#666">Website form only. Add comment entrants from TikTok, Instagram and Facebook by hand.</p><table style="border-collapse:collapse;width:100%" cellpadding=7 border=1><tr style="background:#f3f3f3"><th>#</th><th>Name</th><th>Country</th><th>Entered</th><th>Offers</th><th>Photo</th></tr>${rows}</table>`);
+  } catch (err) {
+    res.status(500).send(err instanceof Error ? err.message : "error");
+  }
+});
+
 // Owner-only: view an entrant's pet photo. /api/giveaway-photo?key=YOURKEY&email=them@example.com
 router.get("/giveaway-photo", async (req: Request, res: Response) => {
   const key = process.env.GIVEAWAY_KEY;
