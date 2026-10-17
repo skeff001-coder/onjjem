@@ -132,14 +132,20 @@ async function generateCartoon(base64Image: string, mimeType: string, style?: st
           "movie character on first glance, never a photo with edits. " +
           "Make a highly stylised 3D " +
           "caricature of the same person or pet, with expressive features and " +
-          "playful exaggeration: a slightly larger head, bigger expressive " +
-          "eyes, a warm characterful smile. Rendered in a smooth, polished " +
+          "gentle exaggeration: a slightly larger head and slightly bigger " +
+          "eyes, while keeping the subject's own expression and eye shape " +
+          "(a calm or sleepy face stays calm, a closed mouth stays closed). " +
+          "Rendered in a smooth, polished " +
           "animated-film style with clean materials and soft lighting. It " +
           "must be the SAME person, instantly recognisable to their family: " +
           "keep their real age, face shape, hairstyle and hair colour, skin " +
           "tone, any beard, moustache or stubble, and glasses in exactly the " +
-          "same shape and colour. Pets keep their exact breed, fur colours " +
-          "and markings. Keep everyone who is in the photo. Ornaments, " +
+          "same shape and colour. Pets keep their exact breed, head shape, " +
+          "ear shape and length, muzzle, markings and the EXACT shade of " +
+          "their fur as in the photo: do not make pale or cream fur more " +
+          "orange, darker or more saturated, and do not swap it for a " +
+          "generic version of the breed. Their owner must recognise this " +
+          "specific animal. Keep everyone who is in the photo. Ornaments, " +
           "figurines and statues become living animated characters, not " +
           "ceramic. Replace the background with a simple, softly lit, " +
           "colourful animated background. Remove any watermarks, logos, " +
