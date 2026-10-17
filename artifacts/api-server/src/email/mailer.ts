@@ -750,24 +750,26 @@ export async function sendGiveawayConfirmation(data: { email: string; name: stri
   const resend = getResend();
   if (!resend) { logger.warn("RESEND_API_KEY not set — skipping giveaway confirmation"); return; }
   const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+  const noName = !data.petName || data.petName.toLowerCase() === "you";
+  const who = noName ? "your photo" : esc(data.petName);
   const cartoonUrl = data.country === "US" ? "https://onjjem.com/cartoon?region=us" : "https://onjjem.com/cartoon";
   const promo = data.marketing ? `
       <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 10px">Can't wait to see if you've won? Use <b style="color:#F5D78E">WELCOME10</b> for 10% off any order.</p>` : "";
   const body = `
     <tr><td style="padding:36px 40px 28px">
       <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">Giveaway entry confirmed 🎁</p>
-      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 18px;line-height:1.25">You're in, ${esc(data.name)}! Good luck to ${esc(data.petName)} 🍀</h1>
+      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 18px;line-height:1.25">You're in, ${esc(data.name)}! Good luck 🍀</h1>
       <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">The winner is picked at random after <b>8pm UK time (3pm ET) on Sunday 1 November 2026</b>, and we'll email them by Monday 2 November. The prize is a £40 ONJJEM gift card ($50 in the US) plus the photo you entered printed as a postcard, posted free.</p>
-      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 22px">While you wait, see ${esc(data.petName)} as a cartoon right now. It's free and takes seconds.</p>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 22px">While you wait, see ${who} as a cartoon right now. It's free and takes seconds.</p>
       ${data.country === "US" ? "" : `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:-10px 0 22px">🎁 As a thank you for entering, your cartoon is <b>FREE</b> on any gift until 30 November (normally £1.99). Just order from the same phone or computer you entered on.</p>`}
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:1px">
-        <a href="${cartoonUrl}" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 32px;font-family:Georgia,serif;font-size:15px;font-weight:700;color:#F5D78E;text-decoration:none">✦ &nbsp;See my pet as a cartoon</a>
+        <a href="${cartoonUrl}" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 32px;font-family:Georgia,serif;font-size:15px;font-weight:700;color:#F5D78E;text-decoration:none">✦ &nbsp;See my photo as a cartoon</a>
       </td></tr></table>${promo}
       <p style="font-size:12px;color:${MUTED};line-height:1.6;margin:14px 0 0">We'll never ask for payment or card details to claim a prize. Full terms: <a href="https://onjjem.com/giveaway">onjjem.com/giveaway</a></p>
     </td></tr>`;
   const { error } = await resend.emails.send({
     from: FROM(), to: data.email,
-    subject: `You're entered! Good luck to ${data.petName} 🎁`,
+    subject: noName ? `You're entered in the ONJJEM giveaway! Good luck 🎁` : `You're entered! Good luck to ${data.petName} 🎁`,
     html: baseTemplate("Your ONJJEM giveaway entry is confirmed.", body),
   });
   if (error) throw new Error(error.message);
