@@ -410,6 +410,61 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
   }
 });
 
+// ── 2027 photo calendar: up to 13 pictures (cover + Jan..Dec), one order ─────
+// Fewer photos are repeated in order to fill all 13 pages. Prices come only
+// from the server-side catalogues. Promo codes and gift cards work as usual.
+router.post("/stripe/calendar-checkout", async (req: Request, res: Response) => {
+  const body = req.body as { region?: string; photos?: unknown; successUrl?: string; cancelUrl?: string };
+  const isUS = body.region === "us";
+  const sku = isUS ? "US-CALENDAR-A4" : "calendar-a4";
+  const photos = Array.isArray(body.photos)
+    ? body.photos.filter((p): p is string => typeof p === "string" && /^data:image\/(jpeg|png|webp);base64,/.test(p) && p.length < 3_000_000)
+    : [];
+  if (!photos.length || photos.length > 13) {
+    res.status(400).json({ error: "Please add between 1 and 13 photos." });
+    return;
+  }
+  try {
+    const stripe = await getUncachableStripeClient();
+    const token = crypto.randomBytes(16).toString("hex");
+    const pages = Array.from({ length: 13 }, (_, i) => photos[i % photos.length]);
+    for (let i = 0; i < pages.length; i++) await storePhoto(`${token}-${i}`, pages[i]);
+
+    const price = isUS ? US_SKU_PRICES[sku] : undefined;
+    const uk = isUS ? undefined : SHOP_SKU_PRICES[sku as keyof typeof SHOP_SKU_PRICES];
+    const lineItem = {
+      price_data: {
+        currency: isUS ? "usd" : "gbp",
+        unit_amount: isUS ? price!.priceCents : uk!.pricePence,
+        product_data: { name: isUS ? price!.name : uk!.name, metadata: { sku } },
+      },
+      quantity: 1,
+    };
+    const origin = `${req.protocol}://${req.get("host")}`;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [lineItem],
+      mode: "payment",
+      allow_promotion_codes: true,
+      shipping_address_collection: { allowed_countries: isUS ? ["US"] : ["GB"] },
+      shipping_options: isUS ? usShippingOptions() : ukShippingOptions([sku]),
+      success_url: body.successUrl || `${origin}/${isUS ? "us/" : ""}?order=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: body.cancelUrl || `${origin}/${isUS ? "us/" : ""}calendar`,
+      metadata: { sku, photo_token: `${token}-0`, calendar_token: token, ...(isUS ? { region: "us" } : {}) },
+      custom_text: {
+        submit: {
+          message: isUS ? US_CHECKOUT_NOTE : "Your calendar is made to order in the UK in about 5 working days, then posted free.",
+        },
+      },
+    });
+    res.json({ url: session.url });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    req.log.error({ msg }, "stripe/calendar-checkout error");
+    res.status(500).json({ error: msg });
+  }
+});
+
 // ── Basket checkout: several gifts, each with its own picture, one order ─────
 // Prices come only from SHOP_SKU_PRICES. Every item must also be mapped for
 // Prodigi, so nothing can be paid for that we can't print. Baskets of 2+

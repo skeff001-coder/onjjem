@@ -24,6 +24,9 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-CLOCK-WHITE": { name: "Photo Wall Clock 10\", White Frame", priceCents: 4499 },
   "US-CLOCK-NATURAL": { name: "Photo Wall Clock 10\", Natural Wood Frame", priceCents: 4499 },
 
+  // 2027 photo calendar, A4 — cost about $15.50 incl. shipping (Oct 2026)
+  "US-CALENDAR-A4": { name: "2027 Photo Calendar (A4, 12 photos)", priceCents: 2799 },
+
   // Photo prints (archival Pro paper) and matte posters
   "US-PRINT-8X10": { name: "Photo Print 8x10\"", priceCents: 1999 },     // $4 + $6.70
   "US-PRINT-12X16": { name: "Photo Print 12x16\"", priceCents: 2999 },   // $10 + $6.70

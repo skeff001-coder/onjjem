@@ -45,9 +45,25 @@ export interface ProdigiProduct {
   // Folded greeting cards: Prodigi prints one flat sheet. Our photo goes only
   // in the front panel; the rest of the sheet stays white. Sizes in pixels.
   cardLayout?: { width: number; height: number; front: { left: number; top: number; width: number; height: number } };
+  // Multi-page products (calendars): one photo per print area, in this order.
+  // The order's pagePhotos are matched by position; missing pages reuse page 0 (the cover).
+  pageAreas?: string[];
 }
 
+// Prodigi print areas for CALENDAR-A4-L-DATED (checked via /api/prodigi-spec, 17 Oct 2026).
+// Each is a full A4 landscape page, 3507x2480px. "back cover" is optional, so we leave it plain.
+export const CALENDAR_PAGE_AREAS = [
+  "cover", "january", "february", "march", "april", "may", "june",
+  "july", "august", "september", "october", "november", "december",
+];
+
 export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
+// ── 2027 photo calendar (A4, wire-bound, 12 months + covers) ──────────────
+// UK cost £14.35 + VAT incl. Budget shipping; US cost £11.58 incl. shipping (Oct 2026).
+// pageAreas = Prodigi print area names: cover, Jan..Dec. See CALENDAR_PAGE_AREAS.
+  "calendar-a4":    { sku: "CALENDAR-A4-L-DATED", sizing: "fillPrintArea", pageAreas: CALENDAR_PAGE_AREAS, shipping: "Budget" },
+  "US-CALENDAR-A4": { sku: "CALENDAR-A4-L-DATED", sizing: "fillPrintArea", pageAreas: CALENDAR_PAGE_AREAS, shipping: "Budget" },
+
   // ── Moved here from inside the ProdigiProduct interface, where they had been
   // pasted by mistake — they were never reachable, so these products could
   // take payment but never reach Prodigi (postcard, patches, canvases, hoodies,
@@ -524,6 +540,8 @@ export interface FulfilmentOrder {
   extraItems?: { sku: string; photoBase64: string }[];
   // Customer paid for Express delivery at checkout.
   express?: boolean;
+  // Calendars: one picture per page (cover, Jan..Dec), matched to pageAreas.
+  pagePhotos?: string[];
 }
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -627,7 +645,14 @@ async function submitToProdigi(
   // Build assets array — most products use a single "default" print area;
   // jigsaws (and any future multi-area products) need one entry per area.
   const printAreas = product.printAreas ?? ["default"];
-  const assets = printAreas.map((area) => ({ printArea: area, url: imageUrl }));
+  let assets = printAreas.map((area) => ({ printArea: area, url: imageUrl }));
+
+  // Calendars: a different picture on every page.
+  if (product.pageAreas && order.pagePhotos?.length) {
+    const urls: string[] = [];
+    for (const ph of order.pagePhotos) urls.push(ph ? await photoToPublicUrl(ph) : rawUrl);
+    assets = product.pageAreas.map((area, i) => ({ printArea: area, url: urls[i] ?? urls[0] ?? rawUrl }));
+  }
 
   const items: {
     sku: string;

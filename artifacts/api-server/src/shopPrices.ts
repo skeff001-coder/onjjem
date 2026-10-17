@@ -58,6 +58,9 @@ export const SHOP_SKU_PRICES = {
   "XSWEAT-AD-2XL-BLACK": { name: "Christmas Sweatshirt, Adult (2XL, Black)", pricePence: 2999 },
   "XSWEAT-AD-2XL-WHITE": { name: "Christmas Sweatshirt, Adult (2XL, Arctic White)", pricePence: 2999 },
 
+  // 2027 photo calendar, A4 (Prodigi CALENDAR-A4-L-DATED). Cost £17.22 inc VAT + free delivery.
+  "calendar-a4": { name: "2027 Photo Calendar (A4, 12 photos)", pricePence: 2499 },
+
   // Photo Mugs
   "mug-11oz": { name: "Photo Mug (11oz, Full Wrap)", pricePence: 1399 },
   "mug-15oz": { name: "Photo Mug (15oz Large)", pricePence: 1699 },

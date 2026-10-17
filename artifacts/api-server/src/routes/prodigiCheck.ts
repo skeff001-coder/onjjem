@@ -160,3 +160,34 @@ router.get("/prodigi-spec", async (req, res) => {
   };
   res.type("text/plain").send(JSON.stringify(summary, null, 2) + "\n\n--- full ---\n" + r.raw.slice(0, 6000));
 });
+
+// Read-only: ask Prodigi to price one of OUR products exactly as we'd order it
+// (same SKU, attributes and print areas). Nothing is ordered or charged.
+// Open /api/prodigi-quote?sku=calendar-a4&country=GB
+router.get("/prodigi-quote", async (req, res) => {
+  const apiKey = process.env.PRODIGI_API_KEY;
+  if (!apiKey) { res.status(500).send("No Prodigi key set"); return; }
+  const ourSku = String(req.query.sku || "");
+  const country = String(req.query.country || "GB").toUpperCase().slice(0, 2);
+  const p = PRODIGI_PRODUCTS[ourSku];
+  if (!p) { res.status(404).send(`Unknown product "${ourSku}"`); return; }
+  const areas = p.pageAreas ?? p.printAreas ?? ["default"];
+  const body = {
+    shippingMethod: p.shipping ?? "Standard",
+    destinationCountryCode: country,
+    currencyCode: country === "US" ? "USD" : "GBP",
+    items: [{ sku: p.sku, copies: 1, ...(p.attributes ? { attributes: p.attributes } : {}), assets: areas.map((a) => ({ printArea: a })) }],
+  };
+  try {
+    const r = await fetch(`${baseUrl()}/v4.0/quotes`, {
+      method: "POST",
+      headers: { "X-API-Key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(20_000),
+    });
+    const raw = await r.text();
+    res.type("text/plain").send(`HTTP ${r.status}\nSent: ${JSON.stringify(body)}\n\n${raw.slice(0, 4000)}`);
+  } catch (err) {
+    res.status(500).send(String(err));
+  }
+});

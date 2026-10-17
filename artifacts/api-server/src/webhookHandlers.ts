@@ -253,6 +253,17 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     }
   }
 
+  // Calendars: one picture per page, stored as <token>-0 .. <token>-12.
+  let pagePhotos: string[] | undefined;
+  const calendarToken = meta?.["calendar_token"];
+  if (calendarToken) {
+    pagePhotos = [photoBase64];
+    for (let i = 1; i < 13; i++) {
+      const pg = await retrieveAndDeletePhoto(`${calendarToken}-${i}`);
+      pagePhotos.push(pg ? await applyExifRotation(pg) : photoBase64);
+    }
+  }
+
   let sku = meta?.["sku"] ?? "";
   if (!sku) {
     const lineItems = session["line_items"] as { data?: unknown[] } | undefined;
@@ -368,6 +379,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     currency,
     ...(extraItems.length ? { extraItems } : {}),
     ...(isExpress ? { express: true } : {}),
+    ...(pagePhotos ? { pagePhotos } : {}),
   });
 
   const bolOrderId = await getBolOrderId(sessionId);
