@@ -79,6 +79,13 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   // Golf balls, 6-pack — cost $40 + $14 shipping (+ US sales tax Prodigi may add). Priced near cost to win customers,
   // so they are excluded from the bundle discount (see NO_BUNDLE_DISCOUNT).
   "US-GOLF-6": { name: "Photo Golf Balls (6-pack)", priceCents: 6599 },
+  // US sports range (Prodigi US price list, 17 Oct 2026). Cost = item + Standard shipping.
+  "US-PUCK": { name: "Photo Hockey Puck", priceCents: 4999 },                                   // $26 + $14
+  "US-SKATE-DECK": { name: "Photo Skateboard Deck", priceCents: 14999 },                        // $95 + $21.55
+  "US-SKATE-COMP": { name: "Photo Skateboard, Complete (ready to ride)", priceCents: 21999 },   // $160 + $21.55
+  "US-BPONG": { name: "Photo Beer Pong Table", priceCents: 36999 },                             // $250 + $53.95
+  "US-PADDLE-PRO-1": { name: "Pro Carbon Photo Pickleball Paddle", priceCents: 9999 },          // $60 + $14
+  "US-PADDLE-PRO-2": { name: "Pro Carbon Photo Paddle Set (2 paddles, 2 balls, bag)", priceCents: 16999 }, // $100 + $14
 
   // Pickleball paddles — cost $20 / $40 + $14 shipping
   "US-PADDLE-1": { name: "Photo Pickleball Paddle", priceCents: 4999 },
@@ -140,6 +147,12 @@ export const US_PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 
   "US-PADDLE-1": { sku: "PICKLE-SGL", sizing: "fillPrintArea" },
   "US-PADDLE-2": { sku: "PICKLE-SET", sizing: "fillPrintArea" },
+  "US-PADDLE-PRO-1": { sku: "PICKLE-SGL-PRO", sizing: "fillPrintArea" },
+  "US-PADDLE-PRO-2": { sku: "PICKLE-SET-PRO", sizing: "fillPrintArea" },
+  "US-PUCK": { sku: "HOCK-PUCK", sizing: "fillPrintArea" },
+  "US-SKATE-DECK": { sku: "SKATE-DECK", sizing: "fillPrintArea" },
+  "US-SKATE-COMP": { sku: "SKATE-COMP", sizing: "fillPrintArea" },
+  "US-BPONG": { sku: "BPONG-TABLE", sizing: "fillPrintArea" },
 };
 
 // ── US clothing (Prodigi US labs, Destination = United States, 2026-10-01) ──
@@ -209,7 +222,7 @@ for (const g of US_GARMENTS) {
 
 // Low-margin products: they count towards the bundle deal, but the discount
 // is only taken off the other gifts in the basket.
-export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF") || sku.startsWith("US-CANDLE") || sku === "US-TOTE" || sku === "xmas-sack" || sku.startsWith("trick-bag") || sku.startsWith("FTEE-");
+export const NO_BUNDLE_DISCOUNT = (sku: string) => sku.startsWith("US-GOLF") || sku === "US-PUCK" || sku.startsWith("US-SKATE") || sku === "US-BPONG" || sku.startsWith("US-PADDLE-PRO") || sku.startsWith("US-CANDLE") || sku === "US-TOTE" || sku === "xmas-sack" || sku.startsWith("trick-bag") || sku.startsWith("FTEE-");
 
 // US gift cards (digital, emailed as a one-time Stripe code that works on the US shop only).
 export const US_GIFT_CARDS: Record<string, number> = {

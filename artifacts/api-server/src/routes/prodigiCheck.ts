@@ -163,31 +163,42 @@ router.get("/prodigi-spec", async (req, res) => {
 
 // Read-only: ask Prodigi to price one of OUR products exactly as we'd order it
 // (same SKU, attributes and print areas). Nothing is ordered or charged.
-// Open /api/prodigi-quote?sku=calendar-a4&country=GB
+// Open /api/prodigi-quote?sku=calendar-a4&country=GB (several: sku=a,b,c)
 router.get("/prodigi-quote", async (req, res) => {
   const apiKey = process.env.PRODIGI_API_KEY;
   if (!apiKey) { res.status(500).send("No Prodigi key set"); return; }
-  const ourSku = String(req.query.sku || "");
   const country = String(req.query.country || "GB").toUpperCase().slice(0, 2);
-  const p = PRODIGI_PRODUCTS[ourSku];
-  if (!p) { res.status(404).send(`Unknown product "${ourSku}"`); return; }
-  const areas = p.pageAreas ?? p.printAreas ?? ["default"];
-  const body = {
-    shippingMethod: p.shipping ?? "Standard",
-    destinationCountryCode: country,
-    currencyCode: country === "US" ? "USD" : "GBP",
-    items: [{ sku: p.sku, copies: 1, ...(p.attributes ? { attributes: p.attributes } : {}), assets: areas.map((a) => ({ printArea: a })) }],
-  };
-  try {
-    const r = await fetch(`${baseUrl()}/v4.0/quotes`, {
-      method: "POST",
-      headers: { "X-API-Key": apiKey, "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(20_000),
-    });
-    const raw = await r.text();
-    res.type("text/plain").send(`HTTP ${r.status}\nSent: ${JSON.stringify(body)}\n\n${raw.slice(0, 4000)}`);
-  } catch (err) {
-    res.status(500).send(String(err));
+  const skus = String(req.query.sku || "").split(",").map((x) => x.trim()).filter(Boolean).slice(0, 10);
+  const out: string[] = [];
+  for (const ourSku of skus) {
+    const p = PRODIGI_PRODUCTS[ourSku];
+    if (!p) { out.push(`=== ${ourSku}: unknown product`); continue; }
+    const areas = p.pageAreas ?? p.printAreas ?? ["default"];
+    const body = {
+      shippingMethod: p.shipping ?? "Standard",
+      destinationCountryCode: country,
+      currencyCode: country === "US" ? "USD" : "GBP",
+      items: [{ sku: p.sku, copies: 1, ...(p.attributes ? { attributes: p.attributes } : {}), assets: areas.map((a) => ({ printArea: a })) }],
+    };
+    try {
+      const r = await fetch(`${baseUrl()}/v4.0/quotes`, {
+        method: "POST",
+        headers: { "X-API-Key": apiKey, "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(20_000),
+      });
+      const raw = await r.text();
+      let summary = raw.slice(0, 1500);
+      try {
+        const j = JSON.parse(raw);
+        const q = j.quotes?.[0];
+        if (r.ok && q) summary = `OK  item ${q.costSummary?.items?.amount} + shipping ${q.costSummary?.shipping?.amount} ${q.costSummary?.items?.currency ?? ""}`;
+      } catch {}
+      out.push(`=== ${ourSku} (${p.sku}) → HTTP ${r.status}\n${r.ok ? "✅ " : "❌ "}${summary}`);
+    } catch (err) {
+      out.push(`=== ${ourSku}: ${String(err)}`);
+    }
+    await new Promise((res2) => setTimeout(res2, 1100));
   }
+  res.type("text/plain; charset=utf-8").send(out.join("\n\n"));
 });
