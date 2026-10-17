@@ -5,6 +5,9 @@ import { sql } from "drizzle-orm";
 import { sendGiveawayConfirmation, sendGiveawayAdminEntry } from "../email/mailer";
 import { logger } from "../lib/logger";
 
+// Ignore spaces/case so a stray space in the Railway value still works
+const normKey = (v: unknown) => String(v ?? "").replace(/\s+/g, "").toLowerCase();
+
 // Giveaway, Oct 2026: free entry by web form (alongside comments on social posts).
 // Closes Sun 1 Nov 2026, 8pm UK (20:00 UTC).
 const router = Router();
@@ -93,8 +96,8 @@ router.get("/giveaway-count", async (_req: Request, res: Response) => {
 // Owner-only: count entries and pick a random winner.
 // Needs Railway variable GIVEAWAY_KEY; visit /api/giveaway-draw?key=YOURKEY
 router.get("/giveaway-draw", async (req: Request, res: Response) => {
-  const key = process.env.GIVEAWAY_KEY;
-  if (!key || req.query.key !== key) { res.status(403).json({ error: "Forbidden" }); return; }
+  const key = normKey(process.env.GIVEAWAY_KEY);
+  if (!key || normKey(req.query.key) !== key) { res.status(403).json({ error: "Forbidden" }); return; }
   try {
     await ensureTable();
     const cnt = await db.execute(sql`SELECT COUNT(*)::int AS n FROM giveaway_entries`);
@@ -107,8 +110,8 @@ router.get("/giveaway-draw", async (req: Request, res: Response) => {
 
 // Owner-only: list every web-form entry. /api/giveaway-entries?key=YOURKEY
 router.get("/giveaway-entries", async (req: Request, res: Response) => {
-  const key = process.env.GIVEAWAY_KEY;
-  if (!key || req.query.key !== key) { res.status(403).send("Forbidden: add ?key= with your GIVEAWAY_KEY"); return; }
+  const key = normKey(process.env.GIVEAWAY_KEY);
+  if (!key || normKey(req.query.key) !== key) { res.status(403).send("Forbidden: add ?key= with your GIVEAWAY_KEY"); return; }
   try {
     await ensureTable();
     const r = await db.execute(sql`SELECT name, email, pet_name, country, marketing, entered_at, (photo IS NOT NULL) AS has_photo FROM giveaway_entries ORDER BY entered_at`);
@@ -123,8 +126,8 @@ router.get("/giveaway-entries", async (req: Request, res: Response) => {
 
 // Owner-only: view an entrant's pet photo. /api/giveaway-photo?key=YOURKEY&email=them@example.com
 router.get("/giveaway-photo", async (req: Request, res: Response) => {
-  const key = process.env.GIVEAWAY_KEY;
-  if (!key || req.query.key !== key) { res.status(403).json({ error: "Forbidden" }); return; }
+  const key = normKey(process.env.GIVEAWAY_KEY);
+  if (!key || normKey(req.query.key) !== key) { res.status(403).json({ error: "Forbidden" }); return; }
   const email = String(req.query.email ?? "").trim().toLowerCase();
   const r = await db.execute(sql`SELECT photo FROM giveaway_entries WHERE email = ${email}`);
   const photo = (r.rows[0] as { photo?: string } | undefined)?.photo;
