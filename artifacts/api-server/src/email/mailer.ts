@@ -64,7 +64,7 @@ function baseTemplate(preheader: string, body: string): string {
         <table role="presentation" cellpadding="0" cellspacing="0">
           <tr>
             <td style="border-bottom:2px solid ${GOLD};padding-bottom:10px;text-align:center">
-              <span style="font-size:11px;letter-spacing:.22em;color:${GOLD};opacity:.7;text-transform:uppercase;display:block;margin-bottom:6px">London · Est. 2026</span>
+              <span style="font-size:11px;letter-spacing:.22em;color:${GOLD};opacity:.7;text-transform:uppercase;display:block;margin-bottom:6px"> UK family business · Est. 2026</span>
               <span style="font-size:28px;font-weight:700;letter-spacing:.12em;color:#FAF7F2;text-transform:uppercase">ONJJEM</span>
             </td>
           </tr>
@@ -82,7 +82,7 @@ function baseTemplate(preheader: string, body: string): string {
       <!-- Footer -->
       <tr><td align="center" style="padding-top:32px">
         <p style="font-size:11px;color:${MUTED};margin:0 0 6px">
-          ONJJEM · London, United Kingdom
+          ONJJEM · UK family business
         </p>
         <p style="font-size:11px;color:${MUTED};margin:0">
           <a href="https://onjjem.com/privacy" style="color:${MUTED}">Privacy Policy</a>
