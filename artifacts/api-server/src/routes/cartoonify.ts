@@ -117,7 +117,7 @@ function cachePreview(result: { base64Image: string; mimeType: string }): string
   return id;
 }
 
-async function generateCartoon(base64Image: string, mimeType: string, style?: string) {
+export async function generateCartoon(base64Image: string, mimeType: string, style?: string) {
   const ai = getAI();
   // Nano Banana 2 follows instructions (glasses, facial hair, age) better.
   // If it fails for any reason, fall back to the older model so previews never break.

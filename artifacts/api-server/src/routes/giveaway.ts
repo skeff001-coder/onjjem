@@ -2,7 +2,8 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
-import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail } from "../email/mailer";
+import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail, giveawayCartoonEmail, sendEmailWithAttachment } from "../email/mailer";
+import { generateCartoon } from "./cartoonify";
 import crypto from "node:crypto";
 import { logger } from "../lib/logger";
 
@@ -28,6 +29,8 @@ async function ensureTable(): Promise<void> {
     )`);
   await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS photo TEXT`);
   await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS promo1_sent_at TIMESTAMPTZ`);
+  await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS cartoon TEXT`);
+  await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS cartoon_sent_at TIMESTAMPTZ`);
 }
 
 router.post("/giveaway-entry", async (req: Request, res: Response) => {
@@ -148,7 +151,6 @@ router.get("/giveaway-photo", async (req: Request, res: Response) => {
   res.type(m[1]).send(Buffer.from(m[2], "base64"));
 });
 
-export default router;
 
 
 // ---- Follow-up offer email to entrants who opted in to offers ----
@@ -223,3 +225,83 @@ router.get("/unsubscribe", async (req: Request, res: Response) => {
     res.status(500).send("Something went wrong. Email hello@onjjem.com and we'll remove you.");
   }
 });
+
+
+// ---- Free cartoon email for entrants who uploaded a photo ----
+const imgToken = (email: string) => crypto.createHmac("sha256", "onjjem-cimg:" + normKey(process.env.GIVEAWAY_KEY)).update(email.toLowerCase()).digest("hex").slice(0, 24);
+let cartoonRunning = false;
+let cartoonLog = "";
+
+async function makeAndSendCartoon(e: { name: string; email: string; country: string; photo: string }, to: string): Promise<void> {
+  const m = /^data:(image\/[a-z+]+);base64,(.*)$/s.exec(e.photo || "");
+  if (!m) throw new Error("photo not readable");
+  const out = await generateCartoon(m[2], m[1]);
+  const dataUrl = `data:${out.mimeType};base64,${out.base64Image}`;
+  await db.execute(sql`UPDATE giveaway_entries SET cartoon = ${dataUrl} WHERE email = ${e.email}`);
+  const em = encodeURIComponent(e.email);
+  const mail = giveawayCartoonEmail({
+    name: e.name, country: e.country,
+    imgUrl: `https://onjjem.com/api/giveaway-cartoon-img?e=${em}&t=${imgToken(e.email)}`,
+    claimUrl: `https://onjjem.com/claim.html?e=${em}${e.country === "US" ? "&us=1" : ""}`,
+  });
+  const ext = out.mimeType.includes("png") ? "png" : "jpg";
+  await sendEmailWithAttachment(to, (to === e.email ? "" : "[TEST] ") + mail.subject, mail.html, `my-cartoon.${ext}`, out.base64Image);
+}
+
+router.get("/giveaway-cartoon-img", async (req: Request, res: Response) => {
+  const email = String(req.query.e || "").toLowerCase().trim();
+  if (!email || String(req.query.t || "") !== imgToken(email)) { res.status(404).end(); return; }
+  try {
+    const r = await db.execute(sql`SELECT cartoon FROM giveaway_entries WHERE LOWER(email) = ${email}`);
+    const c = (r.rows[0] as { cartoon?: string } | undefined)?.cartoon;
+    const m = c ? /^data:(image\/[a-z+]+);base64,(.*)$/s.exec(c) : null;
+    if (!m) { res.status(404).end(); return; }
+    res.set("Content-Type", m[1]).set("Cache-Control", "public, max-age=604800").send(Buffer.from(m[2], "base64"));
+  } catch { res.status(500).end(); }
+});
+
+// Owner-only. preview (default) / test (first entrant's cartoon sent to EMAIL_ADMIN) / send (everyone not yet sent).
+router.get("/giveaway-cartoons", async (req: Request, res: Response) => {
+  const key = normKey(process.env.GIVEAWAY_KEY);
+  if (!key || normKey(req.query.key) !== key) { res.status(403).send("Forbidden"); return; }
+  const k = encodeURIComponent(String(req.query.key));
+  const page = (inner: string) => res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:17px system-ui;padding:18px;max-width:640px;margin:auto">${inner}</body>`);
+  try {
+    await ensureTable();
+    const r = await db.execute(sql`SELECT name, email, country, photo FROM giveaway_entries WHERE photo IS NOT NULL AND cartoon_sent_at IS NULL ORDER BY entered_at`);
+    const todo = r.rows as { name: string; email: string; country: string; photo: string }[];
+    const mode = String(req.query.mode || "preview");
+    if (mode === "test") {
+      if (!todo.length) { page(`Nobody left to send to.`); return; }
+      const admin = process.env.EMAIL_ADMIN || "";
+      await makeAndSendCartoon(todo[0], admin);
+      page(`✅ Test sent to <b>${admin}</b> using <b>${todo[0].name}</b>'s photo. Check your inbox (and Spam).<br><br><a href="/api/giveaway-cartoons?key=${k}">← Back</a>`);
+      return;
+    }
+    if (mode === "send") {
+      if (cartoonRunning) { page(`Already sending… ${cartoonLog}<br><br><a href="/api/giveaway-cartoons?key=${k}">Refresh</a>`); return; }
+      cartoonRunning = true; cartoonLog = `0 of ${todo.length} done`;
+      (async () => {
+        let ok = 0, fail = 0;
+        for (const e of todo) {
+          try { await makeAndSendCartoon(e, e.email); await db.execute(sql`UPDATE giveaway_entries SET cartoon_sent_at = NOW() WHERE email = ${e.email}`); ok++; }
+          catch (err) { fail++; logger.warn({ err, email: e.email }, "giveaway cartoon failed"); }
+          cartoonLog = `${ok} sent, ${fail} failed, of ${todo.length}`;
+          await new Promise((r) => setTimeout(r, 1500));
+        }
+        logger.info({ ok, fail }, "Giveaway cartoons done");
+        cartoonRunning = false;
+      })();
+      page(`🎨 Making and sending <b>${todo.length}</b> cartoons now (about ${Math.ceil(todo.length * 15 / 60)} min).<br><br><a href="/api/giveaway-cartoons?key=${k}">Refresh this page</a> to check progress. "Still to send" reaches 0 when done. Nobody gets it twice.`);
+      return;
+    }
+    page(`<h2>🎨 Free cartoon email</h2><p><b>Still to send: ${todo.length}</b> entrants who uploaded a photo.${cartoonRunning ? `<br>⏳ Sending now: ${cartoonLog}` : (cartoonLog ? `<br>Last run: ${cartoonLog}` : "")}</p>
+      <p><a href="/api/giveaway-cartoons?key=${k}&mode=test" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#eee;color:#111;font-weight:700;text-decoration:none">1️⃣ Send a test to myself (takes ~20 sec)</a></p>
+      <p><a href="/api/giveaway-cartoons?key=${k}&mode=send" onclick="return confirm('Make and send ${todo.length} cartoons now?')" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#8E2DE2;color:#fff;font-weight:700;text-decoration:none">2️⃣ Send to all ${todo.length} now</a></p>
+      <p style="color:#666">Each person gets their own photo turned into a cartoon, shown in the email and attached, with a "Put it on a gift" button. Costs a few pence each in Google credit.</p>`);
+  } catch (err) {
+    res.status(500).send(err instanceof Error ? err.message : "error");
+  }
+});
+
+export default router;

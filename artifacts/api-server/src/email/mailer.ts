@@ -819,3 +819,29 @@ export async function sendRawEmail(to: string, subject: string, html: string): P
   const { error } = await resend.emails.send({ from: FROM(), to, subject, html });
   if (error) throw new Error(error.message);
 }
+
+// Free cartoon for giveaway entrants who uploaded a photo (the thank-you gift promised on the form).
+export function giveawayCartoonEmail(data: { name: string; country: string; imgUrl: string; claimUrl: string }): { subject: string; html: string } {
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+  const us = data.country === "US";
+  const name = esc((data.name || "").trim().split(/\s+/)[0] || "there");
+  const body = `
+    <tr><td style="padding:36px 40px 28px">
+      <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">Your free cartoon 🎨</p>
+      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 16px;line-height:1.25">Hi ${name}, here's your photo as a cartoon!</h1>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">Thanks for entering our giveaway. As promised, we turned the photo you sent into a cartoon. It's attached too, so you can save it.</p>
+      <p style="margin:0 0 22px;text-align:center"><img src="${data.imgUrl}" alt="Your cartoon" width="420" style="max-width:100%;height:auto;border-radius:14px;border:1px solid rgba(201,150,12,.35)"></p>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 6px">Want it on a mug, cushion or blanket? ${us ? "Cartoons are always free in our US shop." : "Your cartoon is <b>free on any gift until 30 November</b> (normally £1.99)."} Just upload the same photo and choose the cartoon.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:14px auto 22px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:2px">
+        <a href="${data.claimUrl}" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 34px;font-family:Georgia,serif;font-size:16px;font-weight:700;color:#F5D78E;text-decoration:none">Put it on a gift ✨</a></td></tr></table>
+      <p style="font-size:12px;color:${MUTED};line-height:1.6;margin:14px 0 0">You're getting this one-off email because you uploaded a photo when you entered our giveaway. You're still in the draw (Sun 1 Nov). We'll never ask for card details to claim a prize.</p>
+    </td></tr>`;
+  return { subject: "🎨 Your photo as a cartoon (free!)", html: baseTemplate("Here's the cartoon of the photo you sent us.", body) };
+}
+
+export async function sendEmailWithAttachment(to: string, subject: string, html: string, filename: string, base64: string): Promise<void> {
+  const resend = getResend();
+  if (!resend) throw new Error("RESEND_API_KEY not set");
+  const { error } = await resend.emails.send({ from: FROM(), to, subject, html, attachments: [{ filename, content: base64 }] });
+  if (error) throw new Error(error.message);
+}
