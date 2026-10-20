@@ -2,7 +2,8 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
-import { sendGiveawayConfirmation, sendGiveawayAdminEntry } from "../email/mailer";
+import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail } from "../email/mailer";
+import crypto from "node:crypto";
 import { logger } from "../lib/logger";
 
 // Ignore spaces/case so a stray space in the Railway value still works
@@ -26,6 +27,7 @@ async function ensureTable(): Promise<void> {
       entered_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`);
   await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS photo TEXT`);
+  await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS promo1_sent_at TIMESTAMPTZ`);
 }
 
 router.post("/giveaway-entry", async (req: Request, res: Response) => {
@@ -147,3 +149,77 @@ router.get("/giveaway-photo", async (req: Request, res: Response) => {
 });
 
 export default router;
+
+
+// ---- Follow-up offer email to entrants who opted in to offers ----
+const unsubToken = (email: string) => crypto.createHmac("sha256", "onjjem-unsub:" + normKey(process.env.GIVEAWAY_KEY)).update(email.toLowerCase()).digest("hex").slice(0, 24);
+const promoFor = (e: { name: string; email: string; country: string }) => {
+  const em = encodeURIComponent(e.email);
+  return giveawayPromoEmail({
+    name: e.name, country: e.country,
+    claimUrl: `https://onjjem.com/claim.html?e=${em}${e.country === "US" ? "&us=1" : ""}`,
+    unsubUrl: `https://onjjem.com/api/unsubscribe?e=${em}&t=${unsubToken(e.email)}`,
+  });
+};
+let promoRunning = false;
+
+// Owner-only. ?mode=preview (default) shows the email + who gets it; mode=test sends one to EMAIL_ADMIN; mode=send emails everyone not yet sent.
+router.get("/giveaway-promo", async (req: Request, res: Response) => {
+  const key = normKey(process.env.GIVEAWAY_KEY);
+  if (!key || normKey(req.query.key) !== key) { res.status(403).send("Forbidden"); return; }
+  try {
+    await ensureTable();
+    const r = await db.execute(sql`SELECT name, email, country FROM giveaway_entries WHERE marketing = TRUE AND promo1_sent_at IS NULL ORDER BY entered_at`);
+    const todo = r.rows as { name: string; email: string; country: string }[];
+    const mode = String(req.query.mode || "preview");
+    const k = encodeURIComponent(String(req.query.key));
+    if (mode === "test") {
+      const admin = process.env.EMAIL_ADMIN || "";
+      const sample = todo.find((e) => e.country !== "US") || { name: "Owen", email: admin, country: "GB" };
+      const m = promoFor({ ...sample, email: admin });
+      await sendRawEmail(admin, "[TEST] " + m.subject, m.html);
+      res.type("html").send(`<body style="font:17px system-ui;padding:20px">✅ Test email sent to <b>${admin}</b>. Check your inbox (and Spam).<br><br><a href="/api/giveaway-promo?key=${k}">← Back</a></body>`);
+      return;
+    }
+    if (mode === "send") {
+      if (promoRunning) { res.type("html").send(`<body style="font:17px system-ui;padding:20px">Already sending, please wait a minute and refresh.</body>`); return; }
+      promoRunning = true;
+      (async () => {
+        let ok = 0;
+        for (const e of todo) {
+          try { const m = promoFor(e); await sendRawEmail(e.email, m.subject, m.html); await db.execute(sql`UPDATE giveaway_entries SET promo1_sent_at = NOW() WHERE email = ${e.email}`); ok++; }
+          catch (err) { logger.warn({ err, email: e.email }, "promo email failed"); }
+          await new Promise((r) => setTimeout(r, 700));
+        }
+        logger.info({ ok, total: todo.length }, "Giveaway promo sent");
+        promoRunning = false;
+      })();
+      res.type("html").send(`<body style="font:17px system-ui;padding:20px">🚀 Sending to <b>${todo.length}</b> people now. It takes about ${Math.ceil(todo.length * 0.8)} seconds.<br><br>Refresh <a href="/api/giveaway-promo?key=${k}">this page</a> in a minute: "Still to send" should be 0. Anyone already sent is never emailed twice.</body>`);
+      return;
+    }
+    const sample = promoFor(todo[0] || { name: "Owen", email: "you@example.com", country: "GB" });
+    res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:16px system-ui;padding:14px;max-width:640px;margin:auto">
+      <h2>📧 Giveaway offer email</h2><p><b>Still to send: ${todo.length}</b> people who ticked "send me offers" (UK ${todo.filter((e) => e.country !== "US").length}, US ${todo.filter((e) => e.country === "US").length}).</p>
+      <p><a href="/api/giveaway-promo?key=${k}&mode=test" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#eee;color:#111;font-weight:700;text-decoration:none">1️⃣ Send a test to myself</a></p>
+      <p><a href="/api/giveaway-promo?key=${k}&mode=send" onclick="return confirm('Send to ${todo.length} people now?')" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#8E2DE2;color:#fff;font-weight:700;text-decoration:none">2️⃣ Send to all ${todo.length} now</a></p>
+      <p style="color:#666">Subject: <b>${sample.subject}</b></p><iframe srcdoc="${sample.html.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}" style="width:100%;height:900px;border:1px solid #ddd;border-radius:12px"></iframe></body>`);
+  } catch (err) {
+    promoRunning = false;
+    res.status(500).send(err instanceof Error ? err.message : "error");
+  }
+});
+
+// One-click unsubscribe from offer emails.
+router.get("/unsubscribe", async (req: Request, res: Response) => {
+  const email = String(req.query.e || "").toLowerCase().trim();
+  if (!email || String(req.query.t || "") !== unsubToken(email)) { res.status(400).send("This unsubscribe link isn't valid. Email hello@onjjem.com and we'll remove you."); return; }
+  try {
+    await ensureTable();
+    await db.execute(sql`UPDATE giveaway_entries SET marketing = FALSE WHERE LOWER(email) = ${email}`);
+    await db.execute(sql`CREATE TABLE IF NOT EXISTS email_subscribers (email TEXT PRIMARY KEY, subscribed_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
+    await db.execute(sql`DELETE FROM email_subscribers WHERE LOWER(email) = ${email}`);
+    res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:17px system-ui;padding:30px;text-align:center"><h2>You're unsubscribed</h2><p>We won't send you any more offers. You're still in the giveaway draw.</p><p><a href="https://onjjem.com">onjjem.com</a></p></body>`);
+  } catch (err) {
+    res.status(500).send("Something went wrong. Email hello@onjjem.com and we'll remove you.");
+  }
+});

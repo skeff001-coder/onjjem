@@ -787,3 +787,35 @@ export async function sendGiveawayAdminEntry(data: { email: string; name: string
   await resend.emails.send({ from: FROM(), to: adminEmail, subject: `🎁 Giveaway entry #${data.total}: ${data.petName}`, html: baseTemplate("New giveaway entry", body),
     attachments: pm ? [{ filename: `${data.petName.replace(/[^a-z0-9]+/gi, "-") || "pet"}.${pm[1] === "jpeg" ? "jpg" : pm[1]}`, content: pm[2] }] : undefined });
 }
+
+// Giveaway follow-up offer to entrants who ticked "send me offers".
+export function giveawayPromoEmail(data: { name: string; country: string; claimUrl: string; unsubUrl: string }): { subject: string; html: string } {
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+  const us = data.country === "US";
+  const name = esc((data.name || "").trim().split(/\s+/)[0] || "there");
+  const btn = (label: string) => `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px auto 24px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:2px">
+        <a href="${data.claimUrl}" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 34px;font-family:Georgia,serif;font-size:16px;font-weight:700;color:#F5D78E;text-decoration:none">${label}</a></td></tr></table>`;
+  const perks = us
+    ? `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 10px">🎨 Your photo turned into a <b>cartoon, free</b> on every gift.</p>
+       <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 20px">💸 <b style="color:#F5D78E">10% off</b> your first order with code <b style="color:#F5D78E">WELCOME10</b>.</p>`
+    : `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 10px">🎨 As a thank you for entering, your <b>cartoon is FREE</b> on any gift until 30 November (normally £1.99).</p>
+       <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 20px">💸 Plus <b style="color:#F5D78E">10% off</b> your first order with code <b style="color:#F5D78E">WELCOME10</b>.</p>`;
+  const body = `
+    <tr><td style="padding:36px 40px 28px">
+      <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">Thanks for entering 🎁</p>
+      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 18px;line-height:1.25">Hi ${name}, your free cartoon is waiting</h1>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">You're in the draw for the ${us ? "$50" : "£40"} gift card (we pick the winner on Sunday 1 November). While you wait, here's a little something for being one of our first entrants:</p>
+      ${perks}
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 6px">Mugs, blankets, cushions, prints, calendars and more, with your own photo, printed and posted to your door.${us ? "" : " Order by 9 December for Christmas."}</p>
+      ${btn("Make my gift ✨")}
+      <p style="font-size:12px;color:${MUTED};line-height:1.6;margin:14px 0 0">You're getting this because you ticked "send me offers" when you entered our giveaway. <a href="${data.unsubUrl}" style="color:${MUTED}">Unsubscribe</a> with one click. ONJJEM, a UK family business.</p>
+    </td></tr>`;
+  return { subject: us ? "Your free cartoon + 10% off 🎁" : "Your free cartoon is waiting 🎁 (+10% off)", html: baseTemplate("A thank-you for entering the ONJJEM giveaway.", body) };
+}
+
+export async function sendRawEmail(to: string, subject: string, html: string): Promise<void> {
+  const resend = getResend();
+  if (!resend) throw new Error("RESEND_API_KEY not set");
+  const { error } = await resend.emails.send({ from: FROM(), to, subject, html });
+  if (error) throw new Error(error.message);
+}
