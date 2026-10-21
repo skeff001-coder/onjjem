@@ -22,7 +22,7 @@ async function ensureTable() {
     id TEXT PRIMARY KEY, product TEXT NOT NULL, mime TEXT NOT NULL, image_b64 TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
   await db.execute(sql`ALTER TABLE printables ADD COLUMN IF NOT EXISTS photo_b64 TEXT`);
-  await db.execute(sql`DELETE FROM printables WHERE created_at < NOW() - INTERVAL '60 days'`);
+  await db.execute(sql`DELETE FROM printables WHERE created_at < NOW() - INTERVAL '120 days'`);
 }
 
 type Row = { product: string; mime: string; image_b64: string; photo_b64: string | null };
