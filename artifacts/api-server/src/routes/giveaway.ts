@@ -274,11 +274,11 @@ router.get("/giveaway-cartoons", async (req: Request, res: Response) => {
     if (mode === "test") {
       if (!todo.length) { page(`Nobody left to send to.`); return; }
       const admin = process.env.EMAIL_ADMIN || "";
-      cartoonLog = "⏳ Test: making the cartoon…";
+      cartoonLog = "🎨 Your artwork is on the easel… sketching, colouring and adding the sparkle.";
       makeAndSendCartoon(todo[0], admin)
         .then(() => { cartoonLog = `✅ Test sent to ${admin} (${todo[0].name}'s photo). Check Yahoo + Spam.`; })
         .catch((err) => { cartoonLog = `❌ Test failed: ${err instanceof Error ? err.message : String(err)}`; logger.warn({ err }, "cartoon test failed"); });
-      page(`⏳ Making the test cartoon now. It takes about 30 seconds.<br><br>Then <a href="/api/giveaway-cartoons?key=${k}">tap here to refresh</a> and read the status line. It will say ✅ sent, or ❌ with the reason.`);
+      page(`<div style="text-align:center;padding-top:30px"><div style="font-size:64px">🎨</div><h2>Your artwork is on the easel…</h2><p id=st style="font-size:19px;color:#8E2DE2;font-weight:700">Sketching the outline ✏️</p><p style="color:#666">One-of-a-kind cartoons take about 30 seconds. This page checks by itself.</p></div><script>var m=["Sketching the outline ✏️","Mixing the colours 🎨","Painting the details 🖌️","Adding the sparkle ✨","Framing your masterpiece 🖼️","Popping it in the post 💌"],i=0;setInterval(function(){i=Math.min(i+1,m.length-1);document.getElementById("st").textContent=m[i]},5000);setTimeout(function(){location.href="/api/giveaway-cartoons?key=${k}"},35000)</script>`);
       return;
     }
     if (mode === "send") {
@@ -295,10 +295,10 @@ router.get("/giveaway-cartoons", async (req: Request, res: Response) => {
         logger.info({ ok, fail }, "Giveaway cartoons done");
         cartoonRunning = false;
       })();
-      page(`🎨 Making and sending <b>${todo.length}</b> cartoons now (about ${Math.ceil(todo.length * 15 / 60)} min).<br><br><a href="/api/giveaway-cartoons?key=${k}">Refresh this page</a> to check progress. "Still to send" reaches 0 when done. Nobody gets it twice.`);
+      page(`<div style="text-align:center;padding-top:30px"><div style="font-size:64px">🖼️</div><h2>The studio is busy!</h2><p style="font-size:19px;color:#8E2DE2;font-weight:700">Hand-crafting ${todo.length} one-of-a-kind cartoons ✨</p><p style="color:#666">About ${Math.ceil(todo.length * 18 / 60)} minutes. You can close this page, it carries on by itself. Nobody gets it twice.</p><p><a href="/api/giveaway-cartoons?key=${k}">Check progress</a></p></div><script>setTimeout(function(){location.href="/api/giveaway-cartoons?key=${k}"},60000)</script>`);
       return;
     }
-    page(`<h2>🎨 Free cartoon email</h2><p><b>Still to send: ${todo.length}</b> entrants who uploaded a photo.${cartoonRunning ? `<br>⏳ Sending now: ${cartoonLog}` : (cartoonLog ? `<br><b>Status:</b> ${cartoonLog}` : "")}</p>
+    page(`<h2>🎨 Free cartoon email</h2><p><b>Still to send: ${todo.length}</b> entrants who uploaded a photo.${cartoonRunning ? `<br>🖌️ In the studio: ${cartoonLog}` : (cartoonLog ? `<br><b>Status:</b> ${cartoonLog}` : "")}</p>
       <p><a href="/api/giveaway-cartoons?key=${k}&mode=test" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#eee;color:#111;font-weight:700;text-decoration:none">1️⃣ Send a test to myself (takes ~20 sec)</a></p>
       <p><a href="/api/giveaway-cartoons?key=${k}&mode=send" onclick="return confirm('Make and send ${todo.length} cartoons now?')" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#8E2DE2;color:#fff;font-weight:700;text-decoration:none">2️⃣ Send to all ${todo.length} now</a></p>
       <p style="color:#666">Each person gets their own photo turned into a cartoon, shown in the email and attached, with a "Put it on a gift" button. Costs a few pence each in Google credit.</p>`);
