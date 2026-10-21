@@ -196,11 +196,17 @@ const COLORING_PROMPT =
   "layout. Cute and cheerful, never scary. No text, no letters, no " +
   "watermarks. Output only the image.";
 
-export async function generateColoringPage(base64Image: string, mimeType: string) {
+const XMAS_COLORING_PROMPT = COLORING_PROMPT_BASE()
+  .replace("fun Halloween costumes that suit them (a witch hat, a pumpkin outfit, a friendly vampire cape, cat ears, a superhero cape)", "cosy Christmas outfits that suit them (Santa hats, elf hats, reindeer antlers, Christmas jumpers, scarves)")
+  .replace("simple Halloween things to colour in: smiling jack-o'-lanterns, friendly bats, a big moon, sweets and a cute haunted house", "simple Christmas things to colour in: a decorated Christmas tree, wrapped presents, stockings, snowflakes, a smiling snowman and stars")
+  .replace("Cute and cheerful, never scary.", "Cosy, festive and cheerful.");
+function COLORING_PROMPT_BASE() { return COLORING_PROMPT; }
+
+export async function generateColoringPage(base64Image: string, mimeType: string, theme: "halloween" | "christmas" = "halloween") {
   const ai = getAI();
   const request = (model: string) => ai.models.generateContent({
     model,
-    contents: [{ inlineData: { mimeType, data: base64Image } }, { text: COLORING_PROMPT }],
+    contents: [{ inlineData: { mimeType, data: base64Image } }, { text: theme === "christmas" ? XMAS_COLORING_PROMPT : COLORING_PROMPT }],
     config: { responseModalities: ["IMAGE"] },
   });
   let response;

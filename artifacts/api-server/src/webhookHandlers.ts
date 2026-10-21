@@ -213,7 +213,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
           to: email, name: (details?.["name"] as string | undefined) ?? undefined, product: p.product, isUS,
           downloadUrl: `https://onjjem.com/api/printable-download?session_id=${sessionId}&dl=1`,
           contestUrl: `https://onjjem.com/${isUS ? "us/" : ""}printables?paid=1&session_id=${sessionId}#contest`,
-          filename: PRINTABLES[p.product]?.file || "onjjem.png", base64: p.image_b64,
+          filename: PRINTABLES[p.product]?.file || "onjjem.png", base64: p.image_b64, xmasBase64: (p as any).xmas_b64 ?? null,
         });
       }
       const admin = process.env.EMAIL_ADMIN;

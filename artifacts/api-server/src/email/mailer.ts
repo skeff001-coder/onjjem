@@ -847,7 +847,7 @@ export async function sendEmailWithAttachment(to: string, subject: string, html:
 }
 
 // Instant digital printable (Halloween colouring page / digital cartoon), sent after payment.
-export async function sendPrintableEmail(data: { to: string; name?: string; product: string; downloadUrl: string; contestUrl?: string; filename: string; base64: string; isUS: boolean }): Promise<void> {
+export async function sendPrintableEmail(data: { to: string; name?: string; product: string; downloadUrl: string; contestUrl?: string; xmasBase64?: string | null; filename: string; base64: string; isUS: boolean }): Promise<void> {
   const resend = getResend();
   if (!resend) { logger.warn("RESEND_API_KEY not set: skipping printable email"); return; }
   const hi = data.name ? `Hi ${data.name.split(" ")[0]},` : "Hi there,";
@@ -861,8 +861,8 @@ export async function sendPrintableEmail(data: { to: string; name?: string; prod
       ${coloring ? `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 16px">🖨️ <b>To print:</b> open the file, tap Share or Print, and print on ${data.isUS ? "Letter" : "A4"} paper. Print as many copies as you like for your family.</p>` : `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 16px">📲 Save it to your photos to use as a wallpaper or profile picture, or print it at home.</p>`}
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px auto 24px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:2px">
         <a href="${data.downloadUrl}" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 34px;font-family:Georgia,serif;font-size:16px;font-weight:700;color:#F5D78E;text-decoration:none">Download my ${what}</a></td></tr></table>
-      ${coloring ? `<div style="border:2px solid ${GOLD};border-radius:14px;padding:14px 16px;margin:0 0 18px"><p style="font-size:16px;color:#FAF7F2;font-weight:700;margin:0 0 6px">🏆 Colouring competition</p><p style="font-size:14px;color:${TEXT};line-height:1.6;margin:0 0 10px">Your order includes one entry. When it's coloured in, send us a photo of it. The best colouring wins a ${data.isUS ? "$25" : "£20"} gift card plus their artwork on a mug! Closes Mon 2 Nov, 8pm UK.</p><a href="${data.contestUrl}" style="color:${GOLD};font-weight:700">Enter the competition →</a></div>` : ""}
-      ${coloring ? `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 14px">🎄 <b>Bonus:</b> in early December we'll email you a FREE Christmas ${data.isUS ? "coloring" : "colouring"} page of the same photo.</p>` : ""}
+      ${coloring ? `<div style="border:2px solid ${GOLD};border-radius:14px;padding:14px 16px;margin:0 0 18px"><p style="font-size:16px;color:#FAF7F2;font-weight:700;margin:0 0 6px">🏆 Colouring competition</p><p style="font-size:14px;color:${TEXT};line-height:1.6;margin:0 0 10px">Your order includes one entry. When it's coloured in, send us a photo of it. The best colouring wins their artwork on a beautiful ceramic mug, plus a ${data.isUS ? "$25" : "£20"} gift card to spend at ONJJEM! Closes Mon 2 Nov, 8pm UK.</p><a href="${data.contestUrl}" style="color:${GOLD};font-weight:700">Enter the competition →</a></div>` : ""}
+      ${coloring && data.xmasBase64 ? `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 14px">🎄 <b>Bonus:</b> your FREE Christmas ${data.isUS ? "coloring" : "colouring"} page is attached too. <a href="${data.downloadUrl}&which=xmas" style="color:${GOLD}">Download it here</a>.</p>` : ""}
       <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 6px">Love it? We can print the same cartoon on a blanket, mug or canvas: <a href="https://onjjem.com${data.isUS ? "/us/" : "/"}" style="color:${GOLD}">onjjem.com</a></p>
       <p style="font-size:12px;color:${MUTED};line-height:1.6;margin:14px 0 0">Any problems? Just reply to this email.</p>
     </td></tr>`;
@@ -870,7 +870,7 @@ export async function sendPrintableEmail(data: { to: string; name?: string; prod
     from: FROM(), to: data.to,
     subject: `🎃 Your ${what} is ready to download`,
     html: baseTemplate(`Your ${what} is attached.`, body),
-    attachments: [{ filename: data.filename, content: data.base64 }],
+    attachments: [{ filename: data.filename, content: data.base64 }, ...(data.xmasBase64 ? [{ filename: "christmas-colouring-page.png", content: data.xmasBase64 }] : [])],
   });
   if (error) throw new Error(error.message);
 }
