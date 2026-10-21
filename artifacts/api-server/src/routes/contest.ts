@@ -54,7 +54,7 @@ router.get("/contest-entries", async (req: Request, res: Response) => {
   const r = await db.execute(sql`SELECT id, name, email, child, country, created_at FROM contest_entries ORDER BY created_at DESC`);
   const esc = (v: unknown) => String(v ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
   const k = encodeURIComponent(String(req.query.key));
-  const cards = (r.rows as any[]).map((e) => `<div style="border:1px solid #ddd;border-radius:12px;padding:10px;margin:0 0 12px"><a href="/api/contest-photo?key=${k}&id=${e.id}"><img src="/api/contest-photo?key=${k}&id=${e.id}" style="width:100%;border-radius:8px" loading="lazy"></a><p style="margin:6px 0 0"><a href="/api/contest-xmas?key=${k}&id=${e.id}" style="display:inline-block;margin:0 0 6px;padding:8px 12px;border-radius:10px;background:#1a7a3a;color:#fff;font-weight:700;text-decoration:none">🎄 Make their Christmas cartoon (takes ~30s)</a><br><b>${esc(e.child || "-")}</b> · entered by ${esc(e.name)} (${esc(e.email)}) · ${esc(e.country)} · ${new Date(e.created_at).toLocaleString("en-GB", { timeZone: "Europe/London", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p></div>`).join("");
+  const cards = (r.rows as any[]).map((e) => `<div style="border:1px solid #ddd;border-radius:12px;padding:10px;margin:0 0 12px"><a href="/api/contest-photo?key=${k}&id=${e.id}"><img src="/api/contest-photo?key=${k}&id=${e.id}" style="width:100%;border-radius:8px" loading="lazy"></a><p style="margin:6px 0 0"><a href="/api/contest-xmas?key=${k}&id=${e.id}&style=plain" style="display:inline-block;margin:0 6px 6px 0;padding:8px 12px;border-radius:10px;background:#8E2DE2;color:#fff;font-weight:700;text-decoration:none">✨ Make their cartoon (~30s)</a><br><b>${esc(e.child || "-")}</b> · entered by ${esc(e.name)} (${esc(e.email)}) · ${esc(e.country)} · ${new Date(e.created_at).toLocaleString("en-GB", { timeZone: "Europe/London", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p></div>`).join("");
   res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Colouring entries</title><body style="font:15px system-ui;padding:14px;max-width:640px;margin:auto"><h2>🖍️ Colouring competition: ${r.rows.length} entries</h2><p style="color:#666">Closes Mon 2 Nov, 8pm UK. Pick the best colouring. Newest first.</p>${cards || "<p>No entries yet.</p>"}</body>`);
 });
 
@@ -85,7 +85,7 @@ router.get("/contest-xmas", async (req: Request, res: Response) => {
     const photo = (pr?.rows[0] as { photo_b64?: string } | undefined)?.photo_b64;
     const m = photo ? /^data:(image\/[a-z+]+);base64,(.+)$/s.exec(photo) : null;
     if (!m) { res.status(404).send("Original photo not found (photos are kept for 60 days)."); return; }
-    const out = await generateCartoon(m[2], m[1], "christmas");
+    const out = await generateCartoon(m[2], m[1], req.query.style === "plain" ? undefined : "christmas");
     res.set("Content-Type", out.mimeType).set("Content-Disposition", `inline; filename="christmas-cartoon.png"`).send(Buffer.from(out.base64Image, "base64"));
   } catch (err) {
     logger.error({ err: err instanceof Error ? err.message : String(err) }, "contest xmas failed");
