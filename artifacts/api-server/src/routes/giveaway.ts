@@ -274,8 +274,11 @@ router.get("/giveaway-cartoons", async (req: Request, res: Response) => {
     if (mode === "test") {
       if (!todo.length) { page(`Nobody left to send to.`); return; }
       const admin = process.env.EMAIL_ADMIN || "";
-      await makeAndSendCartoon(todo[0], admin);
-      page(`✅ Test sent to <b>${admin}</b> using <b>${todo[0].name}</b>'s photo. Check your inbox (and Spam).<br><br><a href="/api/giveaway-cartoons?key=${k}">← Back</a>`);
+      cartoonLog = "⏳ Test: making the cartoon…";
+      makeAndSendCartoon(todo[0], admin)
+        .then(() => { cartoonLog = `✅ Test sent to ${admin} (${todo[0].name}'s photo). Check Yahoo + Spam.`; })
+        .catch((err) => { cartoonLog = `❌ Test failed: ${err instanceof Error ? err.message : String(err)}`; logger.warn({ err }, "cartoon test failed"); });
+      page(`⏳ Making the test cartoon now. It takes about 30 seconds.<br><br>Then <a href="/api/giveaway-cartoons?key=${k}">tap here to refresh</a> and read the status line. It will say ✅ sent, or ❌ with the reason.`);
       return;
     }
     if (mode === "send") {
@@ -295,7 +298,7 @@ router.get("/giveaway-cartoons", async (req: Request, res: Response) => {
       page(`🎨 Making and sending <b>${todo.length}</b> cartoons now (about ${Math.ceil(todo.length * 15 / 60)} min).<br><br><a href="/api/giveaway-cartoons?key=${k}">Refresh this page</a> to check progress. "Still to send" reaches 0 when done. Nobody gets it twice.`);
       return;
     }
-    page(`<h2>🎨 Free cartoon email</h2><p><b>Still to send: ${todo.length}</b> entrants who uploaded a photo.${cartoonRunning ? `<br>⏳ Sending now: ${cartoonLog}` : (cartoonLog ? `<br>Last run: ${cartoonLog}` : "")}</p>
+    page(`<h2>🎨 Free cartoon email</h2><p><b>Still to send: ${todo.length}</b> entrants who uploaded a photo.${cartoonRunning ? `<br>⏳ Sending now: ${cartoonLog}` : (cartoonLog ? `<br><b>Status:</b> ${cartoonLog}` : "")}</p>
       <p><a href="/api/giveaway-cartoons?key=${k}&mode=test" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#eee;color:#111;font-weight:700;text-decoration:none">1️⃣ Send a test to myself (takes ~20 sec)</a></p>
       <p><a href="/api/giveaway-cartoons?key=${k}&mode=send" onclick="return confirm('Make and send ${todo.length} cartoons now?')" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#8E2DE2;color:#fff;font-weight:700;text-decoration:none">2️⃣ Send to all ${todo.length} now</a></p>
       <p style="color:#666">Each person gets their own photo turned into a cartoon, shown in the email and attached, with a "Put it on a gift" button. Costs a few pence each in Google credit.</p>`);
