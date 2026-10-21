@@ -8,6 +8,7 @@
 // discount and Stripe's international card fee (~4.5% + 20p).
 
 import type { ProdigiProduct } from "./fulfilment/prodigi";
+import { WALL_US_PRICES, WALL_PRODIGI_PRODUCTS } from "./wallArtShop";
 
 export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }> = {
   // Fleece blankets — cost $20/$35/$50 + $12.95 shipping
@@ -232,3 +233,7 @@ export const US_GIFT_CARDS: Record<string, number> = {
   "us-giftcard-75": 7500,
   "us-giftcard-100": 10000,
 };
+
+// Wall art upgrade (canvases + poster hangers), see wallArtShop.ts
+Object.assign(US_SKU_PRICES, WALL_US_PRICES);
+for (const [k, v] of Object.entries(WALL_PRODIGI_PRODUCTS)) if (k.startsWith("US-")) US_PRODIGI_PRODUCTS[k] = v;

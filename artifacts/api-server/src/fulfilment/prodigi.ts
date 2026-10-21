@@ -25,6 +25,7 @@ import { logger } from "../lib/logger";
 import { ObjectStorageService } from "../lib/objectStorage";
 import { US_PRODIGI_PRODUCTS } from "../usShop";
 import { FOOTBALL_PRODIGI_PRODUCTS } from "../footballShop";
+import { WALL_PRODIGI_PRODUCTS } from "../wallArtShop";
 
 // ── SKU → Prodigi product mapping ────────────────────────────────────────────
 // Maps our website SKU to a Prodigi product SKU (+ optional copies/attributes).
@@ -512,7 +513,7 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
 };
 
 // US shop products (onjjem.com/us), made and shipped inside the US.
-Object.assign(PRODIGI_PRODUCTS, US_PRODIGI_PRODUCTS, FOOTBALL_PRODIGI_PRODUCTS);
+Object.assign(PRODIGI_PRODUCTS, US_PRODIGI_PRODUCTS, FOOTBALL_PRODIGI_PRODUCTS, WALL_PRODIGI_PRODUCTS);
 
 
 // ── Types ─────────────────────────────────────────────────────────────────────

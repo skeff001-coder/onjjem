@@ -1,4 +1,5 @@
 import { FOOTBALL_SKU_PRICES } from "./footballShop";
+import { WALL_SKU_PRICES } from "./wallArtShop";
 export const SHOP_SKU_PRICES = {
   // ========================================
   // HOUSEHOLD PRODUCTS (Prodigi)
@@ -315,6 +316,7 @@ export const SHOP_SKU_PRICES = {
 
   // Kids' town football T-shirts (generated in footballShop.ts)
   ...FOOTBALL_SKU_PRICES,
+  ...WALL_SKU_PRICES,
 };
 
 // Export total SKU count for reference
