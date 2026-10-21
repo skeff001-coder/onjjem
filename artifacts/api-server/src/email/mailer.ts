@@ -845,3 +845,30 @@ export async function sendEmailWithAttachment(to: string, subject: string, html:
   const { error } = await resend.emails.send({ from: FROM(), to, subject, html, attachments: [{ filename, content: base64 }] });
   if (error) throw new Error(error.message);
 }
+
+// Instant digital printable (Halloween colouring page / digital cartoon), sent after payment.
+export async function sendPrintableEmail(data: { to: string; name?: string; product: string; downloadUrl: string; filename: string; base64: string; isUS: boolean }): Promise<void> {
+  const resend = getResend();
+  if (!resend) { logger.warn("RESEND_API_KEY not set: skipping printable email"); return; }
+  const hi = data.name ? `Hi ${data.name.split(" ")[0]},` : "Hi there,";
+  const coloring = data.product === "coloring";
+  const what = coloring ? (data.isUS ? "Halloween coloring page" : "Halloween colouring page") : "Halloween cartoon";
+  const body = `
+    <tr><td style="padding:36px 40px 28px">
+      <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">Your download 🎃</p>
+      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 16px;line-height:1.25">Here's your ${what}!</h1>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 16px">${hi} thank you for your order. Your file is attached to this email, and you can download it again any time with the button below.</p>
+      ${coloring ? `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 16px">🖨️ <b>To print:</b> open the file, tap Share or Print, and print on ${data.isUS ? "Letter" : "A4"} paper. Print as many copies as you like for your family.</p>` : `<p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 16px">📲 Save it to your photos to use as a wallpaper or profile picture, or print it at home.</p>`}
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px auto 24px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:2px">
+        <a href="${data.downloadUrl}" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 34px;font-family:Georgia,serif;font-size:16px;font-weight:700;color:#F5D78E;text-decoration:none">Download my ${what}</a></td></tr></table>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 6px">Love it? We can print the same cartoon on a blanket, mug or canvas: <a href="https://onjjem.com${data.isUS ? "/us/" : "/"}" style="color:${GOLD}">onjjem.com</a></p>
+      <p style="font-size:12px;color:${MUTED};line-height:1.6;margin:14px 0 0">Any problems? Just reply to this email.</p>
+    </td></tr>`;
+  const { error } = await resend.emails.send({
+    from: FROM(), to: data.to,
+    subject: `🎃 Your ${what} is ready to download`,
+    html: baseTemplate(`Your ${what} is attached.`, body),
+    attachments: [{ filename: data.filename, content: data.base64 }],
+  });
+  if (error) throw new Error(error.message);
+}

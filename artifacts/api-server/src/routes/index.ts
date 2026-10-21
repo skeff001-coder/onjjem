@@ -10,6 +10,7 @@ import cartoonifyRouter from "./cartoonify";
 import testEmailRouter from "./test-email";
 import prodigiCheckRouter from "./prodigiCheck";
 import giveawayRouter from "./giveaway";
+import printablesRouter from "./printables";
 
 const router: IRouter = Router();
 router.use(healthRouter);
@@ -23,5 +24,6 @@ router.use(cartoonifyRouter);
 router.use(testEmailRouter);
 router.use(prodigiCheckRouter);
 router.use(giveawayRouter);
+router.use(printablesRouter);
 
 export default router;

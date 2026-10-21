@@ -177,6 +177,46 @@ export async function generateCartoon(base64Image: string, mimeType: string, sty
   };
 }
 
+
+// ── Printable Halloween colouring page (digital product) ─────────────────────
+const COLORING_PROMPT =
+  "Turn this photo into a printable children's colouring page. Black outlines " +
+  "only on a pure white background: no colour at all, no grey shading, no " +
+  "filled black areas (except tiny details like pupils). Draw the same people " +
+  "and pets from the photo as cute, friendly cartoon characters dressed in fun " +
+  "Halloween costumes that suit them (a witch hat, a pumpkin outfit, a friendly " +
+  "vampire cape, cat ears, a superhero cape). They must stay recognisable to " +
+  "their family: same number of people and pets, same hairstyles, glasses, " +
+  "ages and breeds. Around them add simple Halloween things to colour in: " +
+  "smiling jack-o'-lanterns, friendly bats, a big moon, sweets and a cute " +
+  "haunted house. Thick, clean, smooth, closed outlines with big areas to " +
+  "colour, suitable for children aged 3 to 10 using crayons. Portrait " +
+  "layout. Cute and cheerful, never scary. No text, no letters, no " +
+  "watermarks. Output only the image.";
+
+export async function generateColoringPage(base64Image: string, mimeType: string) {
+  const ai = getAI();
+  const request = (model: string) => ai.models.generateContent({
+    model,
+    contents: [{ inlineData: { mimeType, data: base64Image } }, { text: COLORING_PROMPT }],
+    config: { responseModalities: ["IMAGE"] },
+  });
+  let response;
+  try { response = await request(process.env.CARTOON_MODEL || "gemini-3.1-flash-image"); }
+  catch { response = await request("gemini-2.5-flash-image"); }
+  const part = (response.candidates?.[0]?.content?.parts ?? []).find((p: any) => p.inlineData);
+  if (!part || !part.inlineData) throw new Error("The colouring page generator didn't return an image.");
+  // Clean pure black-and-white lines, centred on an A4 portrait page (300dpi) ready to print.
+  const art = await sharp(Buffer.from(part.inlineData.data as string, "base64"))
+    .flatten({ background: "#ffffff" }).grayscale().normalise().threshold(170)
+    .resize(2180, 3100, { fit: "inside", withoutEnlargement: false }).png().toBuffer();
+  const meta = await sharp(art).metadata();
+  const page = await sharp({ create: { width: 2480, height: 3508, channels: 3, background: "#ffffff" } })
+    .composite([{ input: art, left: Math.round((2480 - (meta.width ?? 2180)) / 2), top: Math.round((3508 - (meta.height ?? 3100)) / 2) }])
+    .png({ compressionLevel: 9 }).toBuffer();
+  return { base64Image: page.toString("base64"), mimeType: "image/png" };
+}
+
 // "ONJJEM" drawn as a shape (letters from Poppins Medium converted to an SVG
 // path, Medium weight). The server has no fonts installed, so <text> watermarks rendered as
 // empty boxes; a path needs no font and always looks the same.
@@ -210,7 +250,7 @@ export async function addCornerBadge(base64Image: string): Promise<{ base64Image
 // One large, semi-transparent "ONJJEM" across the middle of the free preview,
 // corner to corner. The customer can still clearly see their cartoon, but the
 // preview can't be used for printing.
-async function addWatermark(base64Image: string, mimeType: string): Promise<string> {
+export async function addWatermark(base64Image: string, mimeType: string): Promise<string> {
   const inputBuffer = Buffer.from(base64Image, "base64");
   const image = sharp(inputBuffer);
   const meta = await image.metadata();

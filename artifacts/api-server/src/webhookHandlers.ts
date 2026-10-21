@@ -1,6 +1,7 @@
 import { getUncachableStripeClient } from "./stripeClient";
 import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
-import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail, sendApronLoyaltyEmail, sendTapestryCreditEmail, sendCartRecovery } from "./email/mailer";
+import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail, sendApronLoyaltyEmail, sendTapestryCreditEmail, sendCartRecovery, sendPrintableEmail } from "./email/mailer";
+import { getPrintable, PRINTABLES } from "./routes/printables";
 import { logger } from "./lib/logger";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
@@ -201,6 +202,25 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   }
   const earlySku = meta?.["sku"] ?? "";
 
+  // Instant digital printables: email the file, no Prodigi order.
+  if (earlySku.startsWith("printable-")) {
+    try {
+      const id = meta?.["printable_id"] ?? "";
+      const p = id ? await getPrintable(id) : null;
+      const isUS = String(session["currency"] || "").toLowerCase() === "usd";
+      if (p && email) {
+        await sendPrintableEmail({
+          to: email, name: (details?.["name"] as string | undefined) ?? undefined, product: p.product, isUS,
+          downloadUrl: `https://onjjem.com/api/printable-download?session_id=${sessionId}&dl=1`,
+          filename: PRINTABLES[p.product]?.file || "onjjem.png", base64: p.image_b64,
+        });
+      }
+      const admin = process.env.EMAIL_ADMIN;
+      if (admin) await sendAdminNotification({ customerEmail: email, customerName: (details?.["name"] as string) || "", productName: `${earlySku} (digital download)`, amountPaid: (session["amount_total"] as number) || 0, currency: String(session["currency"] || "gbp"), sku: earlySku, shippingAddress: { line1: "Digital download (emailed)", city: "-", postal_code: "-", country: "-" }, stripeSessionId: sessionId } as any).catch(() => {});
+      logger.info({ sessionId, earlySku }, "Printable delivered");
+    } catch (err) { logger.error({ err: err instanceof Error ? err.message : String(err), sessionId }, "Printable delivery failed"); }
+    return;
+  }
   // Gift cards are digital — no photo, no shipping address, no Prodigi order.
   // Handle them completely separately before any of the physical-order logic
   // below (which would otherwise skip the order entirely for lacking an address).
