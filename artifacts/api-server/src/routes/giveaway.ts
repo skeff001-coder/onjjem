@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail, giveawayCartoonEmail, sendEmailWithAttachment } from "../email/mailer";
-import { generateCartoon } from "./cartoonify";
+import { generateCartoon, addCornerBadge } from "./cartoonify";
 import crypto from "node:crypto";
 import { logger } from "../lib/logger";
 
@@ -235,7 +235,9 @@ let cartoonLog = "";
 async function makeAndSendCartoon(e: { name: string; email: string; country: string; photo: string }, to: string): Promise<void> {
   const m = /^data:(image\/[a-z+]+);base64,(.*)$/s.exec(e.photo || "");
   if (!m) throw new Error("photo not readable");
-  const out = await generateCartoon(m[2], m[1]);
+  const raw = await generateCartoon(m[2], m[1]);
+  let out = raw;
+  try { out = await addCornerBadge(raw.base64Image); } catch (err) { logger.warn({ err }, "corner badge failed, sending plain cartoon"); }
   const dataUrl = `data:${out.mimeType};base64,${out.base64Image}`;
   await db.execute(sql`UPDATE giveaway_entries SET cartoon = ${dataUrl} WHERE email = ${e.email}`);
   const em = encodeURIComponent(e.email);

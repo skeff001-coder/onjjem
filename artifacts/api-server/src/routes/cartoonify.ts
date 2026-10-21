@@ -184,6 +184,29 @@ const ONJJEM_PATH = "M37 351Q37 249 84.5 168.0Q132 87 213.5 41.5Q295 -4 392 -4Q4
 const ONJJEM_PATH_W = 4279;
 const ONJJEM_PATH_H = 720;
 
+
+// Small "ONJJEM" badge in the bottom-right corner, so shared or screenshotted
+// cartoons advertise the shop. Used on the free cartoon emailed to giveaway entrants.
+export async function addCornerBadge(base64Image: string): Promise<{ base64Image: string; mimeType: string }> {
+  const image = sharp(Buffer.from(base64Image, "base64"));
+  const meta = await image.metadata();
+  const width = meta.width ?? 1024;
+  const height = meta.height ?? 1024;
+  const textW = width * 0.2;
+  const scale = textW / ONJJEM_PATH_W;
+  const textH = ONJJEM_PATH_H * scale;
+  const padX = textH * 0.75, padY = textH * 0.5;
+  const pillW = textW + padX * 2, pillH = textH + padY * 2;
+  const margin = width * 0.03;
+  const x = width - pillW - margin, y = height - pillH - margin;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+    <rect x="${x}" y="${y}" width="${pillW}" height="${pillH}" rx="${pillH / 2}" fill="rgba(20,8,30,0.62)"/>
+    <g transform="translate(${x + padX} ${y + padY}) scale(${scale})"><path d="${ONJJEM_PATH}" fill="#FFFFFF"/></g>
+  </svg>`;
+  const out = await image.composite([{ input: Buffer.from(svg), top: 0, left: 0 }]).jpeg({ quality: 90 }).toBuffer();
+  return { base64Image: out.toString("base64"), mimeType: "image/jpeg" };
+}
+
 // One large, semi-transparent "ONJJEM" across the middle of the free preview,
 // corner to corner. The customer can still clearly see their cartoon, but the
 // preview can't be used for printing.
