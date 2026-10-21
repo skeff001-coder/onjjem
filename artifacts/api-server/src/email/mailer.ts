@@ -792,7 +792,7 @@ export async function sendGiveawayAdminEntry(data: { email: string; name: string
 export function giveawayPromoEmail(data: { name: string; country: string; claimUrl: string; unsubUrl: string }): { subject: string; html: string } {
   const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
   const us = data.country === "US";
-  const name = esc((data.name || "").trim().split(/\s+/)[0] || "there");
+  const name = esc(((data.name || "").trim().split(/\s+/)[0] || "there").toLowerCase().replace(/(^|[-'])\p{L}/gu, (c) => c.toUpperCase()));
   const btn = (label: string) => `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px auto 24px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:2px">
         <a href="${data.claimUrl}" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 34px;font-family:Georgia,serif;font-size:16px;font-weight:700;color:#F5D78E;text-decoration:none">${label}</a></td></tr></table>`;
   const perks = us
@@ -824,7 +824,7 @@ export async function sendRawEmail(to: string, subject: string, html: string): P
 export function giveawayCartoonEmail(data: { name: string; country: string; imgUrl: string; claimUrl: string }): { subject: string; html: string } {
   const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
   const us = data.country === "US";
-  const name = esc((data.name || "").trim().split(/\s+/)[0] || "there");
+  const name = esc(((data.name || "").trim().split(/\s+/)[0] || "there").toLowerCase().replace(/(^|[-'])\p{L}/gu, (c) => c.toUpperCase()));
   const body = `
     <tr><td style="padding:36px 40px 28px">
       <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">Your free cartoon 🎨</p>
