@@ -14,8 +14,8 @@ import { logger } from "../lib/logger";
 const router = Router();
 
 export const PRINTABLES: Record<string, { name: string; gbp: number; usd: number; file: string }> = {
-  coloring: { name: "Halloween colouring page of your photo (instant download)", gbp: 399, usd: 499, file: "halloween-colouring-page.png" },
-  cartoon: { name: "Halloween cartoon of your photo (instant digital download)", gbp: 299, usd: 399, file: "halloween-cartoon.jpg" },
+  coloring: { name: "Halloween colouring page of your photo (instant download)", gbp: 199, usd: 299, file: "halloween-colouring-page.png" },
+  cartoon: { name: "Halloween cartoon of your photo (instant digital download)", gbp: 149, usd: 199, file: "halloween-cartoon.jpg" },
 };
 
 async function ensureTable() {

@@ -182,7 +182,9 @@ export async function generateCartoon(base64Image: string, mimeType: string, sty
 const COLORING_PROMPT =
   "Turn this photo into a printable children's colouring page. Black outlines " +
   "only on a pure white background: no colour at all, no grey shading, no " +
-  "filled black areas (except tiny details like pupils). Draw the same people " +
+  "filled black areas (except tiny details like pupils). Every outline must be " +
+  "BOLD, thick (about 4 pixels), dark black and fully joined up, with no gaps, " +
+  "no faint, sketchy or broken lines. Draw the same people " +
   "and pets from the photo as cute, friendly cartoon characters dressed in fun " +
   "Halloween costumes that suit them (a witch hat, a pumpkin outfit, a friendly " +
   "vampire cape, cat ears, a superhero cape). They must stay recognisable to " +
@@ -208,7 +210,7 @@ export async function generateColoringPage(base64Image: string, mimeType: string
   if (!part || !part.inlineData) throw new Error("The colouring page generator didn't return an image.");
   // Clean pure black-and-white lines, centred on an A4 portrait page (300dpi) ready to print.
   const art = await sharp(Buffer.from(part.inlineData.data as string, "base64"))
-    .flatten({ background: "#ffffff" }).grayscale().normalise().threshold(170)
+    .flatten({ background: "#ffffff" }).grayscale().normalise().blur(0.8).threshold(215)
     .resize(2180, 3100, { fit: "inside", withoutEnlargement: false }).png().toBuffer();
   const meta = await sharp(art).metadata();
   const page = await sharp({ create: { width: 2480, height: 3508, channels: 3, background: "#ffffff" } })
