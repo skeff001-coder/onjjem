@@ -189,7 +189,16 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
     (session["customer_email"] as string | undefined) ??
     "";
 
-  const meta = session["metadata"] as Record<string, string> | undefined;
+  let meta = session["metadata"] as Record<string, string> | undefined;
+  // Paid through a "finish your order" link: make sure we use the original order's details (photo etc.).
+  const recoveredFrom = session["recovered_from"] as string | undefined;
+  if (recoveredFrom && (!meta || Object.keys(meta).length === 0)) {
+    try {
+      const orig = await stripe.checkout.sessions.retrieve(recoveredFrom);
+      meta = (orig.metadata ?? {}) as Record<string, string>;
+      session["metadata"] = meta;
+    } catch (err) { logger.error({ err, recoveredFrom }, "Could not load recovered order details"); }
+  }
   const earlySku = meta?.["sku"] ?? "";
 
   // Gift cards are digital — no photo, no shipping address, no Prodigi order.
@@ -483,7 +492,9 @@ export class WebhookHandlers {
         const consent: string | undefined = sess.consent?.promotions ?? undefined;
         const isUSD = String(sess.currency || "").toLowerCase() === "usd";
         // UK/EU: only with a ticked opt-in. US: one reminder is fine unless they opted out.
-        const allowed = consent === "opt_in" || (isUSD && consent !== "opt_out");
+        // They ticked "email me a link to finish" on our site (that's the only way recovery is switched on).
+        const ticked = sess.after_expiration?.recovery?.enabled === true;
+        const allowed = consent === "opt_in" || ticked || (isUSD && consent !== "opt_out");
         if (email && url && allowed) {
           await sendCartRecovery({
             customerEmail: email,

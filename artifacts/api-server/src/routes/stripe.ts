@@ -172,9 +172,21 @@ function usShippingOptions() {
 // ── "Finish your order" emails ──────────────────────────────────────────────
 // Checkout links expire after 2 hours. Stripe then gives us a recovery link,
 // and webhookHandlers emails it once (see checkout.session.expired).
-// Switched off for now: consent_collection isn't available on UK Stripe
-// accounts, and recovery needs testing against the live account first.
-const CART_RECOVERY = {};
+// Stripe's consent_collection isn't available on UK accounts, so the customer
+// ticks "email me a link to finish" on OUR basket/product page instead (remindMe).
+// Only then do we turn recovery on, with a 1-hour checkout link.
+const cartRecovery = (remindMe: unknown) => remindMe === true
+  ? { expires_at: Math.floor(Date.now() / 1000) + 3600, after_expiration: { recovery: { enabled: true } } }
+  : {};
+// If Stripe ever refuses the recovery settings, still let the customer pay.
+async function createSessionSafe(stripe: any, params: any) {
+  try { return await stripe.checkout.sessions.create(params); }
+  catch (err) {
+    if (!params.after_expiration) throw err;
+    const { after_expiration, expires_at, ...rest } = params;
+    return await stripe.checkout.sessions.create(rest);
+  }
+}
 // Halloween special (UK): the cartoon is free on the Halloween page's gifts,
 // matching the "the cartoon was FREE" promise in our TikTok videos.
 const HALLOWEEN_FREE_CARTOON = (sku: string) =>
@@ -359,7 +371,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
 
     const origin = `${req.protocol}://${req.get("host")}`;
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await createSessionSafe(stripe, {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
@@ -373,7 +385,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
             },
           }
         : {}),
-      ...CART_RECOVERY,
+      ...cartRecovery(body.remindMe),
       shipping_address_collection: {
         allowed_countries: isUS ? ["US"] : body.international
           ? ["US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"]
@@ -584,12 +596,12 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     }
 
     const origin = `${req.protocol}://${req.get("host")}`;
-    const session = await stripe.checkout.sessions.create({
+    const session = await createSessionSafe(stripe, {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
       ...(discounts ? { discounts } : { allow_promotion_codes: true }),
-      ...CART_RECOVERY,
+      ...cartRecovery(body.remindMe),
       shipping_address_collection: { allowed_countries: isUS ? ["US"] : ["GB"] },
       shipping_options: isUS ? usShippingOptions() : ukShippingOptions(items.map((it) => it.sku || "")), // Free UK, plus Express where available
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
