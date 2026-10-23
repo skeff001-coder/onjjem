@@ -35,6 +35,12 @@ import { WALL_PRODIGI_PRODUCTS } from "../wallArtShop";
 //   printAreas:  list of print area names to render. Defaults to ["default"].
 //                Jigsaws require ["jigsaw", "lid"] — customer photo is printed on both.
 //
+// Clothing (T-shirts, sweatshirts, hoodies) prints on Prodigi's "front" area; everything else on "default".
+export function areasFor(p: { sku: string; printAreas?: string[] }): string[] {
+  if (p.printAreas) return p.printAreas;
+  return /(^|-)(TEE|SWEAT|HOOD)(-|$)/.test(p.sku) ? ["front"] : ["default"];
+}
+
 export interface ProdigiProduct {
   sku: string;
   copies?: number;
@@ -645,7 +651,7 @@ async function submitToProdigi(
 
   // Build assets array — most products use a single "default" print area;
   // jigsaws (and any future multi-area products) need one entry per area.
-  const printAreas = product.printAreas ?? ["default"];
+  const printAreas = areasFor(product);
   let assets = printAreas.map((area) => ({ printArea: area, url: imageUrl }));
 
   // Calendars: a different picture on every page.
@@ -677,7 +683,7 @@ async function submitToProdigi(
     if (!extra) {
       throw new Error(`Bundle "${order.sku}" includes unmapped SKU "${extraKey}".`);
     }
-    const extraAreas = extra.printAreas ?? ["default"];
+    const extraAreas = areasFor(extra);
     items.push({
       sku: extra.sku,
       copies: extra.copies ?? 1,
@@ -694,7 +700,7 @@ async function submitToProdigi(
       throw new Error(`Basket item "${extraItem.sku}" is not mapped for Prodigi.`);
     }
     const extraUrl = await photoToPublicUrl(await cardArtwork(extraProduct, extraItem.photoBase64));
-    const extraAreas = extraProduct.printAreas ?? ["default"];
+    const extraAreas = areasFor(extraProduct);
     items.push({
       sku: extraProduct.sku,
       copies: extraProduct.copies ?? 1,
@@ -713,7 +719,7 @@ async function submitToProdigi(
         sku: cardProduct.sku,
         copies: 1,
         sizing: cardProduct.sizing ?? "fillPrintArea",
-        assets: (cardProduct.printAreas ?? ["default"]).map((area) => ({ printArea: area, url: rawUrl })),
+        assets: areasFor(cardProduct).map((area) => ({ printArea: area, url: rawUrl })),
       });
     }
   }

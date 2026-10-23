@@ -8,7 +8,7 @@
 // variants Prodigi returns, including that the variant ships to the country.
 // Nothing is ordered or charged. Add &json=1 for raw results, &fresh=1 to rerun.
 import { Router, type IRouter } from "express";
-import { PRODIGI_PRODUCTS } from "../fulfilment/prodigi";
+import { PRODIGI_PRODUCTS, areasFor } from "../fulfilment/prodigi";
 import { US_PRODIGI_PRODUCTS } from "../usShop";
 
 const router: IRouter = Router();
@@ -173,7 +173,7 @@ router.get("/prodigi-quote", async (req, res) => {
   for (const ourSku of skus) {
     const p = PRODIGI_PRODUCTS[ourSku];
     if (!p) { out.push(`=== ${ourSku}: unknown product`); continue; }
-    const areas = p.pageAreas ?? p.printAreas ?? ["default"];
+    const areas = p.pageAreas ?? areasFor(p);
     const body = {
       shippingMethod: p.shipping ?? "Standard",
       destinationCountryCode: country,
