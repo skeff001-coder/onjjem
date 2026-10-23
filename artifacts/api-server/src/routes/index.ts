@@ -29,3 +29,5 @@ router.use(printablesRouter);
 router.use(contestRouter);
 
 export default router;
+
+// Build marker: 23 Oct 2026 (colouring page + competition + cart recovery)
