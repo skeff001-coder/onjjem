@@ -71,5 +71,5 @@ const UK_GARMENTS = [
 for (const g of UK_GARMENTS) for (const [sz, prodigiSize] of g.sizes) for (const [col, prodigiColour] of g.colours) {
   const code = `${g.code}-${sz}-${col}`;
   WALL_SKU_PRICES[code] = { name: `${g.name} (${prodigiSize}, ${prodigiColour})`, pricePence: g.price };
-  WALL_PRODIGI_PRODUCTS[code] = { sku: g.prodigiSku, sizing: "fitPrintArea", attributes: { color: prodigiColour, size: prodigiSize }, shipping: "Budget" };
+  WALL_PRODIGI_PRODUCTS[code] = { sku: g.prodigiSku, sizing: "fitPrintArea", printAreas: ["front"], attributes: { color: prodigiColour, size: prodigiSize }, shipping: "Budget" }; // clothing prints on the "front" area
 }
