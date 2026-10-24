@@ -29,6 +29,7 @@ async function ensureTable(): Promise<void> {
     )`);
   await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS photo TEXT`);
   await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS promo1_sent_at TIMESTAMPTZ`);
+  await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS promo2_sent_at TIMESTAMPTZ`);
   await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS cartoon TEXT`);
   await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS cartoon_sent_at TIMESTAMPTZ`);
 }
@@ -207,6 +208,67 @@ router.get("/giveaway-promo", async (req: Request, res: Response) => {
       <p style="color:#666">Subject: <b>${sample.subject}</b></p><iframe srcdoc="${sample.html.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}" style="width:100%;height:900px;border:1px solid #ddd;border-radius:12px"></iframe></body>`);
   } catch (err) {
     promoRunning = false;
+    res.status(500).send(err instanceof Error ? err.message : "error");
+  }
+});
+
+// ---- Second offer email: WINNER15 (15% off a cartoon blanket, until Mon 2 Nov) ----
+const blanketEmailFor = (e: { name: string; email: string; country: string }) => {
+  const us = e.country === "US";
+  const first = (e.name || "there").trim().split(/\s+/)[0].replace(/^./, (c) => c.toUpperCase()).replace(/[<>&]/g, "");
+  const link = `https://onjjem.com${us ? "/us/blanket" : "/blanket"}?utm_source=email&utm_campaign=winner15`;
+  const unsub = `https://onjjem.com/api/unsubscribe?e=${encodeURIComponent(e.email)}&t=${unsubToken(e.email)}`;
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:auto;color:#222;line-height:1.6">
+  <div style="background:#12100B;color:#fff;text-align:center;padding:18px;border-radius:12px 12px 0 0"><div style="font-size:11px;letter-spacing:.2em;color:#C9960C">UK FAMILY BUSINESS</div><div style="font-size:28px;font-weight:800;letter-spacing:.12em">ONJJEM</div></div>
+  <div style="border:1px solid #eee;border-top:0;padding:22px;border-radius:0 0 12px 12px">
+  <h2 style="margin:0 0 10px">A thank-you while you wait for the draw 🎁</h2>
+  <p>Hi ${first}, thanks again for entering our giveaway! The winner is drawn on Mon 2 Nov and we'll email them that day.</p>
+  <p>As a thank-you, here's <b>15% off your own cartoon photo blanket</b>: we turn your photo of your pet, kids or family into a cute cartoon and print it on a soft fleece blanket${us ? ", shipped free in the USA" : ", delivered free in the UK"}.</p>
+  <p style="text-align:center;margin:20px 0"><span style="display:inline-block;border:2px dashed #E8287F;border-radius:10px;padding:10px 18px;font-size:20px;font-weight:800;color:#E8287F;letter-spacing:.08em">WINNER15</span><br><span style="font-size:13px;color:#666">Enter it at checkout. First order only, valid until Mon 2 Nov.</span></p>
+  <p style="text-align:center"><a href="${link}" style="display:inline-block;background:#E8287F;color:#fff;font-weight:800;padding:14px 26px;border-radius:30px;text-decoration:none">See cartoon blankets →</a></p>
+  <p style="font-size:12px;color:#888;margin-top:22px">You're getting this because you ticked "send me offers" when you entered. <a href="${unsub}" style="color:#888">Unsubscribe</a></p>
+  </div></div>`;
+  return { subject: "A thank-you while you wait for the draw 🎁 15% off", html };
+};
+let promo2Running = false;
+router.get("/giveaway-promo2", async (req: Request, res: Response) => {
+  const key = normKey(process.env.GIVEAWAY_KEY);
+  if (!key || normKey(req.query.key) !== key) { res.status(403).send("Forbidden"); return; }
+  try {
+    await ensureTable();
+    const r = await db.execute(sql`SELECT name, email, country FROM giveaway_entries WHERE marketing = TRUE AND promo2_sent_at IS NULL ORDER BY entered_at`);
+    const todo = r.rows as { name: string; email: string; country: string }[];
+    const mode = String(req.query.mode || "preview");
+    const k = encodeURIComponent(String(req.query.key));
+    if (mode === "test") {
+      const admin = process.env.EMAIL_ADMIN || "";
+      const m = blanketEmailFor({ name: "Owen", email: admin, country: "GB" });
+      await sendRawEmail(admin, "[TEST] " + m.subject, m.html);
+      res.type("html").send(`<body style="font:17px system-ui;padding:20px">✅ Test email sent to <b>${admin}</b>. Check your inbox (and Spam).<br><br><a href="/api/giveaway-promo2?key=${k}">← Back</a></body>`);
+      return;
+    }
+    if (mode === "send") {
+      if (promo2Running) { res.type("html").send(`<body style="font:17px system-ui;padding:20px">Already sending, please wait a minute and refresh.</body>`); return; }
+      promo2Running = true;
+      (async () => {
+        for (const e of todo) {
+          try { const m = blanketEmailFor(e); await sendRawEmail(e.email, m.subject, m.html); await db.execute(sql`UPDATE giveaway_entries SET promo2_sent_at = NOW() WHERE email = ${e.email}`); }
+          catch (err) { logger.warn({ err, email: e.email }, "promo2 email failed"); }
+          await new Promise((r) => setTimeout(r, 700));
+        }
+        promo2Running = false;
+      })();
+      res.type("html").send(`<body style="font:17px system-ui;padding:20px">🚀 Sending to <b>${todo.length}</b> people now (about ${Math.ceil(todo.length * 0.8)} seconds).<br><br>Refresh <a href="/api/giveaway-promo2?key=${k}">this page</a> in a minute: "Still to send" should be 0. Nobody is emailed twice.</body>`);
+      return;
+    }
+    const sample = blanketEmailFor(todo[0] || { name: "Owen", email: "you@example.com", country: "GB" });
+    res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:16px system-ui;padding:14px;max-width:640px;margin:auto">
+      <h2>📧 WINNER15 blanket email</h2><p><b>Still to send: ${todo.length}</b> people who ticked "send me offers" (UK ${todo.filter((e) => e.country !== "US").length}, US ${todo.filter((e) => e.country === "US").length}).</p>
+      <p><a href="/api/giveaway-promo2?key=${k}&mode=test" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#eee;color:#111;font-weight:700;text-decoration:none">1️⃣ Send a test to myself</a></p>
+      <p><a href="/api/giveaway-promo2?key=${k}&mode=send" onclick="return confirm('Send to ${todo.length} people now?')" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#8E2DE2;color:#fff;font-weight:700;text-decoration:none">2️⃣ Send to all ${todo.length} now</a></p>
+      <p style="color:#666">Subject: <b>${sample.subject}</b></p><iframe srcdoc="${sample.html.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}" style="width:100%;height:760px;border:1px solid #ddd;border-radius:12px"></iframe></body>`);
+  } catch (err) {
+    promo2Running = false;
     res.status(500).send(err instanceof Error ? err.message : "error");
   }
 });
