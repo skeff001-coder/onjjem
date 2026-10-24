@@ -140,6 +140,8 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "sticker-large": { sku: "GLOBAL-STI-8_5X8_5-G", sizing: "fillPrintArea", shipping: "Budget" },
   "sticker-xl":    { sku: "GLOBAL-STI-14X14-G",   sizing: "fillPrintArea", shipping: "Budget" },
 
+  // ── Cosy Home Bundle: medium blanket + 12" cushion + 11oz mug, same photo ──
+  "cosy-bundle": { sku: "H-BLA-PBMWHITE", sizing: "fillPrintArea", bundle: ["cushion-12-single", "mug-11oz"], shipping: "Budget" },
   // ── Halloween / kids bundles — one photo, several products, one order ─────
   "halloween-pocket-pack": { sku: "GLOBAL-STI-3X4-G", sizing: "fillPrintArea", bundle: ["magnet-fridge-3x2"], shipping: "Budget" },
   "halloween-fridge-pack": { sku: "MAG-1-15X15", sizing: "fillPrintArea", bundle: ["wud-sticker-small", "magnet-fridge-3x2"], shipping: "Budget" },

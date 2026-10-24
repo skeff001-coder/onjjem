@@ -178,7 +178,7 @@ router.get("/prodigi-quote", async (req, res) => {
       shippingMethod: p.shipping ?? "Standard",
       destinationCountryCode: country,
       currencyCode: country === "US" ? "USD" : "GBP",
-      items: [{ sku: p.sku, copies: 1, ...(p.attributes ? { attributes: p.attributes } : {}), assets: areas.map((a) => ({ printArea: a })) }],
+      items: [p, ...(p.bundle ?? []).map((b) => PRODIGI_PRODUCTS[b]).filter(Boolean)].map((x, i) => ({ sku: x.sku, copies: 1, ...(x.attributes ? { attributes: x.attributes } : {}), assets: (i === 0 ? areas : areasFor(x)).map((a) => ({ printArea: a })) })),
     };
     try {
       const r = await fetch(`${baseUrl()}/v4.0/quotes`, {
