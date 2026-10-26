@@ -25,6 +25,16 @@ const US_CANVAS: [string, string, string, number][] = [
   ["US-CAN-20X30", "GLOBAL-CAN-20X30", "Large Photo Canvas 20x30\"", 9999],
   ["US-CAN-24X36", "GLOBAL-CAN-24X36", "Extra Large Photo Canvas 24x36\"", 11499],
 ];
+// Eco canvas (recycled, 330gsm), Budget shipping, added 26 Oct 2026. Cost inc VAT:
+// 8x8 £16.50 · 12x12 £20.10 · 16x16 £24.90 · 12x18 £27.30 · 16x24 £35.70 · 20x30 £42.54
+UK_CANVAS.push(
+  ["canvas-eco-8x8", "ECO-CAN-8X8", "Small Eco Photo Canvas 8x8\" (20x20cm)", 2499],
+  ["canvas-eco-12x12", "ECO-CAN-12X12", "Eco Photo Canvas 12x12\" (30x30cm)", 2999],
+  ["canvas-eco-16x16", "ECO-CAN-16X16", "Eco Photo Canvas 16x16\" (40x40cm)", 3499],
+  ["canvas-eco-12x18", "ECO-CAN-12X18", "Eco Photo Canvas 12x18\" (30x46cm)", 3699],
+  ["canvas-eco-16x24", "ECO-CAN-16X24", "Eco Photo Canvas 16x24\" (40x61cm)", 4799],
+  ["canvas-eco-20x30", "ECO-CAN-20X30", "Large Eco Photo Canvas 20x30\" (51x76cm)", 5799],
+);
 for (const [code, sku, name, price] of UK_CANVAS) {
   WALL_SKU_PRICES[code] = { name, pricePence: price };
   WALL_PRODIGI_PRODUCTS[code] = { sku, sizing: "fillPrintArea", attributes: { wrap: "MirrorWrap" }, shipping: "Budget" };
