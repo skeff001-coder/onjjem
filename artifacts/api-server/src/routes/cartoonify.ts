@@ -92,6 +92,14 @@ const STYLE_EXTRAS: Record<string, string> = {
     "characters. Keep it cheerful and cute, never scary or gory, " +
     "suitable for young children. The theme must not make anyone look " +
     "less cartoon-like: every face is still a fully animated character.",
+  royal:
+    " THEME: Royal portrait. Dress every person and pet as royalty: a " +
+    "sparkling golden jewelled crown, a rich red velvet royal robe with a " +
+    "white ermine fur collar and gold trim, and a regal pose, like a grand " +
+    "old palace portrait. Replace the background with an elegant palace " +
+    "room: rich drapes, a gilded frame feel and warm candlelight, all in " +
+    "the same animated cartoon style. Funny, charming and grand, never " +
+    "scary. Everyone stays instantly recognisable.",
   christmas:
     " THEME: Christmas. Dress the subject in a cosy festive outfit (for " +
     "example a Santa hat, an elf hat or a Christmas jumper). Replace the " +
