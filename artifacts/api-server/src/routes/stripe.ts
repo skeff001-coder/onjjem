@@ -192,6 +192,8 @@ async function createSessionSafe(stripe: any, params: any) {
 const HALLOWEEN_FREE_CARTOON = (sku: string) =>
   sku.startsWith("TEE-STTK184-") || sku.startsWith("trick-bag") ||
   ["halloween-fridge-pack", "halloween-pocket-pack", "magic-mug", "magnet-fridge-3x2", "wud-sticker-small"].includes(sku);
+// Christmas special: the cartoon is free on every UK gift from 1 Nov to 24 Dec 2026.
+const XMAS_FREE_CARTOON = () => { const t = Date.now(); return t >= Date.parse("2026-11-01T00:00:00Z") && t < Date.parse("2026-12-25T00:00:00Z"); };
 // Giveaway entrants (Oct 2026) get the cartoon free on any gift until 30 Nov 2026.
 async function isGiveawayEntrant(email?: string): Promise<boolean> {
   if (!email || Date.now() > Date.parse("2026-11-30T23:59:59Z")) return false;
@@ -355,7 +357,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
 
     // Christmas sweatshirts include the cartoon for free.
     const gwFreeCartoon = body.addCartoon && !isUS ? await isGiveawayEntrant(body.giveawayEmail) : false;
-    if (body.addCartoon && !isUS && !body.sku.startsWith("XSWEAT-") && !(body.cartoonFree && HALLOWEEN_FREE_CARTOON(body.sku)) && !gwFreeCartoon) {
+    if (body.addCartoon && !isUS && !XMAS_FREE_CARTOON() && !body.sku.startsWith("XSWEAT-") && !(body.cartoonFree && HALLOWEEN_FREE_CARTOON(body.sku)) && !gwFreeCartoon) {
       lineItems.push({
         price_data: {
           currency: "gbp",
@@ -539,7 +541,7 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
         },
         quantity: 1,
       });
-      if (it.cartoon && !isUS && !(it.sku || "").startsWith("XSWEAT-") && !(it.cartoonFree && HALLOWEEN_FREE_CARTOON(it.sku || "")) && !gwFreeCartoonBasket) {
+      if (it.cartoon && !isUS && !XMAS_FREE_CARTOON() && !(it.sku || "").startsWith("XSWEAT-") && !(it.cartoonFree && HALLOWEEN_FREE_CARTOON(it.sku || "")) && !gwFreeCartoonBasket) {
         lineItems.push({
           price_data: {
             currency: "gbp",
