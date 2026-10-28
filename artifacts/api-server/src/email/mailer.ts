@@ -288,7 +288,7 @@ export async function sendAdminNotification(data: AdminNotificationData): Promis
   const fulfilTextColor = data.fulfilmentStatus === "auto" ? "#5DE391" : GOLD;
   const fulfilLabel = data.fulfilmentStatus === "auto"
     ? `✅ Sent to Prodigi automatically${data.bolOrderId ? ` · Prodigi #${data.bolOrderId}` : ""}`
-    : "⚠️ Queued — add BAGS_OF_LOVE_API_KEY to Replit Secrets to auto-fulfil";
+    : "⚠️ Not sent to the printer yet: check the order";
 
   const body = `
     <tr><td style="height:4px;background:linear-gradient(90deg,#27AE60,#5DE391,#27AE60)"></td></tr>
