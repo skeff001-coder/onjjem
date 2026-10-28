@@ -140,6 +140,36 @@ ${(() => {
 `);
 });
 
+
+// Owner-only: see a Prodigi order's status and cancel it. /api/prodigi-order?key=...&id=ord_...
+const okKey = (k: unknown) => { const want = String(process.env.GIVEAWAY_KEY ?? "").replace(/\s+/g, "").toLowerCase(); return !!want && String(k ?? "").replace(/\s+/g, "").toLowerCase() === want; };
+router.get("/prodigi-order", async (req, res) => {
+  if (!okKey(req.query.key)) { res.status(403).send("Forbidden"); return; }
+  const apiKey = process.env.PRODIGI_API_KEY;
+  const id = String(req.query.id || "");
+  if (!apiKey || !/^ord_[0-9]+$/.test(id)) { res.status(400).send("Bad order id"); return; }
+  const k = encodeURIComponent(String(req.query.key));
+  try {
+    let note = "";
+    if (req.query.cancel === "1") {
+      const c = await fetch(`${baseUrl()}/v4.0/orders/${id}/actions/cancel`, { method: "POST", headers: { "X-API-Key": apiKey }, signal: AbortSignal.timeout(20_000) });
+      const cj: any = await c.json().catch(() => ({}));
+      note = c.ok && cj.outcome !== "Failed" ? "✅ Cancel request sent: " + (cj.outcome || "ok") : "❌ Could not cancel: " + (cj.outcome || cj.traceParent || c.status) + " (it may already be in production)";
+    }
+    const r = await fetch(`${baseUrl()}/v4.0/orders/${id}`, { headers: { "X-API-Key": apiKey }, signal: AbortSignal.timeout(20_000) });
+    const j: any = await r.json().catch(() => ({}));
+    const o = j.order || {};
+    const st = o.status || {};
+    const items = (o.items || []).map((i: any) => `${i.sku} × ${i.copies}`).join(", ");
+    const canCancel = st.details && st.details.cancellation ? st.details.cancellation : "?";
+    res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:17px system-ui;padding:16px;max-width:560px;margin:auto">
+      <h2>Prodigi order ${id}</h2>${note ? `<p style="font-weight:700">${note}</p>` : ""}
+      <p><b>Stage:</b> ${st.stage || "?"}<br><b>Items:</b> ${items || "?"}<br><b>Created:</b> ${o.created || "?"}<br><b>Cancellation:</b> ${canCancel}<br><b>Ship to:</b> ${(o.recipient && o.recipient.name) || "?"}</p>
+      ${st.stage === "Cancelled" ? "<p>This order is cancelled. Nothing will be printed.</p>" : `<p><a href="/api/prodigi-order?key=${k}&id=${id}&cancel=1" onclick="return confirm('Cancel this order?')" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#c0392b;color:#fff;font-weight:700;text-decoration:none">Cancel this order</a></p>`}
+      </body>`);
+  } catch (err) { res.status(500).send(String(err)); }
+});
+
 export default router;
 
 // Read-only: the exact print areas and sizes Prodigi expects for one product.
