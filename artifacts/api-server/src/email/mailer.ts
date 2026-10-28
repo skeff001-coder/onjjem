@@ -11,7 +11,7 @@
  *   EMAIL_ADMIN   — where admin order notifications are sent (your inbox)
  *
  * If RESEND_API_KEY is not set, emails are skipped and a warning is logged.
- * Nothing breaks — orders still process and get queued for Bags of Love.
+ * Nothing breaks — orders still process and get queued for Prodigi.
  */
 
 import { Resend } from "resend";
@@ -287,7 +287,7 @@ export async function sendAdminNotification(data: AdminNotificationData): Promis
     ? "rgba(39,174,96,0.15)" : "rgba(201,150,12,0.15)";
   const fulfilTextColor = data.fulfilmentStatus === "auto" ? "#5DE391" : GOLD;
   const fulfilLabel = data.fulfilmentStatus === "auto"
-    ? `✅ Sent to Bags of Love automatically${data.bolOrderId ? ` · BOL #${data.bolOrderId}` : ""}`
+    ? `✅ Sent to Prodigi automatically${data.bolOrderId ? ` · Prodigi #${data.bolOrderId}` : ""}`
     : "⚠️ Queued — add BAGS_OF_LOVE_API_KEY to Replit Secrets to auto-fulfil";
 
   const body = `
