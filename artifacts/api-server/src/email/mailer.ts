@@ -518,7 +518,13 @@ export async function sendCartoonImage(data: CartoonImageData): Promise<void> {
     return;
   }
 
-  const ext = data.cartoonMimeType.includes("png") ? "png" : "jpg";
+  // Files arrive as "data:image/...;base64,XXXX". Attachments need the raw base64 only,
+  // with the real file type, or the email shows a broken/blank attachment.
+  const clean = (v: string) => {
+    const m = /^data:image\/([a-z+]+);base64,(.+)$/s.exec(v || "");
+    return m ? { ext: m[1] === "jpeg" ? "jpg" : m[1].replace("+xml", ""), b64: m[2] } : { ext: data.cartoonMimeType.includes("png") ? "png" : "jpg", b64: v };
+  };
+  const files = [data.cartoonBase64, ...(data.extraCartoons ?? [])].map(clean);
 
   const body = `
     <tr><td style="height:4px;background:linear-gradient(90deg,${GOLD},#F0C040,${GOLD})"></td></tr>
@@ -556,13 +562,7 @@ export async function sendCartoonImage(data: CartoonImageData): Promise<void> {
       `Your one-of-a-kind cartoon illustration is attached.`,
       body,
     ),
-    attachments: [
-      {
-        filename: `onjjem-cartoon.${ext}`,
-        content: data.cartoonBase64,
-      },
-      ...(data.extraCartoons ?? []).map((c, i) => ({ filename: `onjjem-cartoon-${i + 2}.${ext}`, content: c })),
-    ],
+    attachments: files.map((f, i) => ({ filename: `onjjem-cartoon${i ? "-" + (i + 1) : ""}.${f.ext}`, content: f.b64 })),
   });
   if (error) throw new Error(error.message);
 
