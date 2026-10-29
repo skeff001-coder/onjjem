@@ -192,8 +192,8 @@ async function createSessionSafe(stripe: any, params: any) {
 const HALLOWEEN_FREE_CARTOON = (sku: string) =>
   sku.startsWith("TEE-STTK184-") || sku.startsWith("trick-bag") ||
   ["halloween-fridge-pack", "halloween-pocket-pack", "magic-mug", "magnet-fridge-3x2", "wud-sticker-small"].includes(sku);
-// Black Friday (UK): 15% off automatically on gifts with room for it, Fri 27 - Mon 30 Nov 2026.
-const BF_ACTIVE = () => { const t = Date.now(); return t >= Date.parse("2026-11-27T00:00:00Z") && t < Date.parse("2026-12-01T00:00:00Z"); };
+// Black Friday (UK): 15% off automatically on gifts with room for it, 29 Oct - Mon 30 Nov 2026.
+const BF_ACTIVE = () => { const t = Date.now(); return t >= Date.parse("2026-10-29T00:00:00Z") && t < Date.parse("2026-12-01T00:00:00Z"); };
 const BF_ELIGIBLE = (sku: string) => /^(canvas-|mug-11oz$|mug-15oz$|magic-mug$|art-print-|poster-|cushion-|CLASSIC-POST)/.test(sku);
 // Christmas special: the cartoon is free on every UK gift from 1 Nov to 24 Dec 2026.
 const XMAS_FREE_CARTOON = () => { const t = Date.now(); return t >= Date.parse("2026-11-01T00:00:00Z") && t < Date.parse("2026-12-25T00:00:00Z"); };
