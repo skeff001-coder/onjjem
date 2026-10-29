@@ -12,6 +12,7 @@ import prodigiCheckRouter from "./prodigiCheck";
 import giveawayRouter from "./giveaway";
 import printablesRouter from "./printables";
 import contestRouter from "./contest";
+import xmasGiveawayRouter from "./xmasGiveaway";
 
 const router: IRouter = Router();
 router.use(healthRouter);
@@ -27,6 +28,7 @@ router.use(prodigiCheckRouter);
 router.use(giveawayRouter);
 router.use(printablesRouter);
 router.use(contestRouter);
+router.use(xmasGiveawayRouter);
 
 export default router;
 
