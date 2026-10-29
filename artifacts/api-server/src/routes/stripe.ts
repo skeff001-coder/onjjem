@@ -562,7 +562,8 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     if (isUS) metadata.region = "us";
 
     // Automatic bundle discount
-    const percent = items.length >= 3 ? 12 : items.length === 2 ? 10 : 0;
+    const countable = items.filter((it) => it.sku !== "mug-addon").length;
+    const percent = countable >= 3 ? 12 : countable === 2 ? 10 : 0;
     let discounts: { coupon: string }[] | undefined;
     const hasExcluded = items.some((it) => NO_BUNDLE_DISCOUNT(it.sku || ""));
     if (percent && hasExcluded) {

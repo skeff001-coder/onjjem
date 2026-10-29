@@ -64,6 +64,8 @@ export const SHOP_SKU_PRICES = {
 
   // Photo Mugs
   "mug-11oz": { name: "Photo Mug (11oz, Full Wrap)", pricePence: 1399 },
+  // Matching mug add-on, offered after adding a blanket/canvas/cushion/print (same photo). Excluded from bundle discounts.
+  "mug-addon": { name: "Matching Photo Mug (11oz, add-on)", pricePence: 1199 },
   "mug-15oz": { name: "Photo Mug (15oz Large)", pricePence: 1699 },
 
   // Wooden Coasters

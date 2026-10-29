@@ -576,6 +576,7 @@ export interface GiftCardEmailData {
   code: string;
   amount: string;
   currency?: "gbp" | "usd";
+  bonusCode?: string;
 }
 
 export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> {
@@ -601,6 +602,11 @@ export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> 
         <p style="font-size:13px;color:${MUTED};margin:0 0 6px">Redemption Code</p>
         <p style="font-size:22px;color:#FAF7F2;margin:0;font-weight:800;letter-spacing:2px;font-family:monospace">${data.code}</p>
       </div>
+      ${data.bonusCode ? `<div style="background:${SURFACE};border:1px dashed #5DE391;border-radius:12px;padding:18px;text-align:center;margin-bottom:24px">
+        <p style="font-size:13px;color:#5DE391;margin:0 0 6px;font-weight:700">🎄 Christmas bonus: ${sym}10 extra, free</p>
+        <p style="font-size:20px;color:#FAF7F2;margin:0;font-weight:800;letter-spacing:2px;font-family:monospace">${data.bonusCode}</p>
+        <p style="font-size:12px;color:${MUTED};margin:8px 0 0">A separate code, for you to keep or pass on. Use it on a different order.</p>
+      </div>` : ""}
       <p style="font-size:13px;color:${MUTED};line-height:1.7;margin:0">
         To use this gift card, simply enter the code above in the promo code box at checkout on
         <a href="${shop}" style="color:${GOLD}">${shopLabel}</a> — the value will be deducted

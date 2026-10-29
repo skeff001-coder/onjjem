@@ -268,6 +268,7 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // GLOBAL-MUG-W: 11oz, multi-region (UK/US/DE), best for international orders.
   // H-MUG-15OZ-W: 15oz large ceramic, UK lab.
   "mug-11oz": { sku: "GLOBAL-MUG-W",  sizing: "fillPrintArea", shipping: "Budget" },
+  "mug-addon": { sku: "GLOBAL-MUG-W",  sizing: "fillPrintArea", shipping: "Budget" },
   "mug-15oz": { sku: "H-MUG-15OZ-W", sizing: "fillPrintArea", shipping: "Budget" },
 
   // ── Magic Photo Mug (heat-reveal colour-changing) ──────────────────────────
