@@ -192,6 +192,9 @@ async function createSessionSafe(stripe: any, params: any) {
 const HALLOWEEN_FREE_CARTOON = (sku: string) =>
   sku.startsWith("TEE-STTK184-") || sku.startsWith("trick-bag") ||
   ["halloween-fridge-pack", "halloween-pocket-pack", "magic-mug", "magnet-fridge-3x2", "wud-sticker-small"].includes(sku);
+// Black Friday (UK): 15% off automatically on gifts with room for it, Fri 27 - Mon 30 Nov 2026.
+const BF_ACTIVE = () => { const t = Date.now(); return t >= Date.parse("2026-11-27T00:00:00Z") && t < Date.parse("2026-12-01T00:00:00Z"); };
+const BF_ELIGIBLE = (sku: string) => /^(canvas-|mug-11oz$|mug-15oz$|magic-mug$|art-print-|poster-|cushion-|CLASSIC-POST)/.test(sku);
 // Christmas special: the cartoon is free on every UK gift from 1 Nov to 24 Dec 2026.
 const XMAS_FREE_CARTOON = () => { const t = Date.now(); return t >= Date.parse("2026-11-01T00:00:00Z") && t < Date.parse("2026-12-25T00:00:00Z"); };
 // Giveaway entrants (Oct 2026) get the cartoon free on any gift until 30 Nov 2026.
@@ -373,11 +376,18 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
 
     const origin = `${req.protocol}://${req.get("host")}`;
 
+    let bfDiscount: { coupon: string }[] | undefined;
+    if (!isUS && BF_ACTIVE() && BF_ELIGIBLE(body.sku)) {
+      const off = Math.round(((lineItem as any).price_data.unit_amount as number) * 0.15);
+      const c = await stripe.coupons.create({ amount_off: off, currency: "gbp", duration: "once", max_redemptions: 1, name: "Black Friday 15% off" });
+      bfDiscount = [{ coupon: c.id }];
+    }
+
     const session = await createSessionSafe(stripe, {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      allow_promotion_codes: true,
+      ...(bfDiscount ? { discounts: bfDiscount } : { allow_promotion_codes: true }),
       ...(isUS && body.sku.startsWith("US-TAP-")
         ? {
             custom_text: {
@@ -566,7 +576,20 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     const percent = countable >= 3 ? 12 : countable === 2 ? 10 : 0;
     let discounts: { coupon: string }[] | undefined;
     const hasExcluded = items.some((it) => NO_BUNDLE_DISCOUNT(it.sku || ""));
-    if (percent && hasExcluded) {
+    const bfBasket = !isUS && BF_ACTIVE() && items.some((it) => BF_ELIGIBLE(it.sku || ""));
+    if (bfBasket) {
+      // Black Friday: 15% off eligible gifts, the normal bundle % on the others (never both on one gift).
+      const off = lineItems.reduce((sum: number, li: any) => {
+        const sku = li?.price_data?.product_data?.metadata?.sku as string | undefined;
+        if (!sku || sku === "cartoon_addon") return sum;
+        const pct = BF_ELIGIBLE(sku) ? 15 : NO_BUNDLE_DISCOUNT(sku) ? 0 : percent;
+        return sum + Math.round(((li.price_data.unit_amount as number) * (li.quantity || 1) * pct) / 100);
+      }, 0);
+      if (off > 0) {
+        const c = await stripe.coupons.create({ amount_off: off, currency: "gbp", duration: "once", max_redemptions: 1, name: "Black Friday discount" });
+        discounts = [{ coupon: c.id }];
+      }
+    } else if (percent && hasExcluded) {
       // Take the bundle % off the eligible gifts only (one-off amount coupon).
       const eligible = lineItems.reduce((sum: number, li: any, idx: number) => {
         const sku = li?.price_data?.product_data?.metadata?.sku as string | undefined;
