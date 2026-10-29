@@ -164,11 +164,12 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
       max_redemptions: 1,
     });
 
-    // Christmas bonus: buy a 50+ gift card between 20 Nov and 24 Dec, get a separate 10 bonus code.
+    // Christmas bonus (29 Oct - 24 Dec): 50+ gift card gets a separate 10 bonus code, 100+ gets 20.
     const t = Date.now();
     let bonusCode: string | undefined;
-    if (amountPence >= 5000 && t >= Date.parse("2026-11-20T00:00:00Z") && t < Date.parse("2026-12-25T00:00:00Z")) {
-      const bc = await stripe.coupons.create({ amount_off: 1000, currency: isUSCard ? "usd" : "gbp", duration: "once", max_redemptions: 1, name: `ONJJEM Bonus (${isUSCard ? "$" : "£"}10)` });
+    const bonusPence = amountPence >= 10000 ? 2000 : amountPence >= 5000 ? 1000 : 0;
+    if (bonusPence && t >= Date.parse("2026-10-29T00:00:00Z") && t < Date.parse("2026-12-25T00:00:00Z")) {
+      const bc = await stripe.coupons.create({ amount_off: bonusPence, currency: isUSCard ? "usd" : "gbp", duration: "once", max_redemptions: 1, name: `ONJJEM Bonus (${isUSCard ? "$" : "£"}${bonusPence / 100})` });
       bonusCode = "BONUS" + Math.random().toString(36).slice(2, 7).toUpperCase();
       await stripe.promotionCodes.create({ coupon: bc.id, code: bonusCode, max_redemptions: 1 });
     }
@@ -179,6 +180,7 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
       amount: (amountPence / 100).toFixed(2),
       currency: isUSCard ? "usd" : "gbp",
       bonusCode,
+      bonusAmount: bonusPence / 100,
     });
 
     logger.info({ sessionId, email, code }, "Gift card code generated and sent");
