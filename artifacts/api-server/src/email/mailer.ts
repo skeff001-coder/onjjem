@@ -604,7 +604,7 @@ export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> 
         <p style="font-size:22px;color:#FAF7F2;margin:0;font-weight:800;letter-spacing:2px;font-family:monospace">${data.code}</p>
       </div>
       ${data.bonusCode ? `<div style="background:${SURFACE};border:1px dashed #5DE391;border-radius:12px;padding:18px;text-align:center;margin-bottom:24px">
-        <p style="font-size:13px;color:#5DE391;margin:0 0 6px;font-weight:700">🎄 Christmas bonus: ${sym}${data.bonusAmount || 10} extra, free</p>
+        <p style="font-size:13px;color:#5DE391;margin:0 0 6px;font-weight:700">🖤 Black Friday bonus: ${sym}${data.bonusAmount || 20} extra, free</p>
         <p style="font-size:20px;color:#FAF7F2;margin:0;font-weight:800;letter-spacing:2px;font-family:monospace">${data.bonusCode}</p>
         <p style="font-size:12px;color:${MUTED};margin:8px 0 0">A separate code, for you to keep or pass on. Use it on a different order.</p>
       </div>` : ""}
