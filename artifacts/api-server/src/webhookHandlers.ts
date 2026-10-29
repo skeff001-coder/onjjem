@@ -164,13 +164,10 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
       max_redemptions: 1,
     });
 
-    // Black Friday (now - Mon 30 Nov): 100+ gift card gets a 20 bonus code.
-    // Christmas (20 Nov - 24 Dec): 50+ gift card gets a 10 bonus code.
+    // Black Friday only (until Mon 30 Nov): a 100 gift card gets a 20 bonus code. No other gift card bonuses.
     const t = Date.now();
     let bonusCode: string | undefined;
-    const bfOn = t < Date.parse("2026-12-01T00:00:00Z");
-    const xmasOn = t >= Date.parse("2026-11-20T00:00:00Z") && t < Date.parse("2026-12-25T00:00:00Z");
-    const bonusPence = amountPence >= 10000 && bfOn ? 2000 : amountPence >= 5000 && xmasOn ? 1000 : 0;
+    const bonusPence = amountPence >= 10000 && t < Date.parse("2026-12-01T00:00:00Z") ? 2000 : 0;
     if (bonusPence) {
       const bc = await stripe.coupons.create({ amount_off: bonusPence, currency: isUSCard ? "usd" : "gbp", duration: "once", max_redemptions: 1, name: `ONJJEM Bonus (${isUSCard ? "$" : "£"}${bonusPence / 100})` });
       bonusCode = "BONUS" + Math.random().toString(36).slice(2, 7).toUpperCase();
