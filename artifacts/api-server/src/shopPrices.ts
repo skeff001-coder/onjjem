@@ -212,6 +212,10 @@ export const SHOP_SKU_PRICES = {
 
   // Budget Poster (Budget-Poster series)
   "poster-a3": { name: "Photo Poster (A3)", pricePence: 1549 },
+  // "Your Own Jemzi": customer's photos fanned above the ONJJEM hedgehog (printed as a poster)
+  "jemzi-a3": { name: "Your Own Jemzi Poster (A3)", pricePence: 1999 },
+  "jemzi-xmas-a3": { name: "Your Own Christmas Jemzi Poster (A3)", pricePence: 1999 },
+  "jemzi-a2": { name: "Your Own Jemzi Poster (A2)", pricePence: 2499 },
   "poster-a2": { name: "Photo Poster (A2)", pricePence: 1649 },
   "poster-50x70": { name: "Photo Poster (50x70cm)", pricePence: 1999 },
   "poster-a1": { name: "Photo Poster (A1)", pricePence: 2299 },

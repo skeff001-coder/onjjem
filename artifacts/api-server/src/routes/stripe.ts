@@ -145,7 +145,7 @@ function ukShippingOptions(skus: string[]) {
     opts.push({
       shipping_rate_data: {
         type: "fixed_amount",
-        display_name: "Express: tracked, next working day once made",
+        display_name: "Jemzi Priority: tracked express, next working day once made",
         fixed_amount: { amount: EXPRESS_PENCE, currency: "gbp" },
         metadata: { onjjem_express: "true" },
       },

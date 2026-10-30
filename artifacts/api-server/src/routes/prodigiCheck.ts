@@ -225,7 +225,7 @@ router.get("/prodigi-quote", async (req, res) => {
     if (!p) { out.push(`=== ${ourSku}: unknown product`); continue; }
     const areas = p.pageAreas ?? areasFor(p);
     const body = {
-      shippingMethod: p.shipping ?? "Standard",
+      shippingMethod: String(req.query.ship || p.shipping || "Standard"),
       destinationCountryCode: country,
       currencyCode: country === "US" ? "USD" : "GBP",
       items: [

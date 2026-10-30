@@ -472,6 +472,9 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // Prodigi's GB price list 2026-09-26. Portrait/landscape is handled on the
   // website (landscape pictures are turned before upload), so no attributes.
   "poster-a3":     { sku: "ART-FAP-BAP-A3",    sizing: "fillPrintArea", shipping: "Budget" },
+  "jemzi-a3":      { sku: "ART-FAP-BAP-A3",    sizing: "fillPrintArea", shipping: "Budget" },
+  "jemzi-xmas-a3": { sku: "ART-FAP-BAP-A3",    sizing: "fillPrintArea", shipping: "Budget" },
+  "jemzi-a2":      { sku: "ART-FAP-BAP-A2",    sizing: "fillPrintArea", shipping: "Budget" },
   "poster-a2":     { sku: "ART-FAP-BAP-A2",    sizing: "fillPrintArea", shipping: "Budget" },
   "poster-50x70":  { sku: "ART-FAP-BAP-20X28", sizing: "fillPrintArea", shipping: "Budget" },
   "poster-a1":     { sku: "ART-FAP-BAP-A1",    sizing: "fillPrintArea", shipping: "Budget" },
