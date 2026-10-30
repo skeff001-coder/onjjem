@@ -389,6 +389,9 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // JIGSAW-PUZZLE-* SKUs validated against Prodigi live API on 2026-06-02.
   // All require printAreas: ["jigsaw", "lid"] — customer photo prints on both.
   // Jemzitime photo wall clock (UK) - not on sale until the GB quote is checked
+  "bandana-s": { sku: "PET-BANDANA-SML", sizing: "fillPrintArea", shipping: "Budget" },
+  "bandana-m": { sku: "PET-BANDANA-MED", sizing: "fillPrintArea", shipping: "Budget" },
+  "bandana-l": { sku: "PET-BANDANA-LRG", sizing: "fillPrintArea", shipping: "Budget" },
   "jemzitime-black":   { sku: "WALL-CLOCK-10X10", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
   "jemzitime-white":   { sku: "WALL-CLOCK-10X10", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
   "jemzitime-natural": { sku: "WALL-CLOCK-10X10", sizing: "fillPrintArea", attributes: { color: "natural" }, shipping: "Budget" },

@@ -76,6 +76,10 @@ export const SHOP_SKU_PRICES = {
   // Glass chopping boards (tempered glass, made in the UK, ~5 day making time)
   "cutting-board-rect": { name: "Glass Chopping Board (39x28cm, rectangular)", pricePence: 2999 },
   "cutting-board-round": { name: "Glass Chopping Board (30cm, round)", pricePence: 2999 },
+  // Personalised pet bandanas
+  "bandana-s": { name: "Personalised Pet Bandana (Small)", pricePence: 1799 },
+  "bandana-m": { name: "Personalised Pet Bandana (Medium)", pricePence: 1799 },
+  "bandana-l": { name: "Personalised Pet Bandana (Large)", pricePence: 1999 },
   "magnet-square-4x4": { name: "Photo Magnets (Square Magnet 4x4)", pricePence: 1149 },
   "magnet-square-6x6": { name: "Photo Magnets (Square Magnet 6x6)", pricePence: 1399 },
 
