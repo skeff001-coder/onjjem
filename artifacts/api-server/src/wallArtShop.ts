@@ -76,7 +76,7 @@ const UK_GARMENTS = [
     colours: [["WHITE", "white"], ["PINK", "pink"], ["LTBLUE", "light blue"], ["HEATHER", "heather"], ["BUTTER", "butter"], ["NAVY", "navy blue"]] },
   // Baby bodysuit (Rabbit Skins 4424, lap shoulder) from £9 + VAT, added 30 Oct 2026.
   // Front print area 2130x2130 (square), checked via /api/prodigi-spec.
-  { code: "BODY-UK", prodigiSku: "GLOBAL-BB-RS-4424", name: "Baby Photo Bodysuit", price: 1999,
+  { code: "BODY-UK", prodigiSku: "GLOBAL-BB-RS-4424", name: "Baby Photo Bodysuit", price: 1799,
     sizes: [["NB", "newborn"], ["6M", "6-12 months"], ["12M", "12-18 months"], ["18M", "18-24 months"]],
     colours: [["WHITE", "white"], ["PINK", "baby pink"], ["BLUE", "baby blue"], ["GREY", "heather grey"]] },
   { code: "KHOOD-UK", prodigiSku: "HOOD-AWD-JH001B", name: "Kids' Photo Hoodie", price: 2799,
