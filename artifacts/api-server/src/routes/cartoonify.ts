@@ -291,6 +291,15 @@ export async function addWatermark(base64Image: string, mimeType: string): Promi
   return watermarkedBuffer.toString("base64");
 }
 
+// Owner only: /api/cartoon-clean?key=... shows the latest clean (no watermark) previews from the last 2 hours.
+router.get("/cartoon-clean", (req: Request, res: Response) => {
+  const want = String(process.env.GIVEAWAY_KEY ?? "").replace(/\s+/g, "").toLowerCase();
+  if (!want || String(req.query.key ?? "").replace(/\s+/g, "").toLowerCase() !== want) { res.status(403).send("Wrong key"); return; }
+  const items = [...previewCache.entries()].sort((a, b) => b[1].at - a[1].at).slice(0, 6);
+  const html = items.map(([id, v]) => `<div style="margin:0 0 24px"><p style="font:14px system-ui;color:#555">${new Date(v.at).toLocaleTimeString("en-GB", { timeZone: "Europe/London" })}: press and hold the picture, then Save to Photos</p><img src="data:${v.mimeType};base64,${v.base64Image}" style="width:100%;max-width:700px;border-radius:12px"></div>`).join("") || "<p>No previews in the last 2 hours.</p>";
+  res.type("html").send(`<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><body style="margin:16px;font-family:system-ui"><h2>Clean cartoon previews</h2>${html}</body>`);
+});
+
 router.post("/cartoonify", async (req: Request, res: Response) => {
   const { base64Image, mimeType = "image/jpeg", email, watermark, style, previewId } = req.body as {
     base64Image?: string;
