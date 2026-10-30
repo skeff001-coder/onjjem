@@ -223,7 +223,7 @@ for (const g of US_GARMENTS) {
 
 // Low-margin products: they count towards the bundle deal, but the discount
 // is only taken off the other gifts in the basket.
-export const NO_BUNDLE_DISCOUNT = (sku: string) => sku === "mug-addon" || sku === "cosy-bundle" || sku.startsWith("US-GOLF") || sku === "US-PUCK" || sku.startsWith("US-SKATE") || sku === "US-BPONG" || sku.startsWith("US-PADDLE-PRO") || sku.startsWith("US-CANDLE") || sku === "US-TOTE" || sku === "xmas-sack" || sku.startsWith("trick-bag") || sku.startsWith("FTEE-");
+export const NO_BUNDLE_DISCOUNT = (sku: string) => sku === "mug-addon" || sku === "cosy-bundle" || sku === "santa-sack-surprise" || sku.startsWith("US-GOLF") || sku === "US-PUCK" || sku.startsWith("US-SKATE") || sku === "US-BPONG" || sku.startsWith("US-PADDLE-PRO") || sku.startsWith("US-CANDLE") || sku === "US-TOTE" || sku === "xmas-sack" || sku.startsWith("trick-bag") || sku.startsWith("FTEE-");
 
 // US gift cards (digital, emailed as a one-time Stripe code that works on the US shop only).
 export const US_GIFT_CARDS: Record<string, number> = {

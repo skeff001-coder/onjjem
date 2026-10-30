@@ -132,6 +132,7 @@ export const SHOP_SKU_PRICES = {
   "sticker-xl": { name: "Cartoon Photo Sticker (XL 14x14\", Gloss Vinyl)", pricePence: 1949 },
 
   // Cosy Home Bundle: medium blanket + 12" cushion + mug, same photo (separately £88.47)
+  "santa-sack-surprise": { name: "Santa Sack Surprise (Santa Sack + 5 Pin Badges + Sticker + Magnet + Bauble, same photo)", pricePence: 5999 },
   "cosy-bundle": { name: "Cosy Home Bundle (Medium Blanket + Cushion + Mug, same photo)", pricePence: 7999 },
   // Halloween / kids bundles (one photo on every item, one order)
   "halloween-pocket-pack": { name: "Halloween Pocket Pack (Sticker + Mini Magnet)", pricePence: 1199 },
