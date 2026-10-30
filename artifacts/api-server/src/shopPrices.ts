@@ -77,6 +77,8 @@ export const SHOP_SKU_PRICES = {
   "cutting-board-rect": { name: "Glass Chopping Board (39x28cm, rectangular)", pricePence: 2999 },
   "cutting-board-round": { name: "Glass Chopping Board (30cm, round)", pricePence: 2999 },
   // Personalised pet bandanas
+  "pet-tag-round": { name: "Personalised Metal Pet Tag (Round)", pricePence: 1299 },
+  "pet-tag-bone": { name: "Personalised Metal Pet Tag (Bone)", pricePence: 1299 },
   "bandana-s": { name: "Personalised Pet Bandana (Small)", pricePence: 1799 },
   "bandana-m": { name: "Personalised Pet Bandana (Medium)", pricePence: 1799 },
   "bandana-l": { name: "Personalised Pet Bandana (Large)", pricePence: 1999 },
