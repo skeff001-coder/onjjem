@@ -8,8 +8,9 @@
 // variants Prodigi returns, including that the variant ships to the country.
 // Nothing is ordered or charged. Add &json=1 for raw results, &fresh=1 to rerun.
 import { Router, type IRouter } from "express";
-import { PRODIGI_PRODUCTS, areasFor } from "../fulfilment/prodigi";
+import { PRODIGI_PRODUCTS, areasFor, SLIP_SKU } from "../fulfilment/prodigi";
 import { US_PRODIGI_PRODUCTS } from "../usShop";
+import { getUncachableStripeClient } from "../stripeClient";
 
 const router: IRouter = Router();
 
@@ -193,6 +194,25 @@ router.get("/prodigi-spec", async (req, res) => {
 
 // Read-only: ask Prodigi to price one of OUR products exactly as we'd order it
 // (same SKU, attributes and print areas). Nothing is ordered or charged.
+// Owner: /api/thankyou-code?key=... makes sure the THANKYOU15 code (15% off, on the keepsake slip) exists.
+router.get("/thankyou-code", async (req, res) => {
+  if (!okKey(req.query.key)) { res.status(403).send("Wrong key"); return; }
+  try {
+    const stripe = await getUncachableStripeClient();
+    const found = await stripe.promotionCodes.list({ code: "THANKYOU15", limit: 1 });
+    if (found.data[0]) { res.type("text/plain").send(`✅ THANKYOU15 already exists (active: ${found.data[0].active})`); return; }
+    const coupon = await stripe.coupons.create({ id: "THANKYOU15-COUPON", percent_off: 15, duration: "once", name: "Thank you: 15% off your next gift" }).catch(async () => stripe.coupons.retrieve("THANKYOU15-COUPON"));
+    try {
+      await stripe.promotionCodes.create({ coupon: coupon.id, code: "THANKYOU15" } as any);
+    } catch {
+      await stripe.promotionCodes.create({ promotion: { type: "coupon", coupon: coupon.id }, code: "THANKYOU15" } as any);
+    }
+    res.type("text/plain").send("✅ THANKYOU15 created: 15% off, any order, no expiry");
+  } catch (err) {
+    res.status(500).type("text/plain").send("❌ " + String(err));
+  }
+});
+
 // Open /api/prodigi-quote?sku=calendar-a4&country=GB (several: sku=a,b,c)
 router.get("/prodigi-quote", async (req, res) => {
   const apiKey = process.env.PRODIGI_API_KEY;
@@ -208,7 +228,10 @@ router.get("/prodigi-quote", async (req, res) => {
       shippingMethod: p.shipping ?? "Standard",
       destinationCountryCode: country,
       currencyCode: country === "US" ? "USD" : "GBP",
-      items: [p, ...(p.bundle ?? []).map((b) => PRODIGI_PRODUCTS[b]).filter(Boolean)].map((x, i) => ({ sku: x.sku, copies: 1, ...(x.attributes ? { attributes: x.attributes } : {}), assets: (i === 0 ? areas : areasFor(x)).map((a) => ({ printArea: a })) })),
+      items: [
+        ...[p, ...(p.bundle ?? []).map((b) => PRODIGI_PRODUCTS[b]).filter(Boolean)].map((x, i) => ({ sku: x.sku, copies: 1, ...(x.attributes ? { attributes: x.attributes } : {}), assets: (i === 0 ? areas : areasFor(x)).map((a) => ({ printArea: a })) })),
+        ...(req.query.slip ? [{ sku: SLIP_SKU, copies: 1, assets: [{ printArea: "default" }] }] : []),
+      ],
     };
     try {
       const r = await fetch(`${baseUrl()}/v4.0/quotes`, {

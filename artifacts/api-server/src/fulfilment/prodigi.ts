@@ -26,6 +26,22 @@ import { ObjectStorageService } from "../lib/objectStorage";
 import { US_PRODIGI_PRODUCTS } from "../usShop";
 import { FOOTBALL_PRODIGI_PRODUCTS } from "../footballShop";
 import { WALL_PRODIGI_PRODUCTS } from "../wallArtShop";
+import { SLIP_PANEL_B64 } from "./slipPanel";
+
+// Free 6x4" keepsake slip in every UK parcel: the customer's own picture + "15% off your next gift, THANKYOU15".
+// Switch on only after /api/prodigi-quote?slip=1 shows it adds no extra delivery.
+export const SLIP_ON = false;
+export const SLIP_SKU = "GLOBAL-COMP-SILK-4X6-LUS";
+export async function slipArtwork(photoBase64: string): Promise<string> {
+  const m = photoBase64.match(/^data:[^;]+;base64,(.+)$/s);
+  const input = Buffer.from(m ? m[1] : photoBase64, "base64");
+  const pic = await sharp(input).rotate().resize(1200, 1200, { fit: "cover" }).toBuffer();
+  const out = await sharp({ create: { width: 1800, height: 1200, channels: 3, background: "#1c1c1c" } })
+    .composite([{ input: pic, left: 0, top: 0 }, { input: Buffer.from(SLIP_PANEL_B64, "base64"), left: 1200, top: 0 }])
+    .jpeg({ quality: 92 })
+    .toBuffer();
+  return "data:image/jpeg;base64," + out.toString("base64");
+}
 
 // ── SKU → Prodigi product mapping ────────────────────────────────────────────
 // Maps our website SKU to a Prodigi product SKU (+ optional copies/attributes).
@@ -727,6 +743,16 @@ async function submitToProdigi(
         sizing: cardProduct.sizing ?? "fillPrintArea",
         assets: areasFor(cardProduct).map((area) => ({ printArea: area, url: rawUrl })),
       });
+    }
+  }
+
+  // ── Free keepsake slip (UK only) ─────────────────────────────────────────
+  if (SLIP_ON && order.shippingAddress.country === "GB") {
+    try {
+      const slipUrl = await photoToPublicUrl(await slipArtwork(order.photoBase64));
+      items.push({ sku: SLIP_SKU, copies: 1, sizing: "fillPrintArea", assets: [{ printArea: "default", url: slipUrl }] });
+    } catch (err) {
+      logger.warn({ err }, "keepsake slip skipped");
     }
   }
 
