@@ -278,6 +278,10 @@ export const SHOP_SKU_PRICES = {
 
   // Kids Jigsaws
   "jigsaw-30": { name: "Cartoon Jigsaw Puzzle (30 pieces)", pricePence: 2099 },
+  // Jemzsaw: photo jigsaw with Jemzi the hedgehog hidden somewhere in the picture
+  "jemzsaw-110": { name: "Jemzsaw: Find-Jemzi Jigsaw (110 pieces)", pricePence: 2599 },
+  "jemzsaw-252": { name: "Jemzsaw: Find-Jemzi Jigsaw (252 pieces)", pricePence: 2899 },
+  "jemzsaw-500": { name: "Jemzsaw: Find-Jemzi Jigsaw (500 pieces)", pricePence: 3099 },
   "jigsaw-110": { name: "Cartoon Jigsaw Puzzle (110 pieces)", pricePence: 2399 },
   "jigsaw-252": { name: "Cartoon Jigsaw Puzzle (252 pieces)", pricePence: 2699 },
   "jigsaw-500": { name: "Cartoon Jigsaw Puzzle (500 pieces)", pricePence: 2899 },

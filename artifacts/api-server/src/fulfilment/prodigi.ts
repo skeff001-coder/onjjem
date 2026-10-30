@@ -388,6 +388,9 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Jigsaw Puzzles ───────────────────────────────────────────────────────────
   // JIGSAW-PUZZLE-* SKUs validated against Prodigi live API on 2026-06-02.
   // All require printAreas: ["jigsaw", "lid"] — customer photo prints on both.
+  "jemzsaw-110": { sku: "JIGSAW-PUZZLE-110",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" },
+  "jemzsaw-252": { sku: "JIGSAW-PUZZLE-252",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" },
+  "jemzsaw-500": { sku: "JIGSAW-PUZZLE-500",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" },
   "jigsaw-30":   { sku: "JIGSAW-PUZZLE-30",   sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" }, // 30pc, 250×200mm
   "jigsaw-110":  { sku: "JIGSAW-PUZZLE-110",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" }, // 110pc, 250×200mm
   "jigsaw-252":  { sku: "JIGSAW-PUZZLE-252",  sizing: "fillPrintArea", printAreas: ["jigsaw", "lid"], shipping: "Budget" }, // 252pc, 375×285mm
