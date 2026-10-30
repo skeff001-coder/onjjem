@@ -81,8 +81,10 @@ function baseTemplate(preheader: string, body: string): string {
 
       <!-- Footer -->
       <tr><td align="center" style="padding-top:32px">
+        <img src="https://onjjem.com/jemzi-64.png" alt="Jemzi" width="48" height="48" style="display:block;margin:0 auto 8px;border-radius:50%">
+        <p style="font-size:13px;color:#F3D36B;margin:0 0 4px">Love, Jemzi &amp; the ONJJEM family 💛</p>
         <p style="font-size:11px;color:${MUTED};margin:0 0 6px">
-          ONJJEM · UK family business
+          Share your gift with #JemziSpotted · ONJJEM · UK family business
         </p>
         <p style="font-size:11px;color:${MUTED};margin:0">
           <a href="https://onjjem.com/privacy" style="color:${MUTED}">Privacy Policy</a>
