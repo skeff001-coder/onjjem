@@ -161,6 +161,8 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Cosy Home Bundle: medium blanket + 12" cushion + 11oz mug, same photo ──
   // Santa Sack Surprise (UK, Christmas 2026): sack + stocking fillers, one photo, one order. Sold at £59.99.
   "santa-sack-surprise": { sku: "XMAS-SACK", sizing: "fillPrintArea", bundle: ["mug-11oz", "wud-sticker-small", "magnet-fridge-3x2", "xmas-bauble"], shipping: "Budget" },
+  // Quote-only trial (no price, so it can't be bought): bigger Santa sack with magic mug, coaster and postcard.
+  "santa-sack-trial": { sku: "XMAS-SACK", sizing: "fillPrintArea", bundle: ["magic-mug", "wud-sticker-small", "magnet-fridge-3x2", "xmas-bauble", "coaster-1pk", "CLASSIC-POST-GLOS-6X4"], shipping: "Budget" },
   "cosy-bundle": { sku: "H-BLA-PBMWHITE", sizing: "fillPrintArea", bundle: ["cushion-12-canvas", "mug-11oz"], shipping: "Budget" },
   "cushion-12-canvas": { sku: "GLOBAL-CUSH-12X12-CAN", sizing: "fillPrintArea", shipping: "Budget" }, // bundle only (£9)
   // ── Halloween / kids bundles — one photo, several products, one order ─────
