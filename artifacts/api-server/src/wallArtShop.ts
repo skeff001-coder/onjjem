@@ -85,6 +85,8 @@ const UK_GARMENTS = [
 ];
 for (const g of UK_GARMENTS) for (const [sz, prodigiSize] of g.sizes) for (const [col, prodigiColour] of g.colours) {
   const code = `${g.code}-${sz}-${col}`;
-  WALL_SKU_PRICES[code] = { name: `${g.name} (${prodigiSize}, ${prodigiColour})`, pricePence: g.price };
+  // BODY-UK paused 30 Oct 2026: Prodigi quote £8.41 + £13.61 shipping (ex VAT) — loses money at £17.99.
+  // Left in the Prodigi map so /api/prodigi-quote still works; no price = can't be bought.
+  if (g.code !== "BODY-UK") WALL_SKU_PRICES[code] = { name: `${g.name} (${prodigiSize}, ${prodigiColour})`, pricePence: g.price };
   WALL_PRODIGI_PRODUCTS[code] = { sku: g.prodigiSku, sizing: "fitPrintArea", printAreas: ["front"], attributes: { color: prodigiColour, size: prodigiSize }, shipping: "Budget" }; // clothing prints on the "front" area
 }
