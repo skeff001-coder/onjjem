@@ -6,7 +6,7 @@ export const SHOP_SKU_PRICES = {
   // ========================================
 
   // Heat Transfer Colour Changing Mug (11oz) — LIMITED TIME SALE
-  "magic-mug": { name: "Magic Reveal Photo Mug (11oz, colour-changing)", pricePence: 1399 },
+  "magic-mug": { name: "Magic Reveal Photo Mug (11oz, colour-changing)", pricePence: 1499 },
   "baby-reveal-mug": { name: "Baby Gender Reveal Colour-Changing Mug (11oz)", pricePence: 1999 },
   "XSWEAT-KD-3Y-RED": { name: "Christmas Sweatshirt, Kids (3-4 Years, Fire Red)", pricePence: 2399 },
   "XSWEAT-KD-3Y-GREEN": { name: "Christmas Sweatshirt, Kids (3-4 Years, Kelly Green)", pricePence: 2399 },
@@ -63,7 +63,7 @@ export const SHOP_SKU_PRICES = {
   "calendar-a4": { name: "2027 Photo Calendar (A4, 12 photos)", pricePence: 2499 },
 
   // Photo Mugs
-  "mug-11oz": { name: "Photo Mug (11oz, Full Wrap)", pricePence: 1399 },
+  "mug-11oz": { name: "Photo Mug (11oz, Full Wrap)", pricePence: 1499 },
   // Matching mug add-on, offered after adding a blanket/canvas/cushion/print (same photo). Excluded from bundle discounts.
   "mug-addon": { name: "Matching Photo Mug (11oz, add-on)", pricePence: 1199 },
   "mug-15oz": { name: "Photo Mug (15oz Large)", pricePence: 1699 },
