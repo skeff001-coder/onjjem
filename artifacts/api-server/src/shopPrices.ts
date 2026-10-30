@@ -73,6 +73,9 @@ export const SHOP_SKU_PRICES = {
   "magnet-fridge-3x2": { name: "Photo Magnets (Fridge Magnet 3x2)", pricePence: 749 },
   "magnet-fridge-6x4": { name: "Photo Magnets (Fridge Magnet 6x4)", pricePence: 899 },
   "magnet-acrylic-2x3": { name: "Photo Magnets (Acrylic Magnet 2x3)", pricePence: 1099 },
+  // Glass chopping boards (tempered glass, made in the UK, ~5 day making time)
+  "cutting-board-rect": { name: "Glass Chopping Board (39x28cm, rectangular)", pricePence: 2999 },
+  "cutting-board-round": { name: "Glass Chopping Board (30cm, round)", pricePence: 2999 },
   "magnet-square-4x4": { name: "Photo Magnets (Square Magnet 4x4)", pricePence: 1149 },
   "magnet-square-6x6": { name: "Photo Magnets (Square Magnet 6x6)", pricePence: 1399 },
 

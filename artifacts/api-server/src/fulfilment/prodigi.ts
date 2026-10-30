@@ -362,6 +362,8 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "magnet-acrylic-2x3":  { sku: "M-MAG-ACR-4X6",  sizing: "fillPrintArea", shipping: "Budget" }, // 2"×3" acrylic
   "magnet-fridge-3x2":   { sku: "M-MAG-FRI-3X2",  sizing: "fillPrintArea", shipping: "Budget" }, // 3"×2"
   "magnet-fridge-6x4":   { sku: "M-MAG-FRI-4X6",  sizing: "fillPrintArea", shipping: "Budget" }, // 6"×4"
+  "cutting-board-rect":  { sku: "H-CUTTINGBOARD-GLASS",      sizing: "fillPrintArea", shipping: "Budget" }, // 39x28cm
+  "cutting-board-round": { sku: "H-CUTTINGBOARD-GLASS-CIRC", sizing: "fillPrintArea", shipping: "Budget" }, // 30cm circle
   "magnet-square-4x4":   { sku: "MAG-1-10X10",     sizing: "fillPrintArea", shipping: "Budget" }, // 4"×4" (10×10cm)
   "magnet-square-6x6":   { sku: "MAG-1-15X15",     sizing: "fillPrintArea", shipping: "Budget" }, // 6"×6" (15×15cm)
 
