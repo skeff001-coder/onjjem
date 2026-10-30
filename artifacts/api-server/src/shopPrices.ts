@@ -101,7 +101,7 @@ export const SHOP_SKU_PRICES = {
   "trick-bag-BLU": { name: "Personalised Trick-or-Treat Tote Bag, Caribbean blue (42x37cm)", pricePence: 2199 },
   "trick-bag-PNK": { name: "Personalised Trick-or-Treat Tote Bag, Pink (42x37cm)", pricePence: 2199 },
   "trick-bag": { name: "Personalised Trick-or-Treat Tote Bag (42x37cm)", pricePence: 2199 },
-  "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2549 },
+  "xmas-sack": { name: "Personalised Cotton Santa Sack (50x75cm)", pricePence: 2999 },
 
   // Cushions & towels (Prodigi)
   "cushion-12-single": { name: "Photo Cushion (12x12\", single-sided)", pricePence: 2349 },
