@@ -391,9 +391,9 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // Jemzitime photo wall clock (UK) - not on sale until the GB quote is checked
   "pet-tag-round": { sku: "PET-MET-ROUND", sizing: "fillPrintArea", shipping: "Budget" },
   "pet-tag-bone":  { sku: "PET-MET-BONE",  sizing: "fillPrintArea", shipping: "Budget" },
-  "bandana-s": { sku: "PET-BANDANA-SML", sizing: "fillPrintArea", shipping: "Budget" },
-  "bandana-m": { sku: "PET-BANDANA-MED", sizing: "fillPrintArea", shipping: "Budget" },
-  "bandana-l": { sku: "PET-BANDANA-LRG", sizing: "fillPrintArea", shipping: "Budget" },
+  "bandana-s": { sku: "PET-BANDANA-SML", sizing: "fitPrintArea", shipping: "Budget" },
+  "bandana-m": { sku: "PET-BANDANA-MED", sizing: "fitPrintArea", shipping: "Budget" },
+  "bandana-l": { sku: "PET-BANDANA-LRG", sizing: "fitPrintArea", shipping: "Budget" },
   "jemzitime-black":   { sku: "WALL-CLOCK-10X10", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
   "jemzitime-white":   { sku: "WALL-CLOCK-10X10", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
   "jemzitime-natural": { sku: "WALL-CLOCK-10X10", sizing: "fillPrintArea", attributes: { color: "natural" }, shipping: "Budget" },
