@@ -30,8 +30,10 @@ import { SLIP_PANEL_B64 } from "./slipPanel";
 
 // Free 6x4" keepsake slip in every UK parcel: the customer's own picture + "15% off your next gift, THANKYOU15".
 // Switch on only after /api/prodigi-quote?slip=1 shows it adds no extra delivery.
-export const SLIP_ON = false;
+// FREEBIE: "off", "slip" (6x4 keepsake card, 60p) or "sticker" (3x4 sticker of their picture, 96p).
+export const FREEBIE: "off" | "slip" | "sticker" = "off";
 export const SLIP_SKU = "GLOBAL-COMP-SILK-4X6-LUS";
+export const FREE_STICKER_SKU = "GLOBAL-STI-3X4-G";
 export async function slipArtwork(photoBase64: string): Promise<string> {
   const m = photoBase64.match(/^data:[^;]+;base64,(.+)$/s);
   const input = Buffer.from(m ? m[1] : photoBase64, "base64");
@@ -747,10 +749,14 @@ async function submitToProdigi(
   }
 
   // ── Free keepsake slip (UK only) ─────────────────────────────────────────
-  if (SLIP_ON && order.shippingAddress.country === "GB") {
+  if (FREEBIE !== "off" && order.shippingAddress.country === "GB") {
     try {
-      const slipUrl = await photoToPublicUrl(await slipArtwork(order.photoBase64));
-      items.push({ sku: SLIP_SKU, copies: 1, sizing: "fillPrintArea", assets: [{ printArea: "default", url: slipUrl }] });
+      if (FREEBIE === "slip") {
+        const slipUrl = await photoToPublicUrl(await slipArtwork(order.photoBase64));
+        items.push({ sku: SLIP_SKU, copies: 1, sizing: "fillPrintArea", assets: [{ printArea: "default", url: slipUrl }] });
+      } else {
+        items.push({ sku: FREE_STICKER_SKU, copies: 1, sizing: "fillPrintArea", assets: [{ printArea: "default", url: imageUrl }] });
+      }
     } catch (err) {
       logger.warn({ err }, "keepsake slip skipped");
     }

@@ -8,7 +8,7 @@
 // variants Prodigi returns, including that the variant ships to the country.
 // Nothing is ordered or charged. Add &json=1 for raw results, &fresh=1 to rerun.
 import { Router, type IRouter } from "express";
-import { PRODIGI_PRODUCTS, areasFor, SLIP_SKU } from "../fulfilment/prodigi";
+import { PRODIGI_PRODUCTS, areasFor, SLIP_SKU, FREE_STICKER_SKU } from "../fulfilment/prodigi";
 import { US_PRODIGI_PRODUCTS } from "../usShop";
 import { getUncachableStripeClient } from "../stripeClient";
 
@@ -231,6 +231,7 @@ router.get("/prodigi-quote", async (req, res) => {
       items: [
         ...[p, ...(p.bundle ?? []).map((b) => PRODIGI_PRODUCTS[b]).filter(Boolean)].map((x, i) => ({ sku: x.sku, copies: 1, ...(x.attributes ? { attributes: x.attributes } : {}), assets: (i === 0 ? areas : areasFor(x)).map((a) => ({ printArea: a })) })),
         ...(req.query.slip ? [{ sku: SLIP_SKU, copies: 1, assets: [{ printArea: "default" }] }] : []),
+        ...(req.query.sticker ? [{ sku: FREE_STICKER_SKU, copies: 1, assets: [{ printArea: "default" }] }] : []),
       ],
     };
     try {
