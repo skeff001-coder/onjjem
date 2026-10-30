@@ -229,7 +229,7 @@ router.get("/prodigi-quote", async (req, res) => {
       destinationCountryCode: country,
       currencyCode: country === "US" ? "USD" : "GBP",
       items: [
-        ...[p, ...(p.bundle ?? []).map((b) => PRODIGI_PRODUCTS[b]).filter(Boolean)].map((x, i) => ({ sku: x.sku, copies: 1, ...(x.attributes ? { attributes: x.attributes } : {}), assets: (i === 0 ? areas : areasFor(x)).map((a) => ({ printArea: a })) })),
+        ...[p, ...(p.bundle ?? []).map((b) => PRODIGI_PRODUCTS[b.split("#")[0]]).filter(Boolean)].map((x, i) => ({ sku: x.sku, copies: 1, ...(x.attributes ? { attributes: x.attributes } : {}), assets: (i === 0 ? areas : areasFor(x)).map((a) => ({ printArea: a })) })),
         ...(req.query.slip ? [{ sku: SLIP_SKU, copies: 1, assets: [{ printArea: "default" }] }] : []),
         ...(req.query.sticker ? [{ sku: FREE_STICKER_SKU, copies: 1, assets: [{ printArea: "default" }] }] : []),
       ],

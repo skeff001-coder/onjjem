@@ -65,7 +65,9 @@ export interface ProdigiProduct {
   sizing?: "fillPrintArea" | "fitPrintArea";
   attributes?: Record<string, string>;
   printAreas?: string[]; // defaults to ["default"]; jigsaws need ["jigsaw","lid"]
-  bundle?: string[];     // extra website SKUs printed with the same photo in the same order
+  bundle?: string[];     // extra website SKUs printed with the same photo in the same order.
+                         // Add "#jemzi" to a key to hide a tiny Jemzi in that item's copy of the photo.
+  fixedArtUrl?: string;  // our own artwork (public URL) instead of the customer's photo, e.g. the Jemzi letter
   shipping?: "Budget";   // cheaper Prodigi service for this product (used when every item in the order allows it)
   // Folded greeting cards: Prodigi prints one flat sheet. Our photo goes only
   // in the front panel; the rest of the sheet stays white. Sizes in pixels.
@@ -161,8 +163,11 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Cosy Home Bundle: medium blanket + 12" cushion + 11oz mug, same photo ──
   // Santa Sack Surprise (UK, Christmas 2026): sack + stocking fillers, one photo, one order. Sold at £59.99.
   "santa-sack-surprise": { sku: "XMAS-SACK", sizing: "fillPrintArea", bundle: ["mug-11oz", "wud-sticker-small", "magnet-fridge-3x2", "xmas-bauble"], shipping: "Budget" },
-  // Quote-only trial (no price, so it can't be bought): bigger Santa sack with magic mug, coaster and postcard.
-  "santa-sack-trial": { sku: "XMAS-SACK", sizing: "fillPrintArea", bundle: ["magic-mug", "wud-sticker-small", "magnet-fridge-3x2", "xmas-bauble", "xmas-bauble", "xmas-bauble", "coaster-1pk", "CLASSIC-POST-GLOS-6X4"], shipping: "Budget" },
+  // Jemzi's Christmas Surprise Sack (UK, Christmas 2026): 10 items, one photo, one order.
+  // "#jemzi" items get a tiny hidden Jemzi for the kids to find; the letter is our own fixed artwork.
+  "jemzi-surprise-sack": { sku: "XMAS-SACK", sizing: "fillPrintArea", shipping: "Budget",
+    bundle: ["magic-mug", "xmas-bauble", "xmas-bauble#jemzi", "xmas-bauble", "playing-cards#jemzi", "magnet-fridge-3x2#jemzi", "wud-sticker-small", "coaster-1pk", "jemzi-letter"] },
+  "jemzi-letter": { sku: "CLASSIC-POST-GLOS-6X4", sizing: "fillPrintArea", shipping: "Budget", fixedArtUrl: "https://onjjem.com/jemzi-letter-postcard.jpg" }, // bundle only
   "cosy-bundle": { sku: "H-BLA-PBMWHITE", sizing: "fillPrintArea", bundle: ["cushion-12-canvas", "mug-11oz"], shipping: "Budget" },
   "cushion-12-canvas": { sku: "GLOBAL-CUSH-12X12-CAN", sizing: "fillPrintArea", shipping: "Budget" }, // bundle only (£9)
   // ── Halloween / kids bundles — one photo, several products, one order ─────
@@ -667,6 +672,35 @@ async function cardArtwork(product: ProdigiProduct, photoBase64: string): Promis
   return "data:image/jpeg;base64," + sheet.toString("base64");
 }
 
+// "Find Jemzi!" — hide a small Christmas Jemzi in the customer's photo.
+// Kept inside the middle 60% so Prodigi's crop-to-fit never cuts him off.
+let jemziPng: Buffer | null = null;
+async function jemziHiddenPhoto(photoBase64: string): Promise<string> {
+  if (!jemziPng) {
+    const r = await fetch("https://onjjem.com/jemzi-tpl-xmas.webp", { signal: AbortSignal.timeout(15_000) });
+    if (!r.ok) throw new Error("Could not load Jemzi artwork: " + r.status);
+    jemziPng = await sharp(Buffer.from(await r.arrayBuffer())).png().toBuffer();
+  }
+  const m = photoBase64.match(/^data:[^;]+;base64,(.+)$/s);
+  const base = sharp(Buffer.from(m ? m[1] : photoBase64, "base64")).rotate();
+  const meta = await base.metadata();
+  const W = meta.width ?? 1200, H = meta.height ?? 1200;
+  const hw = Math.max(40, Math.round(Math.min(W, H) * 0.11));
+  const angle = Math.round((Math.random() - 0.5) * 30);
+  const hog = await sharp(jemziPng).resize({ width: hw }).rotate(angle, { background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
+  const hm = await sharp(hog).metadata();
+  const hW = hm.width ?? hw, hH = hm.height ?? hw;
+  // Left or right of centre (faces are usually in the middle), never on the edge.
+  const fx = Math.random() < 0.5 ? 0.2 + Math.random() * 0.15 : 0.65 + Math.random() * 0.15;
+  const left = Math.round(W * fx - hW / 2);
+  const top = Math.round(H * (0.2 + Math.random() * 0.6) - hH / 2);
+  const out = await base
+    .composite([{ input: hog, left: Math.max(0, Math.min(W - hW, left)), top: Math.max(0, Math.min(H - hH, top)) }])
+    .jpeg({ quality: 93 })
+    .toBuffer();
+  return "data:image/jpeg;base64," + out.toString("base64");
+}
+
 // Use Budget delivery only when every product in the parcel allows it.
 function orderShippingMethod(order: FulfilmentOrder): string {
   if (order.express) return "Express";
@@ -721,18 +755,22 @@ async function submitToProdigi(
   ];
 
   // ── Bundles: add each extra product, printed with the same photo ────────
-  for (const extraKey of product.bundle ?? []) {
+  for (const entry of product.bundle ?? []) {
+    const [extraKey, mode] = entry.split("#");
     const extra = PRODIGI_PRODUCTS[extraKey];
     if (!extra) {
       throw new Error(`Bundle "${order.sku}" includes unmapped SKU "${extraKey}".`);
     }
+    let url = imageUrl;
+    if (extra.fixedArtUrl) url = extra.fixedArtUrl;
+    else if (mode === "jemzi") url = await photoToPublicUrl(await jemziHiddenPhoto(order.photoBase64));
     const extraAreas = areasFor(extra);
     items.push({
       sku: extra.sku,
       copies: extra.copies ?? 1,
       sizing: extra.sizing ?? "fillPrintArea",
       ...(extra.attributes ? { attributes: extra.attributes } : {}),
-      assets: extraAreas.map((area) => ({ printArea: area, url: imageUrl })),
+      assets: extraAreas.map((area) => ({ printArea: area, url })),
     });
   }
 
