@@ -74,19 +74,17 @@ const UK_GARMENTS = [
   { code: "BTEE-UK", prodigiSku: "GLOBAL-TEE-RS-3322", name: "Baby Photo T-Shirt", price: 1799,
     sizes: [["NB", "newborn"], ["6M", "6-12 months"], ["12M", "12-18 months"], ["18M", "18-24 months"]],
     colours: [["WHITE", "white"], ["PINK", "pink"], ["LTBLUE", "light blue"], ["HEATHER", "heather"], ["BUTTER", "butter"], ["NAVY", "navy blue"]] },
-  // Baby bodysuit (Rabbit Skins 4424, lap shoulder) from £9 + VAT, added 30 Oct 2026.
+  // Baby bodysuit (Rabbit Skins 4424, lap shoulder) £9 + £2.25 Budget (+VAT), UK lab, added 30 Oct 2026.
   // Front print area 2130x2130 (square), checked via /api/prodigi-spec.
   { code: "BODY-UK", prodigiSku: "GLOBAL-BB-RS-4424", name: "Baby Photo Bodysuit", price: 1799,
     sizes: [["NB", "newborn"], ["6M", "6-12 months"], ["12M", "12-18 months"], ["18M", "18-24 months"]],
-    colours: [["WHITE", "white"], ["PINK", "baby pink"], ["BLUE", "baby blue"], ["GREY", "heather grey"]] },
+    colours: [["PINK", "pink"], ["BLUE", "light blue"], ["GREY", "heather"], ["BUTTER", "butter"]] }, // UK-made colours only (white ships from CA/AU, £13+ shipping)
   { code: "KHOOD-UK", prodigiSku: "HOOD-AWD-JH001B", name: "Kids' Photo Hoodie", price: 2799,
     sizes: [["3Y", "3-4 years"], ["5Y", "5-6 years"], ["7Y", "7-8 years"], ["9Y", "9-11 years"], ["12Y", "12-13 years"]],
     colours: [["WHITE", "arctic white"], ["GREY", "heather grey"], ["NAVY", "oxford navy"], ["BLACK", "black"], ["RED", "fire red"], ["ROYAL", "royal blue"], ["SKY", "sky blue"]] },
 ];
 for (const g of UK_GARMENTS) for (const [sz, prodigiSize] of g.sizes) for (const [col, prodigiColour] of g.colours) {
   const code = `${g.code}-${sz}-${col}`;
-  // BODY-UK paused 30 Oct 2026: Prodigi quote £8.41 + £13.61 shipping (ex VAT) — loses money at £17.99.
-  // Left in the Prodigi map so /api/prodigi-quote still works; no price = can't be bought.
-  if (g.code !== "BODY-UK") WALL_SKU_PRICES[code] = { name: `${g.name} (${prodigiSize}, ${prodigiColour})`, pricePence: g.price };
+  WALL_SKU_PRICES[code] = { name: `${g.name} (${prodigiSize}, ${prodigiColour})`, pricePence: g.price };
   WALL_PRODIGI_PRODUCTS[code] = { sku: g.prodigiSku, sizing: "fitPrintArea", printAreas: ["front"], attributes: { color: prodigiColour, size: prodigiSize }, shipping: "Budget" }; // clothing prints on the "front" area
 }
