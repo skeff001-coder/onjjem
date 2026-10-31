@@ -53,7 +53,6 @@ router.post("/jemzi-entry", async (req: Request, res: Response) => {
     sendRawEmail(email, "🦔 You're in Jemzi's draw! Good luck", `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:auto;color:#222;line-height:1.6">
       <h2>Well done, ${who}! 🎉</h2>
       <p>You found Jemzi, so you're in the <b>Find Jemzi draw</b> to win a personalised cartoon blanket. The winner is picked at random on <b>Mon 1 February 2027</b> and we'll email them that day.</p>
-      <p>🎁 As a thank-you, here's <b>15% off</b> your next ONJJEM gift with code <b>THANKYOU15</b>.</p>
       <p><a href="https://onjjem.com" style="display:inline-block;background:#c0392b;color:#fff;font-weight:800;padding:12px 22px;border-radius:30px;text-decoration:none">Visit ONJJEM</a></p></div>`)
       .catch((err) => logger.warn({ err }, "jemzi confirmation failed"));
     const admin = process.env.EMAIL_ADMIN;
