@@ -1,8 +1,9 @@
-// ── "Find Jemzi!" draw (Christmas 2026 → Jan 2027) ───────────────────────────
+// ── "Find Jemzi!" draw (Christmas 2026) ─────────────────────────────────────
 // Free entry, UK only, no purchase necessary: anyone can enter by finding Jemzi
 // in the picture on onjjem.com/find-jemzi (Santa sack owners can also tick the
 // presents he hid on). A grown-up (18+) enters on the child's behalf.
-// Prize: a personalised cartoon blanket. Closes Sun 31 Jan 2027 8pm UK, drawn Mon 1 Feb.
+// Prize: a £50 Jemz Platinum gift card. Closes Sun 6 Dec 2026 8pm UK, drawn Mon 7 Dec,
+// so the winner can still order by 12 Dec for Christmas delivery.
 import { Router } from "express";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
@@ -12,7 +13,7 @@ import { sendRawEmail } from "../email/mailer";
 import { logger } from "../lib/logger";
 
 const router = Router();
-const CLOSES = new Date("2027-01-31T20:00:00Z");
+const CLOSES = new Date("2026-12-06T20:00:00Z");
 const normKey = (v: unknown) => String(v ?? "").replace(/\s+/g, "").toLowerCase();
 const okKey = (k: unknown) => { const w = normKey(process.env.GIVEAWAY_KEY); return !!w && normKey(k) === w; };
 const esc = (v: unknown) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
@@ -52,7 +53,7 @@ router.post("/jemzi-entry", async (req: Request, res: Response) => {
     const who = child ? esc(child) : "your Jemzi finder";
     sendRawEmail(email, "🦔 You're in Jemzi's draw! Good luck", `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:auto;color:#222;line-height:1.6">
       <h2>Well done, ${who}! 🎉</h2>
-      <p>You found Jemzi, so you're in the <b>Find Jemzi draw</b> to win a personalised cartoon blanket. The winner is picked at random on <b>Mon 1 February 2027</b> and we'll email them that day.</p>
+      <p>You found Jemzi, so you're in the <b>Find Jemzi draw</b> to win a <b>£50 Jemz Platinum gift card</b>. The winner is picked at random on <b>Mon 7 December 2026</b>, in time to order gifts for Christmas and we'll email them that day.</p>
       <p><a href="https://onjjem.com" style="display:inline-block;background:#c0392b;color:#fff;font-weight:800;padding:12px 22px;border-radius:30px;text-decoration:none">Visit ONJJEM</a></p></div>`)
       .catch((err) => logger.warn({ err }, "jemzi confirmation failed"));
     const admin = process.env.EMAIL_ADMIN;
@@ -73,13 +74,13 @@ router.get("/jemzi-entries", async (req: Request, res: Response) => {
   const k = encodeURIComponent(String(req.query.key));
   res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:16px system-ui;padding:14px;max-width:680px;margin:auto">
     <h2>🦔 Find Jemzi draw: ${rows.length} entries</h2>
-    <p><a href="/api/jemzi-draw?key=${k}" style="display:inline-block;padding:12px 18px;border-radius:12px;background:#c0392b;color:#fff;font-weight:700;text-decoration:none">🎲 Draw the winner (after 31 Jan)</a></p>
+    <p><a href="/api/jemzi-draw?key=${k}" style="display:inline-block;padding:12px 18px;border-radius:12px;background:#c0392b;color:#fff;font-weight:700;text-decoration:none">🎲 Draw the winner (after 6 Dec)</a></p>
     <table style="width:100%;border-collapse:collapse;font-size:14px">${rows.map((e) => `<tr style="border-bottom:1px solid #eee"><td>${esc(e.name)}</td><td>${esc(e.child ?? "")}</td><td>${esc(e.email)}</td><td>${e.marketing ? "✅" : ""}</td></tr>`).join("")}</table></body>`);
 });
 
 router.get("/jemzi-draw", async (req: Request, res: Response) => {
   if (!okKey(req.query.key)) { res.status(403).send("Forbidden"); return; }
-  if (new Date() < CLOSES) { res.type("html").send("<p style='font:18px system-ui;padding:20px'>The draw hasn't closed yet (Sun 31 Jan 2027, 8pm UK).</p>"); return; }
+  if (new Date() < CLOSES) { res.type("html").send("<p style='font:18px system-ui;padding:20px'>The draw hasn't closed yet (Sun 6 Dec 2026, 8pm UK).</p>"); return; }
   await ensureTable();
   const r = await db.execute(sql`SELECT name, email, child FROM jemzi_finders ORDER BY entered_at`);
   const rows = r.rows as any[];
