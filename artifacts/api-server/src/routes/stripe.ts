@@ -391,7 +391,8 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      ...(bfDiscount ? { discounts: bfDiscount } : { allow_promotion_codes: true }),
+      // No discount codes on the £100 gift card.
+      ...(bfDiscount ? { discounts: bfDiscount } : /giftcard-100$/.test(body.sku) ? {} : { allow_promotion_codes: true }),
       ...(isUS && body.sku.startsWith("US-TAP-")
         ? {
             custom_text: {
