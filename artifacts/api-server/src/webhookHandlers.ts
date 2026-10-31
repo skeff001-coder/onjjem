@@ -168,8 +168,7 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
     // Black Friday only (until Mon 30 Nov): a 100 gift card gets a 20 bonus code. No other gift card bonuses.
     const t = Date.now();
     let bonusCode: string | undefined;
-    const bonusPence = 0; // £100 gift card bonus switched off 31 Oct 2026 (was Black Friday £20).
-    void t;
+    const bonusPence = amountPence >= 10000 && t < Date.parse("2026-12-01T00:00:00Z") ? 2000 : 0;
     if (bonusPence) {
       const bc = await stripe.coupons.create({ amount_off: bonusPence, currency: isUSCard ? "usd" : "gbp", duration: "once", max_redemptions: 1, name: `ONJJEM Bonus (${isUSCard ? "$" : "£"}${bonusPence / 100})` });
       bonusCode = "BONUS" + Math.random().toString(36).slice(2, 7).toUpperCase();
