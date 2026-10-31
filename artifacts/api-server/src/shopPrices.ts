@@ -327,13 +327,13 @@ export const SHOP_SKU_PRICES = {
   // GIFT CARDS
   // ========================================
 
-  "giftcard-5": { name: "ONJJEM Gift Card (£5)", pricePence: 500 },
-  "giftcard-10": { name: "ONJJEM Gift Card (£10)", pricePence: 1000 },
-  "giftcard-20": { name: "ONJJEM Gift Card (£20)", pricePence: 2000 },
-  "giftcard-30": { name: "ONJJEM Gift Card (£30)", pricePence: 3000 },
-  "giftcard-50": { name: "ONJJEM Gift Card (£50)", pricePence: 5000 },
-  "giftcard-75": { name: "ONJJEM Gift Card (£75)", pricePence: 7500 },
-  "giftcard-100": { name: "ONJJEM Gift Card (£100)", pricePence: 10000 },
+  "giftcard-5": { name: "Jemz Platinum Gift Card (£5)", pricePence: 500 },
+  "giftcard-10": { name: "Jemz Platinum Gift Card (£10)", pricePence: 1000 },
+  "giftcard-20": { name: "Jemz Platinum Gift Card (£20)", pricePence: 2000 },
+  "giftcard-30": { name: "Jemz Platinum Gift Card (£30)", pricePence: 3000 },
+  "giftcard-50": { name: "Jemz Platinum Gift Card (£50)", pricePence: 5000 },
+  "giftcard-75": { name: "Jemz Platinum Gift Card (£75)", pricePence: 7500 },
+  "giftcard-100": { name: "Jemz Platinum Gift Card (£100)", pricePence: 10000 },
 
 
 

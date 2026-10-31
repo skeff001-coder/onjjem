@@ -238,7 +238,8 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     return;
   }
   const isUS = body.region === "us";
-  const giftNote = /giftcard-/.test(body.sku) ? cleanGiftNote(body.giftNote) : null;
+  const isGiftCard = /giftcard-/.test(body.sku);
+  const giftNote = isGiftCard ? cleanGiftNote(body.giftNote) : null;
   if (isUS && (!US_SKU_PRICES[body.sku] || !PRODIGI_PRODUCTS[body.sku])) {
     res.status(400).json({ error: `Sorry, "${body.sku}" isn't available in the US shop.` });
     return;
@@ -403,6 +404,8 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
           }
         : {}),
       ...cartRecovery(body.remindMe),
+      // Gift cards are emailed: no address or delivery step at checkout.
+      ...(isGiftCard ? {} : {
       shipping_address_collection: {
         allowed_countries: isUS ? ["US"] : body.international
           ? ["US", "CA", "AU", "DE", "FR", "IE", "NL", "SE", "NO", "DK", "ID", "ET", "RO", "SG", "ES", "IT", "PT", "BE", "AT", "CH", "PL", "FI", "NZ", "JP", "AE", "SA", "IN", "MY", "PH", "TH", "ZA", "MX", "BR"]
@@ -415,6 +418,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
               : "shr_1UEeO9LkpMwsJmFNVCYOdr52", // International delivery — £14.99
           }]
         : ukShippingOptions([body.sku]), // Free UK, plus Express where available
+      }),
       success_url: body.successUrl || `${origin}/?order=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl || `${origin}/#shop`,
       metadata: {
@@ -427,7 +431,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       },
       custom_text: {
         submit: {
-          message: isUS ? US_CHECKOUT_NOTE : "Made to order in 1–3 working days, then 1–3 days in the post. Most orders arrive within a week.",
+          message: isGiftCard ? "💳 Your Jemz Platinum gift card is emailed the moment you pay." : isUS ? US_CHECKOUT_NOTE : "Made to order in 1–3 working days, then 1–3 days in the post. Most orders arrive within a week.",
         },
       },
     });
