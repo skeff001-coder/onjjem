@@ -223,6 +223,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     cartoonFree?: boolean;
     giveawayEmail?: string;
     giftNote?: unknown; // Jemz Platinum: to/from, recipient email, chosen verse, message
+    giftCode?: string;  // a Jemz Platinum code used to pay for another gift card
     recipient?: {
       name?: string;
       line1?: string;
@@ -381,7 +382,14 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
 
     const origin = `${req.protocol}://${req.get("host")}`;
 
-    let bfDiscount: { coupon: string }[] | undefined;
+    let bfDiscount: { coupon?: string; promotion_code?: string }[] | undefined;
+    // Buying a gift card: Jemz Platinum codes (GIFT…/BONUS…) work like money; discount vouchers don't.
+    if (isGiftCard && body.giftCode) {
+      const code = String(body.giftCode).trim().toUpperCase().slice(0, 40);
+      const found = /^(GIFT|BONUS)[A-Z0-9]+$/.test(code) ? (await stripe.promotionCodes.list({ code, active: true, limit: 1 })).data[0] : undefined;
+      if (!found) { res.status(400).json({ error: "That gift card code isn't valid or has already been used." }); return; }
+      bfDiscount = [{ promotion_code: found.id }];
+    }
     if (!isUS && BF_ACTIVE() && BF_ELIGIBLE(body.sku)) {
       const off = Math.round(((lineItem as any).price_data.unit_amount as number) * 0.15);
       const c = await stripe.coupons.create({ amount_off: off, currency: "gbp", duration: "once", max_redemptions: 1, name: "Black Friday 15% off" });
