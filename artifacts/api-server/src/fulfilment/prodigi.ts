@@ -163,7 +163,7 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Cosy Home Bundle: medium blanket + 12" cushion + 11oz mug, same photo ──
   // Santa Sack Surprise (UK, Christmas 2026): sack + stocking fillers, one photo, one order. Sold at £59.99.
   "santa-sack-surprise": { sku: "XMAS-SACK", sizing: "fillPrintArea", bundle: ["mug-11oz", "wud-sticker-small", "magnet-fridge-3x2", "xmas-bauble"], shipping: "Budget" },
-  // Jemzi's Christmas Surprise Sack (UK, Christmas 2026): 8 items, one photo, one order.
+  // Jemzi's Christmas Surprise Sack (UK, Christmas 2026): 8 items, one photo, one order. £79.99; cost £55.30 + VAT (quote 31 Oct 2026).
   // "#jemzi" items get a tiny hidden Jemzi for the kids to find; the letter is our own fixed artwork.
   "jemzi-surprise-sack": { sku: "XMAS-SACK", sizing: "fillPrintArea", shipping: "Budget",
     bundle: ["magic-mug", "xmas-bauble", "xmas-bauble#jemzi", "playing-cards#jemzi", "magnet-fridge-3x2#jemzi", "wud-sticker-small", "jemzi-letter"] },
