@@ -209,6 +209,19 @@ async function isGiveawayEntrant(email?: string): Promise<boolean> {
 }
 const US_CHECKOUT_NOTE = "Made to order in the USA in 1–3 business days, then shipped free. Most orders arrive within 4–10 business days.";
 
+// Check a Jemz Platinum code before paying: is it real, unused, and how much is it worth?
+router.get("/giftcode-check", async (req: Request, res: Response) => {
+  const code = String(req.query.code || "").trim().toUpperCase().slice(0, 40);
+  if (!/^(GIFT|BONUS)[A-Z0-9]+$/.test(code)) { res.json({ ok: false, error: "That doesn't look like a gift card code. They start with GIFT or BONUS." }); return; }
+  try {
+    const stripe = await getUncachableStripeClient();
+    const pc = (await stripe.promotionCodes.list({ code, active: true, limit: 1, expand: ["data.coupon"] })).data[0] as any;
+    if (!pc) { res.json({ ok: false, error: "That code isn't valid or has already been used." }); return; }
+    const c = pc.coupon || {};
+    res.json({ ok: true, amount: (c.amount_off || 0) / 100, currency: c.currency || "gbp" });
+  } catch { res.json({ ok: false, error: "Couldn't check the code just now. Please try again." }); }
+});
+
 router.post("/stripe/checkout", async (req: Request, res: Response) => {
   const body = req.body as {
     sku?: string;
