@@ -15,6 +15,7 @@
  */
 
 import { Resend } from "resend";
+import { GIFT_VERSES, type GiftNote } from "../giftVerses";
 import { logger } from "../lib/logger";
 
 function getResend(): Resend | null {
@@ -580,6 +581,24 @@ export interface GiftCardEmailData {
   currency?: "gbp" | "usd";
   bonusCode?: string;
   bonusAmount?: number;
+  giftNote?: GiftNote | null; // Jemz Platinum: to/from, recipient email, verse, message
+  buyerName?: string;
+}
+
+const escHtml = (v: unknown) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+
+// The chosen verse and personal message, styled like a printed card.
+function giftNoteHtml(n: GiftNote | null | undefined): string {
+  if (!n) return "";
+  const v = n.verse ? GIFT_VERSES[n.verse] : undefined;
+  if (!v && !n.message && !n.to && !n.from) return "";
+  return `<div style="background:#FAF7F2;border-radius:14px;padding:28px 24px;text-align:center;margin:0 0 24px;border:1px solid ${GOLD}">
+    ${n.to ? `<p style="font-family:Georgia,serif;font-size:18px;color:#2B2418;margin:0 0 14px">Dear ${escHtml(n.to)},</p>` : ""}
+    ${v ? `<p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${GOLD};margin:0 0 12px">${escHtml(v.title)}</p>
+    <p style="font-family:Georgia,serif;font-style:italic;font-size:17px;line-height:1.75;color:#2B2418;margin:0 0 16px">${v.lines.map(escHtml).join("<br>")}</p>` : ""}
+    ${n.message ? `<p style="font-family:Georgia,serif;font-size:15px;line-height:1.6;color:#4A3F2E;margin:0 0 12px">${escHtml(n.message)}</p>` : ""}
+    ${n.from ? `<p style="font-family:Georgia,serif;font-size:16px;color:#2B2418;margin:10px 0 0">With love, ${escHtml(n.from)}</p>` : ""}
+  </div>`;
 }
 
 export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> {
@@ -590,15 +609,18 @@ export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> 
   }
 
   const sym = data.currency === "usd" ? "$" : "£";
+  const recipient = data.giftNote?.recipientEmail;
+  let forRecipient = false;
   const shop = data.currency === "usd" ? "https://onjjem.com/us/" : "https://onjjem.com";
   const shopLabel = data.currency === "usd" ? "onjjem.com/us" : "onjjem.com";
-  const body = `
+  const build = () => `
     <tr><td style="height:4px;background:linear-gradient(90deg,${GOLD},#F0C040,${GOLD})"></td></tr>
     <tr><td style="padding:40px 40px 32px">
-      <h1 style="font-size:26px;color:#FAF7F2;margin:0 0 8px;font-weight:700">Your ONJJEM Gift Card</h1>
+      <h1 style="font-size:26px;color:#FAF7F2;margin:0 0 8px;font-weight:700">${forRecipient ? `A gift for you${data.giftNote?.to ? ", " + escHtml(data.giftNote.to) : ""}` : "Your Jemz Platinum Gift Card"}</h1>
       <p style="font-size:15px;color:${MUTED};margin:0 0 28px;line-height:1.6">
-        Thank you for your purchase! Here's your gift card, ready to give or use.
+        ${forRecipient ? `${escHtml(data.giftNote?.from || data.buyerName || "Someone special")} has sent you a Jemz Platinum gift card, to turn your favourite photo into a beautiful gift.` : "Thank you for your purchase! Here's your gift card, ready to give or use."}
       </p>
+      ${giftNoteHtml(data.giftNote)}
       <div style="background:${SURFACE};border:1px dashed ${GOLD};border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">
         <p style="font-size:13px;color:${MUTED};margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Gift Card Value</p>
         <p style="font-size:32px;color:${GOLD};margin:0 0 16px;font-weight:800">${sym}${data.amount}</p>
@@ -618,18 +640,32 @@ export async function sendGiftCardEmail(data: GiftCardEmailData): Promise<void> 
     </td></tr>
   `;
 
+  // Sent straight to the person it's for, if the buyer gave their email.
+  if (recipient) {
+    forRecipient = true;
+    const sent = await resend.emails.send({
+      from: FROM(),
+      to: recipient,
+      subject: `🎁 ${data.giftNote?.from || data.buyerName || "Someone special"} sent you a Jemz Platinum gift card`,
+      html: baseTemplate(`A ${sym}${data.amount} ONJJEM gift card, just for you.`, build()),
+    });
+    if (sent.error) throw new Error(sent.error.message);
+    forRecipient = false;
+  }
+
+  // The buyer always gets their own copy (with the code, in case they want to print it).
   const { error } = await resend.emails.send({
     from: FROM(),
     to: data.email,
-    subject: `🎁 Your ONJJEM Gift Card (${sym}${data.amount})`,
+    subject: recipient ? `✅ Your gift card has been sent to ${recipient}` : `🎁 Your Jemz Platinum Gift Card (${sym}${data.amount})`,
     html: baseTemplate(
-      `Your ${sym}${data.amount} ONJJEM gift card is ready to use.`,
-      body,
+      recipient ? `We've emailed your ${sym}${data.amount} gift card to ${recipient}. Here's your copy.` : `Your ${sym}${data.amount} ONJJEM gift card is ready to use.`,
+      (recipient ? `<tr><td style="padding:24px 40px 0"><p style="font-size:15px;color:#FAF7F2;margin:0;line-height:1.6">✅ Sent! We've emailed this gift card to <b>${escHtml(recipient)}</b>. Here's a copy for your records.</p></td></tr>` : "") + build(),
     ),
   });
   if (error) throw new Error(error.message);
 
-  logger.info({ to: data.email }, "Gift card email sent");
+  logger.info({ to: data.email, recipient }, "Gift card email sent");
 }
 
 // ── Apron loyalty discount delivery ─────────────────────────────────────────

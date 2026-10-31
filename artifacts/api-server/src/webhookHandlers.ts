@@ -3,6 +3,7 @@ import { fulfilOrder, ensureFulfilmentTable } from "./fulfilment/prodigi";
 import { sendOrderConfirmation, sendAdminNotification, sendCartoonImage, sendGiftCardEmail, sendApronLoyaltyEmail, sendTapestryCreditEmail, sendCartRecovery, sendPrintableEmail } from "./email/mailer";
 import { getPrintable, PRINTABLES } from "./routes/printables";
 import { logger } from "./lib/logger";
+import { cleanGiftNote, type GiftNote } from "./giftVerses";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import Stripe from "stripe";
@@ -121,7 +122,7 @@ async function sendTapestryCredit(sessionId: string, sku: string, email: string)
   }
 }
 
-async function handleGiftCardPurchase(sessionId: string, sku: string, email: string): Promise<void> {
+async function handleGiftCardPurchase(sessionId: string, sku: string, email: string, giftNote: GiftNote | null = null, buyerName = ""): Promise<void> {
   if (!email) {
     logger.warn({ sessionId }, "Gift card purchase has no email — cannot deliver code");
     return;
@@ -181,6 +182,8 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
       currency: isUSCard ? "usd" : "gbp",
       bonusCode,
       bonusAmount: bonusPence / 100,
+      giftNote,
+      buyerName,
     });
 
     logger.info({ sessionId, email, code }, "Gift card code generated and sent");
@@ -238,7 +241,9 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   // Handle them completely separately before any of the physical-order logic
   // below (which would otherwise skip the order entirely for lacking an address).
   if (earlySku.startsWith("giftcard-") || earlySku.startsWith("us-giftcard-")) {
-    await handleGiftCardPurchase(sessionId, earlySku, email);
+    let giftNote: GiftNote | null = null;
+    try { giftNote = meta?.["gift_json"] ? cleanGiftNote(JSON.parse(meta["gift_json"])) : null; } catch { giftNote = null; }
+    await handleGiftCardPurchase(sessionId, earlySku, email, giftNote, (details?.["name"] as string | undefined) ?? "");
     return;
   }
 

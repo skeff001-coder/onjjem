@@ -14,6 +14,8 @@ import { SHOP_SKU_PRICES } from "../shopPrices";
 import { US_SKU_PRICES, NO_BUNDLE_DISCOUNT, US_GIFT_CARDS } from "../usShop";
 import { PRODIGI_PRODUCTS } from "../fulfilment/prodigi";
 import { GoogleGenAI } from "@google/genai";
+import { cleanGiftNote } from "../giftVerses";
+
 
 async function regenerateCartoonForOrder(base64Image: string, mimeType: string): Promise<string> {
   const apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
@@ -220,6 +222,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     region?: string;
     cartoonFree?: boolean;
     giveawayEmail?: string;
+    giftNote?: unknown; // Jemz Platinum: to/from, recipient email, chosen verse, message
     recipient?: {
       name?: string;
       line1?: string;
@@ -235,6 +238,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     return;
   }
   const isUS = body.region === "us";
+  const giftNote = /giftcard-/.test(body.sku) ? cleanGiftNote(body.giftNote) : null;
   if (isUS && (!US_SKU_PRICES[body.sku] || !PRODIGI_PRODUCTS[body.sku])) {
     res.status(400).json({ error: `Sorry, "${body.sku}" isn't available in the US shop.` });
     return;
@@ -417,6 +421,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
         ...(photoToken ? { photo_token: photoToken } : {}),
         ...(body.addCartoon ? { cartoon_addon: "true" } : {}),
         ...(body.recipient ? { recipient_json: JSON.stringify(body.recipient).slice(0, 490) } : {}),
+        ...(giftNote ? { gift_json: JSON.stringify(giftNote).slice(0, 499) } : {}),
         ...(isUS ? { region: "us" } : {}),
       },
       custom_text: {
