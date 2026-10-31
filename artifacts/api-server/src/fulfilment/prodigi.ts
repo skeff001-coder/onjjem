@@ -672,8 +672,8 @@ async function cardArtwork(product: ProdigiProduct, photoBase64: string): Promis
   return "data:image/jpeg;base64," + sheet.toString("base64");
 }
 
-// "Find Jemzi!" — hide a small Christmas Jemzi in the customer's photo.
-// Kept inside the middle 60% so Prodigi's crop-to-fit never cuts him off.
+// "Find Jemzi!" — hide a small Christmas Jemzi (she) in the customer's photo.
+// Kept inside the middle 60% so Prodigi's crop-to-fit never cuts her off.
 let jemziPng: Buffer | null = null;
 async function jemziHiddenPhoto(photoBase64: string): Promise<string> {
   if (!jemziPng) {
