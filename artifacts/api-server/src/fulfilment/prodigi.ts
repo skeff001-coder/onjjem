@@ -163,10 +163,10 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // ── Cosy Home Bundle: medium blanket + 12" cushion + 11oz mug, same photo ──
   // Santa Sack Surprise (UK, Christmas 2026): sack + stocking fillers, one photo, one order. Sold at £59.99.
   "santa-sack-surprise": { sku: "XMAS-SACK", sizing: "fillPrintArea", bundle: ["mug-11oz", "wud-sticker-small", "magnet-fridge-3x2", "xmas-bauble"], shipping: "Budget" },
-  // Jemzi's Christmas Surprise Sack (UK, Christmas 2026): 10 items, one photo, one order.
+  // Jemzi's Christmas Surprise Sack (UK, Christmas 2026): 8 items, one photo, one order.
   // "#jemzi" items get a tiny hidden Jemzi for the kids to find; the letter is our own fixed artwork.
   "jemzi-surprise-sack": { sku: "XMAS-SACK", sizing: "fillPrintArea", shipping: "Budget",
-    bundle: ["magic-mug", "xmas-bauble", "xmas-bauble#jemzi", "xmas-bauble", "playing-cards#jemzi", "magnet-fridge-3x2#jemzi", "wud-sticker-small", "coaster-1pk", "jemzi-letter"] },
+    bundle: ["magic-mug", "xmas-bauble", "xmas-bauble#jemzi", "playing-cards#jemzi", "magnet-fridge-3x2#jemzi", "wud-sticker-small", "jemzi-letter"] },
   "jemzi-letter": { sku: "CLASSIC-POST-GLOS-6X4", sizing: "fillPrintArea", shipping: "Budget", fixedArtUrl: "https://onjjem.com/jemzi-letter-postcard.jpg" }, // bundle only
   "cosy-bundle": { sku: "H-BLA-PBMWHITE", sizing: "fillPrintArea", bundle: ["cushion-12-canvas", "mug-11oz"], shipping: "Budget" },
   "cushion-12-canvas": { sku: "GLOBAL-CUSH-12X12-CAN", sizing: "fillPrintArea", shipping: "Budget" }, // bundle only (£9)
