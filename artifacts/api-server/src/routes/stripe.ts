@@ -209,13 +209,26 @@ async function isGiveawayEntrant(email?: string): Promise<boolean> {
 }
 const US_CHECKOUT_NOTE = "Made to order in the USA in 1–3 business days, then shipped free. Most orders arrive within 4–10 business days.";
 
+// Find an active gift card code, forgiving O/0 and I/1 mix-ups.
+async function findGiftPromo(stripe: any, raw: string) {
+  const code = raw.trim().toUpperCase().slice(0, 40);
+  if (!/^(GIFT|BONUS)[A-Z0-9]+$/.test(code)) return undefined;
+  const head = code.startsWith("GIFT") ? "GIFT" : "BONUS", tail = code.slice(head.length);
+  const tries = [code, head + tail.replace(/O/g, "0"), head + tail.replace(/0/g, "O"), head + tail.replace(/I/g, "1"), head + tail.replace(/1/g, "I")];
+  for (const c of [...new Set(tries)]) {
+    const pc = (await stripe.promotionCodes.list({ code: c, active: true, limit: 1, expand: ["data.coupon"] })).data[0];
+    if (pc) return pc;
+  }
+  return undefined;
+}
+
 // Check a Jemz Platinum code before paying: is it real, unused, and how much is it worth?
 router.get("/giftcode-check", async (req: Request, res: Response) => {
   const code = String(req.query.code || "").trim().toUpperCase().slice(0, 40);
   if (!/^(GIFT|BONUS)[A-Z0-9]+$/.test(code)) { res.json({ ok: false, error: "That doesn't look like a gift card code. They start with GIFT or BONUS." }); return; }
   try {
     const stripe = await getUncachableStripeClient();
-    const pc = (await stripe.promotionCodes.list({ code, active: true, limit: 1, expand: ["data.coupon"] })).data[0] as any;
+    const pc = (await findGiftPromo(stripe, code)) as any;
     if (!pc) { res.json({ ok: false, error: "That code isn't valid or has already been used." }); return; }
     const c = pc.coupon || {};
     res.json({ ok: true, amount: (c.amount_off || 0) / 100, currency: c.currency || "gbp" });
@@ -398,8 +411,7 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
     let bfDiscount: { coupon?: string; promotion_code?: string }[] | undefined;
     // Buying a gift card: Jemz Platinum codes (GIFT…/BONUS…) work like money; discount vouchers don't.
     if (isGiftCard && body.giftCode) {
-      const code = String(body.giftCode).trim().toUpperCase().slice(0, 40);
-      const found = /^(GIFT|BONUS)[A-Z0-9]+$/.test(code) ? (await stripe.promotionCodes.list({ code, active: true, limit: 1 })).data[0] : undefined;
+      const found = await findGiftPromo(stripe, String(body.giftCode));
       if (!found) { res.status(400).json({ error: "That gift card code isn't valid or has already been used." }); return; }
       bfDiscount = [{ promotion_code: found.id }];
     }

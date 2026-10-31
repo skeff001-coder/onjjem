@@ -158,7 +158,10 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
       name: `ONJJEM Gift Card (${isUSCard ? "$" : "£"}${(amountPence / 100).toFixed(2)})`,
     });
 
-    const code = "GIFT" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    // No O, 0, I or 1 in new codes, so they can't be misread.
+    const SAFE = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const pick = (n: number) => Array.from({ length: n }, () => SAFE[Math.floor(Math.random() * SAFE.length)]).join("");
+    const code = "GIFT" + pick(6);
     await stripe.promotionCodes.create({
       coupon: coupon.id,
       code,
@@ -171,7 +174,7 @@ async function handleGiftCardPurchase(sessionId: string, sku: string, email: str
     const bonusPence = amountPence >= 10000 && t < Date.parse("2026-12-01T00:00:00Z") ? 2000 : 0;
     if (bonusPence) {
       const bc = await stripe.coupons.create({ amount_off: bonusPence, currency: isUSCard ? "usd" : "gbp", duration: "once", max_redemptions: 1, name: `ONJJEM Bonus (${isUSCard ? "$" : "£"}${bonusPence / 100})` });
-      bonusCode = "BONUS" + Math.random().toString(36).slice(2, 7).toUpperCase();
+      bonusCode = "BONUS" + pick(5);
       await stripe.promotionCodes.create({ coupon: bc.id, code: bonusCode, max_redemptions: 1 });
     }
 
