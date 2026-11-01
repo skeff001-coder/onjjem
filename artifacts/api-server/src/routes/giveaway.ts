@@ -2,10 +2,11 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
-import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail, giveawayCartoonEmail, sendEmailWithAttachment } from "../email/mailer";
+import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail, giveawayCartoonEmail, sendEmailWithAttachment, giveawayWinnerEmail } from "../email/mailer";
 import { generateCartoon, addCornerBadge } from "./cartoonify";
 import crypto from "node:crypto";
 import { logger } from "../lib/logger";
+import { getUncachableStripeClient } from "../stripeClient";
 
 // Ignore spaces/case so a stray space in the Railway value still works
 const normKey = (v: unknown) => String(v ?? "").replace(/\s+/g, "").toLowerCase();
@@ -114,7 +115,40 @@ router.get("/giveaway-draw", async (req: Request, res: Response) => {
   }
 });
 
-// Owner-only: list every web-form entry. /api/giveaway-entries?key=YOURKEY
+
+// Owner-only: give the £40 winner their Jemzcard and email it. Safe to open twice (won't resend).
+// /api/giveaway-winner?key=YOURKEY&email=winner@example.com            -> preview only
+// /api/giveaway-winner?key=YOURKEY&email=winner@example.com&send=1     -> make code + email
+router.get("/giveaway-winner", async (req: Request, res: Response) => {
+  const key = normKey(process.env.GIVEAWAY_KEY);
+  if (!key || normKey(req.query.key) !== key) { res.status(403).send("Forbidden"); return; }
+  const email = String(req.query.email || "").trim().toLowerCase();
+  const page = (m: string) => res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:18px system-ui;padding:18px;max-width:640px;margin:auto">${m}</body>`);
+  try {
+    await ensureTable();
+    const r = await db.execute(sql`SELECT name, email FROM giveaway_entries WHERE lower(email) = ${email} LIMIT 1`);
+    const w = r.rows[0] as { name: string; email: string } | undefined;
+    if (!w) { page("❌ No entry with that email."); return; }
+    const code = "WIN40" + crypto.createHash("sha256").update(email + key).digest("hex").slice(0, 5).toUpperCase();
+    const stripe = await getUncachableStripeClient();
+    const found = await stripe.promotionCodes.list({ code, limit: 1 });
+    if (found.data[0]) { page(`✅ Already done. ${w.name}'s code is <b>${code}</b> (email already sent, not sent again).`); return; }
+    if (String(req.query.send) !== "1") {
+      const k = encodeURIComponent(String(req.query.key)), e = encodeURIComponent(email);
+      page(`<h2>🎉 Winner: ${w.name}</h2><p>Tap below to create their £40 Jemzcard code and email it to them.</p><p><a href="/api/giveaway-winner?key=${k}&email=${e}&send=1" style="display:inline-block;background:#C9960C;color:#fff;padding:14px 26px;border-radius:12px;font-weight:800;text-decoration:none">Send £40 prize email</a></p>`);
+      return;
+    }
+    const coupon = await stripe.coupons.create({ amount_off: 4000, currency: "gbp", duration: "once", max_redemptions: 1, name: "ONJJEM Giveaway Winner (£40)" });
+    try { await stripe.promotionCodes.create({ coupon: coupon.id, code, max_redemptions: 1 } as any); }
+    catch { await stripe.promotionCodes.create({ promotion: { type: "coupon", coupon: coupon.id }, code, max_redemptions: 1 } as any); }
+    const m = giveawayWinnerEmail({ name: w.name, code });
+    await sendRawEmail(w.email, m.subject, m.html);
+    page(`✅ Done! £40 code <b>${code}</b> created and emailed to ${w.name}.`);
+  } catch (err) {
+    page("❌ " + (err instanceof Error ? err.message : String(err)));
+  }
+});
+\n// Owner-only: list every web-form entry. /api/giveaway-entries?key=YOURKEY
 router.get("/giveaway-entries", async (req: Request, res: Response) => {
   const key = normKey(process.env.GIVEAWAY_KEY);
   if (!key || normKey(req.query.key) !== key) { res.status(403).send("Forbidden: add ?key= with your GIVEAWAY_KEY"); return; }

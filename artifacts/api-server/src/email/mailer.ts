@@ -919,3 +919,25 @@ export async function sendPrintableEmail(data: { to: string; name?: string; prod
   });
   if (error) throw new Error(error.message);
 }
+
+// £40 giveaway winner: Jemzcard code email.
+export function giveawayWinnerEmail(data: { name: string; code: string }): { subject: string; html: string } {
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+  const name = esc(((data.name || "").trim().split(/\s+/)[0] || "there").toLowerCase().replace(/(^|[-'])\p{L}/gu, (c) => c.toUpperCase()));
+  const body = `
+    <tr><td style="padding:36px 40px 28px">
+      <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">You won! 🎉</p>
+      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 16px;line-height:1.25">Congratulations ${name}, you've won our £40 giveaway!</h1>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">Out of 161 entries, your name was drawn at random. Your prize is a <b>£40 Jemzcard</b> to spend on any personalised gift at ONJJEM.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 18px"><tr><td style="border:2px dashed ${GOLD};border-radius:14px;padding:16px 30px;text-align:center">
+        <div style="font-size:12px;color:${MUTED};letter-spacing:.12em;text-transform:uppercase">Your Jemzcard code</div>
+        <div style="font-family:Georgia,serif;font-size:30px;font-weight:700;color:#F5D78E;letter-spacing:.08em;margin-top:6px">${esc(data.code)}</div>
+      </td></tr></table>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 6px"><b>How to use it:</b> choose your gift, upload your photo, and at checkout tap <b>"Add promotion code"</b> and type the code. £40 comes straight off. It's one use, so we'd suggest using it on one order of £40 or more (perhaps a canvas or a Christmas gift).</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px auto 22px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:2px">
+        <a href="https://onjjem.com/" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 34px;font-family:Georgia,serif;font-size:16px;font-weight:700;color:#F5D78E;text-decoration:none">Choose my gift ✨</a></td></tr></table>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 6px">We'd love to see what you make. Tag us with <b>#JemziSpotted</b>!</p>
+      <p style="font-size:12px;color:${MUTED};line-height:1.6;margin:14px 0 0">We'll never ask for card details to claim a prize. Just reply to this email if you need any help.</p>
+    </td></tr>`;
+  return { subject: "🎉 You won our £40 giveaway!", html: baseTemplate("Your £40 Jemzcard code is inside.", body) };
+}
