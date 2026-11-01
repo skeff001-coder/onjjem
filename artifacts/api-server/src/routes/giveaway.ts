@@ -148,7 +148,7 @@ router.get("/giveaway-winner", async (req: Request, res: Response) => {
     page("❌ " + (err instanceof Error ? err.message : String(err)));
   }
 });
-\n// Owner-only: list every web-form entry. /api/giveaway-entries?key=YOURKEY
+// Owner-only: list every web-form entry. /api/giveaway-entries?key=YOURKEY
 router.get("/giveaway-entries", async (req: Request, res: Response) => {
   const key = normKey(process.env.GIVEAWAY_KEY);
   if (!key || normKey(req.query.key) !== key) { res.status(403).send("Forbidden: add ?key= with your GIVEAWAY_KEY"); return; }
