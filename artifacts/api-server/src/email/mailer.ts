@@ -941,3 +941,28 @@ export function giveawayWinnerEmail(data: { name: string; code: string }): { sub
     </td></tr>`;
   return { subject: "🎉 You won our £40 giveaway!", html: baseTemplate("Your £40 Jemzcard code is inside.", body) };
 }
+
+// Heads-up to the giveaway winner before their code is sent.
+export function giveawayWinnerHeadsUpEmail(data: { name: string }): { subject: string; html: string } {
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+  const name = esc(((data.name || "").trim().split(/\s+/)[0] || "there").toLowerCase().replace(/(^|[-'])\p{L}/gu, (c) => c.toUpperCase()));
+  const li = (e: string, t: string) => `<tr><td style="padding:6px 10px 6px 0;font-size:20px;vertical-align:top">${e}</td><td style="padding:6px 0;font-size:15px;color:${TEXT};line-height:1.6">${t}</td></tr>`;
+  const body = `
+    <tr><td style="padding:36px 40px 28px">
+      <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">You're our winner! 🎉</p>
+      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 16px;line-height:1.25">Congratulations ${name}, you've won our £40 giveaway!</h1>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">Out of 161 entries, your name was drawn at random. Your personal <b>£40 Jemzcard code</b> will arrive by email on <b>Wednesday</b>.</p>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 8px">In the meantime, here are a few ideas for what you could make:</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 18px">
+        ${li("🖼️", "A canvas of your favourite photo, a lovely one for the living room")}
+        ${li("☕", "A photo mug, or the magic mug that reveals your photo when you pour in a hot drink")}
+        ${li("🎄", "Christmas gifts: personalised baubles, posters and blankets for the family")}
+        ${li("🐶", "Pet bandanas and tags, if you have a furry friend")}
+      </table>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 6px">Have a browse and pick out your photos ready for Wednesday. If you fancy something bigger, you can simply pay the difference, and lots of gifts are <b>15% off for Black Friday</b> right now.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px auto 22px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:2px">
+        <a href="https://onjjem.com/" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 34px;font-family:Georgia,serif;font-size:16px;font-weight:700;color:#F5D78E;text-decoration:none">Browse gift ideas ✨</a></td></tr></table>
+      <p style="font-size:12px;color:${MUTED};line-height:1.6;margin:14px 0 0">We'll never ask for card details to claim a prize. Just reply to this email if you have any questions.</p>
+    </td></tr>`;
+  return { subject: "🎉 You've won our £40 giveaway!", html: baseTemplate("Your £40 Jemzcard code arrives on Wednesday.", body) };
+}

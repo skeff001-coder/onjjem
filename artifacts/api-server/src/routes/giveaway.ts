@@ -2,7 +2,7 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
-import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail, giveawayCartoonEmail, sendEmailWithAttachment, giveawayWinnerEmail } from "../email/mailer";
+import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail, giveawayCartoonEmail, sendEmailWithAttachment, giveawayWinnerEmail, giveawayWinnerHeadsUpEmail } from "../email/mailer";
 import { generateCartoon, addCornerBadge } from "./cartoonify";
 import crypto from "node:crypto";
 import { logger } from "../lib/logger";
@@ -133,9 +133,15 @@ router.get("/giveaway-winner", async (req: Request, res: Response) => {
     const stripe = await getUncachableStripeClient();
     const found = await stripe.promotionCodes.list({ code, limit: 1 });
     if (found.data[0]) { page(`✅ Already done. ${w.name}'s code is <b>${code}</b> (email already sent, not sent again).`); return; }
+    if (String(req.query.notify) === "1") {
+      const m = giveawayWinnerHeadsUpEmail({ name: w.name });
+      await sendRawEmail(w.email, m.subject, m.html);
+      page(`✅ "You've won" email sent to ${w.name}. Come back on Wednesday and tap the gold button to send the £40 code.`);
+      return;
+    }
     if (String(req.query.send) !== "1") {
       const k = encodeURIComponent(String(req.query.key)), e = encodeURIComponent(email);
-      page(`<h2>🎉 Winner: ${w.name}</h2><p>Tap below to create their £40 Jemzcard code and email it to them.</p><p><a href="/api/giveaway-winner?key=${k}&email=${e}&send=1" style="display:inline-block;background:#C9960C;color:#fff;padding:14px 26px;border-radius:12px;font-weight:800;text-decoration:none">Send £40 prize email</a></p>`);
+      page(`<h2>🎉 Winner: ${w.name}</h2><p>Tap below to create their £40 Jemzcard code and email it to them.</p><p><a href="/api/giveaway-winner?key=${k}&email=${e}&send=1" style="display:inline-block;background:#C9960C;color:#fff;padding:14px 26px;border-radius:12px;font-weight:800;text-decoration:none">Send £40 prize email</a></p><hr style="margin:26px 0"><p>Not ready to send the code yet? Tell them they've won first:</p><p><a href="/api/giveaway-winner?key=${k}&email=${e}&notify=1" style="display:inline-block;background:#12100B;color:#F5D78E;padding:14px 26px;border-radius:12px;font-weight:800;text-decoration:none">Send "You've won" email (no code)</a></p>`);
       return;
     }
     const coupon = await stripe.coupons.create({ amount_off: 4000, currency: "gbp", duration: "once", max_redemptions: 1, name: "ONJJEM Giveaway Winner (£40)" });
