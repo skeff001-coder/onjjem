@@ -416,9 +416,12 @@ router.post("/stripe/checkout", async (req: Request, res: Response) => {
       bfDiscount = [{ promotion_code: found.id }];
     }
     if (!isUS && BF_ACTIVE() && BF_ELIGIBLE(body.sku)) {
-      const off = Math.round(((lineItem as any).price_data.unit_amount as number) * 0.15);
-      const c = await stripe.coupons.create({ amount_off: off, currency: "gbp", duration: "once", max_redemptions: 1, name: "Black Friday 15% off" });
-      bfDiscount = [{ coupon: c.id }];
+      // Take 15% off the price itself (not a coupon), so gift card / promo codes still work at checkout.
+      const pd = (lineItem as any).price_data;
+      if (pd?.unit_amount && pd.product_data) {
+        pd.unit_amount = Math.round((pd.unit_amount as number) * 0.85);
+        pd.product_data.name = `${pd.product_data.name} (Black Friday 15% off)`;
+      }
     }
 
     const session = await createSessionSafe(stripe, {
@@ -622,15 +625,14 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     const bfBasket = !isUS && BF_ACTIVE() && items.some((it) => BF_ELIGIBLE(it.sku || ""));
     if (bfBasket) {
       // Black Friday: 15% off eligible gifts, the normal bundle % on the others (never both on one gift).
-      const off = lineItems.reduce((sum: number, li: any) => {
+      // Prices are lowered directly (not a coupon), so gift card / promo codes still work at checkout.
+      for (const li of lineItems as any[]) {
         const sku = li?.price_data?.product_data?.metadata?.sku as string | undefined;
-        if (!sku || sku === "cartoon_addon") return sum;
+        if (!sku || sku === "cartoon_addon") continue;
         const pct = BF_ELIGIBLE(sku) ? 15 : NO_BUNDLE_DISCOUNT(sku) ? 0 : percent;
-        return sum + Math.round(((li.price_data.unit_amount as number) * (li.quantity || 1) * pct) / 100);
-      }, 0);
-      if (off > 0) {
-        const c = await stripe.coupons.create({ amount_off: off, currency: "gbp", duration: "once", max_redemptions: 1, name: "Black Friday discount" });
-        discounts = [{ coupon: c.id }];
+        if (!pct) continue;
+        li.price_data.unit_amount = Math.round((li.price_data.unit_amount as number) * (100 - pct) / 100);
+        li.price_data.product_data.name = `${li.price_data.product_data.name} (${BF_ELIGIBLE(sku) ? "Black Friday 15% off" : `${pct}% bundle discount`})`;
       }
     } else if (percent && hasExcluded) {
       // Take the bundle % off the eligible gifts only (one-off amount coupon).
