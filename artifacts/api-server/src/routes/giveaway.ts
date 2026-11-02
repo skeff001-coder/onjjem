@@ -2,7 +2,7 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
-import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail, giveawayCartoonEmail, sendEmailWithAttachment, giveawayWinnerEmail, giveawayWinnerHeadsUpEmail } from "../email/mailer";
+import { sendGiveawayConfirmation, sendGiveawayAdminEntry, giveawayPromoEmail, sendRawEmail, giveawayCartoonEmail, sendEmailWithAttachment, giveawayWinnerEmail, giveawayWinnerHeadsUpEmail, giveawayConsolationEmail } from "../email/mailer";
 import { generateCartoon, addCornerBadge } from "./cartoonify";
 import crypto from "node:crypto";
 import { logger } from "../lib/logger";
@@ -154,6 +154,52 @@ router.get("/giveaway-winner", async (req: Request, res: Response) => {
     page("❌ " + (err instanceof Error ? err.message : String(err)));
   }
 });
+// Owner-only: email the 15% thank-you code to runners-up who said yes to offers. Never sends twice to anyone.
+// /api/giveaway-consolation?key=YOURKEY  -> preview;  &send=1 -> send
+router.get("/giveaway-consolation", async (req: Request, res: Response) => {
+  const key = normKey(process.env.GIVEAWAY_KEY);
+  if (!key || normKey(req.query.key) !== key) { res.status(403).send("Forbidden"); return; }
+  const page = (m: string) => res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:18px system-ui;padding:18px;max-width:640px;margin:auto">${m}</body>`);
+  try {
+    await ensureTable();
+    await db.execute(sql`CREATE TABLE IF NOT EXISTS giveaway_mail_log (email TEXT NOT NULL, kind TEXT NOT NULL, sent_at TIMESTAMPTZ NOT NULL DEFAULT now(), PRIMARY KEY (email, kind))`);
+    const stripe = await getUncachableStripeClient();
+    const winners = new Set<string>();
+    const rows = (await db.execute(sql`SELECT e.name, e.email, e.country FROM giveaway_entries e WHERE e.marketing = TRUE AND NOT EXISTS (SELECT 1 FROM giveaway_mail_log l WHERE l.email = lower(e.email) AND l.kind = 'consolation')`)).rows as { name: string; email: string; country: string }[];
+    for (const r of rows) {
+      const wc = "WIN40" + crypto.createHash("sha256").update(r.email.toLowerCase() + key).digest("hex").slice(0, 5).toUpperCase();
+      const f = await stripe.promotionCodes.list({ code: wc, limit: 1 });
+      if (f.data[0]) winners.add(r.email.toLowerCase());
+    }
+    const todo = rows.filter((r) => !winners.has(r.email.toLowerCase()));
+    if (String(req.query.send) !== "1") {
+      const k = encodeURIComponent(String(req.query.key));
+      page(`<h2>💛 Thank-you emails</h2><p><b>${todo.length}</b> people said yes to offers and haven't had this email yet (the winner is left out).</p><p>They'll get <b>15% off</b> with code <b>SORRY15</b> (until 30 Nov) and the Christmas giveaway link.</p>${todo.length ? `<p><a href="/api/giveaway-consolation?key=${k}&send=1" style="display:inline-block;background:#C9960C;color:#fff;padding:14px 26px;border-radius:12px;font-weight:800;text-decoration:none">Send ${todo.length} thank-you emails</a></p>` : "<p>✅ Nothing left to send.</p>"}`);
+      return;
+    }
+    const found = await stripe.promotionCodes.list({ code: "SORRY15", limit: 1 });
+    if (!found.data[0]) {
+      const coupon = await stripe.coupons.create({ id: "SORRY15-COUPON", percent_off: 15, duration: "once", name: "Giveaway thank you: 15% off" }).catch(async () => stripe.coupons.retrieve("SORRY15-COUPON"));
+      const exp = Math.floor(Date.parse("2026-12-01T00:00:00Z") / 1000);
+      try { await stripe.promotionCodes.create({ coupon: coupon.id, code: "SORRY15", expires_at: exp } as any); }
+      catch { await stripe.promotionCodes.create({ promotion: { type: "coupon", coupon: coupon.id }, code: "SORRY15", expires_at: exp } as any); }
+    }
+    let sent = 0; const failed: string[] = [];
+    for (const r of todo) {
+      try {
+        const m = giveawayConsolationEmail({ name: r.name, code: "SORRY15", country: r.country });
+        await sendRawEmail(r.email, m.subject, m.html);
+        await db.execute(sql`INSERT INTO giveaway_mail_log (email, kind) VALUES (${r.email.toLowerCase()}, 'consolation') ON CONFLICT DO NOTHING`);
+        sent++;
+      } catch { failed.push(r.name); }
+      await new Promise((ok) => setTimeout(ok, 600));
+    }
+    page(`✅ Sent ${sent} thank-you emails with code <b>SORRY15</b>.${failed.length ? `<br>❌ Failed: ${failed.join(", ")} (open this link again later to retry them).` : ""}`);
+  } catch (err) {
+    page("❌ " + (err instanceof Error ? err.message : String(err)));
+  }
+});
+
 // Owner-only: list every web-form entry. /api/giveaway-entries?key=YOURKEY
 router.get("/giveaway-entries", async (req: Request, res: Response) => {
   const key = normKey(process.env.GIVEAWAY_KEY);

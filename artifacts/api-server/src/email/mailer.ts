@@ -966,3 +966,28 @@ export function giveawayWinnerHeadsUpEmail(data: { name: string }): { subject: s
     </td></tr>`;
   return { subject: "🎉 You've won our £40 giveaway!", html: baseTemplate("Your £40 Jemzcard code arrives on Wednesday.", body) };
 }
+
+// Giveaway runners-up who opted in to offers: consolation code + Christmas giveaway.
+export function giveawayConsolationEmail(data: { name: string; code: string; country: string }): { subject: string; html: string } {
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+  const name = esc(((data.name || "").trim().split(/\s+/)[0] || "there").toLowerCase().replace(/(^|[-'])\p{L}/gu, (c) => c.toUpperCase()));
+  const us = data.country === "US";
+  const shop = us ? "https://onjjem.com/us/" : "https://onjjem.com/";
+  const body = `
+    <tr><td style="padding:36px 40px 28px">
+      <p style="font-size:12px;letter-spacing:.18em;color:${GOLD};text-transform:uppercase;margin:0 0 14px">A thank-you gift 💛</p>
+      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FAF7F2;margin:0 0 16px;line-height:1.25">Hi ${name}, you didn't win this time, but we didn't want you to leave empty-handed</h1>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 18px">Thank you for entering our giveaway. Over 160 people took part and the winner has now been drawn. As a thank-you, here's <b>15% off</b> any personalised gift:</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 18px"><tr><td style="border:2px dashed ${GOLD};border-radius:14px;padding:16px 30px;text-align:center">
+        <div style="font-size:12px;color:${MUTED};letter-spacing:.12em;text-transform:uppercase">Your code</div>
+        <div style="font-family:Georgia,serif;font-size:30px;font-weight:700;color:#F5D78E;letter-spacing:.08em;margin-top:6px">${esc(data.code)}</div>
+        <div style="font-size:12px;color:${MUTED};margin-top:6px">Use by 30 November</div>
+      </td></tr></table>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:0 0 6px">${us ? "" : "It even works on top of our Black Friday prices. "}Just tap <b>"Add promotion code"</b> at checkout. Perfect for Christmas presents: canvases, mugs, blankets, cushions and more, all made from your own photos.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px auto 14px"><tr><td align="center" style="background:linear-gradient(135deg,#8B6200,#C9960C,#F5D78E,#C9960C);border-radius:50px;padding:2px">
+        <a href="${shop}" style="display:inline-block;background:#12100B;border-radius:50px;padding:14px 34px;font-family:Georgia,serif;font-size:16px;font-weight:700;color:#F5D78E;text-decoration:none">Use my 15% off ✨</a></td></tr></table>
+      <p style="font-size:15px;color:${TEXT};line-height:1.7;margin:18px 0 6px">🎄 <b>Another chance to win:</b> our FREE Christmas giveaway is open now. Win a cartoon blanket of your family or pet, and everyone who adds a photo gets a free Christmas cartoon. <a href="https://onjjem.com/christmas-giveaway" style="color:#F5D78E">Enter here</a>.</p>
+      <p style="font-size:12px;color:${MUTED};line-height:1.6;margin:14px 0 0">You're getting this because you said yes to offers when you entered our giveaway. <a href="mailto:hello@onjjem.com?subject=Unsubscribe" style="color:${MUTED}">Unsubscribe</a>.</p>
+    </td></tr>`;
+  return { subject: "💛 You didn't win, but here's 15% off", html: baseTemplate("A thank-you code for entering our giveaway.", body) };
+}
