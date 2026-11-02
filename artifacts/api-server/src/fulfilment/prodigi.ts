@@ -674,6 +674,35 @@ async function cardArtwork(product: ProdigiProduct, photoBase64: string): Promis
 
 // "Find Jemzi!" — hide a small Christmas Jemzi (she) in the customer's photo.
 // Kept inside the middle 60% so Prodigi's crop-to-fit never cuts her off.
+// Bundles send one photo to several differently shaped products. Instead of letting
+// Prodigi crop it (which can cut off heads on a wide mug or a tall card), we fit the
+// WHOLE photo into each product's shape and fill the edges with a soft blurred copy.
+const BUNDLE_SHAPES: Record<string, { w: number; h: number; copies?: number }> = {
+  "H-MUG-11OZ-CC": { w: 2400, h: 1000, copies: 2 }, // magic mug wrap: the photo on both sides
+  "H-MUG-11OZ": { w: 2400, h: 1000, copies: 2 },
+  "XMAS-PLAS-BAUB": { w: 1200, h: 1200 },
+  "PLAY-CARD": { w: 750, h: 1050 },
+  "M-MAG-FRI-3X2": { w: 1500, h: 1000 },
+  "GLOBAL-STI-3X4-G": { w: 900, h: 1200 },
+};
+async function fitToShape(photoBase64: string, prodigiSku: string): Promise<string> {
+  const shape = BUNDLE_SHAPES[prodigiSku];
+  if (!shape) return photoBase64;
+  const m = photoBase64.match(/^data:[^;]+;base64,(.+)$/s);
+  const input = await sharp(Buffer.from(m ? m[1] : photoBase64, "base64")).rotate().toBuffer();
+  const n = shape.copies ?? 1, cellW = Math.round(shape.w / n);
+  const bg = await sharp(input).resize(shape.w, shape.h, { fit: "cover" }).blur(30).modulate({ brightness: 0.9 }).toBuffer();
+  const fg = await sharp(input).resize(Math.round(cellW * 0.94), Math.round(shape.h * 0.94), { fit: "inside" }).toBuffer();
+  const fm = await sharp(fg).metadata();
+  const comps = Array.from({ length: n }, (_, i) => ({
+    input: fg,
+    left: Math.round(i * cellW + (cellW - (fm.width ?? cellW)) / 2),
+    top: Math.round((shape.h - (fm.height ?? shape.h)) / 2),
+  }));
+  const out = await sharp(bg).composite(comps).jpeg({ quality: 93 }).toBuffer();
+  return "data:image/jpeg;base64," + out.toString("base64");
+}
+
 let jemziPng: Buffer | null = null;
 async function jemziHiddenPhoto(photoBase64: string): Promise<string> {
   if (!jemziPng) {
@@ -763,6 +792,10 @@ async function submitToProdigi(
     }
     let url = imageUrl;
     if (extra.fixedArtUrl) url = extra.fixedArtUrl;
+    else if (BUNDLE_SHAPES[extra.sku]) {
+      const fitted = await fitToShape(order.photoBase64, extra.sku);
+      url = await photoToPublicUrl(mode === "jemzi" ? await jemziHiddenPhoto(fitted) : fitted);
+    }
     else if (mode === "jemzi") url = await photoToPublicUrl(await jemziHiddenPhoto(order.photoBase64));
     const extraAreas = areasFor(extra);
     items.push({
