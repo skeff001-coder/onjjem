@@ -213,6 +213,27 @@ router.get("/thankyou-code", async (req, res) => {
   }
 });
 
+// Owner: /api/promo-code?key=...&code=JEMZI10&pct=10&until=2026-12-01 creates a public % off code (once only).
+router.get("/promo-code", async (req, res) => {
+  if (!okKey(req.query.key)) { res.status(403).send("Wrong key"); return; }
+  const code = String(req.query.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const pct = Math.round(Number(req.query.pct));
+  const until = Date.parse(String(req.query.until || ""));
+  if (!code || code.length < 4 || !(pct >= 1 && pct <= 30)) { res.status(400).send("Add &code=ABC123&pct=10 (1-30)"); return; }
+  try {
+    const stripe = await getUncachableStripeClient();
+    const found = await stripe.promotionCodes.list({ code, limit: 1 });
+    if (found.data[0]) { res.type("text/plain").send(`✅ ${code} already exists (active: ${found.data[0].active})`); return; }
+    const coupon = await stripe.coupons.create({ percent_off: pct, duration: "once", name: `${code}: ${pct}% off` });
+    const extra: Record<string, unknown> = isFinite(until) ? { expires_at: Math.floor(until / 1000) } : {};
+    try { await stripe.promotionCodes.create({ coupon: coupon.id, code, ...extra } as any); }
+    catch { await stripe.promotionCodes.create({ promotion: { type: "coupon", coupon: coupon.id }, code, ...extra } as any); }
+    res.type("text/plain").send(`✅ ${code} created: ${pct}% off${isFinite(until) ? ", ends " + new Date(until).toUTCString().slice(0, 16) : ""}`);
+  } catch (err) {
+    res.status(500).type("text/plain").send("❌ " + String(err));
+  }
+});
+
 // Open /api/prodigi-quote?sku=calendar-a4&country=GB (several: sku=a,b,c)
 router.get("/prodigi-quote", async (req, res) => {
   const apiKey = process.env.PRODIGI_API_KEY;
