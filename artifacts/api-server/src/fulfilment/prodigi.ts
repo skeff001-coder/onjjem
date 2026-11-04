@@ -276,6 +276,9 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "photo-tile-5x7":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
   "photo-tile-8x8":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
   "photo-tile-8x10": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "black" }, shipping: "Budget" },
+  "photo-tile-5x7-white":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
+  "photo-tile-8x8-white":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
+  "photo-tile-8x10-white": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
 
   // ── Greeting cards (folded, sent to the customer with a blank envelope) ────
   // Prodigi's flat sheet is 4 portrait panels in a row with ~30px bleed at each

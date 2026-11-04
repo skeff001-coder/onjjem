@@ -245,6 +245,9 @@ export const SHOP_SKU_PRICES = {
   "photo-tile-5x7": { name: "Peel & Go Photo Frame (5x7)", pricePence: 1999 },
   "photo-tile-8x8": { name: "Peel & Go Photo Frame (8x8)", pricePence: 2199 },
   "photo-tile-8x10": { name: "Peel & Go Photo Frame (8x10)", pricePence: 2299 },
+  "photo-tile-5x7-white": { name: "Peel & Go Photo Frame, White (5x7)", pricePence: 1999 },
+  "photo-tile-8x8-white": { name: "Peel & Go Photo Frame, White (8x8)", pricePence: 2199 },
+  "photo-tile-8x10-white": { name: "Peel & Go Photo Frame, White (8x10)", pricePence: 2299 },
 
   // ========================================
   // KIDS PRODUCTS
