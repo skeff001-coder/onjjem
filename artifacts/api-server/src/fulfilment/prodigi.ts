@@ -283,7 +283,7 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   // Face wrapping paper (UK-made, Budget post, untracked). Our own repeating pattern, so fill-crop is harmless.
   "giftwrap-1":     { sku: "WRAP-1-50X70",    sizing: "fillPrintArea", shipping: "Budget", giftwrap: { wcm: 50, hcm: 70, dpi: 150 } },
   "giftwrap-3":     { sku: "WRAP-3-50X70",    sizing: "fillPrintArea", shipping: "Budget", giftwrap: { wcm: 50, hcm: 70, dpi: 150 } },
-  "giftwrap-roll2": { sku: "WRAP-ROL-70X200", sizing: "fillPrintArea", shipping: "Budget", giftwrap: { wcm: 70, hcm: 200, dpi: 120 } },
+  "giftwrap-roll2": { sku: "WRAP-ROL-70X200", sizing: "fillPrintArea", shipping: "Budget", giftwrap: { wcm: 70, hcm: 200, dpi: 150 } },
 
   // ── Greeting cards (folded, sent to the customer with a blank envelope) ────
   // Prodigi's flat sheet is 4 portrait panels in a row with ~30px bleed at each
