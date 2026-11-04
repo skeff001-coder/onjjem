@@ -148,8 +148,6 @@ export const SHOP_SKU_PRICES = {
   "ART-FOIL-SIL-A2": { name: "Metallic Foil Print (A2, Silver)", pricePence: 2699 },
 
   // Tea Towels
-  "tea-towel-poly": { name: "Premium Kitchen Towel (Polyester)", pricePence: 1399 },
-  "tea-towel-cotton": { name: "Premium Kitchen Towel (Cotton Twill)", pricePence: 1799 },
 
   // Photo Magnets (Single Image Only)
   "M-MAG-FRI-3X2": { name: "Fridge Magnet (3x2\", 8x5cm) — PROMO SPECIAL", pricePence: 699 },
