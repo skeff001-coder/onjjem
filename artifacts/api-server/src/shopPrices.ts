@@ -7,7 +7,7 @@ export const SHOP_SKU_PRICES = {
 
   // Heat Transfer Colour Changing Mug (11oz) — LIMITED TIME SALE
   "magic-mug": { name: "Magic Reveal Photo Mug (11oz, colour-changing)", pricePence: 1499 },
-  "baby-reveal-mug": { name: "Baby Gender Reveal Colour-Changing Mug (11oz)", pricePence: 1999 },
+  "baby-reveal-mug": { name: "Baby Gender Reveal Colour-Changing Mug (11oz)", pricePence: 1699 },
   "XSWEAT-KD-3Y-RED": { name: "Christmas Sweatshirt, Kids (3-4 Years, Fire Red)", pricePence: 2399 },
   "XSWEAT-KD-3Y-GREEN": { name: "Christmas Sweatshirt, Kids (3-4 Years, Kelly Green)", pricePence: 2399 },
   "XSWEAT-KD-3Y-NAVY": { name: "Christmas Sweatshirt, Kids (3-4 Years, Oxford Navy)", pricePence: 2399 },
@@ -223,7 +223,7 @@ export const SHOP_SKU_PRICES = {
   // "Your Own Jemzi": customer's photos fanned above the ONJJEM hedgehog (printed as a poster)
   "jemzi-a3": { name: "Your Own Jemzi Poster (A3)", pricePence: 1999 },
   "jemzi-xmas-a3": { name: "Your Own Christmas Jemzi Poster (A3)", pricePence: 1999 },
-  "jemzi-a2": { name: "Your Own Jemzi Poster (A2)", pricePence: 2499 },
+  "jemzi-a2": { name: "Your Own Jemzi Poster (A2)", pricePence: 2199 },
   "poster-a2": { name: "Photo Poster (A2)", pricePence: 1649 },
   "poster-50x70": { name: "Photo Poster (50x70cm)", pricePence: 1999 },
   "poster-a1": { name: "Photo Poster (A1)", pricePence: 2299 },
@@ -297,7 +297,7 @@ export const SHOP_SKU_PRICES = {
 
   // Greeting cards
   "card-7x5": { name: "Photo Greeting Card (7x5)", pricePence: 599 },
-  "card-giant-a4": { name: "GIANT Photo Greeting Card (A4)", pricePence: 999 },
+  "card-giant-a4": { name: "GIANT Photo Greeting Card (A4)", pricePence: 899 },
 
   // Playing Cards
   "playing-cards": { name: "Cartoon Playing Cards (Deck)", pricePence: 1599 },
