@@ -167,9 +167,10 @@ export async function generateCartoon(base64Image: string, mimeType: string, sty
   });
   let response;
   try {
-    response = await request(process.env.CARTOON_MODEL || "gemini-3.1-flash-image");
-  } catch (err) {
+    // Faster model first (about 8-12s); the newer, slower one is the fallback.
     response = await request("gemini-2.5-flash-image");
+  } catch (err) {
+    response = await request("gemini-3.1-flash-image");
   }
 
   const parts = response.candidates?.[0]?.content?.parts ?? [];
@@ -218,8 +219,8 @@ export async function generateColoringPage(base64Image: string, mimeType: string
     config: { responseModalities: ["IMAGE"] },
   });
   let response;
-  try { response = await request(process.env.CARTOON_MODEL || "gemini-3.1-flash-image"); }
-  catch { response = await request("gemini-2.5-flash-image"); }
+  try { response = await request("gemini-2.5-flash-image"); }
+  catch { response = await request("gemini-3.1-flash-image"); }
   const part = (response.candidates?.[0]?.content?.parts ?? []).find((p: any) => p.inlineData);
   if (!part || !part.inlineData) throw new Error("The colouring page generator didn't return an image.");
   // Clean pure black-and-white lines, centred on an A4 portrait page (300dpi) ready to print.
