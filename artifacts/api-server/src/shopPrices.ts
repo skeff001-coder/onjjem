@@ -248,6 +248,9 @@ export const SHOP_SKU_PRICES = {
   "photo-tile-5x7-white": { name: "Peel & Go Photo Frame, White (5x7)", pricePence: 1999 },
   "photo-tile-8x8-white": { name: "Peel & Go Photo Frame, White (8x8)", pricePence: 2199 },
   "photo-tile-8x10-white": { name: "Peel & Go Photo Frame, White (8x10)", pricePence: 2299 },
+  "giftwrap-1": { name: "Face Wrapping Paper (1 sheet, 50x70cm)", pricePence: 1299 },
+  "giftwrap-3": { name: "Face Wrapping Paper (3 sheets, 50x70cm)", pricePence: 1699 },
+  "giftwrap-roll2": { name: "Face Wrapping Paper (2m roll, 70cm wide)", pricePence: 1999 },
 
   // ========================================
   // KIDS PRODUCTS

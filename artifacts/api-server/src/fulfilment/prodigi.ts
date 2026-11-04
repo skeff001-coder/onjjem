@@ -72,6 +72,7 @@ export interface ProdigiProduct {
   // Folded greeting cards: Prodigi prints one flat sheet. Our photo goes only
   // in the front panel; the rest of the sheet stays white. Sizes in pixels.
   cardLayout?: { width: number; height: number; front: { left: number; top: number; width: number; height: number } };
+  giftwrap?: { wcm: number; hcm: number; dpi: number }; // face wrapping paper: repeat the customer's 18cm pattern cell across the sheet
   // Multi-page products (calendars): one photo per print area, in this order.
   // The order's pagePhotos are matched by position; missing pages reuse page 0 (the cover).
   pageAreas?: string[];
@@ -279,6 +280,10 @@ export const PRODIGI_PRODUCTS: Record<string, ProdigiProduct> = {
   "photo-tile-5x7-white":  { sku: "PHOTIL-FRA-0507", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
   "photo-tile-8x8-white":  { sku: "PHOTIL-FRA-0808", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
   "photo-tile-8x10-white": { sku: "PHOTIL-FRA-0810", sizing: "fillPrintArea", attributes: { color: "white" }, shipping: "Budget" },
+  // Face wrapping paper (UK-made, Budget post, untracked). Our own repeating pattern, so fill-crop is harmless.
+  "giftwrap-1":     { sku: "WRAP-1-50X70",    sizing: "fillPrintArea", shipping: "Budget", giftwrap: { wcm: 50, hcm: 70, dpi: 150 } },
+  "giftwrap-3":     { sku: "WRAP-3-50X70",    sizing: "fillPrintArea", shipping: "Budget", giftwrap: { wcm: 50, hcm: 70, dpi: 150 } },
+  "giftwrap-roll2": { sku: "WRAP-ROL-70X200", sizing: "fillPrintArea", shipping: "Budget", giftwrap: { wcm: 70, hcm: 200, dpi: 120 } },
 
   // ── Greeting cards (folded, sent to the customer with a blank envelope) ────
   // Prodigi's flat sheet is 4 portrait panels in a row with ~30px bleed at each
@@ -662,6 +667,18 @@ async function photoToPublicUrl(photoBase64: string): Promise<string> {
 }
 
 // Greeting cards: put the customer's picture on the front panel of the flat sheet.
+// Face wrapping paper: the website sends one square pattern cell; repeat it across the whole sheet.
+async function giftwrapArtwork(product: ProdigiProduct, photoBase64: string): Promise<string> {
+  const G = product.giftwrap!;
+  const W = Math.round(G.wcm / 2.54 * G.dpi), H = Math.round(G.hcm / 2.54 * G.dpi), cell = Math.round(18 / 2.54 * G.dpi);
+  const m = photoBase64.match(/^data:[^;]+;base64,(.+)$/s);
+  const tile = await sharp(Buffer.from(m ? m[1] : photoBase64, "base64")).resize(cell, cell).png().toBuffer();
+  const out = await sharp({ create: { width: W, height: H, channels: 3, background: "#b3122e" } })
+    .composite([{ input: tile, tile: true, top: 0, left: 0 }]).jpeg({ quality: 90 }).toBuffer();
+  return "data:image/jpeg;base64," + out.toString("base64");
+}
+const artworkFor = (p: ProdigiProduct, photo: string) => p.giftwrap ? giftwrapArtwork(p, photo) : cardArtwork(p, photo);
+
 async function cardArtwork(product: ProdigiProduct, photoBase64: string): Promise<string> {
   const L = product.cardLayout;
   if (!L) return photoBase64;
@@ -756,7 +773,7 @@ async function submitToProdigi(
   }
 
   const rawUrl = await photoToPublicUrl(order.photoBase64);
-  const imageUrl = product.cardLayout ? await photoToPublicUrl(await cardArtwork(product, order.photoBase64)) : rawUrl;
+  const imageUrl = product.cardLayout || product.giftwrap ? await photoToPublicUrl(await artworkFor(product, order.photoBase64)) : rawUrl;
 
   // Build assets array — most products use a single "default" print area;
   // jigsaws (and any future multi-area products) need one entry per area.
@@ -816,7 +833,7 @@ async function submitToProdigi(
     if (!extraProduct) {
       throw new Error(`Basket item "${extraItem.sku}" is not mapped for Prodigi.`);
     }
-    const extraUrl = await photoToPublicUrl(await cardArtwork(extraProduct, extraItem.photoBase64));
+    const extraUrl = await photoToPublicUrl(await artworkFor(extraProduct, extraItem.photoBase64));
     const extraAreas = areasFor(extraProduct);
     items.push({
       sku: extraProduct.sku,
