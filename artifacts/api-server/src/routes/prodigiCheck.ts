@@ -11,6 +11,7 @@ import { Router, type IRouter } from "express";
 import { PRODIGI_PRODUCTS, areasFor, SLIP_SKU, FREE_STICKER_SKU } from "../fulfilment/prodigi";
 import { US_PRODIGI_PRODUCTS } from "../usShop";
 import { getUncachableStripeClient } from "../stripeClient";
+import { SHOP_SKU_PRICES } from "../shopPrices";
 
 const router: IRouter = Router();
 
@@ -232,6 +233,59 @@ router.get("/promo-code", async (req, res) => {
   } catch (err) {
     res.status(500).type("text/plain").send("❌ " + String(err));
   }
+});
+
+// Owner: /api/price-audit?key=... checks every UK product's selling price against Prodigi's real cost.
+// Runs in the background (about 1 quote per second); the page refreshes itself until done.
+type AuditRow = { sku: string; name: string; price: number; cost: number | null; err?: string };
+const audit: { running: boolean; done: number; total: number; rows: AuditRow[]; at: number } = { running: false, done: 0, total: 0, rows: [], at: 0 };
+async function runAudit(apiKey: string) {
+  const prices = SHOP_SKU_PRICES as Record<string, { name: string; pricePence: number }>;
+  const list = Object.keys(prices).filter((k) => PRODIGI_PRODUCTS[k] && !/^giftcard|jemzi-letter|cushion-12-canvas/.test(k));
+  audit.running = true; audit.done = 0; audit.total = list.length; audit.rows = []; audit.at = Date.now();
+  const cache = new Map<string, number | string>();
+  for (const k of list) {
+    const p = PRODIGI_PRODUCTS[k];
+    const parts = [p, ...(p.bundle ?? []).map((b) => PRODIGI_PRODUCTS[b.split("#")[0]]).filter(Boolean)];
+    const sig = JSON.stringify([p.shipping ?? "Standard", parts.map((x) => [x.sku, x.attributes ?? null])]);
+    let got = cache.get(sig);
+    if (got === undefined) {
+      const areas = p.pageAreas ?? areasFor(p);
+      const body = { shippingMethod: p.shipping || "Standard", destinationCountryCode: "GB", currencyCode: "GBP",
+        items: parts.map((x, i) => ({ sku: x.sku, copies: x.copies ?? 1, ...(x.attributes ? { attributes: x.attributes } : {}), assets: (i === 0 ? areas : areasFor(x)).map((a) => ({ printArea: a })) })) };
+      try {
+        const r = await fetch(`${baseUrl()}/v4.0/quotes`, { method: "POST", headers: { "X-API-Key": apiKey, "Content-Type": "application/json" }, body: JSON.stringify(body), signal: AbortSignal.timeout(20_000) });
+        const j: any = await r.json().catch(() => ({}));
+        const q = j.quotes?.[0];
+        got = r.ok && q ? Number(q.costSummary?.items?.amount ?? 0) + Number(q.costSummary?.shipping?.amount ?? 0) : `HTTP ${r.status}`;
+      } catch (e) { got = String(e).slice(0, 60); }
+      cache.set(sig, got);
+      await new Promise((ok) => setTimeout(ok, 1100));
+    }
+    audit.rows.push({ sku: k, name: prices[k].name, price: prices[k].pricePence / 100, cost: typeof got === "number" ? got : null, err: typeof got === "string" ? got : undefined });
+    audit.done++;
+  }
+  audit.running = false;
+}
+router.get("/price-audit", async (req, res) => {
+  if (!okKey(req.query.key)) { res.status(403).send("Wrong key"); return; }
+  const apiKey = process.env.PRODIGI_API_KEY;
+  if (!apiKey) { res.status(500).send("No Prodigi key set"); return; }
+  if (!audit.running && (req.query.start === "1" || audit.total === 0)) runAudit(apiKey).catch(() => { audit.running = false; });
+  const BF = (sku: string) => /^(canvas-|mug-11oz$|mug-15oz$|magic-mug$|art-print-|poster-|cushion-|CLASSIC-POST)/.test(sku);
+  const keep = (sell: number, cost: number) => sell - cost * 1.2 - (sell * 0.015 + 0.2);
+  const rows = audit.rows.map((r) => {
+    if (r.cost == null) return { ...r, k: NaN, kd: NaN, pct: NaN, flag: "⚪", sell: r.price };
+    const sell = BF(r.sku) ? r.price * 0.85 : r.price;
+    const k = keep(sell, r.cost), kd = keep(sell * 0.9, r.cost), pct = k / sell * 100;
+    const flag = kd < 0 ? "🔴" : pct > 45 ? "🟠" : "✅";
+    return { ...r, k, kd, pct, flag, sell };
+  }).sort((a, b) => (isNaN(b.pct) ? -1 : b.pct) - (isNaN(a.pct) ? -1 : a.pct));
+  const m = (n: number) => isNaN(n) ? "–" : (n < 0 ? "−£" : "£") + Math.abs(n).toFixed(2);
+  const esc = (v: string) => v.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
+  const cnt = (f: string) => rows.filter((r) => r.flag === f).length;
+  const tr = rows.map((r) => `<tr><td>${r.flag}</td><td><b>${esc(r.name)}</b><br><small>${esc(r.sku)}</small></td><td>£${r.sell.toFixed(2)}${r.sell !== r.price ? "<br><small>BF</small>" : ""}</td><td>${r.cost == null ? esc(r.err ?? "?") : m(r.cost * 1.2)}</td><td>${m(r.k)}<br><small>${isNaN(r.pct) ? "" : r.pct.toFixed(0) + "%"}</small></td><td>${m(r.kd)}</td></tr>`).join("");
+  res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">${audit.running ? '<meta http-equiv=refresh content=10>' : ""}<title>Price check</title><body style="font:14px system-ui;padding:12px;max-width:820px;margin:auto"><h2>💷 Price check ${audit.running ? `(checking ${audit.done}/${audit.total}…)` : `(${audit.total} products)`}</h2><p>🟠 high profit (over 45%, could come down) <b>${cnt("🟠")}</b> · ✅ fair <b>${cnt("✅")}</b> · 🔴 loses money with a 10% code <b>${cnt("🔴")}</b></p><p style="color:#666">Cost includes 20% VAT and free delivery. "Keep" is after Stripe's fee, at today's price (BF = Black Friday price).</p><table border=1 cellpadding=5 style="border-collapse:collapse;width:100%"><tr style="background:#f3f3f3"><th></th><th>Product</th><th>Sells</th><th>Cost</th><th>You keep</th><th>With 10% code</th></tr>${tr}</table></body>`);
 });
 
 // Open /api/prodigi-quote?sku=calendar-a4&country=GB (several: sku=a,b,c)
