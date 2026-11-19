@@ -623,10 +623,10 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     const percent = countable >= 3 ? 12 : countable === 2 ? 10 : 0;
     let discounts: { coupon: string }[] | undefined;
     const hasExcluded = items.some((it) => NO_BUNDLE_DISCOUNT(it.sku || ""));
-    // Black Friday (UK, to 30 Nov): one cushion half price when the basket has a blanket or wall art of £30+.
+    // Black Friday (UK, to 30 Nov): one 12" cushion half price when the basket has a blanket or wall art of £30+.
     if (!isUS && BF_ACTIVE()) {
       const anchor = items.some((it) => HALF_CUSHION_ANCHOR(it.sku || "") && ((SHOP_SKU_PRICES as Record<string, { pricePence: number }>)[it.sku || ""]?.pricePence ?? 0) >= 3000);
-      const cush = anchor ? (lineItems as any[]).find((li) => /^cushion-(12-single|18-double)$/.test(li?.price_data?.product_data?.metadata?.sku || "")) : null;
+      const cush = anchor ? (lineItems as any[]).find((li) => /^cushion-12-single$/.test(li?.price_data?.product_data?.metadata?.sku || "")) : null;
       if (cush) {
         cush.price_data.unit_amount = Math.round((cush.price_data.unit_amount as number) / 2);
         cush.price_data.product_data.name = `${cush.price_data.product_data.name} (HALF PRICE with your blanket / wall art)`;
