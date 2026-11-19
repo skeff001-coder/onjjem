@@ -196,6 +196,7 @@ const HALLOWEEN_FREE_CARTOON = (sku: string) =>
   ["halloween-fridge-pack", "halloween-pocket-pack", "magic-mug", "magnet-fridge-3x2", "wud-sticker-small"].includes(sku);
 // Black Friday (UK): 15% off automatically on gifts with room for it, 29 Oct - Mon 30 Nov 2026.
 const BF_ACTIVE = () => { const t = Date.now(); return t >= Date.parse("2026-10-29T00:00:00Z") && t < Date.parse("2026-12-01T00:00:00Z"); };
+const HALF_CUSHION_ANCHOR = (sku: string) => /^(H-BLA-|canvas-|ECO-CAN-|ECO-ROL-|eco-rolled-|GLOBAL-SLIMCAN-|GLOBAL-CAN-|art-print-|poster-|budget-poster-|framed|GLOBAL-FRA|GLOBAL-BOX)/i.test(sku);
 const BF_ELIGIBLE = (sku: string) => /^(canvas-|mug-11oz$|mug-15oz$|magic-mug$|art-print-|poster-|cushion-|CLASSIC-POST)/.test(sku);
 // Christmas special: the cartoon is free on every UK gift from 1 Nov to 24 Dec 2026.
 const XMAS_FREE_CARTOON = () => { const t = Date.now(); return t >= Date.parse("2026-11-01T00:00:00Z") && t < Date.parse("2026-12-25T00:00:00Z"); };
@@ -622,13 +623,23 @@ router.post("/stripe/cart-checkout", async (req: Request, res: Response) => {
     const percent = countable >= 3 ? 12 : countable === 2 ? 10 : 0;
     let discounts: { coupon: string }[] | undefined;
     const hasExcluded = items.some((it) => NO_BUNDLE_DISCOUNT(it.sku || ""));
+    // Black Friday (UK, to 30 Nov): one cushion half price when the basket has a blanket or wall art of £30+.
+    if (!isUS && BF_ACTIVE()) {
+      const anchor = items.some((it) => HALF_CUSHION_ANCHOR(it.sku || "") && ((SHOP_SKU_PRICES as Record<string, { pricePence: number }>)[it.sku || ""]?.pricePence ?? 0) >= 3000);
+      const cush = anchor ? (lineItems as any[]).find((li) => /^cushion-(12-single|18-double)$/.test(li?.price_data?.product_data?.metadata?.sku || "")) : null;
+      if (cush) {
+        cush.price_data.unit_amount = Math.round((cush.price_data.unit_amount as number) / 2);
+        cush.price_data.product_data.name = `${cush.price_data.product_data.name} (HALF PRICE with your blanket / wall art)`;
+        cush.price_data.product_data.metadata.halfprice = "1";
+      }
+    }
     const bfBasket = !isUS && BF_ACTIVE() && items.some((it) => BF_ELIGIBLE(it.sku || ""));
     if (bfBasket) {
       // Black Friday: 15% off eligible gifts, the normal bundle % on the others (never both on one gift).
       // Prices are lowered directly (not a coupon), so gift card / promo codes still work at checkout.
       for (const li of lineItems as any[]) {
         const sku = li?.price_data?.product_data?.metadata?.sku as string | undefined;
-        if (!sku || sku === "cartoon_addon") continue;
+        if (!sku || sku === "cartoon_addon" || li.price_data.product_data.metadata?.halfprice) continue;
         const pct = BF_ELIGIBLE(sku) ? 15 : NO_BUNDLE_DISCOUNT(sku) ? 0 : percent;
         if (!pct) continue;
         li.price_data.unit_amount = Math.round((li.price_data.unit_amount as number) * (100 - pct) / 100);
