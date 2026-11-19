@@ -220,16 +220,20 @@ router.get("/promo-code", async (req, res) => {
   const code = String(req.query.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   const pct = Math.round(Number(req.query.pct));
   const until = Date.parse(String(req.query.until || ""));
-  if (!code || code.length < 4 || !(pct >= 1 && pct <= 30)) { res.status(400).send("Add &code=ABC123&pct=10 (1-30)"); return; }
+  const off = Math.round(Number(req.query.off) * 100), minSpend = Math.round(Number(req.query.min) * 100);
+  if (!code || code.length < 4 || !((pct >= 1 && pct <= 30) || (off >= 100 && off <= 2000))) { res.status(400).send("Add &code=ABC123&pct=10 (1-30) or &off=5&min=30"); return; }
   try {
     const stripe = await getUncachableStripeClient();
     const found = await stripe.promotionCodes.list({ code, limit: 1 });
     if (found.data[0]) { res.type("text/plain").send(`✅ ${code} already exists (active: ${found.data[0].active})`); return; }
-    const coupon = await stripe.coupons.create({ percent_off: pct, duration: "once", name: `${code}: ${pct}% off` });
+    const coupon = off > 0
+      ? await stripe.coupons.create({ amount_off: off, currency: "gbp", duration: "once", name: `${code}: £${off / 100} off` })
+      : await stripe.coupons.create({ percent_off: pct, duration: "once", name: `${code}: ${pct}% off` });
     const extra: Record<string, unknown> = isFinite(until) ? { expires_at: Math.floor(until / 1000) } : {};
+    if (off > 0 && minSpend > 0) extra.restrictions = { minimum_amount: minSpend, minimum_amount_currency: "gbp" };
     try { await stripe.promotionCodes.create({ coupon: coupon.id, code, ...extra } as any); }
     catch { await stripe.promotionCodes.create({ promotion: { type: "coupon", coupon: coupon.id }, code, ...extra } as any); }
-    res.type("text/plain").send(`✅ ${code} created: ${pct}% off${isFinite(until) ? ", ends " + new Date(until).toUTCString().slice(0, 16) : ""}`);
+    res.type("text/plain").send(`✅ ${code} created: ${off > 0 ? `£${off / 100} off${minSpend ? ` orders £${minSpend / 100}+` : ""}` : `${pct}% off`}${isFinite(until) ? ", ends " + new Date(until).toUTCString().slice(0, 16) : ""}`);
   } catch (err) {
     res.status(500).type("text/plain").send("❌ " + String(err));
   }
@@ -284,8 +288,13 @@ router.get("/price-audit", async (req, res) => {
   const m = (n: number) => isNaN(n) ? "–" : (n < 0 ? "−£" : "£") + Math.abs(n).toFixed(2);
   const esc = (v: string) => v.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
   const cnt = (f: string) => rows.filter((r) => r.flag === f).length;
+  // £5-off code check: every gift that sells for £MIN+ on its own, kept after £5 off.
+  const fmin = Number(req.query.min) || 30;
+  const five = rows.filter((r) => r.cost != null && r.sell >= fmin).map((r) => ({ ...r, k5: keep(r.sell - 5, r.cost as number) }));
+  const fiveBad = five.filter((r) => r.k5 < 1.5).sort((a, b) => a.k5 - b.k5);
+  const fiveHtml = `<div style="border:3px solid ${fiveBad.length ? "#c0392b" : "#27ae60"};border-radius:12px;padding:12px;margin:10px 0"><h3 style="margin:0 0 6px">£5 off orders £${fmin}+ ${fiveBad.length ? "❌" : "✅"}</h3><p style="margin:0">${five.length} gifts sell for £${fmin}+. <b>${fiveBad.length}</b> would keep under £1.50 with £5 off${fiveBad.length ? ":" : " 🎉"}</p>${fiveBad.map((r) => `<div>🔴 ${esc(r.name)} — keeps ${m(r.k5)}</div>`).join("")}</div>`;
   const tr = rows.map((r) => `<tr><td>${r.flag}</td><td><b>${esc(r.name)}</b><br><small>${esc(r.sku)}</small></td><td>£${r.sell.toFixed(2)}${r.sell !== r.price ? "<br><small>BF</small>" : ""}</td><td>${r.cost == null ? esc(r.err ?? "?") : m(r.cost * 1.2)}</td><td>${m(r.k)}<br><small>${isNaN(r.pct) ? "" : r.pct.toFixed(0) + "%"}</small></td><td>${m(r.kd)}</td></tr>`).join("");
-  res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">${audit.running ? '<meta http-equiv=refresh content=10>' : ""}<title>Price check</title><body style="font:14px system-ui;padding:12px;max-width:820px;margin:auto"><h2>💷 Price check ${audit.running ? `(checking ${audit.done}/${audit.total}…)` : `(${audit.total} products)`}</h2><p>🟠 high profit (over 45%, could come down) <b>${cnt("🟠")}</b> · ✅ fair <b>${cnt("✅")}</b> · 🔴 loses money with a 10% code <b>${cnt("🔴")}</b></p><p style="color:#666">Cost includes 20% VAT and free delivery. "Keep" is after Stripe's fee, at today's price (BF = Black Friday price).</p><table border=1 cellpadding=5 style="border-collapse:collapse;width:100%"><tr style="background:#f3f3f3"><th></th><th>Product</th><th>Sells</th><th>Cost</th><th>You keep</th><th>With 10% code</th></tr>${tr}</table></body>`);
+  res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">${audit.running ? '<meta http-equiv=refresh content=10>' : ""}<title>Price check</title><body style="font:14px system-ui;padding:12px;max-width:820px;margin:auto"><h2>💷 Price check ${audit.running ? `(checking ${audit.done}/${audit.total}…)` : `(${audit.total} products)`}</h2><p>🟠 high profit (over 45%, could come down) <b>${cnt("🟠")}</b> · ✅ fair <b>${cnt("✅")}</b> · 🔴 loses money with a 10% code <b>${cnt("🔴")}</b></p>${fiveHtml}<p style="color:#666">Cost includes 20% VAT and free delivery. "Keep" is after Stripe's fee, at today's price (BF = Black Friday price).</p><table border=1 cellpadding=5 style="border-collapse:collapse;width:100%"><tr style="background:#f3f3f3"><th></th><th>Product</th><th>Sells</th><th>Cost</th><th>You keep</th><th>With 10% code</th></tr>${tr}</table></body>`);
 });
 
 // Open /api/prodigi-quote?sku=calendar-a4&country=GB (several: sku=a,b,c)

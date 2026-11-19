@@ -488,8 +488,10 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
 
 // Christmas 2026: every order gets its own one-use £5 ($5) code for their NEXT order
 // (min spend 25, valid to 31 Jan 2027). Same code every time for the same order, never made twice.
+const NEXT_ORDER_GIFT_OFF = true;
 async function nextOrderGiftCode(sessionId: string, currency: string, sku: string, amountPaid: number): Promise<string | null> {
   try {
+    if (NEXT_ORDER_GIFT_OFF) return null; // switched off 19 Nov 2026: £5 off now with code FREE5 instead
     if (amountPaid <= 0 || /^giftcard/.test(sku)) return null;
     if (Date.now() >= Date.parse("2026-12-25T00:00:00Z")) return null;
     const cur = (currency || "gbp").toLowerCase() === "usd" ? "usd" : "gbp";
