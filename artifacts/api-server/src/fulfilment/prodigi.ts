@@ -927,6 +927,19 @@ async function submitToProdigi(
     }
   }
 
+  // ── Black Friday freebie (UK, orders £20+, until 30 Nov 2026): a Christmas
+  // letter from Jemzi (60p 6x4 card) + a sticker of their photo (96p).
+  if (order.shippingAddress.country === "GB" && order.amountPaid >= 2000 && Date.now() < Date.parse("2026-12-01T00:00:00Z")) {
+    try {
+      if (!(product.bundle ?? []).includes("jemzi-letter")) {
+        items.push({ sku: SLIP_SKU, copies: 1, sizing: "fillPrintArea", assets: [{ printArea: "default", url: "https://onjjem.com/jemzi-letter-postcard.jpg" }] });
+      }
+      items.push({ sku: FREE_STICKER_SKU, copies: 1, sizing: "fillPrintArea", assets: [{ printArea: "default", url: imageUrl }] });
+    } catch (err) {
+      logger.warn({ err }, "black friday freebie skipped");
+    }
+  }
+
   // ── Free keepsake slip (UK only) ─────────────────────────────────────────
   if (FREEBIE !== "off" && order.shippingAddress.country === "GB") {
     try {
