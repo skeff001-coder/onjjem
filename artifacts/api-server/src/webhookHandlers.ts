@@ -7,6 +7,7 @@ import { cleanGiftNote, type GiftNote } from "./giftVerses";
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import Stripe from "stripe";
+import crypto from "node:crypto";
 
 // ── Photo store ───────────────────────────────────────────────────────────────
 
@@ -442,6 +443,8 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
   if (cartoonSet.has(0) && photoBase64) cartoonFiles.push(photoBase64);
   extraItems.forEach((it, k) => { if (cartoonSet.has(extraIndex[k])) cartoonFiles.push(it.photoBase64); });
 
+  const giftCode = await nextOrderGiftCode(sessionId, currency, sku, amountPaid);
+
   await Promise.allSettled([
     sendOrderConfirmation({
       customerName,
@@ -452,6 +455,7 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
       shippingAddress,
       stripeSessionId: sessionId,
       bonusCard,
+      giftCode,
     }),
     sendAdminNotification({
       customerName,
@@ -480,6 +484,29 @@ async function handleCheckoutCompleted(sessionId: string): Promise<void> {
         ]
       : []),
   ]);
+}
+
+// Christmas 2026: every order gets its own one-use £5 ($5) code for their NEXT order
+// (min spend 25, valid to 31 Jan 2027). Same code every time for the same order, never made twice.
+async function nextOrderGiftCode(sessionId: string, currency: string, sku: string, amountPaid: number): Promise<string | null> {
+  try {
+    if (amountPaid <= 0 || /^giftcard/.test(sku)) return null;
+    if (Date.now() >= Date.parse("2026-12-25T00:00:00Z")) return null;
+    const cur = (currency || "gbp").toLowerCase() === "usd" ? "usd" : "gbp";
+    const code = "GIFT5" + crypto.createHash("sha256").update("gift5:" + sessionId).digest("hex").slice(0, 6).toUpperCase();
+    const stripe = await getUncachableStripeClient();
+    const found = await stripe.promotionCodes.list({ code, limit: 1 });
+    if (found.data[0]) return code;
+    const expires = Math.floor(Date.parse("2027-01-31T23:59:59Z") / 1000);
+    const coupon = await stripe.coupons.create({ amount_off: 500, currency: cur, duration: "once", max_redemptions: 1, redeem_by: expires, name: cur === "usd" ? "$5 gift card (next order)" : "£5 gift card (next order)" });
+    const restrictions = { minimum_amount: 2500, minimum_amount_currency: cur };
+    try { await stripe.promotionCodes.create({ coupon: coupon.id, code, max_redemptions: 1, expires_at: expires, restrictions } as any); }
+    catch { await stripe.promotionCodes.create({ promotion: { type: "coupon", coupon: coupon.id }, code, max_redemptions: 1, expires_at: expires, restrictions } as any); }
+    return code;
+  } catch (err) {
+    logger.warn({ err, sessionId }, "next-order gift code not created");
+    return null;
+  }
 }
 
 async function getBolOrderId(stripeSessionId: string): Promise<string | null> {

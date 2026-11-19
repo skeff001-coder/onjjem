@@ -120,6 +120,7 @@ export interface OrderConfirmationData {
   };
   stripeSessionId: string;
   bonusCard?: boolean;
+  giftCode?: string | null;
 }
 
 export async function sendOrderConfirmation(data: OrderConfirmationData): Promise<void> {
@@ -180,6 +181,17 @@ export async function sendOrderConfirmation(data: OrderConfirmationData): Promis
           </table>
         </td></tr>
       </table>
+
+      ${data.giftCode ? `<!-- Free gift card -->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+        style="background:linear-gradient(135deg,#7a0016,#c8102e);border:2px solid ${GOLD};border-radius:12px;margin-bottom:28px">
+        <tr><td style="padding:22px 24px;text-align:center">
+          <p style="font-size:13px;letter-spacing:.14em;color:#ffd66b;text-transform:uppercase;margin:0 0 8px">🎁 Your free gift card</p>
+          <p style="font-size:22px;color:#fff;font-weight:800;margin:0 0 12px">${isUSD ? "$5" : "£5"} off your next order</p>
+          <p style="display:inline-block;font-size:24px;letter-spacing:.12em;font-weight:800;color:#1a1a1a;background:#ffd66b;padding:10px 20px;border-radius:8px;margin:0 0 12px">${data.giftCode}</p>
+          <p style="font-size:13px;color:#fff;margin:0;line-height:1.6">Enter this code at checkout on ${isUSD ? "onjjem.com/us" : "onjjem.com"} from 1 December until 31 January 2027.<br>One use, on an order of ${isUSD ? "$25" : "£25"} or more. Perfect for another Christmas present!</p>
+        </td></tr>
+      </table>` : ""}
 
       <!-- Delivery address -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
