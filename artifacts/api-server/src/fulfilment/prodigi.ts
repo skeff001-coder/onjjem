@@ -932,7 +932,7 @@ async function submitToProdigi(
   if (order.shippingAddress.country === "GB" && order.amountPaid >= 2000 && Date.now() < Date.parse("2026-12-01T00:00:00Z")) {
     try {
       if (!(product.bundle ?? []).includes("jemzi-letter")) {
-        items.push({ sku: SLIP_SKU, copies: 1, sizing: "fillPrintArea", assets: [{ printArea: "default", url: "https://onjjem.com/jemzi-letter-postcard.jpg" }] });
+        items.push({ sku: SLIP_SKU, copies: 1, sizing: "fillPrintArea", assets: [{ printArea: "default", url: "https://onjjem.com/jemzi-letter-free.jpg" }] });
       }
       items.push({ sku: FREE_STICKER_SKU, copies: 1, sizing: "fillPrintArea", assets: [{ printArea: "default", url: imageUrl }] });
     } catch (err) {
