@@ -105,6 +105,16 @@ const WORLD_IMAGES = {
   volcano: require('../assets/worlds/volcano.jpg'),
   candy: require('../assets/worlds/candy.jpg'),
 };
+const WORLD_SILHOUETTES = {
+  forest: require('../assets/worlds/silhouette_forest.png'),
+  space: require('../assets/worlds/silhouette_space.png'),
+  ocean: require('../assets/worlds/silhouette_ocean.png'),
+  city: require('../assets/worlds/silhouette_city.png'),
+  desert: require('../assets/worlds/silhouette_desert.png'),
+  arctic: require('../assets/worlds/silhouette_arctic.png'),
+  volcano: require('../assets/worlds/silhouette_volcano.png'),
+  candy: require('../assets/worlds/silhouette_candy.png'),
+};
 
 export default function GameScreen({ route, navigation }) {
   const { character, theme, gameName, initialShields, initialRockets, continueTokens, onGameEnd, design } =
@@ -116,6 +126,7 @@ export default function GameScreen({ route, navigation }) {
   const enemyLabel = ENEMY_LABEL[design?.enemy] || 'ASTEROIDS';
   const goalEmoji = GOAL_EMOJI[design?.goal] || '⭐';
   const worldImage = WORLD_IMAGES[design?.world] || WORLD_IMAGES.space;
+  const worldSilhouette = WORLD_SILHOUETTES[design?.world] || WORLD_SILHOUETTES.space;
 
   // ── Background stars (fixed random positions) ──
   const bgStars = useMemo(() => {
@@ -724,6 +735,12 @@ export default function GameScreen({ route, navigation }) {
         <View style={styles.bgStripContainer}>
           <Image source={worldImage} style={[styles.bgStrip, { left: -bgScrollX }]} resizeMode="cover" />
           <Image source={worldImage} style={[styles.bgStrip, { left: W - bgScrollX }]} resizeMode="cover" />
+          {/* Silhouette overlay — natural skyline edge instead of hard line */}
+          <Image
+            source={worldSilhouette}
+            style={styles.bgSilhouette}
+            resizeMode="stretch"
+          />
         </View>
         {/* Stars and planets scattered in the dark sky */}
         {bgStars.map((s) => (
@@ -1130,6 +1147,7 @@ const styles = StyleSheet.create({
   gameArea: { flex: 1, position: 'relative', overflow: 'hidden', backgroundColor: '#0a0a1a' },
   bgStripContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: '25%', overflow: 'hidden' },
   bgStrip: { position: 'absolute', top: 0, width: W, height: '100%' },
+  bgSilhouette: { position: 'absolute', top: 0, left: 0, width: W, height: '100%', zIndex: 2 },
   player: {
     position: 'absolute',
     width: PLAYER_W,
