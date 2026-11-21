@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   PanResponder,
+  ImageBackground,
 } from 'react-native';
 
 const { width: W, height: H } = Dimensions.get('window');
@@ -85,15 +86,15 @@ const GOAL_EMOJI = {
   coins: '🪙', stars: '⭐', gems: '💎', hearts: '❤️',
   candy: '🍭', trophies: '🏆',
 };
-const WORLD_TINT = {
-  forest: 'rgba(34, 80, 34, 0.25)',
-  space: 'rgba(10, 10, 40, 0.3)',
-  ocean: 'rgba(0, 40, 80, 0.25)',
-  city: 'rgba(50, 50, 60, 0.2)',
-  desert: 'rgba(80, 60, 20, 0.2)',
-  arctic: 'rgba(40, 60, 80, 0.2)',
-  volcano: 'rgba(80, 20, 10, 0.25)',
-  candy: 'rgba(80, 30, 60, 0.2)',
+const WORLD_IMAGES = {
+  forest: require('../assets/worlds/forest.png'),
+  space: require('../assets/worlds/space.png'),
+  ocean: require('../assets/worlds/ocean.png'),
+  city: require('../assets/worlds/city.png'),
+  desert: require('../assets/worlds/desert.png'),
+  arctic: require('../assets/worlds/arctic.png'),
+  volcano: require('../assets/worlds/volcano.png'),
+  candy: require('../assets/worlds/candy.png'),
 };
 
 export default function GameScreen({ route, navigation }) {
@@ -105,7 +106,7 @@ export default function GameScreen({ route, navigation }) {
   const enemyEmoji = ENEMY_EMOJI[design?.enemy] || '☄️';
   const enemyLabel = ENEMY_LABEL[design?.enemy] || 'ASTEROIDS';
   const goalEmoji = GOAL_EMOJI[design?.goal] || '⭐';
-  const worldBg = WORLD_TINT[design?.world] || WORLD_TINT.space;
+  const worldImage = WORLD_IMAGES[design?.world] || WORLD_IMAGES.space;
 
   // ── Render state ──
   const [playerY, setPlayerY] = useState(GAME_H / 2 - PLAYER_H / 2);
@@ -587,7 +588,7 @@ export default function GameScreen({ route, navigation }) {
       </View>
 
       {/* ── Game area ── */}
-      <View style={[styles.gameArea, { backgroundColor: worldBg }]} {...panResponder.panHandlers}>
+      <ImageBackground source={worldImage} style={styles.gameArea} resizeMode="cover" {...panResponder.panHandlers}>
         {/* Player */}
         <View
           style={[
@@ -727,7 +728,7 @@ export default function GameScreen({ route, navigation }) {
             <Text style={styles.tapText}>LAUNCHING...</Text>
           </View>
         )}
-      </View>
+      </ImageBackground>
 
       {/* ── Continue countdown ── */}
       {showContinue && (
