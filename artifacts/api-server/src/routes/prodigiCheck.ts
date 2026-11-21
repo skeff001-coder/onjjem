@@ -9,7 +9,7 @@
 // Nothing is ordered or charged. Add &json=1 for raw results, &fresh=1 to rerun.
 import { Router, type IRouter } from "express";
 import { PRODIGI_PRODUCTS, areasFor, SLIP_SKU, FREE_STICKER_SKU } from "../fulfilment/prodigi";
-import { US_PRODIGI_PRODUCTS } from "../usShop";
+import { US_PRODIGI_PRODUCTS, US_SKU_PRICES, NO_BUNDLE_DISCOUNT } from "../usShop";
 import { getUncachableStripeClient } from "../stripeClient";
 import { SHOP_SKU_PRICES } from "../shopPrices";
 
@@ -339,4 +339,60 @@ router.get("/prodigi-quote", async (req, res) => {
     await new Promise((res2) => setTimeout(res2, 1100));
   }
   res.type("text/plain; charset=utf-8").send(out.join("\n\n"));
+});
+
+
+// ── US price audit: live Prodigi cost (to a US address, in USD) for every US product ──
+// Open /api/us-price-audit?key=… ; the page refreshes itself until done. &start=1 reruns.
+const usAudit: { running: boolean; done: number; total: number; rows: AuditRow[]; at: number } = { running: false, done: 0, total: 0, rows: [], at: 0 };
+async function runUsAudit(apiKey: string) {
+  const list = Object.keys(US_SKU_PRICES).filter((k) => US_PRODIGI_PRODUCTS[k]);
+  usAudit.running = true; usAudit.done = 0; usAudit.total = list.length; usAudit.rows = []; usAudit.at = Date.now();
+  const cache = new Map<string, number | string>();
+  for (const k of list) {
+    const p = US_PRODIGI_PRODUCTS[k];
+    // Colour never changes the price; size can. One quote per product + size.
+    const sig = JSON.stringify([p.sku, p.shipping ?? "Standard", p.attributes?.size ?? null]);
+    let got = cache.get(sig);
+    if (got === undefined) {
+      const body = { shippingMethod: p.shipping || "Standard", destinationCountryCode: "US", currencyCode: "USD",
+        items: [{ sku: p.sku, copies: 1, ...(p.attributes ? { attributes: p.attributes } : {}), assets: areasFor(p).map((a) => ({ printArea: a })) }] };
+      try {
+        const r = await fetch(`${baseUrl()}/v4.0/quotes`, { method: "POST", headers: { "X-API-Key": apiKey, "Content-Type": "application/json" }, body: JSON.stringify(body), signal: AbortSignal.timeout(20_000) });
+        const j: any = await r.json().catch(() => ({}));
+        const q = j.quotes?.[0];
+        got = r.ok && q ? Number(q.costSummary?.items?.amount ?? 0) + Number(q.costSummary?.shipping?.amount ?? 0) : `HTTP ${r.status} ${String(j?.statusText ?? j?.outcome ?? "").slice(0, 40)}`;
+      } catch (e) { got = String(e).slice(0, 60); }
+      cache.set(sig, got);
+      await new Promise((ok) => setTimeout(ok, 1100));
+    }
+    usAudit.rows.push({ sku: k, name: US_SKU_PRICES[k].name, price: US_SKU_PRICES[k].priceCents / 100, cost: typeof got === "number" ? got : null, err: typeof got === "string" ? got : undefined });
+    usAudit.done++;
+  }
+  usAudit.running = false;
+}
+router.get("/us-price-audit", async (req, res) => {
+  if (!okKey(req.query.key)) { res.status(403).send("Wrong key"); return; }
+  const apiKey = process.env.PRODIGI_API_KEY;
+  if (!apiKey) { res.status(500).send("No Prodigi key set"); return; }
+  if (!usAudit.running && (req.query.start === "1" || usAudit.total === 0)) runUsAudit(apiKey).catch(() => { usAudit.running = false; });
+  // US card on a UK Stripe account: ~3.25% international + 2% currency + 20p (~$0.25).
+  const keep = (sell: number, cost: number) => sell - cost - (sell * 0.0525 + 0.25);
+  // Collapse colour variants: one row per product name without the colour.
+  const seen = new Set<string>();
+  const rows = usAudit.rows.filter((r) => { const key = r.name.replace(/,\s*[^,()]*\)$/, ")") + "|" + r.price + "|" + r.cost; if (seen.has(key)) return false; seen.add(key); return true; }).map((r) => {
+    if (r.cost == null) return { ...r, k: NaN, kd: NaN, pct: NaN, flag: "⚪" };
+    const k = keep(r.price, r.cost), kd = NO_BUNDLE_DISCOUNT(r.sku) ? k : keep(r.price * 0.88, r.cost), pct = k / r.price * 100;
+    const flag = k < 2 || kd < 0 ? "🔴" : pct > 55 ? "🟠" : "✅";
+    return { ...r, k, kd, pct, flag };
+  }).sort((a, b) => (isNaN(a.pct) ? 1 : isNaN(b.pct) ? -1 : a.pct - b.pct));
+  const m = (n: number) => isNaN(n) ? "–" : (n < 0 ? "−$" : "$") + Math.abs(n).toFixed(2);
+  const esc = (v: string) => v.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
+  const cnt = (f: string) => rows.filter((r) => r.flag === f).length;
+  const head = usAudit.running ? `<meta http-equiv="refresh" content="5"><p>⏳ Checking live costs… ${usAudit.done}/${usAudit.total}</p>` : `<p>✅ Done (${new Date(usAudit.at).toUTCString()})</p>`;
+  res.type("html").send(`<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>US price audit</title><body style="font-family:system-ui;padding:12px;font-size:14px">
+<h2 style="margin:0 0 6px">🇺🇸 US price audit</h2>${head}
+<p>🔴 ${cnt("🔴")} too cheap (keeps under $2, or a loss with the 12% bundle) · 🟠 ${cnt("🟠")} high margin (over 55%, may look pricey) · ✅ ${cnt("✅")} fine · ⚪ ${cnt("⚪")} no quote</p>
+<table style="border-collapse:collapse;width:100%">${rows.map((r) => `<tr style="border-bottom:1px solid #ddd"><td>${r.flag}</td><td>${esc(r.name)}${r.err ? `<br><small style="color:#c00">${esc(r.err)}</small>` : ""}</td><td>$${r.price.toFixed(2)}</td><td>cost ${m(r.cost ?? NaN)}</td><td><b>keep ${m(r.k)}</b><br><small>${isNaN(r.pct) ? "" : r.pct.toFixed(0) + "%"}</small></td></tr>`).join("")}</table>
+<p style="color:#666">Cost = Prodigi item + Standard US shipping, live quote. Keep = price − cost − card fees (~5.25% + $0.25).</p></body>`);
 });
