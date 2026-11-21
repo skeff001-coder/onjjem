@@ -45,12 +45,12 @@ const PICKUP_SIZE = 32;
 const PICKUP_SPAWN_MIN_MS = 8000;   // earliest next pickup
 const PICKUP_SPAWN_MAX_MS = 15000;  // latest next pickup
 const NUKE_INTERVAL_MS = 30000;     // nuke appears every 30 seconds
-const NUKE_SIZE = 40;
+const NUKE_SIZE = 64;
 const SLOWMO_DURATION_MS = 5000;    // slow-motion lasts 5 seconds
 const SLOWMO_FACTOR = 0.3;          // enemies move at 30% speed
 const SLOWMO_SPAWN_MIN_MS = 20000;  // earliest slow-mo pickup
 const SLOWMO_SPAWN_MAX_MS = 35000;  // latest slow-mo pickup
-const SLOWMO_SIZE = 36;
+const SLOWMO_SIZE = 60;
 const ROCKET_SPEED = 12;
 const ROCKET_W = 20;
 const ROCKET_H = 8;
@@ -817,7 +817,7 @@ export default function GameScreen({ route, navigation }) {
           </View>
         ))}
 
-        {/* Nuke pickups */}
+        {/* Nuke pickups — big fiery orb with NUKE label */}
         {nukePickups.map((n) => (
           <View
             key={n.id}
@@ -828,15 +828,21 @@ export default function GameScreen({ route, navigation }) {
               width: NUKE_SIZE,
               height: NUKE_SIZE,
               borderRadius: NUKE_SIZE / 2,
-              backgroundColor: 'rgba(255, 215, 0, 0.3)',
-              borderWidth: 2,
-              borderColor: COLORS.nukePickup,
+              backgroundColor: 'rgba(255, 80, 0, 0.5)',
+              borderWidth: 3,
+              borderColor: '#FF4500',
               justifyContent: 'center',
               alignItems: 'center',
               zIndex: 16,
+              shadowColor: '#FF4500',
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.9,
+              shadowRadius: 12,
+              elevation: 10,
             }}
           >
-            <Text style={{ fontSize: 22 }}>💣</Text>
+            <Text style={{ fontSize: 28 }}>💥</Text>
+            <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFF', letterSpacing: 2, marginTop: -2 }}>NUKE</Text>
           </View>
         ))}
 
@@ -852,7 +858,7 @@ export default function GameScreen({ route, navigation }) {
           />
         )}
 
-        {/* Slow-mo pickups */}
+        {/* Slow-mo pickups — big clock face */}
         {slowMoPickups.map((sm) => (
           <View
             key={sm.id}
@@ -863,15 +869,21 @@ export default function GameScreen({ route, navigation }) {
               width: SLOWMO_SIZE,
               height: SLOWMO_SIZE,
               borderRadius: SLOWMO_SIZE / 2,
-              backgroundColor: 'rgba(0, 191, 255, 0.3)',
-              borderWidth: 2,
+              backgroundColor: 'rgba(0, 150, 255, 0.4)',
+              borderWidth: 3,
               borderColor: '#00BFFF',
               justifyContent: 'center',
               alignItems: 'center',
               zIndex: 16,
+              shadowColor: '#00BFFF',
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.8,
+              shadowRadius: 10,
+              elevation: 10,
             }}
           >
-            <Text style={{ fontSize: 20 }}>🕐</Text>
+            <Text style={{ fontSize: 30 }}>⏱️</Text>
+            <Text style={{ fontSize: 9, fontWeight: '900', color: '#FFF', letterSpacing: 1, marginTop: -2 }}>SLOW</Text>
           </View>
         ))}
 

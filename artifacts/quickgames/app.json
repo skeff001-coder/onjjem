@@ -24,7 +24,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.onjjem.quickgames",
-      "buildNumber": "18",
+      "buildNumber": "19",
       "supportsTablet": false,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
