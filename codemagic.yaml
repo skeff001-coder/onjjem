@@ -154,3 +154,52 @@ workflows:
       app_store_connect:
         auth: integration
         submit_to_testflight: true
+
+
+# ============================================================
+# Quick Games — iOS TestFlight
+# ============================================================
+  quickgames-ios-release:
+    name: Quick Games - iOS TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+
+    integrations:
+      app_store_connect: "ONJJEM Codemagic"
+
+    environment:
+      node: v20
+      xcode: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.onjjem.quickgames
+
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install -g pnpm --force
+          cd artifacts/quickgames
+          pnpm install --no-frozen-lockfile --ignore-workspace
+
+      - name: Expo prebuild (generate native iOS project)
+        script: |
+          cd artifacts/quickgames
+          pnpm exec expo prebuild --platform ios --clean
+
+      - name: Build iOS IPA
+        script: |
+          cd artifacts/quickgames
+          xcode-project use-profiles
+          WORKSPACE=$(find ios -maxdepth 1 -name "*.xcworkspace" | head -1)
+          SCHEME=$(basename "$WORKSPACE" .xcworkspace)
+          echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
+          xcode-project build-ipa --workspace "$WORKSPACE" --scheme "$SCHEME"
+
+    artifacts:
+      - "artifacts/quickgames/build/ios/ipa/*.ipa"
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false

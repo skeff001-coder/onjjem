@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Quick Games",
+    "slug": "quickgames3",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0F1419",
+    "ios": {
+      "bundleIdentifier": "com.onjjem.quickgames",
+      "buildNumber": "1",
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}
