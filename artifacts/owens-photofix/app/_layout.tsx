@@ -6,7 +6,7 @@ import {
   Cinzel_400Regular,
   Cinzel_700Bold,
 } from "@expo-google-fonts/cinzel";
-import { PlayfairDisplay_900Black } from "@expo-google-fonts/playfair-display";
+import { PlayfairDisplay_900Black, PlayfairDisplay_700Bold, PlayfairDisplay_400Regular_Italic } from "@expo-google-fonts/playfair-display";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -306,6 +306,8 @@ export default function RootLayout() {
     Cinzel_400Regular,
     Cinzel_700Bold,
     PlayfairDisplay_900Black,
+    PlayfairDisplay_700Bold,
+    PlayfairDisplay_400Regular_Italic,
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,

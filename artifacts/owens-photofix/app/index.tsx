@@ -29,7 +29,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 
-import { ArtisanSubtitle } from "@/components/ArtisanSubtitle";
+import { BrandHeader } from "@/components/BrandHeader";
 import { IS_US, SITE, SHOP_TILES, MUG_URL, DEALS_URL, DELIVERY_URL } from "@/lib/region";
 
 const { width: SCREEN_W } = Dimensions.get("window");
@@ -81,46 +81,13 @@ showsVerticalScrollIndicator={false}
 
 >
 
-<View style={s.hero}>
+<TouchableOpacity style={s.offerBar} onPress={() => openUrl(DEALS_URL)} activeOpacity={0.85}>
+<Text style={s.offerBarText}><Text style={s.offerBarStrong}>{banner.title}</Text> · {banner.text}</Text>
+</TouchableOpacity>
 
-<View style={s.goldLine} />
+<BrandHeader />
 
-<View style={s.brandWrap}>
-
-<Text style={s.brandShadow} numberOfLines={1} adjustsFontSizeToFit>ONJJEM</Text>
-
-<Text style={s.brandMid} numberOfLines={1} adjustsFontSizeToFit>ONJJEM</Text>
-
-<Text style={s.brandTop} numberOfLines={1} adjustsFontSizeToFit>ONJJEM</Text>
-
-</View>
-
-<ArtisanSubtitle fontSize={15} letterSpacing={2} />
-
-<Text style={s.tagline}>A UK family business</Text>
-
-<View style={s.goldLine} />
-
-</View>
-
-<View style={s.simpleSteps}>
-
-<View style={s.simpleStep}>
-<Text style={s.simpleStepNum}>1</Text>
-<Text style={s.simpleStepLabel}>Visit Shop</Text>
-</View>
-
-<View style={s.simpleStep}>
-<Text style={s.simpleStepNum}>2</Text>
-<Text style={s.simpleStepLabel}>Upload Pic</Text>
-</View>
-
-<View style={s.simpleStep}>
-<Text style={s.simpleStepNum}>3</Text>
-<Text style={s.simpleStepLabel}>We Create</Text>
-</View>
-
-</View>
+<View style={{ height: 18 }} />
 
 <TouchableOpacity
   style={s.primaryCta}
@@ -198,14 +165,6 @@ activeOpacity={0.88}
 ))}
 
 </View>
-
-<TouchableOpacity style={s.xmasBanner} onPress={() => openUrl(DEALS_URL)} activeOpacity={0.85}>
-<Text style={s.xmasTitle}>{banner.title}</Text>
-<View style={s.xmasRow}>
-<Ionicons name={banner.icon as any} size={16} color="#F5D78E" />
-<Text style={s.xmasItem}>{banner.text}</Text>
-</View>
-</TouchableOpacity>
 
 {!IS_US && (
 <View style={s.mugFeature}>
@@ -359,7 +318,7 @@ const GOLD = "#C9960C";
 
 const GOLD_LIGHT = "#F5D060";
 
-const DARK = "#0A0804";
+const DARK = "#1f1f1f";
 
 const s = StyleSheet.create({
 
@@ -414,7 +373,13 @@ simpleStepNum: {
 simpleStepLabel: { fontSize: 11.5, fontWeight: "700", color: "#F3E9D6", textAlign: "center" },
 
 
-primaryCta: { backgroundColor: "#C9960C", borderRadius: 999, paddingVertical: 15, alignItems: "center", marginBottom: 18 },
+offerBar: { backgroundColor: "#0d0d0d", borderBottomWidth: 2, borderBottomColor: "#d4af37", borderRadius: 12, paddingVertical: 10, paddingHorizontal: 12, marginBottom: 14 },
+
+offerBarText: { color: "#fff", fontSize: 13, fontFamily: "Inter_600SemiBold", textAlign: "center", lineHeight: 18 },
+
+offerBarStrong: { color: "#f3d078", fontFamily: "Inter_700Bold" },
+
+primaryCta: { backgroundColor: "#d4af37", borderRadius: 999, paddingVertical: 15, alignItems: "center", marginBottom: 18 },
 
 primaryCtaText: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#0A0804" },
 
