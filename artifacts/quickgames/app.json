@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
     "backgroundColor": "#0F1419",
     "extra": {
       "eas": {
@@ -23,7 +24,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.onjjem.quickgames",
-      "buildNumber": "5",
+      "buildNumber": "6",
       "supportsTablet": false,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
