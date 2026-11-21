@@ -598,19 +598,11 @@ export default function GameScreen({ route, navigation }) {
             {
               top: playerY,
               left: PLAYER_X,
-              backgroundColor: invincible
+              opacity: invincible
                 ? Math.floor(Date.now() / 100) % 2 === 0
-                  ? COLORS.player
-                  : 'transparent'
-                : COLORS.player,
-              borderColor: shieldFlash
-                ? COLORS.shieldGlow
-                : shields > 0
-                ? COLORS.shieldGlow
-                : invincible
-                ? COLORS.playerHit
-                : COLORS.player,
-              borderWidth: shields > 0 || shieldFlash ? 3 : 2,
+                  ? 1
+                  : 0.3
+                : 1,
             },
           ]}
         >
@@ -909,12 +901,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: PLAYER_W,
     height: PLAYER_H,
-    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 20,
   },
-  playerEmoji: { fontSize: 24 },
+  playerEmoji: { fontSize: 32 },
   shieldRing: {
     position: 'absolute',
     width: PLAYER_W + 12,
