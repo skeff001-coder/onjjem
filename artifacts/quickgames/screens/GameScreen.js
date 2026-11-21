@@ -87,14 +87,14 @@ const GOAL_EMOJI = {
   candy: '🍭', trophies: '🏆',
 };
 const WORLD_IMAGES = {
-  forest: require('../assets/worlds/forest.png'),
-  space: require('../assets/worlds/space.png'),
-  ocean: require('../assets/worlds/ocean.png'),
-  city: require('../assets/worlds/city.png'),
-  desert: require('../assets/worlds/desert.png'),
+  forest: require('../assets/worlds/forest.jpg'),
+  space: require('../assets/worlds/space.jpg'),
+  ocean: require('../assets/worlds/ocean.jpg'),
+  city: require('../assets/worlds/city.jpg'),
+  desert: require('../assets/worlds/desert.jpg'),
   arctic: require('../assets/worlds/arctic.png'),
-  volcano: require('../assets/worlds/volcano.png'),
-  candy: require('../assets/worlds/candy.png'),
+  volcano: require('../assets/worlds/volcano.jpg'),
+  candy: require('../assets/worlds/candy.jpg'),
 };
 
 export default function GameScreen({ route, navigation }) {
