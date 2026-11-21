@@ -1,489 +1,441 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableWithoutFeedback,
   Dimensions,
   SafeAreaView,
   TouchableOpacity,
-  Animated,
+  PanResponder,
 } from 'react-native';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const PLAYER_SIZE = 40;
-const PLAYER_LEFT = 60;
-const OBSTACLE_WIDTH = 80;
-const OBSTACLE_GAP = 190;
-const GRAVITY = 0.5;
-const JUMP_STRENGTH = -9;
-const BASE_SPEED = 4;
-const PIPE_SPACING = 270;
-const HIT_INSET = 6;
-const CAP_HEIGHT = 26;
+const { width: W, height: H } = Dimensions.get('window');
 
-const CHARACTER_EMOJIS = {
-  bird: '🐦',
-  cube: '🟦',
-  rocket: '🚀',
-  ball: '⚽',
-  cat: '🐱',
+// ── Layout ──
+const TOP_BAR = 100;          // score / lives bar
+const GAME_TOP = TOP_BAR;
+const GAME_H = H - TOP_BAR - 40;  // playable height
+const PLAYER_W = 44;
+const PLAYER_H = 44;
+const PLAYER_X = 60;         // fixed horizontal position
+
+// ── Difficulty curve ──
+const BASE_SPEED = 3;                  // px per frame at start
+const SPEED_INCREASE_INTERVAL = 5000;  // ms between speed bumps
+const SPEED_INCREASE_FACTOR = 1.06;    // ~6% faster each bump
+const MAX_SPEED_MULTIPLIER = 3;        // cap near 3×
+
+// ── Obstacles ──
+const MIN_OBS_W = 40;
+const MAX_OBS_W = 90;
+const MIN_OBS_H = 50;
+const MAX_OBS_H = 160;
+const MIN_GAP_MS = 700;    // tightest spawn interval at difficulty cap
+const INITIAL_GAP_MS = 1800; // spawn interval at the start
+
+// ── Game rules ──
+const TOTAL_LIVES = 3;
+const INVINCIBILITY_MS = 2000; // 2s after each hit
+const MOVING_OBS_EVERY = 3;   // every 3rd obstacle moves
+
+// ── Placeholder colours ──
+const COLORS = {
+  bg: '#0F1419',
+  player: '#00D9FF',
+  playerHit: '#FF4444',
+  obstacle: '#FF6B35',
+  obstacleDark: '#CC5522',
+  movingObstacle: '#FFD700',
+  movingWarning: '#FF0000',
+  lives: '#FF6B35',
+  livesLost: '#333333',
+  score: '#FFFFFF',
+  text: '#FFFFFF',
+  dimText: '#888888',
 };
-
-const THEMES = {
-  sky: {
-    bg: '#4AA3FF',
-    horizon: '#8FCBFF',
-    pipe: '#2ECC71',
-    edge: '#16A05A',
-    glow: '#FFFFFF',
-    glowOpacity: 0.25,
-    shadow: '#0B6B3A',
-    shadowOpacity: 0.35,
-    trail: '#FFFFFF',
-    deco: 'cloud',
-  },
-  space: {
-    bg: '#0B0030',
-    horizon: '#1A0A55',
-    pipe: '#7B4DFF',
-    edge: '#C3A8FF',
-    glow: '#B69CFF',
-    glowOpacity: 0.3,
-    shadow: '#9B7DFF',
-    shadowOpacity: 0.9,
-    trail: '#C3A8FF',
-    deco: 'star',
-  },
-  neon: {
-    bg: '#12002B',
-    horizon: '#2B0057',
-    pipe: '#00D9FF',
-    edge: '#FF2BD6',
-    glow: '#FF2BD6',
-    glowOpacity: 0.35,
-    shadow: '#FF2BD6',
-    shadowOpacity: 1,
-    trail: '#00F0FF',
-    deco: 'pixel',
-  },
-};
-
-const rand = (a, b) => a + Math.random() * (b - a);
-
-function makeDeco(areaH) {
-  const items = [];
-  for (let i = 0; i < 16; i++) {
-    items.push({
-      id: i,
-      x: rand(0, SCREEN_WIDTH),
-      y: rand(0, areaH - 40),
-      size: rand(24, 64),
-      depth: rand(0.15, 0.7),
-      o: rand(0.25, 0.9),
-    });
-  }
-  return items;
-}
 
 export default function GameScreen({ route, navigation }) {
-  const { character, theme, gameName } = route.params;
-  const T = THEMES[theme] || THEMES.sky;
-
-  const areaHeightRef = useRef(SCREEN_HEIGHT - 200);
-  const gameRef = useRef({
-    t: 0,
-    playerY: 0,
-    velocity: 0,
-    obstacles: [],
-    trail: [],
-    deco: makeDeco(SCREEN_HEIGHT - 200),
-    score: 0,
-    best: 0,
-    started: false,
-    over: false,
-    nextId: 1,
-  });
-  const loopRef = useRef(null);
-  const flash = useRef(new Animated.Value(0)).current;
-  const shake = useRef(new Animated.Value(0)).current;
-
-  const [view, setView] = useState({
-    playerY: SCREEN_HEIGHT / 2,
-    velocity: 0,
-    obstacles: [],
-    trail: [],
-    deco: [],
-    score: 0,
-    best: 0,
-    started: false,
-    over: false,
-  });
-
-  const publish = () => {
-    const g = gameRef.current;
-    setView({
-      playerY: g.playerY,
-      velocity: g.velocity,
-      obstacles: g.obstacles.map((o) => ({ ...o })),
-      trail: g.trail.map((p) => ({ ...p })),
-      deco: g.deco.map((d) => ({ ...d })),
-      score: g.score,
-      best: g.best,
-      started: g.started,
-      over: g.over,
-    });
+  const { character, theme, gameName } = route?.params || {
+    character: 'rocket',
+    theme: 'space',
+    gameName: 'Test Game',
   };
 
-  const crashEffects = () => {
-    flash.setValue(0.55);
-    Animated.timing(flash, { toValue: 0, duration: 450, useNativeDriver: true }).start();
-    Animated.sequence([
-      Animated.timing(shake, { toValue: 12, duration: 50, useNativeDriver: true }),
-      Animated.timing(shake, { toValue: -12, duration: 50, useNativeDriver: true }),
-      Animated.timing(shake, { toValue: 8, duration: 50, useNativeDriver: true }),
-      Animated.timing(shake, { toValue: -8, duration: 50, useNativeDriver: true }),
-      Animated.timing(shake, { toValue: 0, duration: 50, useNativeDriver: true }),
-    ]).start();
-  };
+  // ── Render state (only these trigger re-renders) ──
+  const [playerY, setPlayerY] = useState(GAME_TOP + GAME_H / 2 - PLAYER_H / 2);
+  const [obstacles, setObstacles] = useState([]);
+  const [score, setScore] = useState(0);
+  const [lives, setLives] = useState(TOTAL_LIVES);
+  const [gameOver, setGameOver] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [invincible, setInvincible] = useState(false);
+  const [speedMultiplier, setSpeedMultiplier] = useState(1);
 
-  const endGame = () => {
-    const g = gameRef.current;
-    g.over = true;
-    g.best = Math.max(g.best, g.score);
-    if (loopRef.current) {
-      clearInterval(loopRef.current);
-      loopRef.current = null;
+  // ── Refs for the game loop (no re-render overhead) ──
+  const playerYRef = useRef(GAME_TOP + GAME_H / 2 - PLAYER_H / 2);
+  const targetYRef = useRef(GAME_TOP + GAME_H / 2 - PLAYER_H / 2);
+  const obstaclesRef = useRef([]);
+  const scoreRef = useRef(0);
+  const livesRef = useRef(TOTAL_LIVES);
+  const speedRef = useRef(1);
+  const gameActiveRef = useRef(false);
+  const invincibleRef = useRef(false);
+  const invincibleUntilRef = useRef(0);
+  const frameIdRef = useRef(null);
+  const lastObstacleTimeRef = useRef(0);
+  const obstacleCountRef = useRef(0);
+  const gameStartTimeRef = useRef(0);
+  const lastSpeedBumpRef = useRef(0);
+  const lastTimeRef = useRef(0);
+  const elapsedRef = useRef(0);
+
+  // ── Touch: player follows finger vertically ──
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: (evt) => {
+        if (!gameActiveRef.current && !gameOver) {
+          startGame();
+          return;
+        }
+        const touchY = evt.nativeEvent.pageY;
+        targetYRef.current = Math.max(
+          GAME_TOP,
+          Math.min(touchY - PLAYER_H / 2, GAME_TOP + GAME_H - PLAYER_H)
+        );
+      },
+      onPanResponderMove: (evt) => {
+        const touchY = evt.nativeEvent.pageY;
+        targetYRef.current = Math.max(
+          GAME_TOP,
+          Math.min(touchY - PLAYER_H / 2, GAME_TOP + GAME_H - PLAYER_H)
+        );
+      },
+    })
+  ).current;
+
+  // ── Start / restart ──
+  const startGame = useCallback(() => {
+    const now = performance.now();
+    playerYRef.current = GAME_TOP + GAME_H / 2 - PLAYER_H / 2;
+    targetYRef.current = GAME_TOP + GAME_H / 2 - PLAYER_H / 2;
+    obstaclesRef.current = [];
+    scoreRef.current = 0;
+    livesRef.current = TOTAL_LIVES;
+    speedRef.current = 1;
+    invincibleRef.current = false;
+    invincibleUntilRef.current = 0;
+    lastObstacleTimeRef.current = now;
+    obstacleCountRef.current = 0;
+    gameStartTimeRef.current = now;
+    lastSpeedBumpRef.current = now;
+    lastTimeRef.current = now;
+    elapsedRef.current = 0;
+    gameActiveRef.current = true;
+
+    setPlayerY(playerYRef.current);
+    setObstacles([]);
+    setScore(0);
+    setLives(TOTAL_LIVES);
+    setGameOver(false);
+    setGameStarted(true);
+    setInvincible(false);
+    setSpeedMultiplier(1);
+
+    frameIdRef.current = requestAnimationFrame(gameLoop);
+  }, []);
+
+  // ── Main game loop ──
+  const gameLoop = useCallback((timestamp) => {
+    if (!gameActiveRef.current) return;
+
+    const dt = Math.min(timestamp - lastTimeRef.current, 33); // cap at ~30fps worth of delta
+    lastTimeRef.current = timestamp;
+    elapsedRef.current += dt;
+    const elapsed = elapsedRef.current;
+
+    // ── Speed ramp: +6% every 5 seconds, capped at 3× ──
+    if (timestamp - lastSpeedBumpRef.current >= SPEED_INCREASE_INTERVAL) {
+      speedRef.current = Math.min(
+        speedRef.current * SPEED_INCREASE_FACTOR,
+        MAX_SPEED_MULTIPLIER
+      );
+      lastSpeedBumpRef.current = timestamp;
     }
-    crashEffects();
-    publish();
-  };
 
-  const tick = () => {
-    const g = gameRef.current;
-    if (g.over) return;
-    const areaH = areaHeightRef.current;
-    g.t += 1;
+    const speed = BASE_SPEED * speedRef.current;
 
-    const speed = BASE_SPEED + Math.min(g.score * 0.15, 2.5);
+    // ── Move player toward finger (smooth follow) ──
+    const diff = targetYRef.current - playerYRef.current;
+    playerYRef.current += diff * 0.18; // smooth lerp
 
-    g.deco.forEach((d) => {
-      d.x -= (g.started ? speed : 1) * d.depth;
-      if (d.x < -80) {
-        d.x = SCREEN_WIDTH + rand(0, 80);
-        d.y = rand(0, areaH - 40);
-      }
-    });
-
-    if (!g.started) {
-      g.playerY = areaH / 2 - PLAYER_SIZE / 2 + Math.sin(g.t / 12) * 10;
-      g.velocity = Math.sin(g.t / 12) * -1.5;
-      publish();
-      return;
+    // ── Invincibility timeout ──
+    if (invincibleRef.current && timestamp >= invincibleUntilRef.current) {
+      invincibleRef.current = false;
     }
 
-    g.velocity += GRAVITY;
-    g.playerY += g.velocity;
+    // ── Spawn obstacles ──
+    const elapsedS = elapsed / 1000;
+    // Spawn gap shrinks over time: starts at INITIAL_GAP_MS, floors at MIN_GAP_MS
+    const progress = Math.min(elapsedS / 60, 1); // 0→1 over 60 seconds
+    const spawnGap = INITIAL_GAP_MS - (INITIAL_GAP_MS - MIN_GAP_MS) * progress;
 
-    if (g.playerY < 0 || g.playerY + PLAYER_SIZE > areaH) {
-      g.playerY = Math.min(Math.max(g.playerY, 0), areaH - PLAYER_SIZE);
-      endGame();
-      return;
-    }
+    if (timestamp - lastObstacleTimeRef.current >= spawnGap) {
+      lastObstacleTimeRef.current = timestamp;
+      obstacleCountRef.current += 1;
+      const count = obstacleCountRef.current;
 
-    if (g.t % 2 === 0) {
-      g.trail.push({ id: g.t, x: PLAYER_LEFT + 4, y: g.playerY + PLAYER_SIZE / 2, life: 14 });
-    }
-    g.trail.forEach((p) => {
-      p.x -= speed;
-      p.life -= 1;
-    });
-    g.trail = g.trail.filter((p) => p.life > 0);
+      // Size ramp: obstacles get bigger over time
+      const sizeProgress = Math.min(elapsedS / 45, 1); // full size by 45s
+      const obsW = MIN_OBS_W + (MAX_OBS_W - MIN_OBS_W) * sizeProgress;
+      const obsH = MIN_OBS_H + (MAX_OBS_H - MIN_OBS_H) * sizeProgress * 0.7;
 
-    g.obstacles.forEach((o) => {
-      o.x -= speed;
-    });
+      // Position: random Y within playable area
+      const obsY =
+        GAME_TOP + Math.random() * (GAME_H - obsH);
 
-    const last = g.obstacles[g.obstacles.length - 1];
-    if (!last || last.x < SCREEN_WIDTH - PIPE_SPACING) {
-      const minTop = 80;
-      const maxTop = Math.max(minTop + 10, areaH - OBSTACLE_GAP - 80);
-      const topHeight = rand(minTop, maxTop);
-      g.obstacles.push({
-        id: g.nextId++,
-        x: SCREEN_WIDTH,
-        topHeight,
-        bottomY: topHeight + OBSTACLE_GAP,
+      // Every 3rd-4th obstacle moves
+      const isMoving = count % MOVING_OBS_EVERY === 0 && elapsedS > 15;
+      const moveAmplitude = isMoving ? 40 + sizeProgress * 40 : 0;
+      const moveSpeed = isMoving ? 0.002 + sizeProgress * 0.001 : 0;
+
+      obstaclesRef.current.push({
+        id: count,
+        x: W + 20,
+        y: obsY,
+        w: obsW,
+        h: obsH,
         scored: false,
+        isMoving,
+        moveAmplitude,
+        moveSpeed,
+        baseY: obsY,
+        spawnTime: timestamp,
+        // Warning flash: starts flashing 400ms before it enters screen
+        warningFlash: isMoving,
       });
     }
 
-    g.obstacles = g.obstacles.filter((o) => o.x > -OBSTACLE_WIDTH - 10);
+    // ── Update obstacles ──
+    const obs = obstaclesRef.current;
+    let newScore = scoreRef.current;
 
-    const pl = PLAYER_LEFT + HIT_INSET;
-    const pr = PLAYER_LEFT + PLAYER_SIZE - HIT_INSET;
-    const pt = g.playerY + HIT_INSET;
-    const pb = g.playerY + PLAYER_SIZE - HIT_INSET;
+    for (let i = obs.length - 1; i >= 0; i--) {
+      const o = obs[i];
 
-    for (const o of g.obstacles) {
-      if (pr > o.x && pl < o.x + OBSTACLE_WIDTH && (pt < o.topHeight || pb > o.bottomY)) {
-        endGame();
-        return;
+      // Move left
+      o.x -= speed;
+
+      // Moving obstacles oscillate vertically
+      if (o.isMoving) {
+        const t = timestamp - o.spawnTime;
+        o.y = o.baseY + Math.sin(t * o.moveSpeed) * o.moveAmplitude;
+        // Clamp to game area
+        o.y = Math.max(GAME_TOP, Math.min(o.y, GAME_TOP + GAME_H - o.h));
       }
-      if (o.x + OBSTACLE_WIDTH < PLAYER_LEFT && !o.scored) {
+
+      // Remove if off screen
+      if (o.x + o.w < -20) {
+        obs.splice(i, 1);
+        continue;
+      }
+
+      // Score: passed the player
+      if (!o.scored && o.x + o.w < PLAYER_X) {
         o.scored = true;
-        g.score += 1;
+        newScore += 1;
+      }
+
+      // Collision
+      if (!invincibleRef.current) {
+        const px = PLAYER_X;
+        const py = playerYRef.current;
+        if (
+          px + PLAYER_W > o.x &&
+          px < o.x + o.w &&
+          py + PLAYER_H > o.y &&
+          py < o.y + o.h
+        ) {
+          // Hit!
+          livesRef.current -= 1;
+          if (livesRef.current <= 0) {
+            // Game over
+            gameActiveRef.current = false;
+            scoreRef.current = newScore;
+            setScore(newScore);
+            setLives(0);
+            setPlayerY(playerYRef.current);
+            setObstacles([...obs]);
+            setGameOver(true);
+            setSpeedMultiplier(speedRef.current);
+            return; // stop the loop
+          }
+          // Still alive: grant invincibility
+          invincibleRef.current = true;
+          invincibleUntilRef.current = timestamp + INVINCIBILITY_MS;
+        }
       }
     }
 
-    publish();
-  };
+    scoreRef.current = newScore;
 
-  const resetGame = () => {
-    if (loopRef.current) clearInterval(loopRef.current);
-    const areaH = areaHeightRef.current;
-    const best = gameRef.current.best || 0;
-    gameRef.current = {
-      t: 0,
-      playerY: areaH / 2 - PLAYER_SIZE / 2,
-      velocity: 0,
-      obstacles: [],
-      trail: [],
-      deco: makeDeco(areaH),
-      score: 0,
-      best,
-      started: false,
-      over: false,
-      nextId: 1,
-    };
-    publish();
-    loopRef.current = setInterval(tick, 16);
-  };
+    // ── Push to React state for rendering ──
+    setPlayerY(playerYRef.current);
+    setObstacles([...obs]);
+    setScore(newScore);
+    setLives(livesRef.current);
+    setInvincible(invincibleRef.current);
+    setSpeedMultiplier(speedRef.current);
 
+    frameIdRef.current = requestAnimationFrame(gameLoop);
+  }, []);
+
+  // ── Cleanup ──
   useEffect(() => {
-    resetGame();
     return () => {
-      if (loopRef.current) clearInterval(loopRef.current);
+      gameActiveRef.current = false;
+      if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
     };
   }, []);
 
-  const handleTap = () => {
-    const g = gameRef.current;
-    if (g.over) return;
-    g.started = true;
-    g.velocity = JUMP_STRENGTH;
-  };
-
-  const areaH = areaHeightRef.current;
-  const tilt = Math.max(-25, Math.min(70, view.velocity * 5));
-
-  const renderDeco = (d) => {
-    if (T.deco === 'cloud') {
-      return (
+  // ── Render ──
+  const renderLives = () => {
+    const hearts = [];
+    for (let i = 0; i < TOTAL_LIVES; i++) {
+      hearts.push(
         <Text
-          key={d.id}
-          style={{ position: 'absolute', left: d.x, top: d.y, fontSize: d.size, opacity: d.o * 0.8 }}
+          key={i}
+          style={[
+            styles.heart,
+            { color: i < lives ? COLORS.lives : COLORS.livesLost },
+          ]}
         >
-          ☁️
+          ♥
         </Text>
       );
     }
-    if (T.deco === 'star') {
-      const s = Math.max(2, d.size / 14);
-      return (
-        <View
-          key={d.id}
-          style={{
-            position: 'absolute',
-            left: d.x,
-            top: d.y,
-            width: s,
-            height: s,
-            borderRadius: s,
-            backgroundColor: '#FFFFFF',
-            opacity: 0.3 + 0.7 * Math.abs(Math.sin((view.deco.length ? gameRef.current.t : 0) / 20 + d.id)),
-          }}
-        />
-      );
-    }
-    const s = Math.max(4, d.size / 6);
-    return (
-      <View
-        key={d.id}
-        style={{
-          position: 'absolute',
-          left: d.x,
-          top: d.y,
-          width: s,
-          height: s,
-          backgroundColor: d.id % 2 === 0 ? '#00F0FF' : '#FF2BD6',
-          opacity: d.o * 0.7,
-          transform: [{ rotate: '45deg' }],
-        }}
-      />
-    );
-  };
-
-  const pipeStyle = {
-    backgroundColor: T.pipe,
-    borderColor: T.edge,
-    borderWidth: 3,
-    shadowColor: T.shadow,
-    shadowOpacity: T.shadowOpacity,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 0 },
+    return hearts;
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: T.bg }]}>
-      <Animated.View style={{ flex: 1, transform: [{ translateX: shake }] }}>
-        <View style={styles.scoreContainer}>
-          <Text style={styles.score}>{view.score}</Text>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.closeButton}>✕</Text>
-          </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      {/* ── Top bar ── */}
+      <View style={styles.topBar}>
+        <View style={styles.livesRow}>{renderLives()}</View>
+        <Text style={styles.scoreText}>{score}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            gameActiveRef.current = false;
+            if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
+            navigation.goBack();
+          }}
+        >
+          <Text style={styles.closeBtn}>✕</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* ── Speed indicator ── */}
+      <View style={styles.speedBar}>
+        <Text style={styles.speedText}>
+          {speedMultiplier.toFixed(1)}×
+        </Text>
+      </View>
+
+      {/* ── Game area ── */}
+      <View style={styles.gameArea} {...panResponder.panHandlers}>
+        {/* Player */}
+        <View
+          style={[
+            styles.player,
+            {
+              top: playerY,
+              left: PLAYER_X,
+              backgroundColor: invincible
+                ? (Math.floor(Date.now() / 100) % 2 === 0
+                  ? COLORS.player
+                  : 'transparent')
+                : COLORS.player,
+              borderColor: invincible ? COLORS.playerHit : COLORS.player,
+            },
+          ]}
+        >
+          <Text style={styles.playerEmoji}>🚀</Text>
         </View>
 
-        <TouchableWithoutFeedback onPressIn={handleTap}>
+        {/* Obstacles */}
+        {obstacles.map((o) => (
           <View
-            style={[styles.gameArea, { backgroundColor: T.horizon }]}
-            onLayout={(e) => {
-              areaHeightRef.current = e.nativeEvent.layout.height;
-            }}
-          >
-            {view.deco.map(renderDeco)}
+            key={o.id}
+            style={[
+              styles.obstacle,
+              {
+                left: o.x,
+                top: o.y,
+                width: o.w,
+                height: o.h,
+                backgroundColor: o.isMoving
+                  ? (o.x > W - 60
+                    ? (Math.floor(Date.now() / 150) % 2 === 0
+                      ? COLORS.movingWarning
+                      : COLORS.movingObstacle)
+                    : COLORS.movingObstacle)
+                  : COLORS.obstacle,
+                borderRadius: o.isMoving ? 8 : 4,
+              },
+            ]}
+          />
+        ))}
 
-            {view.trail.map((p) => {
-              const s = 4 + p.life * 0.7;
-              return (
-                <View
-                  key={p.id}
-                  style={{
-                    position: 'absolute',
-                    left: p.x - s / 2,
-                    top: p.y - s / 2,
-                    width: s,
-                    height: s,
-                    borderRadius: s,
-                    backgroundColor: T.trail,
-                    opacity: p.life / 20,
-                  }}
-                />
-              );
-            })}
-
-            {view.obstacles.map((obs) => (
-              <View key={obs.id}>
-                <View
-                  style={[
-                    styles.pipe,
-                    pipeStyle,
-                    { left: obs.x, top: -10, height: obs.topHeight + 10, width: OBSTACLE_WIDTH },
-                  ]}
-                />
-                <View
-                  style={[
-                    styles.pipe,
-                    pipeStyle,
-                    {
-                      left: obs.x - 6,
-                      top: obs.topHeight - CAP_HEIGHT,
-                      height: CAP_HEIGHT,
-                      width: OBSTACLE_WIDTH + 12,
-                      borderRadius: 8,
-                    },
-                  ]}
-                />
-                <View
-                  style={[
-                    styles.pipe,
-                    pipeStyle,
-                    {
-                      left: obs.x,
-                      top: obs.bottomY,
-                      height: Math.max(0, areaH - obs.bottomY + 10),
-                      width: OBSTACLE_WIDTH,
-                    },
-                  ]}
-                />
-                <View
-                  style={[
-                    styles.pipe,
-                    pipeStyle,
-                    {
-                      left: obs.x - 6,
-                      top: obs.bottomY,
-                      height: CAP_HEIGHT,
-                      width: OBSTACLE_WIDTH + 12,
-                      borderRadius: 8,
-                    },
-                  ]}
-                />
-              </View>
-            ))}
-
-            <View
-              style={{
-                position: 'absolute',
-                left: PLAYER_LEFT - 12,
-                top: view.playerY - 12,
-                width: PLAYER_SIZE + 24,
-                height: PLAYER_SIZE + 24,
-                borderRadius: (PLAYER_SIZE + 24) / 2,
-                backgroundColor: T.glow,
-                opacity: T.glowOpacity,
-              }}
-            />
-            <Text
-              style={[
-                styles.player,
-                {
-                  top: view.playerY,
-                  left: PLAYER_LEFT,
-                  transform: [{ rotate: `${tilt}deg` }],
-                },
-              ]}
-            >
-              {CHARACTER_EMOJIS[character] || '🐦'}
-            </Text>
-
-            {!view.started && !view.over && (
-              <Text style={styles.tapHint}>Tap to fly</Text>
-            )}
+        {/* Tap to start */}
+        {!gameStarted && !gameOver && (
+          <View style={styles.startOverlay}>
+            <Text style={styles.startTitle}>{gameName || 'Quick Gamer'}</Text>
+            <Text style={styles.startSub}>Touch and drag to move</Text>
+            <Text style={styles.startSub}>Dodge the obstacles!</Text>
+            <Text style={styles.tapText}>TAP TO START</Text>
           </View>
-        </TouchableWithoutFeedback>
+        )}
+      </View>
 
-        <Animated.View
-          pointerEvents="none"
-          style={[StyleSheet.absoluteFill, { backgroundColor: '#FFFFFF', opacity: flash }]}
-        />
-      </Animated.View>
-
-      {view.over && (
+      {/* ── Game Over overlay ── */}
+      {gameOver && (
         <View style={styles.gameOverOverlay}>
-          <Text style={styles.gameOverEmoji}>{CHARACTER_EMOJIS[character] || '🐦'}</Text>
-          <Text style={styles.gameOverTitle}>Crash!</Text>
-          {!!gameName && <Text style={styles.gameOverGameName}>{gameName}</Text>}
-          <Text style={styles.gameOverScoreLabel}>Score</Text>
-          <Text style={styles.gameOverScore}>{view.score}</Text>
-          <Text style={styles.bestText}>Your best: {view.best}</Text>
+          <Text style={styles.gameOverTitle}>GAME OVER</Text>
+          <Text style={styles.gameOverName}>{gameName}</Text>
+
+          <View style={styles.scoreBox}>
+            <Text style={styles.scoreLabel}>SCORE</Text>
+            <Text style={styles.finalScore}>{score}</Text>
+          </View>
+
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{speedMultiplier.toFixed(1)}×</Text>
+              <Text style={styles.statLabel}>Top Speed</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{score}</Text>
+              <Text style={styles.statLabel}>Dodged</Text>
+            </View>
+          </View>
 
           <View style={styles.gameOverButtons}>
-            <TouchableOpacity style={styles.primaryButton} onPress={resetGame}>
-              <Text style={styles.primaryButtonText}>Play Again</Text>
+            <TouchableOpacity style={styles.primaryBtn} onPress={startGame}>
+              <Text style={styles.primaryBtnText}>PLAY AGAIN</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.secondaryButton}
+              style={styles.secondaryBtn}
               onPress={() =>
-                navigation.navigate('Share', { score: view.score, gameName })
+                navigation.navigate('Share', { score, gameName })
               }
             >
-              <Text style={styles.secondaryButtonText}>Share Score</Text>
+              <Text style={styles.secondaryBtnText}>Share Score</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={styles.backButtonText}>Back</Text>
+              <Text style={styles.backText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -495,128 +447,186 @@ export default function GameScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.bg,
   },
-  scoreContainer: {
+  topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 8,
+    height: TOP_BAR,
   },
-  score: {
-    fontSize: 52,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    textShadowColor: 'rgba(0,0,0,0.35)',
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowRadius: 6,
+  livesRow: {
+    flexDirection: 'row',
+    gap: 6,
   },
-  closeButton: {
+  heart: {
     fontSize: 28,
-    color: '#FFFFFF',
+  },
+  scoreText: {
+    fontSize: 42,
+    fontWeight: 'bold',
+    color: COLORS.score,
+    fontFamily: 'Courier',
+  },
+  closeBtn: {
+    fontSize: 28,
+    color: COLORS.dimText,
+  },
+  speedBar: {
+    position: 'absolute',
+    top: TOP_BAR + 4,
+    right: 20,
+    zIndex: 10,
+  },
+  speedText: {
+    fontSize: 14,
+    color: COLORS.dimText,
+    fontFamily: 'Courier',
   },
   gameArea: {
     flex: 1,
     position: 'relative',
     overflow: 'hidden',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
   },
   player: {
     position: 'absolute',
-    fontSize: 32,
-    width: PLAYER_SIZE,
-    height: PLAYER_SIZE,
-    lineHeight: PLAYER_SIZE,
+    width: PLAYER_W,
+    height: PLAYER_H,
+    borderRadius: 10,
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 20,
+  },
+  playerEmoji: {
+    fontSize: 24,
+  },
+  obstacle: {
+    position: 'absolute',
+    zIndex: 10,
+  },
+  // ── Start overlay ──
+  startOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(15, 20, 25, 0.7)',
+  },
+  startTitle: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    marginBottom: 16,
     textAlign: 'center',
   },
-  pipe: {
-    position: 'absolute',
+  startSub: {
+    fontSize: 16,
+    color: COLORS.dimText,
+    marginBottom: 4,
   },
-  tapHint: {
-    position: 'absolute',
-    top: '62%',
-    alignSelf: 'center',
-    fontSize: 26,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    textShadowColor: 'rgba(0,0,0,0.4)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
+  tapText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: COLORS.lives,
+    marginTop: 32,
   },
+  // ── Game over ──
   gameOverOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(15, 20, 25, 0.93)',
+    backgroundColor: 'rgba(15, 20, 25, 0.95)',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
-  },
-  gameOverEmoji: {
-    fontSize: 64,
-    marginBottom: 8,
+    zIndex: 100,
   },
   gameOverTitle: {
-    fontSize: 46,
-    fontWeight: '900',
-    color: '#FFFFFF',
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    letterSpacing: 4,
   },
-  gameOverGameName: {
+  gameOverName: {
     fontSize: 14,
-    color: '#888888',
+    color: COLORS.dimText,
     marginTop: 8,
   },
-  gameOverScoreLabel: {
-    fontSize: 14,
-    color: '#888888',
-    marginTop: 28,
+  scoreBox: {
+    marginTop: 40,
+    alignItems: 'center',
   },
-  gameOverScore: {
+  scoreLabel: {
+    fontSize: 14,
+    color: COLORS.dimText,
+    letterSpacing: 2,
+  },
+  finalScore: {
     fontSize: 72,
-    fontWeight: '900',
+    fontWeight: 'bold',
     color: '#00D9FF',
+    fontFamily: 'Courier',
     marginTop: 4,
   },
-  bestText: {
-    fontSize: 16,
+  statsRow: {
+    flexDirection: 'row',
+    gap: 48,
+    marginTop: 24,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFD24D',
+    color: COLORS.text,
+    fontFamily: 'Courier',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: COLORS.dimText,
     marginTop: 4,
   },
   gameOverButtons: {
     width: '100%',
-    marginTop: 40,
+    marginTop: 48,
     gap: 12,
   },
-  primaryButton: {
-    backgroundColor: '#FF6B35',
-    borderRadius: 14,
+  primaryBtn: {
+    backgroundColor: COLORS.lives,
+    borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
   },
-  primaryButtonText: {
+  primaryBtnText: {
     fontSize: 18,
-    fontWeight: '900',
-    color: '#FFFFFF',
+    fontWeight: 'bold',
+    color: COLORS.text,
+    letterSpacing: 2,
   },
-  secondaryButton: {
+  secondaryBtn: {
     backgroundColor: '#1A1F2E',
-    borderRadius: 14,
-    paddingVertical: 16,
+    borderRadius: 12,
+    paddingVertical: 14,
     alignItems: 'center',
   },
-  secondaryButtonText: {
+  secondaryBtnText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: COLORS.text,
   },
-  backButtonText: {
+  backText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#888888',
+    color: COLORS.dimText,
     textAlign: 'center',
     marginTop: 8,
   },
