@@ -898,7 +898,7 @@ const styles = StyleSheet.create({
 
   // ── Game area ──
   gameArea: { flex: 1, position: 'relative', overflow: 'hidden', backgroundColor: '#0a0a1a' },
-  bgStripContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', overflow: 'hidden' },
+  bgStripContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: '25%', overflow: 'hidden' },
   bgStrip: { position: 'absolute', top: 0, width: W, height: '100%' },
   player: {
     position: 'absolute',
