@@ -60,7 +60,6 @@
   },
   "dependencies": {
     "expo-camera": "~17.0.10",
-    "expo-updates": "~29.0.20",
     "react-native-purchases": "^10.1.1"
   }
 }
