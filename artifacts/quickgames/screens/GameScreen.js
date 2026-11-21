@@ -391,7 +391,7 @@ export default function GameScreen({ route, navigation }) {
     const speed = BASE_SPEED * speedRef.current * slowMoMult;
 
     // ── Scroll background ──
-    bgScrollRef.current = (bgScrollRef.current + speed * 0.25) % (W * 2);
+    bgScrollRef.current = (bgScrollRef.current + speed * 0.08) % (W * 2);
 
     // ── Player movement (X and Y) ──
     const diffY = targetYRef.current - playerYRef.current;
