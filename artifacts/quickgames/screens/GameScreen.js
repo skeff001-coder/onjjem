@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   PanResponder,
-  ImageBackground,
+  Image,
 } from 'react-native';
 
 const { width: W, height: H } = Dimensions.get('window');
@@ -125,6 +125,7 @@ export default function GameScreen({ route, navigation }) {
   const [continueCountdown, setContinueCountdown] = useState(CONTINUE_SECONDS);
   const [shieldFlash, setShieldFlash] = useState(false);
   const [rocketBlasts, setRocketBlasts] = useState([]);
+  const [bgScrollX, setBgScrollX] = useState(0);
 
   // ── Refs ──
   const playerYRef = useRef(GAME_H / 2 - PLAYER_H / 2);
@@ -151,6 +152,7 @@ export default function GameScreen({ route, navigation }) {
   const continueTimerRef = useRef(null);
   const continueTokensRef = useRef(continueTokens || 0);
   const usedContinueRef = useRef(false);
+  const bgScrollRef = useRef(0);
 
   // ── Touch ──
   const panResponder = useRef(
@@ -213,6 +215,7 @@ export default function GameScreen({ route, navigation }) {
     elapsedRef.current = 0;
     nextPickupTimeRef.current = now + PICKUP_SPAWN_MIN_MS;
     usedContinueRef.current = false;
+    bgScrollRef.current = 0;
 
     setPlayerY(playerYRef.current);
     setObstacles([]);
@@ -312,6 +315,9 @@ export default function GameScreen({ route, navigation }) {
       lastSpeedBumpRef.current = timestamp;
     }
     const speed = BASE_SPEED * speedRef.current;
+
+    // ── Scroll background ──
+    bgScrollRef.current = (bgScrollRef.current + speed * 0.5) % W;
 
     // ── Player movement ──
     const diff = targetYRef.current - playerYRef.current;
@@ -509,6 +515,7 @@ export default function GameScreen({ route, navigation }) {
     setRocketAmmo(rocketAmmoRef.current);
     setInvincible(invincibleRef.current);
     setSpeedMultiplier(speedRef.current);
+    setBgScrollX(bgScrollRef.current);
 
     frameIdRef.current = requestAnimationFrame(gameLoop);
   }, []);
@@ -580,7 +587,10 @@ export default function GameScreen({ route, navigation }) {
       </View>
 
       {/* ── Game area ── */}
-      <ImageBackground source={worldImage} style={styles.gameArea} resizeMode="cover" {...panResponder.panHandlers}>
+      <View style={styles.gameArea} {...panResponder.panHandlers}>
+        {/* Scrolling background — two copies for infinite loop */}
+        <Image source={worldImage} style={[styles.bgImage, { left: -bgScrollX }]} resizeMode="cover" />
+        <Image source={worldImage} style={[styles.bgImage, { left: W - bgScrollX }]} resizeMode="cover" />
         {/* Player */}
         <View
           style={[
@@ -752,7 +762,7 @@ export default function GameScreen({ route, navigation }) {
             <Text style={styles.tapText}>TAP TO LAUNCH</Text>
           </View>
         )}
-      </ImageBackground>
+      </View>
 
       {/* ── Continue countdown ── */}
       {showContinue && (
@@ -894,6 +904,7 @@ const styles = StyleSheet.create({
 
   // ── Game area ──
   gameArea: { flex: 1, position: 'relative', overflow: 'hidden' },
+  bgImage: { position: 'absolute', top: 0, width: W, height: '100%' },
   player: {
     position: 'absolute',
     width: PLAYER_W,
