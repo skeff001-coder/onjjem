@@ -3,6 +3,7 @@ import { IS_US, SITE, MUG_URL, cartoonIsFree } from "@/lib/region";
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
+  Alert,
   Text,
   Image,
   StyleSheet,
@@ -20,6 +21,32 @@ import * as FileSystem from "expo-file-system/legacy";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useSubscription } from "@/lib/revenuecat";
+
+// Apple requires clear permission before a photo is shared with an outside AI service.
+const AI_CONSENT_KEY = "onjjem_ai_consent_gemini_v1";
+async function askAiConsent(): Promise<boolean> {
+  try {
+    if ((await AsyncStorage.getItem(AI_CONSENT_KEY)) === "yes") return true;
+  } catch {}
+  return new Promise((resolve) => {
+    Alert.alert(
+      "Send your photo to make the cartoon?",
+      "To create your cartoon, the photo you choose is sent securely to ONJJEM's server and to Google's Gemini AI service, which draws the cartoon. Your photo is only used to make your cartoon and is not used for advertising. You can read more in Privacy.",
+      [
+        { text: "Not now", style: "cancel", onPress: () => resolve(false) },
+        {
+          text: "I agree",
+          onPress: async () => {
+            try { await AsyncStorage.setItem(AI_CONSENT_KEY, "yes"); } catch {}
+            resolve(true);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  });
+}
+
 
 const API_BASE = `https://${process.env.EXPO_PUBLIC_DOMAIN ?? ""}`;
 
@@ -89,6 +116,11 @@ export default function CartoonScreen() {
         encoding: FileSystem.EncodingType.Base64,
       });
       const mimeType = localUri.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg";
+      if (!(await askAiConsent())) {
+        setPhotoUri(null);
+        setPhase("idle");
+        return;
+      }
       generateCartoon(base64, mimeType);
     } catch (err) {
       setErrorMsg("Could not read that photo. Please try a different one.");
