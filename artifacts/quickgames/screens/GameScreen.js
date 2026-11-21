@@ -20,10 +20,10 @@ const PLAYER_W = 44;
 const PLAYER_H = 44;
 const PLAYER_X = 60;
 
-// ── Difficulty curve ──
+// ── Difficulty curve (gentler ramp) ──
 const BASE_SPEED = 3;
-const SPEED_INCREASE_INTERVAL = 5000;
-const SPEED_INCREASE_FACTOR = 1.06;
+const SPEED_INCREASE_INTERVAL = 7000;
+const SPEED_INCREASE_FACTOR = 1.04;
 const MAX_SPEED_MULTIPLIER = 3;
 
 // ── Obstacles ──
@@ -44,6 +44,8 @@ const CONTINUE_SECONDS = 10;
 const PICKUP_SIZE = 32;
 const PICKUP_SPAWN_MIN_MS = 8000;   // earliest next pickup
 const PICKUP_SPAWN_MAX_MS = 15000;  // latest next pickup
+const NUKE_INTERVAL_MS = 30000;     // nuke appears every 30 seconds
+const NUKE_SIZE = 40;
 const ROCKET_SPEED = 12;
 const ROCKET_W = 20;
 const ROCKET_H = 8;
@@ -65,6 +67,8 @@ const COLORS = {
   dimText: '#888888',
   shieldPickup: '#00FF88',
   rocketPickup: '#FF3366',
+  nukePickup: '#FFD700',
+  nukeFlash: 'rgba(255, 255, 255, 0.8)',
   rocketProjectile: '#FF3366',
   continueBar: '#00D9FF',
 };
@@ -142,6 +146,8 @@ export default function GameScreen({ route, navigation }) {
   const [shieldFlash, setShieldFlash] = useState(false);
   const [rocketBlasts, setRocketBlasts] = useState([]);
   const [bgScrollX, setBgScrollX] = useState(0);
+  const [nukeFlash, setNukeFlash] = useState(false);
+  const [nukePickups, setNukePickups] = useState([]);
 
   // ── Refs ──
   const playerYRef = useRef(GAME_H / 2 - PLAYER_H / 2);
@@ -169,6 +175,8 @@ export default function GameScreen({ route, navigation }) {
   const continueTokensRef = useRef(continueTokens || 0);
   const usedContinueRef = useRef(false);
   const bgScrollRef = useRef(0);
+  const nukePickupsRef = useRef([]);
+  const lastNukeTimeRef = useRef(0);
 
   // ── Touch ──
   const panResponder = useRef(
@@ -232,10 +240,13 @@ export default function GameScreen({ route, navigation }) {
     nextPickupTimeRef.current = now + PICKUP_SPAWN_MIN_MS;
     usedContinueRef.current = false;
     bgScrollRef.current = 0;
+    nukePickupsRef.current = [];
+    lastNukeTimeRef.current = now + NUKE_INTERVAL_MS; // first nuke after 30s
 
     setPlayerY(playerYRef.current);
     setObstacles([]);
     setPickups([]);
+    setNukePickups([]);
     setRockets([]);
     setRocketBlasts([]);
     setScore(0);
@@ -394,6 +405,17 @@ export default function GameScreen({ route, navigation }) {
       nextPickupTimeRef.current = timestamp + delay;
     }
 
+    // ── Spawn nuke pickup (every 30 seconds) ──
+    if (timestamp >= lastNukeTimeRef.current && elapsedS > 10) {
+      const ny = Math.random() * (GAME_H - NUKE_SIZE);
+      nukePickupsRef.current.push({
+        id: Date.now() + 999,
+        x: W + 10,
+        y: ny,
+      });
+      lastNukeTimeRef.current = timestamp + NUKE_INTERVAL_MS;
+    }
+
     // ── Update obstacles ──
     const obs = obstaclesRef.current;
     let newScore = scoreRef.current;
@@ -480,6 +502,37 @@ export default function GameScreen({ route, navigation }) {
       }
     }
 
+    // ── Update nuke pickups ──
+    const nks = nukePickupsRef.current;
+    for (let i = nks.length - 1; i >= 0; i--) {
+      const n = nks[i];
+      n.x -= speed * 0.6; // slower than obstacles so player can grab it
+
+      if (n.x + NUKE_SIZE < -10) {
+        nks.splice(i, 1);
+        continue;
+      }
+
+      // Collect nuke
+      const npx = PLAYER_X;
+      const npy = playerYRef.current;
+      if (
+        npx + PLAYER_W > n.x &&
+        npx < n.x + NUKE_SIZE &&
+        npy + PLAYER_H > n.y &&
+        npy < n.y + NUKE_SIZE
+      ) {
+        nks.splice(i, 1);
+        // NUKE! Clear all obstacles on screen
+        const nukedCount = obstaclesRef.current.length;
+        obstaclesRef.current = [];
+        newScore += nukedCount * 2; // bonus points for each nuked enemy
+        // Trigger flash effect
+        setNukeFlash(true);
+        setTimeout(() => setNukeFlash(false), 300);
+      }
+    }
+
     // ── Update rockets (player-fired projectiles) ──
     const rks = rocketsRef.current;
     const bls = blastsRef.current;
@@ -525,6 +578,7 @@ export default function GameScreen({ route, navigation }) {
     setPickups([...pks]);
     setRockets([...rks]);
     setRocketBlasts([...bls]);
+    setNukePickups([...nks]);
     setScore(newScore);
     setLives(livesRef.current);
     setShields(shieldsRef.current);
@@ -701,6 +755,41 @@ export default function GameScreen({ route, navigation }) {
           </View>
         ))}
 
+        {/* Nuke pickups */}
+        {nukePickups.map((n) => (
+          <View
+            key={n.id}
+            style={{
+              position: 'absolute',
+              left: n.x,
+              top: n.y,
+              width: NUKE_SIZE,
+              height: NUKE_SIZE,
+              borderRadius: NUKE_SIZE / 2,
+              backgroundColor: 'rgba(255, 215, 0, 0.3)',
+              borderWidth: 2,
+              borderColor: COLORS.nukePickup,
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 16,
+            }}
+          >
+            <Text style={{ fontSize: 22 }}>💣</Text>
+          </View>
+        ))}
+
+        {/* Nuke flash effect */}
+        {nukeFlash && (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              backgroundColor: COLORS.nukeFlash,
+              zIndex: 50,
+            }}
+          />
+        )}
+
         {/* Player rockets */}
         {rockets.map((r) => (
           <View
@@ -759,6 +848,10 @@ export default function GameScreen({ route, navigation }) {
               <View style={styles.guideRow}>
                 <View style={[styles.guidePickup, { backgroundColor: COLORS.rocketPickup }]} />
                 <Text style={styles.guideLabel}>Collect for extra rockets</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <Text style={styles.guideIcon}>💣</Text>
+                <Text style={styles.guideLabel}>NUKE — wipes every enemy on screen!</Text>
               </View>
             </View>
 
