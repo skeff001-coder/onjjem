@@ -1,0 +1,32 @@
+{
+  "cli": {
+    "version": ">= 3.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "node": "18.0.0",
+      "ios": {
+        "deploymentTarget": "16.0"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "owenjones87@live.co.uk",
+        "ascAppId": "6670427496",
+        "appleTeamId": "LHQNV4A3Q4"
+      }
+    }
+  }
+}
