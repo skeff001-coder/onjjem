@@ -156,6 +156,7 @@ export default function GameScreen({ route, navigation }) {
   // ── Start / restart ──
   const startGame = useCallback(() => {
     const now = performance.now();
+    gameActiveRef.current = true;
     playerYRef.current = GAME_H / 2 - PLAYER_H / 2;
     targetYRef.current = GAME_H / 2 - PLAYER_H / 2;
     obstaclesRef.current = [];
