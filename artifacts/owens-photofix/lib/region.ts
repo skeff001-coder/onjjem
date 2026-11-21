@@ -36,3 +36,11 @@ export const SHOP_TILES = IS_US
 export const MUG_URL = IS_US ? "https://onjjem.com/us/mug" : "https://onjjem.com/mug";
 export const DEALS_URL = IS_US ? "https://onjjem.com/us/shop-christmas" : "https://onjjem.com/shop-deals";
 export const DELIVERY_URL = IS_US ? "https://onjjem.com/us/shipping" : "https://onjjem.com/delivery.html";
+
+// Same rule as onjjem.com: the cartoon is free in the US shop, and free for
+// everyone from 1 November to Christmas Eve. Otherwise it is £1.99 in the UK.
+export function cartoonIsFree(): boolean {
+  if (IS_US) return true;
+  const t = Date.now();
+  return t >= Date.parse("2026-11-01T00:00:00Z") && t < Date.parse("2026-12-25T00:00:00Z");
+}

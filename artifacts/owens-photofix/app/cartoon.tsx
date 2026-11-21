@@ -1,5 +1,5 @@
 import { CartoonCarousel, CARTOON_SAMPLES } from './components/CartoonCarousel';
-import { IS_US, SITE, MUG_URL } from "@/lib/region";
+import { IS_US, SITE, MUG_URL, cartoonIsFree } from "@/lib/region";
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -182,7 +182,7 @@ export default function CartoonScreen() {
             <Ionicons name="sparkles" size={40} color="#C9960C" />
             <Text style={s.startTitle}>Cartoon Fun!</Text>
             <Text style={s.paywallSubtitle}>
-              See a free preview of your photo as a cartoon before you decide — love it? {IS_US ? "Add it to any gift free." : "Add the full version to any gift for just £1.99."}
+              See a free preview of your photo as a cartoon before you decide — love it? {cartoonIsFree() ? "Add it to any gift FREE" + (IS_US ? "." : " until Christmas.") : "Add the full version to any gift for just £1.99."}
             </Text>
 
             <Text style={s.sampleLabel}>Example results — this is what yours could look like</Text>
