@@ -140,7 +140,7 @@ export default function DesignScreen({ navigation }) {
     if (step === totalSteps - 1) {
       // All done — go to building screen
       const finalName = gameName.trim() || 'My Game';
-      navigation.navigate('Building', {
+      navigation.replace('Building', {
         design: { ...choices, name: finalName },
       });
       return;

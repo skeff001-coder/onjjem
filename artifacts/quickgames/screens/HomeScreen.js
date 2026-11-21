@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  Animated,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -22,11 +23,31 @@ const COLORS = {
   gold: '#FFD700',
   silver: '#C0C0C0',
   bronze: '#CD7F32',
+  glow: 'rgba(0, 217, 255, 0.15)',
 };
 
 export default function HomeScreen({ navigation }) {
   const [credits, setCredits] = useState(null);
   const [topScores, setTopScores] = useState([]);
+  const glowAnim = useRef(new Animated.Value(0.3)).current;
+  const titleScale = useRef(new Animated.Value(0.8)).current;
+
+  useEffect(() => {
+    // Title entrance animation
+    Animated.spring(titleScale, {
+      toValue: 1,
+      friction: 4,
+      useNativeDriver: true,
+    }).start();
+
+    // Pulsing glow
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(glowAnim, { toValue: 0.8, duration: 1500, useNativeDriver: true }),
+        Animated.timing(glowAnim, { toValue: 0.3, duration: 1500, useNativeDriver: true }),
+      ])
+    ).start();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -42,7 +63,6 @@ export default function HomeScreen({ navigation }) {
       if (credData) {
         setCredits(JSON.parse(credData));
       } else {
-        // First launch: set defaults
         const defaults = {
           gamesRemaining: 1,
           shields: 3,
@@ -69,7 +89,6 @@ export default function HomeScreen({ navigation }) {
       return;
     }
 
-    // Deduct a game credit
     const updated = { ...credits, gamesRemaining: credits.gamesRemaining - 1 };
     try {
       await AsyncStorage.setItem(CREDITS_KEY, JSON.stringify(updated));
@@ -78,7 +97,11 @@ export default function HomeScreen({ navigation }) {
       console.log('Failed to update credits', e);
     }
 
-    navigation.navigate('Design');
+    // Reset stack so user can't go back and exploit free games
+    navigation.reset({
+      index: 1,
+      routes: [{ name: 'Home' }, { name: 'Design' }],
+    });
   };
 
   const getMedalColor = (i) => {
@@ -91,11 +114,23 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Logo / title */}
+        {/* ── Space-themed title ── */}
         <View style={styles.hero}>
-          <Text style={styles.logoEmoji}>🎮</Text>
-          <Text style={styles.logoText}>Quick Gamer</Text>
-          <Text style={styles.tagline}>Design • Build • Play</Text>
+          <Animated.View style={[styles.glowRing, { opacity: glowAnim }]} />
+          <Animated.View style={{ transform: [{ scale: titleScale }], alignItems: 'center' }}>
+            <Text style={styles.logoEmoji}>🚀</Text>
+            <Text style={styles.logoText}>QUICK</Text>
+            <Text style={styles.logoTextAccent}>GAMER</Text>
+          </Animated.View>
+          <View style={styles.starField}>
+            <Text style={styles.star}>✦</Text>
+            <Text style={[styles.star, { left: '20%', top: 10 }]}>✧</Text>
+            <Text style={[styles.star, { left: '75%', top: 20 }]}>✦</Text>
+            <Text style={[styles.star, { left: '90%', top: 50 }]}>✧</Text>
+            <Text style={[styles.star, { left: '5%', top: 60 }]}>✦</Text>
+            <Text style={[styles.star, { left: '60%', top: 5 }]}>✧</Text>
+          </View>
+          <Text style={styles.tagline}>D E S I G N  •  B U I L D  •  P L A Y</Text>
         </View>
 
         {/* Credits bar */}
@@ -119,10 +154,10 @@ export default function HomeScreen({ navigation }) {
           </View>
         )}
 
-        {/* CTA button */}
+        {/* ── BUILD YOUR GAME button ── */}
         <TouchableOpacity style={styles.ctaButton} onPress={handleMakeGame}>
-          <Text style={styles.ctaEmoji}>🛠️</Text>
-          <Text style={styles.ctaText}>Make Your Own Game</Text>
+          <Text style={styles.ctaEmoji}>⚡</Text>
+          <Text style={styles.ctaText}>BUILD YOUR GAME</Text>
           <Text style={styles.ctaSubtext}>
             {credits && credits.gamesRemaining > 0
               ? `${credits.gamesRemaining} game${credits.gamesRemaining !== 1 ? 's' : ''} remaining`
@@ -144,7 +179,7 @@ export default function HomeScreen({ navigation }) {
           {topScores.length === 0 ? (
             <View style={styles.hofEmpty}>
               <Text style={styles.hofEmptyText}>
-                No scores yet — make a game and play!
+                No scores yet — build a game and play!
               </Text>
             </View>
           ) : (
@@ -188,24 +223,58 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bg },
 
-  // ── Hero ──
+  // ── Hero — space-themed ──
   hero: {
     alignItems: 'center',
-    paddingTop: 32,
-    paddingBottom: 20,
+    paddingTop: 40,
+    paddingBottom: 24,
+    position: 'relative',
+    overflow: 'hidden',
   },
-  logoEmoji: { fontSize: 56 },
+  glowRing: {
+    position: 'absolute',
+    width: 280,
+    height: 280,
+    borderRadius: 140,
+    backgroundColor: COLORS.glow,
+    top: -20,
+  },
+  starField: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+  },
+  star: {
+    position: 'absolute',
+    fontSize: 12,
+    color: 'rgba(0, 217, 255, 0.5)',
+    left: '45%',
+    top: 30,
+  },
+  logoEmoji: { fontSize: 56, marginBottom: 4 },
   logoText: {
-    fontSize: 36,
-    fontWeight: 'bold',
+    fontSize: 48,
+    fontWeight: '900',
     color: COLORS.text,
-    marginTop: 8,
+    letterSpacing: 12,
+    textShadowColor: COLORS.accent,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 20,
+  },
+  logoTextAccent: {
+    fontSize: 42,
+    fontWeight: '900',
+    color: COLORS.accent,
+    letterSpacing: 16,
+    marginTop: -4,
+    textShadowColor: COLORS.accent,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 30,
   },
   tagline: {
-    fontSize: 14,
+    fontSize: 11,
     color: COLORS.dimText,
-    marginTop: 4,
-    letterSpacing: 2,
+    marginTop: 12,
+    letterSpacing: 3,
   },
 
   // ── Credits bar ──
@@ -220,6 +289,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 217, 255, 0.1)',
   },
   creditItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   creditEmoji: { fontSize: 18 },
@@ -236,26 +307,33 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 
-  // ── CTA ──
+  // ── CTA — space-styled ──
   ctaButton: {
-    backgroundColor: COLORS.orange,
+    backgroundColor: COLORS.accent,
     marginHorizontal: 20,
     borderRadius: 16,
     paddingVertical: 24,
     alignItems: 'center',
     marginBottom: 28,
+    shadowColor: COLORS.accent,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  ctaEmoji: { fontSize: 32 },
+  ctaEmoji: { fontSize: 28 },
   ctaText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginTop: 8,
+    fontSize: 24,
+    fontWeight: '900',
+    color: COLORS.bg,
+    marginTop: 6,
+    letterSpacing: 4,
   },
   ctaSubtext: {
     fontSize: 13,
-    color: 'rgba(255,255,255,0.7)',
+    color: 'rgba(15, 20, 25, 0.6)',
     marginTop: 4,
+    fontWeight: '600',
   },
 
   // ── Hall of Fame ──
@@ -315,6 +393,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 20,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 217, 255, 0.08)',
   },
   linkEmoji: { fontSize: 28 },
   linkText: { fontSize: 14, fontWeight: '600', color: COLORS.text, marginTop: 8 },

@@ -477,6 +477,16 @@ export default function GameScreen({ route, navigation }) {
     frameIdRef.current = requestAnimationFrame(gameLoop);
   }, []);
 
+  // ── Auto-start after intro ──
+  useEffect(() => {
+    const autoStartTimer = setTimeout(() => {
+      if (!gameActiveRef.current) {
+        startGame();
+      }
+    }, 2500);
+    return () => clearTimeout(autoStartTimer);
+  }, []);
+
   // ── Cleanup ──
   useEffect(() => {
     return () => {
@@ -513,7 +523,7 @@ export default function GameScreen({ route, navigation }) {
             gameActiveRef.current = false;
             if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
             if (continueTimerRef.current) clearInterval(continueTimerRef.current);
-            navigation.goBack();
+            navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
           }}
         >
           <Text style={styles.closeBtn}>✕</Text>
@@ -654,12 +664,11 @@ export default function GameScreen({ route, navigation }) {
           </View>
         ))}
 
-        {/* Tap to start */}
+        {/* Space intro — shows for 2.5s then auto-starts */}
         {!gameStarted && !gameOver && !showContinue && (
           <View style={styles.startOverlay}>
             <Text style={styles.startTitle}>{gameName || 'Quick Gamer'}</Text>
-            <Text style={styles.startSub}>Touch and drag to move</Text>
-            <Text style={styles.startSub}>Dodge the obstacles!</Text>
+            <Text style={styles.introText}>☄️  AVOID THE ASTEROIDS  ☄️</Text>
             {(initialShields > 0 || initialRockets > 0) && (
               <View style={styles.startLoadout}>
                 {initialShields > 0 && (
@@ -674,7 +683,7 @@ export default function GameScreen({ route, navigation }) {
                 )}
               </View>
             )}
-            <Text style={styles.tapText}>TAP TO START</Text>
+            <Text style={styles.tapText}>LAUNCHING...</Text>
           </View>
         )}
       </View>
@@ -760,8 +769,8 @@ export default function GameScreen({ route, navigation }) {
               <Text style={styles.secondaryBtnText}>Share Score</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={styles.backText}>Back</Text>
+            <TouchableOpacity onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Home' }] })}>
+              <Text style={styles.backText}>Home</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -881,7 +890,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
-  startSub: { fontSize: 16, color: COLORS.dimText, marginBottom: 4 },
+  introText: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#00D9FF',
+    letterSpacing: 3,
+    marginBottom: 8,
+    textShadowColor: '#00D9FF',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 15,
+  },
   startLoadout: {
     flexDirection: 'row',
     gap: 20,
