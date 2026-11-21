@@ -8,6 +8,8 @@
 // variants Prodigi returns, including that the variant ships to the country.
 // Nothing is ordered or charged. Add &json=1 for raw results, &fresh=1 to rerun.
 import { Router, type IRouter } from "express";
+import { db } from "@workspace/db";
+import { sql } from "drizzle-orm";
 import { PRODIGI_PRODUCTS, areasFor, SLIP_SKU, FREE_STICKER_SKU } from "../fulfilment/prodigi";
 import { US_PRODIGI_PRODUCTS, US_SKU_PRICES, NO_BUNDLE_DISCOUNT } from "../usShop";
 import { getUncachableStripeClient } from "../stripeClient";
@@ -169,6 +171,55 @@ router.get("/prodigi-order", async (req, res) => {
       <p><b>Stage:</b> ${st.stage || "?"}<br><b>Items:</b> ${items || "?"}<br><b>Created:</b> ${o.created || "?"}<br><b>Cancellation:</b> ${canCancel}<br><b>Ship to:</b> ${(o.recipient && o.recipient.name) || "?"}</p>
       ${st.stage === "Cancelled" ? "<p>This order is cancelled. Nothing will be printed.</p>" : `<p><a href="/api/prodigi-order?key=${k}&id=${id}&cancel=1" onclick="return confirm('Cancel this order?')" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#c0392b;color:#fff;font-weight:700;text-decoration:none">Cancel this order</a></p>`}
       </body>`);
+  } catch (err) { res.status(500).send(String(err)); }
+});
+
+
+// Owner-only: every recent website order, its Prodigi order number and live Prodigi status.
+// /api/my-orders?key=...   Works without logging in to Prodigi.
+router.get("/my-orders", async (req, res) => {
+  if (!okKey(req.query.key)) { res.status(403).send("Forbidden"); return; }
+  const apiKey = process.env.PRODIGI_API_KEY || "";
+  const k = encodeURIComponent(String(req.query.key));
+  const esc = (s: unknown) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
+  try {
+    const rows = (await db.execute(sql`
+      SELECT stripe_session, sku, customer_email, shipping_json, amount_paid, currency, bol_order_id, status, error, created_at
+      FROM fulfilment_queue ORDER BY created_at DESC LIMIT 25
+    `)).rows as any[];
+    const live = await Promise.all(rows.map(async (r) => {
+      const id = String(r.bol_order_id || "");
+      if (!apiKey || !/^ord_[0-9]+$/.test(id)) return null;
+      try {
+        const x = await fetch(`${baseUrl()}/v4.0/orders/${id}`, { headers: { "X-API-Key": apiKey }, signal: AbortSignal.timeout(12_000) });
+        const j: any = await x.json().catch(() => ({}));
+        return j.order?.status || null;
+      } catch { return null; }
+    }));
+    const money = (n: number, c: string) => (c === "usd" ? "$" : "£") + (Number(n || 0) / 100).toFixed(2);
+    const cards = rows.map((r, i) => {
+      const st: any = live[i];
+      const ship = typeof r.shipping_json === "string" ? JSON.parse(r.shipping_json) : (r.shipping_json || {});
+      const name = ship.name || ship.address?.name || "";
+      const issues = (st?.issues || []).map((x: any) => x.errorCode || x.description).filter(Boolean).join(", ");
+      const stage = st?.stage || "";
+      const colour = !r.bol_order_id ? "#c0392b" : issues ? "#c0392b" : stage === "Complete" ? "#27ae60" : stage === "Cancelled" ? "#888" : "#d4a017";
+      const label = !r.bol_order_id
+        ? "❌ NOT sent to Prodigi" + (r.error ? " — " + esc(String(r.error).slice(0, 160)) : " (" + esc(r.status) + ")")
+        : issues ? "⚠️ Problem: " + esc(issues)
+        : stage === "Complete" ? "✅ Posted"
+        : stage === "Cancelled" ? "Cancelled"
+        : "⏳ " + esc(stage || "Sent") + (st?.details?.inProduction === "InProgress" ? " · printing" : "");
+      return `<div style="border:1px solid #ddd;border-left:6px solid ${colour};border-radius:12px;padding:12px;margin:10px 0">
+        <div style="font-weight:700">${esc(new Date(r.created_at).toLocaleString("en-GB", { timeZone: "Europe/London" }))} · ${money(r.amount_paid, r.currency)}</div>
+        <div>${esc(r.sku)} · ${esc(name)}</div>
+        <div style="margin-top:4px;color:${colour};font-weight:700">${label}</div>
+        ${r.bol_order_id ? `<div style="margin-top:4px"><a href="/api/prodigi-order?key=${k}&id=${esc(r.bol_order_id)}">Prodigi ${esc(r.bol_order_id)} →</a></div>` : ""}
+      </div>`;
+    }).join("");
+    res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>My orders</title><body style="font:16px system-ui;padding:16px;max-width:600px;margin:auto">
+      <h2>Website orders (latest 25)</h2>
+      <p style="color:#555">Green = posted · Yellow = being made · Red = needs you</p>${cards || "<p>No orders yet.</p>"}</body>`);
   } catch (err) { res.status(500).send(String(err)); }
 });
 
