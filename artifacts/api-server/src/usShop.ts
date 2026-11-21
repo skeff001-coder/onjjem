@@ -36,7 +36,7 @@ export const US_SKU_PRICES: Record<string, { name: string; priceCents: number }>
   "US-POSTER-24X36": { name: "Matte Poster 24x36\"", priceCents: 5499 }, // $22 + $14.65
 
   // White ceramic photo mugs — 11oz $10 / 15oz $11 + $6.45 shipping
-  "US-MUG-11": { name: "Photo Mug, 11oz White Ceramic", priceCents: 2499 },
+  "US-MUG-11": { name: "Photo Mug, 11oz White Ceramic", priceCents: 1999 },
   "US-MUG-15": { name: "Photo Mug, 15oz White Ceramic", priceCents: 2799 },
 
   // Trick-or-treat pillowcase, standard 30x22" — cost $18 + $12.95 shipping
