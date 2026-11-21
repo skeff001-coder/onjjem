@@ -189,20 +189,15 @@ workflows:
       - name: Patch pods deployment target
         script: |
           cd artifacts/quickgames/ios
-          # Bump any pod with deployment target below 16.0 to 16.0
-          cat >> Podfile << 'PATCH'
-
-          post_install do |installer|
-            installer.pods_project.targets.each do |target|
-              target.build_configurations.each do |config|
-                current = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
-                if current.to_f < 16.0
-                  config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
-                end
-              end
-            end
-          end
-          PATCH
+          # Inject deployment target fix into existing post_install block
+          sed -i'' -e '/post_install do |installer|/a\
+            installer.pods_project.targets.each do |target|\
+              target.build_configurations.each do |config|\
+                if config.build_settings["IPHONEOS_DEPLOYMENT_TARGET"].to_f < 16.0\
+                  config.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = "16.0"\
+                end\
+              end\
+            end' Podfile
           pod install
 
       - name: Build iOS IPA
