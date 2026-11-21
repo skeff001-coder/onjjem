@@ -186,6 +186,25 @@ workflows:
           cd artifacts/quickgames
           pnpm exec expo prebuild --platform ios --clean
 
+      - name: Patch pods deployment target
+        script: |
+          cd artifacts/quickgames/ios
+          # Bump any pod with deployment target below 16.0 to 16.0
+          cat >> Podfile << 'PATCH'
+
+          post_install do |installer|
+            installer.pods_project.targets.each do |target|
+              target.build_configurations.each do |config|
+                current = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+                if current.to_f < 16.0
+                  config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+                end
+              end
+            end
+          end
+          PATCH
+          pod install
+
       - name: Build iOS IPA
         script: |
           cd artifacts/quickgames
