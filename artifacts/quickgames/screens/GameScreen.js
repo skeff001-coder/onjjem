@@ -68,9 +68,44 @@ const COLORS = {
   continueBar: '#00D9FF',
 };
 
+// ── Emoji maps for design choices ──
+const RIDE_EMOJI = {
+  car: '🏎️', spaceship: '🚀', skateboard: '🛹', plane: '✈️',
+  boat: '🚤', bike: '🚲', dragon: '🐉', ufo: '🛸',
+};
+const ENEMY_EMOJI = {
+  meteors: '☄️', monsters: '👾', lasers: '⚡', boulders: '🪨',
+  ghosts: '👻', fireballs: '🔥', snowballs: '⛄', sharks: '🦈',
+};
+const ENEMY_LABEL = {
+  meteors: 'METEORS', monsters: 'MONSTERS', lasers: 'LASERS', boulders: 'BOULDERS',
+  ghosts: 'GHOSTS', fireballs: 'FIREBALLS', snowballs: 'SNOWBALLS', sharks: 'SHARKS',
+};
+const GOAL_EMOJI = {
+  coins: '🪙', stars: '⭐', gems: '💎', hearts: '❤️',
+  candy: '🍭', trophies: '🏆',
+};
+const WORLD_TINT = {
+  forest: 'rgba(34, 80, 34, 0.25)',
+  space: 'rgba(10, 10, 40, 0.3)',
+  ocean: 'rgba(0, 40, 80, 0.25)',
+  city: 'rgba(50, 50, 60, 0.2)',
+  desert: 'rgba(80, 60, 20, 0.2)',
+  arctic: 'rgba(40, 60, 80, 0.2)',
+  volcano: 'rgba(80, 20, 10, 0.25)',
+  candy: 'rgba(80, 30, 60, 0.2)',
+};
+
 export default function GameScreen({ route, navigation }) {
-  const { character, theme, gameName, initialShields, initialRockets, continueTokens, onGameEnd } =
+  const { character, theme, gameName, initialShields, initialRockets, continueTokens, onGameEnd, design } =
     route?.params || {};
+
+  // Resolve design emojis
+  const rideEmoji = RIDE_EMOJI[design?.ride] || '🚀';
+  const enemyEmoji = ENEMY_EMOJI[design?.enemy] || '☄️';
+  const enemyLabel = ENEMY_LABEL[design?.enemy] || 'ASTEROIDS';
+  const goalEmoji = GOAL_EMOJI[design?.goal] || '⭐';
+  const worldBg = WORLD_TINT[design?.world] || WORLD_TINT.space;
 
   // ── Render state ──
   const [playerY, setPlayerY] = useState(GAME_H / 2 - PLAYER_H / 2);
@@ -552,7 +587,7 @@ export default function GameScreen({ route, navigation }) {
       </View>
 
       {/* ── Game area ── */}
-      <View style={styles.gameArea} {...panResponder.panHandlers}>
+      <View style={[styles.gameArea, { backgroundColor: worldBg }]} {...panResponder.panHandlers}>
         {/* Player */}
         <View
           style={[
@@ -576,7 +611,7 @@ export default function GameScreen({ route, navigation }) {
             },
           ]}
         >
-          <Text style={styles.playerEmoji}>🚀</Text>
+          <Text style={styles.playerEmoji}>{rideEmoji}</Text>
         </View>
 
         {/* Shield glow ring */}
@@ -592,7 +627,7 @@ export default function GameScreen({ route, navigation }) {
           />
         )}
 
-        {/* Obstacles */}
+        {/* Obstacles — show enemy emoji */}
         {obstacles.map((o) => (
           <View
             key={o.id}
@@ -611,9 +646,15 @@ export default function GameScreen({ route, navigation }) {
                     : COLORS.movingObstacle
                   : COLORS.obstacle,
                 borderRadius: o.isMoving ? 8 : 4,
+                justifyContent: 'center',
+                alignItems: 'center',
               },
             ]}
-          />
+          >
+            <Text style={{ fontSize: Math.min(o.w, o.h) * 0.5, textAlign: 'center' }}>
+              {enemyEmoji}
+            </Text>
+          </View>
         ))}
 
         {/* Pickups */}
@@ -668,7 +709,7 @@ export default function GameScreen({ route, navigation }) {
         {!gameStarted && !gameOver && !showContinue && (
           <View style={styles.startOverlay}>
             <Text style={styles.startTitle}>{gameName || 'Quick Gamer'}</Text>
-            <Text style={styles.introText}>☄️  AVOID THE ASTEROIDS  ☄️</Text>
+            <Text style={styles.introText}>{enemyEmoji}  DODGE THE {enemyLabel}  {enemyEmoji}</Text>
             {(initialShields > 0 || initialRockets > 0) && (
               <View style={styles.startLoadout}>
                 {initialShields > 0 && (
