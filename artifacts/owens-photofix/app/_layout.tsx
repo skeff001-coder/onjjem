@@ -88,7 +88,7 @@ function AppSplash() {
         <View style={splash.londonLine} />
         <View style={splash.londonRow}>
           <Text style={splash.londonFlag}>🇬🇧</Text>
-          <Text style={splash.londonText}>Expertly Restored in London</Text>
+          <Text style={splash.londonText}>A UK family business</Text>
         </View>
       </View>
     </View>

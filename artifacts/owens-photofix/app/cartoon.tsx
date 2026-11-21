@@ -184,7 +184,7 @@ export default function CartoonScreen() {
               See a free preview of your photo as a cartoon before you decide — love it? Add the full version to any gift for just £1.99.
             </Text>
 
-            <Text style={s.sampleLabel}>Real customer results — this is what yours could look like</Text>
+            <Text style={s.sampleLabel}>Example results — this is what yours could look like</Text>
             <CartoonCarousel samples={CARTOON_SAMPLES} />
             <Text style={s.sampleCaption}>
               Turn your favourite photo into a keepsake your loved ones will treasure forever. Find your cartoon on mugs, canvases, postcards & more at ONJJEM — free UK delivery.
@@ -195,7 +195,7 @@ export default function CartoonScreen() {
             </Text>
 
             <TouchableOpacity
-              onPress={() => WebBrowser.openBrowserAsync("https://onjjem.com/?category=households&product=ChromaCoat+Mug")}
+              onPress={() => WebBrowser.openBrowserAsync("https://onjjem.com/mug")}
               style={s.websiteCtaButton}
             >
               <Ionicons name="color-wand-outline" size={20} color="#0F0D09" />

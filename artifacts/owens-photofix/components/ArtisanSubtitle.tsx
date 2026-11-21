@@ -49,7 +49,7 @@ export function ArtisanSubtitle({ fontSize = 18, letterSpacing = 3 }: Props) {
           : {},
       ]}
     >
-      ARTISAN PRINT EMPORIUM
+      PERSONALISED PHOTO GIFTS
     </Text>
   );
 

@@ -34,39 +34,40 @@ import { ArtisanSubtitle } from "@/components/ArtisanSubtitle";
 const { width: SCREEN_W } = Dimensions.get("window");
 
 const TILES = [
-
-{ name: "Summer Deals", icon: "sunny-outline" },
-
-{ name: "Wall Art", icon: "image-outline" },
-
-{ name: "Prints", icon: "images-outline" },
-
-{ name: "Gifts", icon: "gift-outline" },
-
-{ name: "Kitchen and Home", icon: "cafe-outline" },
-
-{ name: "Many Many More", icon: "sparkles-outline" },
-
+  { name: "Christmas", icon: "gift-outline", url: "https://onjjem.com/shop-christmas" },
+  { name: "Wall Art", icon: "image-outline", url: "https://onjjem.com/shop-wall-art" },
+  { name: "Home & Kitchen", icon: "cafe-outline", url: "https://onjjem.com/shop-home" },
+  { name: "Clothing & Kids", icon: "shirt-outline", url: "https://onjjem.com/shop-clothing" },
+  { name: "Pets", icon: "paw-outline", url: "https://onjjem.com/shop-pets" },
+  { name: "Deals", icon: "pricetag-outline", url: "https://onjjem.com/shop-deals" },
 ];
 
+// Real customer reviews only (same as onjjem.com).
 const REVIEWS = [
-
-{ name: "Claire M, Birmingham", product: "Canvas Print", text: "Got a canvas of my daughter for my husband and he cried when he opened it. Absolutely beautiful quality." },
-
-{ name: "James T, Manchester", product: "ChromaCoat Mug", text: "Ordered a ChromaCoat Mug with my sons favourite footballer on it. He could not believe it when he opened it - his face was a picture!" },
-
-{ name: "Sarah K, Edinburgh", product: "Photo Jigsaw", text: "The jigsaw of our family holiday photo was stunning. Every piece perfect. Arrived so quickly. Brilliant company." },
-
-{ name: "David R, London", product: "Framed Print", text: "Framed print of my dog arrived beautifully packaged. Far better quality than anything I have ordered online before." },
-
+  { name: "Worz", product: "Christmas gifts", text: "Very professional, fast and friendly. Good communication, would recommend to anyone. Very happy with all my purchases." },
+  { name: "C. Murphy", product: "Magic Reveal mug", text: "My Yorkshire terrier on the Magic mug is class in the cartoon style. Kids love it!" },
+  { name: "W Taylor", product: "Cartoon prints", text: "My cartoon style prints of my kids arrived in just 3 days, and the colours look brilliant. Will definitely buy again! Thanks ONJJEM" },
+  { name: "Niamh", product: "Colour-changing mug", text: "Love the mug I ordered. Such a cute design and the heat-activated effect works perfectly. Really happy with it!" },
 ];
+
+// Seasonal banner that changes by itself, so the app never shows an out-of-date offer.
+function seasonBanner() {
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+  if (m === 10) return { title: "BLACK FRIDAY", icon: "pricetag-outline", text: "15% off + a FREE £5 gift card with every order · ends 30 Nov" };
+  if (m === 11 && d <= 12) return { title: "CHRISTMAS GIFTS", icon: "gift-outline", text: "Order by 12 December for Christmas delivery" };
+  if (m === 1 && d <= 14) return { title: "VALENTINE'S DAY", icon: "heart-outline", text: "Personalised gifts for someone special" };
+  return { title: "GIFT IDEAS", icon: "gift-outline", text: "Personalised photo gifts for every occasion" };
+}
 
 export default function HomeScreen() {
 
 const insets = useSafeAreaInsets();
 
-const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=canvas-premium");
-const openMugShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/?category=households&product=ChromaCoat+Mug");
+const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/");
+const openUrl = (u: string) => WebBrowser.openBrowserAsync(u);
+const banner = seasonBanner();
+const openMugShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/mug");
 
 return (
 
@@ -96,7 +97,7 @@ showsVerticalScrollIndicator={false}
 
 <ArtisanSubtitle fontSize={15} letterSpacing={2} />
 
-<Text style={s.tagline}>Personalised Photo Gift Specialists</Text>
+<Text style={s.tagline}>A UK family business</Text>
 
 <View style={s.goldLine} />
 
@@ -133,7 +134,7 @@ showsVerticalScrollIndicator={false}
 
 <View style={s.badgeItem}>
   <Ionicons name="shield-checkmark-outline" size={16} color="#C9960C" />
-  <Text style={s.badgeText}>Made in UK</Text>
+  <Text style={s.badgeText}>UK Family Business</Text>
 </View>
 
 <View style={s.badgeDivider} />
@@ -147,7 +148,7 @@ showsVerticalScrollIndicator={false}
 
 <View style={s.badgeItem}>
   <Ionicons name="lock-closed-outline" size={16} color="#C9960C" />
-  <Text style={s.badgeText}>100% Private</Text>
+  <Text style={s.badgeText}>Secure Checkout</Text>
 </View>
 
 </View>
@@ -180,23 +181,13 @@ activeOpacity={0.88}
 
 </TouchableOpacity>
 
-<TouchableOpacity style={s.ctaGold} onPress={openShop} activeOpacity={0.85}>
-
-<Ionicons name="bag-handle-outline" size={20} color="#0A0804" />
-
-<Text style={s.ctaGoldText}>Shop All Personalised Gifts</Text>
-
-<Ionicons name="chevron-forward" size={16} color="#0A0804" />
-
-</TouchableOpacity>
-
 <Text style={s.sectionTitle}>Browse Our Gifts</Text>
 
 <View style={s.grid}>
 
 {TILES.map((t, i) => (
 
-<TouchableOpacity key={i} style={s.card} onPress={openShop} activeOpacity={0.8}>
+<TouchableOpacity key={i} style={s.card} onPress={() => openUrl(t.url)} activeOpacity={0.8}>
 
 <Ionicons name={t.icon as any} size={28} color="#C9960C" />
 
@@ -208,25 +199,19 @@ activeOpacity={0.88}
 
 </View>
 
-<View style={s.xmasBanner}>
-
-<Text style={s.xmasTitle}>SUMMER DEALS</Text>
-
+<TouchableOpacity style={s.xmasBanner} onPress={() => openUrl("https://onjjem.com/shop-deals")} activeOpacity={0.85}>
+<Text style={s.xmasTitle}>{banner.title}</Text>
 <View style={s.xmasRow}>
-
-<Ionicons name="sunny-outline" size={16} color="#F5D78E" />
-
-<Text style={s.xmasItem}>Personalised photo gifts from just £6.99</Text>
-
+<Ionicons name={banner.icon as any} size={16} color="#F5D78E" />
+<Text style={s.xmasItem}>{banner.text}</Text>
 </View>
-
-</View>
+</TouchableOpacity>
 
 <View style={s.mugFeature}>
 
 <Text style={s.mugLabel}>OUR BESTSELLER</Text>
 
-<Text style={s.mugTitle}>The ChromaCoat Mug</Text>
+<Text style={s.mugTitle}>The Magic Reveal Mug</Text>
 
 <View style={s.mugImageRow}>
 
@@ -250,13 +235,13 @@ Prank the family. Surprise your partner. The perfect gift for birthdays, anniver
 
 <Text style={s.mugDescSub}>
 
-Made with state-of-the-art thermochromic technology and stunning HD print quality — genuinely top of the range.
+The mug starts black. Pour in a hot drink and your photo slowly appears.
 
 </Text>
 
 <TouchableOpacity style={s.mugBtn} onPress={openMugShop} activeOpacity={0.85}>
 
-<Text style={s.mugBtnText}>Order The ChromaCoat Mug - £17.99</Text>
+<Text style={s.mugBtnText}>Order the Magic Reveal Mug</Text>
 
 <Ionicons name="chevron-forward" size={14} color="#0A0804" />
 
@@ -298,13 +283,11 @@ Made with state-of-the-art thermochromic technology and stunning HD print qualit
 
 <View style={{ flex: 1 }}>
 
-<Text style={s.deliveryTitle}>Fast UK Delivery</Text>
+<Text style={s.deliveryTitle}>Free UK Delivery</Text>
 
 <Text style={s.deliverySub}>
 
-Dispatched within 1 to 2 days via Royal Mail Tracked. Delivered in 3 to 4
-
-working days.
+Free tracked delivery to your door. Every gift is made to order with your photo.
 
 </Text>
 
@@ -324,7 +307,7 @@ working days.
 
 <View style={s.badges}>
 
-{["Made in Britain", "Secure Payment", "Fast Delivery", "5 Star Quality", "Photos Kept Private"].map((b, i) => (
+{["UK Family Business", "Secure Payment", "Free UK Delivery", "5 Star Reviews"].map((b, i) => (
 
 <View key={i} style={s.badge}>
 
@@ -340,7 +323,7 @@ working days.
 
 <Text style={s.footerBrand}>ONJJEM</Text>
 
-<Text style={s.footerSub}>Personalised Photo Gifts - Made in Britain</Text>
+<Text style={s.footerSub}>Personalised Photo Gifts · A UK family business</Text>
 
 </View>
 
