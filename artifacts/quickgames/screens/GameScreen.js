@@ -513,15 +513,7 @@ export default function GameScreen({ route, navigation }) {
     frameIdRef.current = requestAnimationFrame(gameLoop);
   }, []);
 
-  // ── Auto-start after intro ──
-  useEffect(() => {
-    const autoStartTimer = setTimeout(() => {
-      if (!gameActiveRef.current) {
-        startGame();
-      }
-    }, 2500);
-    return () => clearTimeout(autoStartTimer);
-  }, []);
+  // Player taps the game area to start (handled by panResponder)
 
   // ── Cleanup ──
   useEffect(() => {
@@ -706,11 +698,43 @@ export default function GameScreen({ route, navigation }) {
           </View>
         ))}
 
-        {/* Space intro — shows for 2.5s then auto-starts */}
+        {/* Pre-game guide — explains all icons then auto-starts */}
         {!gameStarted && !gameOver && !showContinue && (
           <View style={styles.startOverlay}>
             <Text style={styles.startTitle}>{gameName || 'Quick Gamer'}</Text>
             <Text style={styles.introText}>{enemyEmoji}  DODGE THE {enemyLabel}  {enemyEmoji}</Text>
+
+            <View style={styles.guideBox}>
+              <View style={styles.guideRow}>
+                <Text style={styles.guideIcon}>♥♥♥</Text>
+                <Text style={styles.guideLabel}>Your lives — lose them all and it's game over</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <View style={[styles.guideSwatch, { backgroundColor: COLORS.obstacle }]} />
+                <Text style={styles.guideLabel}>Enemies — dodge them!</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <View style={[styles.guideSwatch, { backgroundColor: COLORS.movingObstacle }]} />
+                <Text style={styles.guideLabel}>Moving enemies — they bounce up and down</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <Text style={styles.guideIcon}>🛡️</Text>
+                <Text style={styles.guideLabel}>Shield — absorbs one hit for you</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <Text style={styles.guideIcon}>🚀</Text>
+                <Text style={styles.guideLabel}>Rocket — tap the button to blast enemies</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <View style={[styles.guidePickup, { backgroundColor: COLORS.shieldPickup }]} />
+                <Text style={styles.guideLabel}>Collect for extra shields</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <View style={[styles.guidePickup, { backgroundColor: COLORS.rocketPickup }]} />
+                <Text style={styles.guideLabel}>Collect for extra rockets</Text>
+              </View>
+            </View>
+
             {(initialShields > 0 || initialRockets > 0) && (
               <View style={styles.startLoadout}>
                 {initialShields > 0 && (
@@ -725,7 +749,7 @@ export default function GameScreen({ route, navigation }) {
                 )}
               </View>
             )}
-            <Text style={styles.tapText}>LAUNCHING...</Text>
+            <Text style={styles.tapText}>TAP TO LAUNCH</Text>
           </View>
         )}
       </ImageBackground>
@@ -941,6 +965,35 @@ const styles = StyleSheet.create({
     textShadowColor: '#00D9FF',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 15,
+  },
+  guideBox: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 12,
+    padding: 14,
+    marginTop: 16,
+    marginHorizontal: 10,
+    gap: 8,
+  },
+  guideRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  guideIcon: { fontSize: 18, width: 36, textAlign: 'center' },
+  guideLabel: { fontSize: 13, color: '#CCCCCC', flex: 1 },
+  guideSwatch: {
+    width: 28,
+    height: 16,
+    borderRadius: 3,
+    marginLeft: 4,
+    marginRight: 4,
+  },
+  guidePickup: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    marginLeft: 7,
+    marginRight: 7,
   },
   startLoadout: {
     flexDirection: 'row',
