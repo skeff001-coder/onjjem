@@ -18,7 +18,9 @@ const GAME_TOP = 0;  // All Y coords are relative to game area view
 const GAME_H = H - TOP_BAR - 40;
 const PLAYER_W = 44;
 const PLAYER_H = 44;
-const PLAYER_X = 60;
+const PLAYER_X_DEFAULT = 60;
+const PLAYER_X_MIN = 20;
+const PLAYER_X_MAX = W * 0.45;  // can't go past 45% of screen width
 
 // ── Difficulty curve (gentler ramp) ──
 const BASE_SPEED = 3;
@@ -146,6 +148,7 @@ export default function GameScreen({ route, navigation }) {
 
   // ── Render state ──
   const [playerY, setPlayerY] = useState(GAME_H / 2 - PLAYER_H / 2);
+  const [playerX, setPlayerX] = useState(PLAYER_X_DEFAULT);
   const [obstacles, setObstacles] = useState([]);
   const [pickups, setPickups] = useState([]);
   const [rockets, setRockets] = useState([]);
@@ -169,7 +172,9 @@ export default function GameScreen({ route, navigation }) {
 
   // ── Refs ──
   const playerYRef = useRef(GAME_H / 2 - PLAYER_H / 2);
+  const playerXRef = useRef(PLAYER_X_DEFAULT);
   const targetYRef = useRef(GAME_H / 2 - PLAYER_H / 2);
+  const targetXRef = useRef(PLAYER_X_DEFAULT);
   const obstaclesRef = useRef([]);
   const pickupsRef = useRef([]);
   const rocketsRef = useRef([]);
@@ -210,16 +215,26 @@ export default function GameScreen({ route, navigation }) {
           return;
         }
         const touchY = evt.nativeEvent.locationY;
+        const touchX = evt.nativeEvent.locationX;
         targetYRef.current = Math.max(
           0,
           Math.min(touchY - PLAYER_H / 2, GAME_H - PLAYER_H)
         );
+        targetXRef.current = Math.max(
+          PLAYER_X_MIN,
+          Math.min(touchX - PLAYER_W / 2, PLAYER_X_MAX)
+        );
       },
       onPanResponderMove: (evt) => {
         const touchY = evt.nativeEvent.locationY;
+        const touchX = evt.nativeEvent.locationX;
         targetYRef.current = Math.max(
           0,
           Math.min(touchY - PLAYER_H / 2, GAME_H - PLAYER_H)
+        );
+        targetXRef.current = Math.max(
+          PLAYER_X_MIN,
+          Math.min(touchX - PLAYER_W / 2, PLAYER_X_MAX)
         );
       },
     })
@@ -231,7 +246,7 @@ export default function GameScreen({ route, navigation }) {
     rocketAmmoRef.current -= 1;
     rocketsRef.current.push({
       id: Date.now(),
-      x: PLAYER_X + PLAYER_W,
+      x: playerXRef.current + PLAYER_W,
       y: playerYRef.current + PLAYER_H / 2 - ROCKET_H / 2,
     });
   }, []);
@@ -241,7 +256,9 @@ export default function GameScreen({ route, navigation }) {
     const now = performance.now();
     gameActiveRef.current = true;
     playerYRef.current = GAME_H / 2 - PLAYER_H / 2;
+    playerXRef.current = PLAYER_X_DEFAULT;
     targetYRef.current = GAME_H / 2 - PLAYER_H / 2;
+    targetXRef.current = PLAYER_X_DEFAULT;
     obstaclesRef.current = [];
     pickupsRef.current = [];
     rocketsRef.current = [];
@@ -268,6 +285,7 @@ export default function GameScreen({ route, navigation }) {
     slowMoUntilRef.current = 0;
 
     setPlayerY(playerYRef.current);
+    setPlayerX(PLAYER_X_DEFAULT);
     setObstacles([]);
     setPickups([]);
     setNukePickups([]);
@@ -306,7 +324,7 @@ export default function GameScreen({ route, navigation }) {
 
     // Clear obstacles near the player
     obstaclesRef.current = obstaclesRef.current.filter(
-      (o) => o.x > PLAYER_X + 150
+      (o) => o.x > playerXRef.current + 150
     );
 
     setLives(1);
@@ -375,9 +393,11 @@ export default function GameScreen({ route, navigation }) {
     // ── Scroll background ──
     bgScrollRef.current = (bgScrollRef.current + speed * 0.5) % W;
 
-    // ── Player movement ──
-    const diff = targetYRef.current - playerYRef.current;
-    playerYRef.current += diff * 0.18;
+    // ── Player movement (X and Y) ──
+    const diffY = targetYRef.current - playerYRef.current;
+    playerYRef.current += diffY * 0.18;
+    const diffX = targetXRef.current - playerXRef.current;
+    playerXRef.current += diffX * 0.18;
 
     // ── Invincibility timeout ──
     if (invincibleRef.current && timestamp >= invincibleUntilRef.current) {
@@ -478,14 +498,14 @@ export default function GameScreen({ route, navigation }) {
         continue;
       }
 
-      if (!o.scored && o.x + o.w < PLAYER_X) {
+      if (!o.scored && o.x + o.w < playerXRef.current) {
         o.scored = true;
         newScore += 1;
       }
 
       // Player collision
       if (!invincibleRef.current) {
-        const px = PLAYER_X;
+        const px = playerXRef.current;
         const py = playerYRef.current;
         if (
           px + PLAYER_W > o.x &&
@@ -528,7 +548,7 @@ export default function GameScreen({ route, navigation }) {
       }
 
       // Collect
-      const px = PLAYER_X;
+      const px = playerXRef.current;
       const py = playerYRef.current;
       if (
         px + PLAYER_W > p.x &&
@@ -557,7 +577,7 @@ export default function GameScreen({ route, navigation }) {
       }
 
       // Collect nuke
-      const npx = PLAYER_X;
+      const npx = playerXRef.current;
       const npy = playerYRef.current;
       if (
         npx + PLAYER_W > n.x &&
@@ -588,7 +608,7 @@ export default function GameScreen({ route, navigation }) {
       }
 
       // Collect slow-mo
-      const spx = PLAYER_X;
+      const spx = playerXRef.current;
       const spy = playerYRef.current;
       if (
         spx + PLAYER_W > sm.x &&
@@ -643,6 +663,7 @@ export default function GameScreen({ route, navigation }) {
 
     // ── Push to React state ──
     setPlayerY(playerYRef.current);
+    setPlayerX(playerXRef.current);
     setObstacles([...obs]);
     setPickups([...pks]);
     setRockets([...rks]);
@@ -764,7 +785,7 @@ export default function GameScreen({ route, navigation }) {
             styles.player,
             {
               top: playerY,
-              left: PLAYER_X,
+              left: playerX,
               opacity: invincible
                 ? Math.floor(Date.now() / 100) % 2 === 0
                   ? 1
@@ -783,7 +804,7 @@ export default function GameScreen({ route, navigation }) {
               styles.shieldRing,
               {
                 top: playerY - 6,
-                left: PLAYER_X - 6,
+                left: playerX - 6,
               },
             ]}
           />
