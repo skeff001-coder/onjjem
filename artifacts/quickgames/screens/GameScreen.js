@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -107,6 +107,22 @@ export default function GameScreen({ route, navigation }) {
   const enemyLabel = ENEMY_LABEL[design?.enemy] || 'ASTEROIDS';
   const goalEmoji = GOAL_EMOJI[design?.goal] || '⭐';
   const worldImage = WORLD_IMAGES[design?.world] || WORLD_IMAGES.space;
+
+  // ── Background stars (fixed random positions) ──
+  const bgStars = useMemo(() => {
+    const stars = [];
+    for (let i = 0; i < 60; i++) {
+      stars.push({
+        id: i,
+        x: Math.random() * W,
+        y: Math.random() * GAME_H * 0.75, // only in top 75% (above the strip)
+        size: Math.random() < 0.85 ? Math.random() * 2 + 1 : Math.random() * 4 + 3, // mostly tiny, a few bigger
+        opacity: Math.random() * 0.6 + 0.2,
+        char: Math.random() < 0.92 ? '·' : Math.random() < 0.5 ? '✦' : '✧',
+      });
+    }
+    return stars;
+  }, []);
 
   // ── Render state ──
   const [playerY, setPlayerY] = useState(GAME_H / 2 - PLAYER_H / 2);
@@ -593,6 +609,22 @@ export default function GameScreen({ route, navigation }) {
           <Image source={worldImage} style={[styles.bgStrip, { left: -bgScrollX }]} resizeMode="cover" />
           <Image source={worldImage} style={[styles.bgStrip, { left: W - bgScrollX }]} resizeMode="cover" />
         </View>
+        {/* Stars and planets scattered in the dark sky */}
+        {bgStars.map((s) => (
+          <Text
+            key={s.id}
+            style={{
+              position: 'absolute',
+              left: s.x,
+              top: s.y,
+              fontSize: s.size,
+              color: `rgba(200, 220, 255, ${s.opacity})`,
+              zIndex: 1,
+            }}
+          >
+            {s.char}
+          </Text>
+        ))}
         {/* Player */}
         <View
           style={[
@@ -624,31 +656,26 @@ export default function GameScreen({ route, navigation }) {
           />
         )}
 
-        {/* Obstacles — show enemy emoji */}
+        {/* Obstacles — enemy emoji floating freely */}
         {obstacles.map((o) => (
           <View
             key={o.id}
-            style={[
-              styles.obstacle,
-              {
-                left: o.x,
-                top: o.y,
-                width: o.w,
-                height: o.h,
-                backgroundColor: o.isMoving
-                  ? o.x > W - 60
-                    ? Math.floor(Date.now() / 150) % 2 === 0
-                      ? COLORS.movingWarning
-                      : COLORS.movingObstacle
-                    : COLORS.movingObstacle
-                  : COLORS.obstacle,
-                borderRadius: o.isMoving ? 8 : 4,
-                justifyContent: 'center',
-                alignItems: 'center',
-              },
-            ]}
+            style={{
+              position: 'absolute',
+              left: o.x,
+              top: o.y,
+              width: o.w,
+              height: o.h,
+              justifyContent: 'center',
+              alignItems: 'center',
+              opacity: o.isMoving && o.x > W - 60
+                ? Math.floor(Date.now() / 150) % 2 === 0
+                  ? 1
+                  : 0.6
+                : 1,
+            }}
           >
-            <Text style={{ fontSize: Math.min(o.w, o.h) * 0.5, textAlign: 'center' }}>
+            <Text style={{ fontSize: Math.min(o.w, o.h) * 0.7, textAlign: 'center' }}>
               {enemyEmoji}
             </Text>
           </View>
@@ -714,12 +741,8 @@ export default function GameScreen({ route, navigation }) {
                 <Text style={styles.guideLabel}>Your lives — lose them all and it's game over</Text>
               </View>
               <View style={styles.guideRow}>
-                <View style={[styles.guideSwatch, { backgroundColor: COLORS.obstacle }]} />
+                <Text style={styles.guideIcon}>{enemyEmoji}</Text>
                 <Text style={styles.guideLabel}>Enemies — dodge them!</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <View style={[styles.guideSwatch, { backgroundColor: COLORS.movingObstacle }]} />
-                <Text style={styles.guideLabel}>Moving enemies — they bounce up and down</Text>
               </View>
               <View style={styles.guideRow}>
                 <Text style={styles.guideIcon}>🛡️</Text>
