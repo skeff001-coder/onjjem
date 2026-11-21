@@ -588,9 +588,11 @@ export default function GameScreen({ route, navigation }) {
 
       {/* ── Game area ── */}
       <View style={styles.gameArea} {...panResponder.panHandlers}>
-        {/* Scrolling background — two copies for infinite loop */}
-        <Image source={worldImage} style={[styles.bgImage, { left: -bgScrollX }]} resizeMode="cover" />
-        <Image source={worldImage} style={[styles.bgImage, { left: W - bgScrollX }]} resizeMode="cover" />
+        {/* Scrolling background — bottom third strip for seamless loop */}
+        <View style={styles.bgStripContainer}>
+          <Image source={worldImage} style={[styles.bgStrip, { left: -bgScrollX }]} resizeMode="cover" />
+          <Image source={worldImage} style={[styles.bgStrip, { left: W - bgScrollX }]} resizeMode="cover" />
+        </View>
         {/* Player */}
         <View
           style={[
@@ -895,8 +897,9 @@ const styles = StyleSheet.create({
   speedText: { fontSize: 14, color: COLORS.dimText, fontFamily: 'Courier' },
 
   // ── Game area ──
-  gameArea: { flex: 1, position: 'relative', overflow: 'hidden' },
-  bgImage: { position: 'absolute', top: 0, width: W, height: '100%' },
+  gameArea: { flex: 1, position: 'relative', overflow: 'hidden', backgroundColor: '#0a0a1a' },
+  bgStripContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', overflow: 'hidden' },
+  bgStrip: { position: 'absolute', top: 0, width: W, height: '100%' },
   player: {
     position: 'absolute',
     width: PLAYER_W,
