@@ -13,7 +13,7 @@ const { width: W, height: H } = Dimensions.get('window');
 
 // ── Layout ──
 const TOP_BAR = 100;
-const GAME_TOP = TOP_BAR;
+const GAME_TOP = 0;  // All Y coords are relative to game area view
 const GAME_H = H - TOP_BAR - 40;
 const PLAYER_W = 44;
 const PLAYER_H = 44;
@@ -73,7 +73,7 @@ export default function GameScreen({ route, navigation }) {
     route?.params || {};
 
   // ── Render state ──
-  const [playerY, setPlayerY] = useState(GAME_TOP + GAME_H / 2 - PLAYER_H / 2);
+  const [playerY, setPlayerY] = useState(GAME_H / 2 - PLAYER_H / 2);
   const [obstacles, setObstacles] = useState([]);
   const [pickups, setPickups] = useState([]);
   const [rockets, setRockets] = useState([]);
@@ -91,8 +91,8 @@ export default function GameScreen({ route, navigation }) {
   const [rocketBlasts, setRocketBlasts] = useState([]);
 
   // ── Refs ──
-  const playerYRef = useRef(GAME_TOP + GAME_H / 2 - PLAYER_H / 2);
-  const targetYRef = useRef(GAME_TOP + GAME_H / 2 - PLAYER_H / 2);
+  const playerYRef = useRef(GAME_H / 2 - PLAYER_H / 2);
+  const targetYRef = useRef(GAME_H / 2 - PLAYER_H / 2);
   const obstaclesRef = useRef([]);
   const pickupsRef = useRef([]);
   const rocketsRef = useRef([]);
@@ -126,17 +126,17 @@ export default function GameScreen({ route, navigation }) {
           startGame();
           return;
         }
-        const touchY = evt.nativeEvent.pageY;
+        const touchY = evt.nativeEvent.locationY;
         targetYRef.current = Math.max(
-          GAME_TOP,
-          Math.min(touchY - PLAYER_H / 2, GAME_TOP + GAME_H - PLAYER_H)
+          0,
+          Math.min(touchY - PLAYER_H / 2, GAME_H - PLAYER_H)
         );
       },
       onPanResponderMove: (evt) => {
-        const touchY = evt.nativeEvent.pageY;
+        const touchY = evt.nativeEvent.locationY;
         targetYRef.current = Math.max(
-          GAME_TOP,
-          Math.min(touchY - PLAYER_H / 2, GAME_TOP + GAME_H - PLAYER_H)
+          0,
+          Math.min(touchY - PLAYER_H / 2, GAME_H - PLAYER_H)
         );
       },
     })
@@ -156,8 +156,8 @@ export default function GameScreen({ route, navigation }) {
   // ── Start / restart ──
   const startGame = useCallback(() => {
     const now = performance.now();
-    playerYRef.current = GAME_TOP + GAME_H / 2 - PLAYER_H / 2;
-    targetYRef.current = GAME_TOP + GAME_H / 2 - PLAYER_H / 2;
+    playerYRef.current = GAME_H / 2 - PLAYER_H / 2;
+    targetYRef.current = GAME_H / 2 - PLAYER_H / 2;
     obstaclesRef.current = [];
     pickupsRef.current = [];
     rocketsRef.current = [];
@@ -297,7 +297,7 @@ export default function GameScreen({ route, navigation }) {
       const sizeProgress = Math.min(elapsedS / 45, 1);
       const obsW = MIN_OBS_W + (MAX_OBS_W - MIN_OBS_W) * sizeProgress;
       const obsH = MIN_OBS_H + (MAX_OBS_H - MIN_OBS_H) * sizeProgress * 0.7;
-      const obsY = GAME_TOP + Math.random() * (GAME_H - obsH);
+      const obsY = Math.random() * (GAME_H - obsH);
 
       const isMoving = count % MOVING_OBS_EVERY === 0 && elapsedS > 15;
       const moveAmplitude = isMoving ? 40 + sizeProgress * 40 : 0;
@@ -322,7 +322,7 @@ export default function GameScreen({ route, navigation }) {
     // ── Spawn pickups ──
     if (timestamp >= nextPickupTimeRef.current && elapsedS > 5) {
       const type = Math.random() < 0.5 ? 'shield' : 'rocket';
-      const py = GAME_TOP + Math.random() * (GAME_H - PICKUP_SIZE);
+      const py = Math.random() * (GAME_H - PICKUP_SIZE);
       pickupsRef.current.push({
         id: Date.now(),
         x: W + 10,
@@ -346,7 +346,7 @@ export default function GameScreen({ route, navigation }) {
       if (o.isMoving) {
         const t = timestamp - o.spawnTime;
         o.y = o.baseY + Math.sin(t * o.moveSpeed) * o.moveAmplitude;
-        o.y = Math.max(GAME_TOP, Math.min(o.y, GAME_TOP + GAME_H - o.h));
+        o.y = Math.max(0, Math.min(o.y, GAME_H - o.h));
       }
 
       if (o.x + o.w < -20) {
