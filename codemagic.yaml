@@ -177,14 +177,13 @@ workflows:
     scripts:
       - name: Install dependencies
         script: |
-          npm install -g pnpm --force
           cd artifacts/quickgames
-          pnpm install --no-frozen-lockfile --ignore-workspace
+          npm install
 
       - name: Expo prebuild (generate native iOS project)
         script: |
           cd artifacts/quickgames
-          pnpm exec expo prebuild --platform ios --clean
+          npx expo prebuild --platform ios --clean
 
       - name: Patch pods deployment target
         script: |
