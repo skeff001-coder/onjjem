@@ -52,7 +52,7 @@ const SECTIONS = [
   },
   {
     title: "Contact Us",
-    body: "For any privacy-related questions or requests:\n\nEmail: privacy@onjjem.com\nWebsite: www.onjjem.com\n\nONJJEM, Preston, United Kingdom",
+    body: "For any privacy-related questions or requests:\n\nEmail: privacy@onjjem.com\nWebsite: www.onjjem.com\n\nONJJEM, United Kingdom",
   },
 ];
 

@@ -30,17 +30,11 @@ import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 
 import { ArtisanSubtitle } from "@/components/ArtisanSubtitle";
+import { IS_US, SITE, SHOP_TILES, MUG_URL, DEALS_URL, DELIVERY_URL } from "@/lib/region";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 
-const TILES = [
-  { name: "Christmas", icon: "gift-outline", url: "https://onjjem.com/shop-christmas" },
-  { name: "Wall Art", icon: "image-outline", url: "https://onjjem.com/shop-wall-art" },
-  { name: "Home & Kitchen", icon: "cafe-outline", url: "https://onjjem.com/shop-home" },
-  { name: "Clothing & Kids", icon: "shirt-outline", url: "https://onjjem.com/shop-clothing" },
-  { name: "Pets", icon: "paw-outline", url: "https://onjjem.com/shop-pets" },
-  { name: "Deals", icon: "pricetag-outline", url: "https://onjjem.com/shop-deals" },
-];
+const TILES = SHOP_TILES;
 
 // Real customer reviews only (same as onjjem.com).
 const REVIEWS = [
@@ -50,10 +44,16 @@ const REVIEWS = [
   { name: "Niamh", product: "Colour-changing mug", text: "Love the mug I ordered. Such a cute design and the heat-activated effect works perfectly. Really happy with it!" },
 ];
 
+const SHOWN_REVIEWS = IS_US ? REVIEWS.filter(r => !/magic|colour-changing/i.test(r.product)) : REVIEWS;
+
 // Seasonal banner that changes by itself, so the app never shows an out-of-date offer.
 function seasonBanner() {
   const now = new Date();
-  const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+  const m = now.getMonth(), d = now.getDate();
+  if (IS_US) {
+    if (m === 10 || (m === 11 && d <= 10)) return { title: "HOLIDAY GIFTS", icon: "gift-outline", text: "Personalized gifts made with your photo · order early for the holidays" };
+    return { title: "GIFT IDEAS", icon: "gift-outline", text: "Personalized photo gifts for every occasion" };
+  }
   if (m === 10) return { title: "BLACK FRIDAY", icon: "pricetag-outline", text: "15% off + a FREE £5 gift card with every order · ends 30 Nov" };
   if (m === 11 && d <= 12) return { title: "CHRISTMAS GIFTS", icon: "gift-outline", text: "Order by 12 December for Christmas delivery" };
   if (m === 1 && d <= 14) return { title: "VALENTINE'S DAY", icon: "heart-outline", text: "Personalised gifts for someone special" };
@@ -64,10 +64,10 @@ export default function HomeScreen() {
 
 const insets = useSafeAreaInsets();
 
-const openShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/");
+const openShop = () => WebBrowser.openBrowserAsync(SITE);
 const openUrl = (u: string) => WebBrowser.openBrowserAsync(u);
 const banner = seasonBanner();
-const openMugShop = () => WebBrowser.openBrowserAsync("https://onjjem.com/mug");
+const openMugShop = () => WebBrowser.openBrowserAsync(MUG_URL);
 
 return (
 
@@ -199,7 +199,7 @@ activeOpacity={0.88}
 
 </View>
 
-<TouchableOpacity style={s.xmasBanner} onPress={() => openUrl("https://onjjem.com/shop-deals")} activeOpacity={0.85}>
+<TouchableOpacity style={s.xmasBanner} onPress={() => openUrl(DEALS_URL)} activeOpacity={0.85}>
 <Text style={s.xmasTitle}>{banner.title}</Text>
 <View style={s.xmasRow}>
 <Ionicons name={banner.icon as any} size={16} color="#F5D78E" />
@@ -207,11 +207,12 @@ activeOpacity={0.88}
 </View>
 </TouchableOpacity>
 
+{!IS_US && (
 <View style={s.mugFeature}>
 
-<Text style={s.mugLabel}>OUR BESTSELLER</Text>
+<Text style={s.mugLabel}>{IS_US ? "A GIFT THEY'LL USE EVERY DAY" : "OUR BESTSELLER"}</Text>
 
-<Text style={s.mugTitle}>The Magic Reveal Mug</Text>
+<Text style={s.mugTitle}>{IS_US ? "The Photo Mug" : "The Magic Reveal Mug"}</Text>
 
 <View style={s.mugImageRow}>
 
@@ -241,19 +242,20 @@ The mug starts black. Pour in a hot drink and your photo slowly appears.
 
 <TouchableOpacity style={s.mugBtn} onPress={openMugShop} activeOpacity={0.85}>
 
-<Text style={s.mugBtnText}>Order the Magic Reveal Mug</Text>
+<Text style={s.mugBtnText}>{IS_US ? "Order a Photo Mug" : "Order the Magic Reveal Mug"}</Text>
 
 <Ionicons name="chevron-forward" size={14} color="#0A0804" />
 
 </TouchableOpacity>
 
 </View>
+)}
 
 <View style={s.divider}><Text style={s.dividerText}>What Our Customers Say</Text></View>
 
-<Text style={s.reviewSub}>Trusted by families across the UK</Text>
+<Text style={s.reviewSub}>Real reviews from our customers</Text>
 
-{REVIEWS.map((r, i) => (
+{SHOWN_REVIEWS.map((r, i) => (
 
 <View key={i} style={s.reviewCard}>
 
@@ -283,11 +285,11 @@ The mug starts black. Pour in a hot drink and your photo slowly appears.
 
 <View style={{ flex: 1 }}>
 
-<Text style={s.deliveryTitle}>Free UK Delivery</Text>
+<Text style={s.deliveryTitle}>{IS_US ? "Tracked US Delivery" : "Free UK Delivery"}</Text>
 
 <Text style={s.deliverySub}>
 
-Free tracked delivery to your door. Every gift is made to order with your photo.
+{IS_US ? "Tracked delivery across the USA. Every gift is made to order with your photo." : "Free tracked delivery to your door. Every gift is made to order with your photo."}
 
 </Text>
 
@@ -307,7 +309,7 @@ Free tracked delivery to your door. Every gift is made to order with your photo.
 
 <View style={s.badges}>
 
-{["UK Family Business", "Secure Payment", "Free UK Delivery", "5 Star Reviews"].map((b, i) => (
+{(IS_US ? ["UK Family Business", "Secure Payment", "Ships Across the USA", "5 Star Reviews"] : ["UK Family Business", "Secure Payment", "Free UK Delivery", "5 Star Reviews"]).map((b, i) => (
 
 <View key={i} style={s.badge}>
 
@@ -327,7 +329,7 @@ Free tracked delivery to your door. Every gift is made to order with your photo.
 
 </View>
 
-<TouchableOpacity style={s.footerLink} onPress={() => Linking.openURL("https://onjjem.com/delivery.html")}>
+<TouchableOpacity style={s.footerLink} onPress={() => Linking.openURL(DELIVERY_URL)}>
 
 <Text style={s.footerLinkText}>Delivery Info</Text>
 
