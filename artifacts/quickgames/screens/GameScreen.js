@@ -391,7 +391,7 @@ export default function GameScreen({ route, navigation }) {
     const speed = BASE_SPEED * speedRef.current * slowMoMult;
 
     // ── Scroll background ──
-    bgScrollRef.current = (bgScrollRef.current + speed * 0.5) % W;
+    bgScrollRef.current = (bgScrollRef.current + speed * 0.25) % (W * 2);
 
     // ── Player movement (X and Y) ──
     const diffY = targetYRef.current - playerYRef.current;
@@ -752,19 +752,25 @@ export default function GameScreen({ route, navigation }) {
 
       {/* ── Game area ── */}
       <View style={styles.gameArea} {...panResponder.panHandlers}>
-        {/* Scrolling background — bottom third strip for seamless loop */}
+        {/* Full-screen scrolling background: alternate tiles are mirrored so the seam always matches */}
         <View style={styles.bgStripContainer}>
-          <Image source={worldImage} style={[styles.bgStrip, { left: -bgScrollX }]} resizeMode="cover" />
-          <Image source={worldImage} style={[styles.bgStrip, { left: W - bgScrollX }]} resizeMode="cover" />
-          {/* Silhouette overlay — natural skyline edge instead of hard line */}
-          <Image
-            source={worldSilhouette}
-            style={styles.bgSilhouette}
-            resizeMode="stretch"
-          />
+          {[0, 1, 2].map((k) => (
+            <Image
+              key={k}
+              source={worldImage}
+              style={[
+                styles.bgStrip,
+                { left: k * W - bgScrollX },
+                k % 2 === 1 && { transform: [{ scaleX: -1 }] },
+              ]}
+              resizeMode="cover"
+            />
+          ))}
+          {/* Dim overlay keeps enemies and pickups easy to see */}
+          <View style={styles.bgDim} />
         </View>
         {/* Stars and planets scattered in the dark sky */}
-        {bgStars.map((s) => (
+        {design?.world === 'space' && bgStars.map((s) => (
           <Text
             key={s.id}
             style={{
@@ -1166,7 +1172,8 @@ const styles = StyleSheet.create({
 
   // ── Game area ──
   gameArea: { flex: 1, position: 'relative', overflow: 'hidden', backgroundColor: '#0a0a1a' },
-  bgStripContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: '25%', overflow: 'hidden' },
+  bgStripContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: '100%', overflow: 'hidden' },
+  bgDim: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(10, 10, 26, 0.4)' },
   bgStrip: { position: 'absolute', top: 0, width: W, height: '100%' },
   bgSilhouette: { position: 'absolute', top: 0, left: 0, width: W, height: '100%', zIndex: 2 },
   player: {
