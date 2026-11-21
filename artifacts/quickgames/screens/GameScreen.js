@@ -46,6 +46,11 @@ const PICKUP_SPAWN_MIN_MS = 8000;   // earliest next pickup
 const PICKUP_SPAWN_MAX_MS = 15000;  // latest next pickup
 const NUKE_INTERVAL_MS = 30000;     // nuke appears every 30 seconds
 const NUKE_SIZE = 40;
+const SLOWMO_DURATION_MS = 5000;    // slow-motion lasts 5 seconds
+const SLOWMO_FACTOR = 0.3;          // enemies move at 30% speed
+const SLOWMO_SPAWN_MIN_MS = 20000;  // earliest slow-mo pickup
+const SLOWMO_SPAWN_MAX_MS = 35000;  // latest slow-mo pickup
+const SLOWMO_SIZE = 36;
 const ROCKET_SPEED = 12;
 const ROCKET_W = 20;
 const ROCKET_H = 8;
@@ -148,6 +153,8 @@ export default function GameScreen({ route, navigation }) {
   const [bgScrollX, setBgScrollX] = useState(0);
   const [nukeFlash, setNukeFlash] = useState(false);
   const [nukePickups, setNukePickups] = useState([]);
+  const [slowMoPickups, setSlowMoPickups] = useState([]);
+  const [slowMoActive, setSlowMoActive] = useState(false);
 
   // ── Refs ──
   const playerYRef = useRef(GAME_H / 2 - PLAYER_H / 2);
@@ -177,6 +184,9 @@ export default function GameScreen({ route, navigation }) {
   const bgScrollRef = useRef(0);
   const nukePickupsRef = useRef([]);
   const lastNukeTimeRef = useRef(0);
+  const slowMoPickupsRef = useRef([]);
+  const nextSlowMoTimeRef = useRef(0);
+  const slowMoUntilRef = useRef(0);
 
   // ── Touch ──
   const panResponder = useRef(
@@ -242,11 +252,16 @@ export default function GameScreen({ route, navigation }) {
     bgScrollRef.current = 0;
     nukePickupsRef.current = [];
     lastNukeTimeRef.current = now + NUKE_INTERVAL_MS; // first nuke after 30s
+    slowMoPickupsRef.current = [];
+    nextSlowMoTimeRef.current = now + SLOWMO_SPAWN_MIN_MS;
+    slowMoUntilRef.current = 0;
 
     setPlayerY(playerYRef.current);
     setObstacles([]);
     setPickups([]);
     setNukePickups([]);
+    setSlowMoPickups([]);
+    setSlowMoActive(false);
     setRockets([]);
     setRocketBlasts([]);
     setScore(0);
@@ -341,7 +356,10 @@ export default function GameScreen({ route, navigation }) {
       );
       lastSpeedBumpRef.current = timestamp;
     }
-    const speed = BASE_SPEED * speedRef.current;
+    // Apply slow-mo if active
+    const isSlowMo = timestamp < slowMoUntilRef.current;
+    const slowMoMult = isSlowMo ? SLOWMO_FACTOR : 1;
+    const speed = BASE_SPEED * speedRef.current * slowMoMult;
 
     // ── Scroll background ──
     bgScrollRef.current = (bgScrollRef.current + speed * 0.5) % W;
@@ -414,6 +432,20 @@ export default function GameScreen({ route, navigation }) {
         y: ny,
       });
       lastNukeTimeRef.current = timestamp + NUKE_INTERVAL_MS;
+    }
+
+    // ── Spawn slow-mo pickup ──
+    if (timestamp >= nextSlowMoTimeRef.current && elapsedS > 15) {
+      const sy = Math.random() * (GAME_H - SLOWMO_SIZE);
+      slowMoPickupsRef.current.push({
+        id: Date.now() + 888,
+        x: W + 10,
+        y: sy,
+      });
+      const delay =
+        SLOWMO_SPAWN_MIN_MS +
+        Math.random() * (SLOWMO_SPAWN_MAX_MS - SLOWMO_SPAWN_MIN_MS);
+      nextSlowMoTimeRef.current = timestamp + delay;
     }
 
     // ── Update obstacles ──
@@ -533,6 +565,32 @@ export default function GameScreen({ route, navigation }) {
       }
     }
 
+    // ── Update slow-mo pickups ──
+    const sms = slowMoPickupsRef.current;
+    for (let i = sms.length - 1; i >= 0; i--) {
+      const sm = sms[i];
+      sm.x -= speed * 0.7;
+
+      if (sm.x + SLOWMO_SIZE < -10) {
+        sms.splice(i, 1);
+        continue;
+      }
+
+      // Collect slow-mo
+      const spx = PLAYER_X;
+      const spy = playerYRef.current;
+      if (
+        spx + PLAYER_W > sm.x &&
+        spx < sm.x + SLOWMO_SIZE &&
+        spy + PLAYER_H > sm.y &&
+        spy < sm.y + SLOWMO_SIZE
+      ) {
+        sms.splice(i, 1);
+        // Activate slow-mo for 5 seconds
+        slowMoUntilRef.current = timestamp + SLOWMO_DURATION_MS;
+      }
+    }
+
     // ── Update rockets (player-fired projectiles) ──
     const rks = rocketsRef.current;
     const bls = blastsRef.current;
@@ -579,6 +637,8 @@ export default function GameScreen({ route, navigation }) {
     setRockets([...rks]);
     setRocketBlasts([...bls]);
     setNukePickups([...nks]);
+    setSlowMoPickups([...sms]);
+    setSlowMoActive(isSlowMo);
     setScore(newScore);
     setLives(livesRef.current);
     setShields(shieldsRef.current);
@@ -643,7 +703,9 @@ export default function GameScreen({ route, navigation }) {
             {shields}
           </Text>
         </View>
-        <Text style={styles.speedText}>{speedMultiplier.toFixed(1)}×</Text>
+        <Text style={[styles.speedText, slowMoActive && { color: '#00BFFF' }]}>
+          {slowMoActive ? '🕐 SLOW' : `${speedMultiplier.toFixed(1)}×`}
+        </Text>
         <TouchableOpacity
           style={[styles.rocketBtn, rocketAmmo <= 0 && styles.rocketBtnDisabled]}
           onPress={fireRocket}
@@ -790,6 +852,42 @@ export default function GameScreen({ route, navigation }) {
           />
         )}
 
+        {/* Slow-mo pickups */}
+        {slowMoPickups.map((sm) => (
+          <View
+            key={sm.id}
+            style={{
+              position: 'absolute',
+              left: sm.x,
+              top: sm.y,
+              width: SLOWMO_SIZE,
+              height: SLOWMO_SIZE,
+              borderRadius: SLOWMO_SIZE / 2,
+              backgroundColor: 'rgba(0, 191, 255, 0.3)',
+              borderWidth: 2,
+              borderColor: '#00BFFF',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 16,
+            }}
+          >
+            <Text style={{ fontSize: 20 }}>🕐</Text>
+          </View>
+        ))}
+
+        {/* Slow-mo active tint */}
+        {slowMoActive && (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              backgroundColor: 'rgba(0, 191, 255, 0.08)',
+              zIndex: 1,
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+
         {/* Player rockets */}
         {rockets.map((r) => (
           <View
@@ -852,6 +950,10 @@ export default function GameScreen({ route, navigation }) {
               <View style={styles.guideRow}>
                 <Text style={styles.guideIcon}>💣</Text>
                 <Text style={styles.guideLabel}>NUKE — wipes every enemy on screen!</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <Text style={styles.guideIcon}>🕐</Text>
+                <Text style={styles.guideLabel}>SLOW-MO — enemies crawl for 5 seconds!</Text>
               </View>
             </View>
 
