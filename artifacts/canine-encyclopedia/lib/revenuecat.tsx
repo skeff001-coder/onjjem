@@ -154,8 +154,8 @@ function useSubscriptionContext() {
   const hasHealthGuide = hasBundlePurchase;
   const hasTrickTrainer = hasBundlePurchase;
 
-  // Standalone, no free trial, not part of the scanner bundle.
-  const hasCartoon = !!active[ENTITLEMENT_CARTOON];
+  // The Full Story Bundle now includes Cartoonify too (one purchase unlocks everything).
+  const hasCartoon = !!active[ENTITLEMENT_CARTOON] || hasBundlePurchase;
 
   const packageFor = (identifier: string): PurchasesPackage | undefined =>
     offeringsQuery.data?.current?.availablePackages.find((p) => p.identifier === identifier);

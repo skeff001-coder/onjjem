@@ -519,7 +519,7 @@ export default function ShopScreen() {
           );
         })}
 
-        {/* Cartoonify Elite 15% voucher */}
+        {/* Full Story Bundle 15% ONJJEM voucher */}
         <View style={{
           backgroundColor: hasCartoon ? "rgba(224,169,92,0.08)" : "rgba(255,255,255,0.02)",
           borderWidth: 1,
@@ -532,7 +532,7 @@ export default function ShopScreen() {
             <Text style={{ fontSize: 24 }}>🎨</Text>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 16, fontFamily: "Inter_700Bold", color: hasCartoon ? "#e0a95c" : colors.foreground }}>
-                15% Off ONJJEM — Cartoonify Reward
+                15% Off ONJJEM — Bundle Reward
               </Text>
               <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
                 Valid on anything at onjjem.com
@@ -542,7 +542,7 @@ export default function ShopScreen() {
           {hasCartoon ? (
             <>
               <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20, marginBottom: 12 }}>
-                Thank you for purchasing Cartoonify Elite! Your 15% discount is valid on canvases, framed wall art, magic mugs, glow-in-the-dark posters, foil prints and everything else at onjjem.com.
+                Thank you for getting The Full Story Bundle! Put your dog (or their cartoon) on a canvas, mug, blanket and more, with 15% off at onjjem.com.
               </Text>
               <View style={{ backgroundColor: "rgba(224,169,92,0.15)", borderRadius: 10, padding: 12, alignItems: "center" }}>
                 <Text style={{ fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#e0a95c", marginBottom: 4 }}>YOUR DISCOUNT CODE</Text>
@@ -550,7 +550,7 @@ export default function ShopScreen() {
                 <Text style={{ fontSize: 11, color: colors.mutedForeground, marginTop: 4 }}>Enter at checkout on onjjem.com</Text>
               </View>
               <TouchableOpacity
-                onPress={() => Linking.openURL("https://onjjem.com/shop")}
+                onPress={() => Linking.openURL("https://onjjem.com/shop-pets")}
                 style={{ marginTop: 12, backgroundColor: "#e0a95c", borderRadius: 10, paddingVertical: 12, alignItems: "center" }}
               >
                 <Text style={{ fontSize: 14, fontFamily: "Inter_700Bold", color: "#0a0a0a" }}>Shop at ONJJEM Now</Text>
@@ -558,7 +558,7 @@ export default function ShopScreen() {
             </>
           ) : (
             <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20 }}>
-              Purchase Cartoonify Elite (£4.99) from the Scanner tab to unlock your 15% discount code for anything at onjjem.com.
+              Get The Full Story Bundle from the Scanner tab to unlock your 15% discount code for anything at onjjem.com.
             </Text>
           )}
         </View>
