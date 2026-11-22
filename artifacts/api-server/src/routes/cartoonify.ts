@@ -167,10 +167,11 @@ export async function generateCartoon(base64Image: string, mimeType: string, sty
   });
   let response;
   try {
-    // Faster model first (about 8-12s); the newer, slower one is the fallback.
-    response = await request("gemini-2.5-flash-image");
-  } catch (err) {
+    // Best quality first (Nano Banana 2, a bit slower); the faster, cheaper
+    // model is only the fallback if the better one fails.
     response = await request("gemini-3.1-flash-image");
+  } catch (err) {
+    response = await request("gemini-2.5-flash-image");
   }
 
   const parts = response.candidates?.[0]?.content?.parts ?? [];
