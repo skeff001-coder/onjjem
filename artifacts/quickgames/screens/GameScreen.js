@@ -1166,54 +1166,11 @@ export default function GameScreen({ route, navigation }) {
           </View>
         ))}
 
-        {/* Pre-game guide — explains all icons then auto-starts */}
+        {/* Pre-game start screen (players discover the icons as they play) */}
         {!gameStarted && !gameOver && !showContinue && (
           <View style={styles.startOverlay}>
             <Text style={styles.startTitle}>{gameName || 'Quick Gamer'}</Text>
             <Text style={styles.introText}>{enemyEmoji}  DODGE THE {enemyLabel}  {enemyEmoji}</Text>
-
-            <View style={styles.guideBox}>
-              <View style={styles.guideRow}>
-                <Text style={styles.guideIcon}>♥♥♥</Text>
-                <Text style={styles.guideLabel}>Your lives — lose them all and it's game over</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <Text style={styles.guideIcon}>{enemyEmoji}</Text>
-                <Text style={styles.guideLabel}>Enemies — dodge them!</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <Text style={styles.guideIcon}>🛡️</Text>
-                <Text style={styles.guideLabel}>Shield — absorbs one hit for you</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <Text style={styles.guideIcon}>🚀</Text>
-                <Text style={styles.guideLabel}>Rocket — tap the button to blast enemies</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <View style={[styles.guidePickup, { backgroundColor: COLORS.shieldPickup }]} />
-                <Text style={styles.guideLabel}>Collect for extra shields</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <View style={[styles.guidePickup, { backgroundColor: COLORS.rocketPickup }]} />
-                <Text style={styles.guideLabel}>Collect for extra rockets</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <Text style={styles.guideIcon}>💣</Text>
-                <Text style={styles.guideLabel}>NUKE — wipes every enemy on screen!</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <Text style={styles.guideIcon}>🕐</Text>
-                <Text style={styles.guideLabel}>SLOW-MO — enemies crawl for 5 seconds!</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <Text style={styles.guideIcon}>👯</Text>
-                <Text style={styles.guideLabel}>TWIN — a second ship takes one hit for you</Text>
-              </View>
-              <View style={styles.guideRow}>
-                <Text style={styles.guideIcon}>🐉</Text>
-                <Text style={styles.guideLabel}>FIRE — breathe flames for 30 seconds!</Text>
-              </View>
-            </View>
 
             {(initialShields > 0 || initialRockets > 0) && (
               <View style={styles.startLoadout}>
