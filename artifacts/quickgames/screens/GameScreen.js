@@ -1331,10 +1331,16 @@ const styles = StyleSheet.create({
     overflow: 'visible',
     zIndex: 20,
   },
-  // Same proven style as the fire-breath emoji row (renders in full on iOS)
+  // Build-30 box (the only version that showed the whole emoji on iPhone).
+  // iOS sits the glyph ~23pt low inside a tall line box, so lift the box by that amount.
   playerEmoji: {
+    position: 'absolute',
+    left: (PLAYER_W - 90) / 2,
+    top: (PLAYER_H - 90) / 2 - 23,
+    width: 90,
+    height: 90,
     fontSize: 36,
-    lineHeight: 44,
+    lineHeight: 90,
     textAlign: 'center',
   },
   playerGlow: {
