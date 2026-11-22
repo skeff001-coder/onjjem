@@ -800,6 +800,7 @@ export default function GameScreen({ route, navigation }) {
             },
           ]}
         >
+          <View style={styles.playerGlow} />
           <Text style={styles.playerEmoji}>{rideEmoji}</Text>
         </View>
 
@@ -1182,13 +1183,22 @@ const styles = StyleSheet.create({
     height: PLAYER_H,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'visible',
     zIndex: 20,
   },
   playerEmoji: {
-    fontSize: 38,
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    fontSize: 34,
+    lineHeight: 48,
+    width: 60,
+    height: 48,
+    textAlign: 'center',
+  },
+  playerGlow: {
+    position: 'absolute',
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: 'rgba(255, 255, 255, 0.22)',
   },
   shieldRing: {
     position: 'absolute',
