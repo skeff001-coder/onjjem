@@ -1345,11 +1345,16 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   playerEmoji: {
-    fontSize: 34,
-    lineHeight: 48,
-    width: 60,
-    height: 48,
+    // Big oversized text box centred on the 44x44 hitbox so iOS never clips the glyph
+    position: 'absolute',
+    left: (PLAYER_W - 90) / 2,
+    top: (PLAYER_H - 90) / 2,
+    width: 90,
+    height: 90,
+    fontSize: 36,
+    lineHeight: 90,
     textAlign: 'center',
+    includeFontPadding: false,
   },
   playerGlow: {
     position: 'absolute',
