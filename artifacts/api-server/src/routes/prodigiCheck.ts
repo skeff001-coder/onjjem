@@ -168,6 +168,7 @@ router.get("/prodigi-order", async (req, res) => {
     const canCancel = st.details && st.details.cancellation ? st.details.cancellation : "?";
     res.type("html").send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font:17px system-ui;padding:16px;max-width:560px;margin:auto">
       <h2>Prodigi order ${id}</h2>${note ? `<p style="font-weight:700">${note}</p>` : ""}
+      ${!j.order ? `<p style="color:#c0392b;font-weight:700">Prodigi did not return this order (reply ${r.status}: ${String(j.outcome || j.title || j.detail || j.message || "no details").replace(/[<>&]/g, "")}). It is not on the Prodigi account the website is connected to.</p>` : ""}
       <p><b>Stage:</b> ${st.stage || "?"}<br><b>Items:</b> ${items || "?"}<br><b>Created:</b> ${o.created || "?"}<br><b>Cancellation:</b> ${canCancel}<br><b>Ship to:</b> ${(o.recipient && o.recipient.name) || "?"}</p>
       ${st.stage === "Cancelled" ? "<p>This order is cancelled. Nothing will be printed.</p>" : `<p><a href="/api/prodigi-order?key=${k}&id=${id}&cancel=1" onclick="return confirm('Cancel this order?')" style="display:block;text-align:center;padding:14px;border-radius:12px;background:#c0392b;color:#fff;font-weight:700;text-decoration:none">Cancel this order</a></p>`}
       </body>`);
