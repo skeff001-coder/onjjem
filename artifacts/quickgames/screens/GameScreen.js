@@ -963,19 +963,6 @@ export default function GameScreen({ route, navigation }) {
           </View>
         )}
 
-        {/* Shield glow ring */}
-        {shields > 0 && (
-          <View
-            style={[
-              styles.shieldRing,
-              {
-                top: playerY - 6,
-                left: playerX - 6,
-              },
-            ]}
-          />
-        )}
-
         {/* Obstacles — enemy emoji floating freely */}
         {obstacles.map((o) => (
           <View
@@ -1344,11 +1331,11 @@ const styles = StyleSheet.create({
     overflow: 'visible',
     zIndex: 20,
   },
+  // Same proven style as the fire-breath emoji row (renders in full on iOS)
   playerEmoji: {
-    // Auto-sized text (no fixed height/lineHeight) so iOS never clips or shifts the glyph
-    fontSize: 38,
+    fontSize: 36,
+    lineHeight: 44,
     textAlign: 'center',
-    padding: 10,
   },
   playerGlow: {
     display: 'none',
