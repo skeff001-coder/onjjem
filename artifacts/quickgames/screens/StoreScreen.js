@@ -9,8 +9,17 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Purchases from 'react-native-purchases';
 
 const STORAGE_KEY = '@quickgamer_credits';
+const REVENUECAT_IOS_KEY = 'appl_uXlJeiiSsMbfvSPyanijeXzukjl';
+
+let purchasesConfigured = false;
+function configurePurchases() {
+  if (purchasesConfigured) return;
+  Purchases.configure({ apiKey: REVENUECAT_IOS_KEY });
+  purchasesConfigured = true;
+}
 
 // ── IAP products (6 total) ──
 const GAME_PACKS = [
@@ -59,11 +68,13 @@ export default function StoreScreen({ navigation }) {
     shields: 3,         // 3 free shields
     rockets: 0,
     continueTokens: 1,  // 1 free continue
-    ownedVehicles: [],
   });
+  const [packages, setPackages] = useState({}); // package id -> RevenueCat package
+  const [buying, setBuying] = useState(null);   // product id currently purchasing
 
   useEffect(() => {
     loadCredits();
+    loadOfferings();
   }, []);
 
   const loadCredits = async () => {
@@ -80,47 +91,67 @@ export default function StoreScreen({ navigation }) {
     }
   };
 
-  const handlePurchase = (product) => {
-    // In production this calls expo-in-app-purchases
-    // For now, simulate the purchase
-    Alert.alert(
-      'Purchase',
-      `Buy ${product.label} for ${product.price}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Buy',
-          onPress: () => simulatePurchase(product),
-        },
-      ]
-    );
+  const loadOfferings = async () => {
+    try {
+      configurePurchases();
+      const offerings = await Purchases.getOfferings();
+      const current = offerings.current;
+      if (current) {
+        const map = {};
+        current.availablePackages.forEach((pkg) => {
+          map[pkg.identifier] = pkg;
+        });
+        setPackages(map);
+      }
+    } catch (e) {
+      console.log('Failed to load offerings', e);
+    }
   };
 
-  const simulatePurchase = async (product) => {
-    const updated = { ...credits };
+  // Real price from the App Store (falls back to the built-in label)
+  const priceFor = (product) =>
+    packages[product.id]?.product?.priceString || product.price;
 
-    if (product.games) {
-      updated.gamesRemaining += product.games;
+  const handlePurchase = async (product) => {
+    if (buying) return;
+    let pkg = packages[product.id];
+    if (!pkg) {
+      // Try loading again once before giving up
+      await loadOfferings();
+      Alert.alert(
+        'Store not ready',
+        'We could not reach the App Store. Please check your internet connection and try again.'
+      );
+      return;
     }
-    if (product.shields) {
-      updated.shields += product.shields;
-    }
-    if (product.rockets) {
-      updated.rockets += product.rockets;
-    }
-    if (product.id.startsWith('vehicle_')) {
-      if (!updated.ownedVehicles.includes(product.id)) {
-        updated.ownedVehicles.push(product.id);
-      }
-    }
-
+    setBuying(product.id);
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      setCredits(updated);
+      await Purchases.purchasePackage(pkg);
+      await grantProduct(product);
       Alert.alert('Success!', `${product.label} added!`);
     } catch (e) {
-      console.log('Purchase failed', e);
+      if (!e.userCancelled) {
+        console.log('Purchase failed', e);
+        Alert.alert('Purchase failed', 'Your payment was not completed. You have not been charged.');
+      }
+    } finally {
+      setBuying(null);
     }
+  };
+
+  // Add what was bought to the saved inventory
+  const grantProduct = async (product) => {
+    let current = credits;
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEY);
+      if (data) current = JSON.parse(data);
+    } catch (e) {}
+    const updated = { ...current };
+    if (product.games) updated.gamesRemaining = (updated.gamesRemaining || 0) + product.games;
+    if (product.shields) updated.shields = (updated.shields || 0) + product.shields;
+    if (product.rockets) updated.rockets = (updated.rockets || 0) + product.rockets;
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    setCredits(updated);
   };
 
   return (
@@ -180,7 +211,7 @@ export default function StoreScreen({ navigation }) {
               <Text style={styles.packLabel}>
                 {pack.games === 1 ? 'Game' : 'Games'}
               </Text>
-              <Text style={styles.packPrice}>{pack.price}</Text>
+              <Text style={styles.packPrice}>{buying === pack.id ? '...' : priceFor(pack)}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -204,7 +235,7 @@ export default function StoreScreen({ navigation }) {
                 🛡️ ×{pack.shields}  🚀 ×{pack.rockets}
               </Text>
             </View>
-            <Text style={styles.powerPrice}>{pack.price}</Text>
+            <Text style={styles.powerPrice}>{buying === pack.id ? '...' : priceFor(pack)}</Text>
           </TouchableOpacity>
         ))}
 
