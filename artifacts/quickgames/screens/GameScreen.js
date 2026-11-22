@@ -19,7 +19,7 @@ const GAME_H = H - TOP_BAR - 40;
 const PLAYER_W = 44;
 const PLAYER_H = 44;
 const PLAYER_X_DEFAULT = 60;
-const PLAYER_X_MIN = 20;
+const PLAYER_X_MIN = 60;  // leaves room for the twin ship behind
 const PLAYER_X_MAX = W - 60;  // can go all the way across the screen
 
 // ── Difficulty curve (gentler ramp) ──
@@ -53,6 +53,19 @@ const SLOWMO_FACTOR = 0.3;          // enemies move at 30% speed
 const SLOWMO_SPAWN_MIN_MS = 20000;  // earliest slow-mo pickup
 const SLOWMO_SPAWN_MAX_MS = 35000;  // latest slow-mo pickup
 const SLOWMO_SIZE = 60;
+
+// Twin ship: a second ship that follows you and takes one hit for you
+const TWIN_SPAWN_MIN_MS = 25000;
+const TWIN_SPAWN_MAX_MS = 45000;
+const TWIN_SIZE = 60;
+const TWIN_OFFSET = 52;
+
+// Fire dragon: flames shoot from the front of your ship for 30 seconds
+const DRAGON_SPAWN_MIN_MS = 30000;
+const DRAGON_SPAWN_MAX_MS = 50000;
+const DRAGON_SIZE = 60;
+const DRAGON_DURATION_MS = 30000;
+const FIRE_LEN = 150;
 const ROCKET_SPEED = 12;
 const ROCKET_W = 20;
 const ROCKET_H = 8;
@@ -169,6 +182,11 @@ export default function GameScreen({ route, navigation }) {
   const [nukePickups, setNukePickups] = useState([]);
   const [slowMoPickups, setSlowMoPickups] = useState([]);
   const [slowMoActive, setSlowMoActive] = useState(false);
+  const [twinPickups, setTwinPickups] = useState([]);
+  const [twinActive, setTwinActive] = useState(false);
+  const [twinPos, setTwinPos] = useState({ x: 0, y: 0 });
+  const [dragonPickups, setDragonPickups] = useState([]);
+  const [dragonActive, setDragonActive] = useState(false);
 
   // ── Refs ──
   const playerYRef = useRef(GAME_H / 2 - PLAYER_H / 2);
@@ -203,6 +221,13 @@ export default function GameScreen({ route, navigation }) {
   const slowMoPickupsRef = useRef([]);
   const nextSlowMoTimeRef = useRef(0);
   const slowMoUntilRef = useRef(0);
+  const twinPickupsRef = useRef([]);
+  const nextTwinTimeRef = useRef(0);
+  const twinActiveRef = useRef(false);
+  const twinYRef = useRef(0);
+  const dragonPickupsRef = useRef([]);
+  const nextDragonTimeRef = useRef(0);
+  const dragonUntilRef = useRef(0);
 
   // ── Touch ──
   const panResponder = useRef(
@@ -283,6 +308,13 @@ export default function GameScreen({ route, navigation }) {
     slowMoPickupsRef.current = [];
     nextSlowMoTimeRef.current = now + SLOWMO_SPAWN_MIN_MS;
     slowMoUntilRef.current = 0;
+    twinPickupsRef.current = [];
+    nextTwinTimeRef.current = now + TWIN_SPAWN_MIN_MS;
+    twinActiveRef.current = false;
+    twinYRef.current = playerYRef.current;
+    dragonPickupsRef.current = [];
+    nextDragonTimeRef.current = now + DRAGON_SPAWN_MIN_MS;
+    dragonUntilRef.current = 0;
 
     setPlayerY(playerYRef.current);
     setPlayerX(PLAYER_X_DEFAULT);
@@ -291,6 +323,10 @@ export default function GameScreen({ route, navigation }) {
     setNukePickups([]);
     setSlowMoPickups([]);
     setSlowMoActive(false);
+    setTwinPickups([]);
+    setTwinActive(false);
+    setDragonPickups([]);
+    setDragonActive(false);
     setRockets([]);
     setRocketBlasts([]);
     setScore(0);
@@ -479,6 +515,28 @@ export default function GameScreen({ route, navigation }) {
       nextSlowMoTimeRef.current = timestamp + delay;
     }
 
+    // ── Spawn twin-ship pickup ──
+    if (timestamp >= nextTwinTimeRef.current && elapsedS > 12) {
+      twinPickupsRef.current.push({
+        id: Date.now() + 777,
+        x: W + 10,
+        y: Math.random() * (GAME_H - TWIN_SIZE),
+      });
+      nextTwinTimeRef.current =
+        timestamp + TWIN_SPAWN_MIN_MS + Math.random() * (TWIN_SPAWN_MAX_MS - TWIN_SPAWN_MIN_MS);
+    }
+
+    // ── Spawn fire-dragon pickup ──
+    if (timestamp >= nextDragonTimeRef.current && elapsedS > 20) {
+      dragonPickupsRef.current.push({
+        id: Date.now() + 666,
+        x: W + 10,
+        y: Math.random() * (GAME_H - DRAGON_SIZE),
+      });
+      nextDragonTimeRef.current =
+        timestamp + DRAGON_SPAWN_MIN_MS + Math.random() * (DRAGON_SPAWN_MAX_MS - DRAGON_SPAWN_MIN_MS);
+    }
+
     // ── Update obstacles ──
     const obs = obstaclesRef.current;
     let newScore = scoreRef.current;
@@ -524,7 +582,19 @@ export default function GameScreen({ route, navigation }) {
             continue;
           }
 
-          // No shield — lose a life
+          // Twin ship takes the hit instead of you
+          if (twinActiveRef.current) {
+            twinActiveRef.current = false;
+            obs.splice(i, 1);
+            invincibleRef.current = true;
+            invincibleUntilRef.current = timestamp + 1500;
+            setShieldFlash(true);
+            setTimeout(() => setShieldFlash(false), 300);
+            continue;
+          }
+
+          // No shield or twin — lose a life (and the dragon fire goes out)
+          dragonUntilRef.current = 0;
           livesRef.current -= 1;
           if (livesRef.current <= 0) {
             triggerGameOver(newScore, speedRef.current, obs);
@@ -622,6 +692,63 @@ export default function GameScreen({ route, navigation }) {
       }
     }
 
+    // ── Update twin-ship pickups ──
+    const tws = twinPickupsRef.current;
+    for (let i = tws.length - 1; i >= 0; i--) {
+      const tw = tws[i];
+      tw.x -= speed * 0.7;
+      if (tw.x + TWIN_SIZE < -10) { tws.splice(i, 1); continue; }
+      if (
+        playerXRef.current + PLAYER_W > tw.x &&
+        playerXRef.current < tw.x + TWIN_SIZE &&
+        playerYRef.current + PLAYER_H > tw.y &&
+        playerYRef.current < tw.y + TWIN_SIZE
+      ) {
+        tws.splice(i, 1);
+        twinActiveRef.current = true;
+        twinYRef.current = playerYRef.current;
+      }
+    }
+    // Twin ship trails behind the player
+    twinYRef.current += (playerYRef.current - twinYRef.current) * 0.12;
+
+    // ── Update fire-dragon pickups ──
+    const drs = dragonPickupsRef.current;
+    for (let i = drs.length - 1; i >= 0; i--) {
+      const dr = drs[i];
+      dr.x -= speed * 0.7;
+      if (dr.x + DRAGON_SIZE < -10) { drs.splice(i, 1); continue; }
+      if (
+        playerXRef.current + PLAYER_W > dr.x &&
+        playerXRef.current < dr.x + DRAGON_SIZE &&
+        playerYRef.current + PLAYER_H > dr.y &&
+        playerYRef.current < dr.y + DRAGON_SIZE
+      ) {
+        drs.splice(i, 1);
+        dragonUntilRef.current = timestamp + DRAGON_DURATION_MS;
+      }
+    }
+
+    // ── Dragon fire burns anything in front of the ship ──
+    const isFire = timestamp < dragonUntilRef.current;
+    if (isFire) {
+      const fx = playerXRef.current + PLAYER_W;
+      const fy = playerYRef.current - 10;
+      for (let j = obs.length - 1; j >= 0; j--) {
+        const o = obs[j];
+        if (
+          o.x < fx + FIRE_LEN &&
+          o.x + o.w > fx &&
+          o.y < fy + PLAYER_H + 20 &&
+          o.y + o.h > fy
+        ) {
+          blastsRef.current.push({ id: Date.now() + j + 5000, x: o.x, y: o.y, life: 10 });
+          obs.splice(j, 1);
+          newScore += 2;
+        }
+      }
+    }
+
     // ── Update rockets (player-fired projectiles) ──
     const rks = rocketsRef.current;
     const bls = blastsRef.current;
@@ -671,6 +798,11 @@ export default function GameScreen({ route, navigation }) {
     setNukePickups([...nks]);
     setSlowMoPickups([...sms]);
     setSlowMoActive(isSlowMo);
+    setTwinPickups([...tws]);
+    setTwinActive(twinActiveRef.current);
+    setTwinPos({ x: playerXRef.current - TWIN_OFFSET, y: twinYRef.current });
+    setDragonPickups([...drs]);
+    setDragonActive(isFire);
     setScore(newScore);
     setLives(livesRef.current);
     setShields(shieldsRef.current);
@@ -736,7 +868,7 @@ export default function GameScreen({ route, navigation }) {
           </Text>
         </View>
         <Text style={[styles.speedText, slowMoActive && { color: '#00BFFF' }]}>
-          {slowMoActive ? '🕐 SLOW' : `${speedMultiplier.toFixed(1)}×`}
+          {slowMoActive ? '🕐 SLOW' : dragonActive ? '🔥 FIRE' : `${speedMultiplier.toFixed(1)}×`}
         </Text>
         <TouchableOpacity
           style={[styles.rocketBtn, rocketAmmo <= 0 && styles.rocketBtnDisabled]}
@@ -803,6 +935,33 @@ export default function GameScreen({ route, navigation }) {
           <View style={styles.playerGlow} />
           <Text style={styles.playerEmoji}>{rideEmoji}</Text>
         </View>
+
+        {/* Twin ship following behind */}
+        {twinActive && (
+          <View
+            style={[styles.player, { top: twinPos.y, left: twinPos.x, opacity: 0.8, zIndex: 19 }]}
+          >
+            <Text style={styles.playerEmoji}>{rideEmoji}</Text>
+          </View>
+        )}
+
+        {/* Dragon fire breathing out of the front */}
+        {dragonActive && (
+          <View
+            pointerEvents="none"
+            style={{
+              position: 'absolute',
+              left: playerX + PLAYER_W - 4,
+              top: playerY + PLAYER_H / 2 - 18,
+              flexDirection: 'row',
+              zIndex: 19,
+            }}
+          >
+            {[0, 1, 2, 3, 4].map((k) => (
+              <Text key={k} style={{ fontSize: 30 - k * 3, lineHeight: 36, opacity: 1 - k * 0.12 }}>🔥</Text>
+            ))}
+          </View>
+        )}
 
         {/* Shield glow ring */}
         {shields > 0 && (
@@ -932,6 +1091,40 @@ export default function GameScreen({ route, navigation }) {
           </View>
         ))}
 
+        {/* Twin-ship pickups */}
+        {twinPickups.map((tw) => (
+          <View
+            key={tw.id}
+            style={{
+              position: 'absolute', left: tw.x, top: tw.y, width: TWIN_SIZE, height: TWIN_SIZE,
+              borderRadius: TWIN_SIZE / 2, backgroundColor: 'rgba(0, 255, 136, 0.35)',
+              borderWidth: 3, borderColor: '#00FF88', justifyContent: 'center', alignItems: 'center',
+              zIndex: 16, shadowColor: '#00FF88', shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.8, shadowRadius: 10, elevation: 10,
+            }}
+          >
+            <Text style={{ fontSize: 22 }}>{rideEmoji}{rideEmoji}</Text>
+            <Text style={{ fontSize: 9, fontWeight: '900', color: '#FFF', letterSpacing: 1, marginTop: -2 }}>TWIN</Text>
+          </View>
+        ))}
+
+        {/* Fire-dragon pickups */}
+        {dragonPickups.map((dr) => (
+          <View
+            key={dr.id}
+            style={{
+              position: 'absolute', left: dr.x, top: dr.y, width: DRAGON_SIZE, height: DRAGON_SIZE,
+              borderRadius: DRAGON_SIZE / 2, backgroundColor: 'rgba(255, 60, 0, 0.4)',
+              borderWidth: 3, borderColor: '#FF6A00', justifyContent: 'center', alignItems: 'center',
+              zIndex: 16, shadowColor: '#FF6A00', shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.8, shadowRadius: 10, elevation: 10,
+            }}
+          >
+            <Text style={{ fontSize: 30 }}>🐉</Text>
+            <Text style={{ fontSize: 9, fontWeight: '900', color: '#FFF', letterSpacing: 1, marginTop: -2 }}>FIRE</Text>
+          </View>
+        ))}
+
         {/* Slow-mo active tint */}
         {slowMoActive && (
           <View
@@ -1011,6 +1204,14 @@ export default function GameScreen({ route, navigation }) {
               <View style={styles.guideRow}>
                 <Text style={styles.guideIcon}>🕐</Text>
                 <Text style={styles.guideLabel}>SLOW-MO — enemies crawl for 5 seconds!</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <Text style={styles.guideIcon}>👯</Text>
+                <Text style={styles.guideLabel}>TWIN — a second ship takes one hit for you</Text>
+              </View>
+              <View style={styles.guideRow}>
+                <Text style={styles.guideIcon}>🐉</Text>
+                <Text style={styles.guideLabel}>FIRE — breathe flames for 30 seconds!</Text>
               </View>
             </View>
 

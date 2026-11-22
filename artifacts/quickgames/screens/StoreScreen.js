@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@quickgamer_credits';
 
-// ── IAP products (10 total) ──
+// ── IAP products (6 total) ──
 const GAME_PACKS = [
   { id: 'game_1', label: '1 Game', games: 1, price: '49p', priceNum: 0.49, badge: null },
   { id: 'game_3', label: '3 Games', games: 3, price: '99p', priceNum: 0.99, badge: 'Popular' },
@@ -41,12 +41,6 @@ const POWER_PACKS = [
   },
 ];
 
-const PREMIUM_VEHICLES = [
-  { id: 'vehicle_twin', label: 'Twin Ship', emoji: '🛸', desc: 'A shadow ship follows you and absorbs one hit', price: '99p', priceNum: 0.99 },
-  { id: 'vehicle_dragon', label: 'Fire Dragon', emoji: '🐉', desc: 'Breathes fire at nearby obstacles', price: '99p', priceNum: 0.99 },
-  { id: 'vehicle_tank', label: 'Tank', emoji: '🛡️', desc: 'Starts every game with +2 shields', price: '99p', priceNum: 0.99 },
-  { id: 'vehicle_ghost', label: 'Ghost Ship', emoji: '👻', desc: 'Phase through one obstacle every 30s', price: '99p', priceNum: 0.99 },
-];
 
 const COLORS = {
   bg: '#0F1419',
@@ -213,34 +207,6 @@ export default function StoreScreen({ navigation }) {
             <Text style={styles.powerPrice}>{pack.price}</Text>
           </TouchableOpacity>
         ))}
-
-        {/* Premium vehicles */}
-        <Text style={styles.sectionTitle}>✨ Premium Vehicles</Text>
-        <Text style={styles.sectionSubtitle}>
-          Each vehicle has a special ability!
-        </Text>
-        {PREMIUM_VEHICLES.map((vehicle) => {
-          const owned = credits.ownedVehicles.includes(vehicle.id);
-          return (
-            <TouchableOpacity
-              key={vehicle.id}
-              style={[styles.vehicleCard, owned && styles.vehicleOwned]}
-              onPress={() => !owned && handlePurchase(vehicle)}
-              disabled={owned}
-            >
-              <Text style={styles.vehicleEmoji}>{vehicle.emoji}</Text>
-              <View style={styles.vehicleInfo}>
-                <Text style={styles.vehicleTitle}>{vehicle.label}</Text>
-                <Text style={styles.vehicleDesc}>{vehicle.desc}</Text>
-              </View>
-              {owned ? (
-                <Text style={styles.ownedBadge}>OWNED ✓</Text>
-              ) : (
-                <Text style={styles.vehiclePrice}>{vehicle.price}</Text>
-              )}
-            </TouchableOpacity>
-          );
-        })}
 
         <View style={{ height: 40 }} />
       </ScrollView>
