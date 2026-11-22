@@ -103,7 +103,7 @@ const WORLD_IMAGES = {
   ocean: require('../assets/worlds/ocean.jpg'),
   city: require('../assets/worlds/city.jpg'),
   desert: require('../assets/worlds/desert.jpg'),
-  arctic: require('../assets/worlds/arctic.png'),
+  arctic: require('../assets/worlds/arctic.jpg'),
   volcano: require('../assets/worlds/volcano.jpg'),
   candy: require('../assets/worlds/candy.jpg'),
 };
@@ -1173,7 +1173,7 @@ const styles = StyleSheet.create({
   // ── Game area ──
   gameArea: { flex: 1, position: 'relative', overflow: 'hidden', backgroundColor: '#0a0a1a' },
   bgStripContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: '100%', overflow: 'hidden' },
-  bgDim: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(10, 10, 26, 0.4)' },
+  bgDim: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(10, 10, 26, 0.5)' },
   bgStrip: { position: 'absolute', top: 0, width: W, height: '100%' },
   bgSilhouette: { position: 'absolute', top: 0, left: 0, width: W, height: '100%', zIndex: 2 },
   player: {
@@ -1184,7 +1184,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 20,
   },
-  playerEmoji: { fontSize: 32 },
+  playerEmoji: {
+    fontSize: 38,
+    textShadowColor: 'rgba(255, 255, 255, 0.9)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
   shieldRing: {
     position: 'absolute',
     width: PLAYER_W + 12,

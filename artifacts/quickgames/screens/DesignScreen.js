@@ -9,9 +9,22 @@ import {
   SafeAreaView,
   Animated,
   Dimensions,
+  Image,
 } from 'react-native';
 
 const { width: W } = Dimensions.get('window');
+
+// Real scenery thumbnails for the world picker
+const WORLD_THUMBS = {
+  forest: require('../assets/worlds/thumb_forest.jpg'),
+  space: require('../assets/worlds/thumb_space.jpg'),
+  ocean: require('../assets/worlds/thumb_ocean.jpg'),
+  city: require('../assets/worlds/thumb_city.jpg'),
+  desert: require('../assets/worlds/thumb_desert.jpg'),
+  arctic: require('../assets/worlds/thumb_arctic.jpg'),
+  volcano: require('../assets/worlds/thumb_volcano.jpg'),
+  candy: require('../assets/worlds/thumb_candy.jpg'),
+};
 
 // ── Design steps ──
 const STEPS = [
@@ -233,7 +246,11 @@ export default function DesignScreen({ navigation }) {
                   onPress={() => selectOption(opt.id)}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.optionEmoji}>{opt.emoji}</Text>
+                  {currentStep.key === 'world' && WORLD_THUMBS[opt.id] ? (
+                    <Image source={WORLD_THUMBS[opt.id]} style={styles.worldThumb} resizeMode="cover" />
+                  ) : (
+                    <Text style={styles.optionEmoji}>{opt.emoji}</Text>
+                  )}
                   <Text
                     style={[
                       styles.optionLabel,
@@ -336,6 +353,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 107, 53, 0.12)',
   },
   optionEmoji: { fontSize: 40 },
+  worldThumb: { width: CARD_W - 24, height: CARD_W - 24, borderRadius: 12 },
   optionLabel: {
     fontSize: 14,
     fontWeight: '600',
