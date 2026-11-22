@@ -20,7 +20,7 @@ const PLAYER_W = 44;
 const PLAYER_H = 44;
 const PLAYER_X_DEFAULT = 60;
 const PLAYER_X_MIN = 20;
-const PLAYER_X_MAX = W * 0.45;  // can't go past 45% of screen width
+const PLAYER_X_MAX = W - 60;  // can go all the way across the screen
 
 // ── Difficulty curve (gentler ramp) ──
 const BASE_SPEED = 3;
