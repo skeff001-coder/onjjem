@@ -84,7 +84,6 @@ function ClassicTabLayout() {
             ),
         }}
       />
-      <Tabs.Screen
       <Tabs.Screen name="encyclopedia" options={{ href: null }} />
       <Tabs.Screen name="shop" options={{ href: null }} />
     </Tabs>

@@ -458,7 +458,7 @@ function BlinkingFooter() {
     <>
       <Animated.View style={{ position: "absolute", left: 0, right: 0, height: 3, backgroundColor: "#c9a84c", shadowColor: "#c9a84c", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 1, shadowRadius: 18, transform: [{ translateY: scanY }], pointerEvents: "none" } as any} />
       <Animated.View style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, alignItems: "center", justifyContent: "center", opacity: blink, pointerEvents: "none" } as any}>
-        <Text style={{ fontFamily: "Inter_700Bold", fontSize: 38, letterSpacing: 1, color: "#ffffff", textShadowColor: "#ffffff", textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 24 }}>That's My Dog!</Text>
+        <Text style={{ fontFamily: "Inter_700Bold", fontSize: 38, letterSpacing: 1, color: "#ffffff", textShadowColor: "#ffffff", textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 24 }}>What's Up Dog!</Text>
       </Animated.View>
     </>
   );
@@ -1256,7 +1256,7 @@ function WebPrompt({ visible, onClose }: { visible: boolean; onClose: () => void
         <Ionicons name="phone-portrait-outline" size={36} color={colors.gold} />
         <Text style={[wpStyles.title, { color: colors.foreground }]}>Get the App</Text>
         <Text style={[wpStyles.body, { color: colors.mutedForeground }]}>
-          Premium scanners unlock inside the That's My Dog! iOS app.
+          Premium scanners unlock inside the What's Up Dog! iOS app.
         </Text>
         <TouchableOpacity
           onPress={() => Linking.openURL("https://apps.apple.com/app/id6771118261")}

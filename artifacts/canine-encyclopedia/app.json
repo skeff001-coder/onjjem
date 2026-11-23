@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "That's My Dog!",
+    "name": "What's Up Dog!",
     "slug": "canine-encyclopaedia",
     "version": "1.0.7",
     "orientation": "portrait",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "90",
+      "buildNumber": "91",
       "usesAppleSignIn": true,
       "infoPlist": {
         "LSApplicationQueriesSchemes": [
@@ -25,9 +25,9 @@
           "instagram",
           "tiktok"
         ],
-        "NSCameraUsageDescription": "That's My Dog! uses your camera to scan and identify your dog's breed using AI.",
-        "NSPhotoLibraryUsageDescription": "That's My Dog! accesses your photos so you can choose a dog image for breed identification.",
-        "NSPhotoLibraryAddUsageDescription": "That's My Dog! saves identified dog portraits to your photo library.",
+        "NSCameraUsageDescription": "What's Up Dog! uses your camera to scan and identify your dog's breed using AI.",
+        "NSPhotoLibraryUsageDescription": "What's Up Dog! accesses your photos so you can choose a dog image for breed identification.",
+        "NSPhotoLibraryAddUsageDescription": "What's Up Dog! saves identified dog portraits to your photo library.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },

@@ -98,7 +98,7 @@ export function MerchSheet({ visible, onClose, imageUri, breedName, dogName }: M
         >
           <View style={styles.header}>
             <Text style={[styles.title, { color: colors.foreground }]}>
-              {dogName ? `Something special for ${dogName}` : "That's My Dog! Shop"}
+              {dogName ? `Something special for ${dogName}` : "What's Up Dog! Shop"}
             </Text>
             <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
               {dogName
