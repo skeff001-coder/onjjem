@@ -269,7 +269,7 @@ export function PaywallModal({ visible, onClose, breedName, focus = "all" }: Pay
             <Ionicons name="phone-portrait-outline" size={36} color={colors.gold} />
             <Text style={[styles.webPromptTitle, { color: colors.foreground }]}>Get the App</Text>
             <Text style={[styles.webPromptBody, { color: colors.mutedForeground }]}>
-              Purchases unlock inside the That's My Dog! iOS app.
+              Purchases unlock inside the What's Up Dog! iOS app.
             </Text>
             <TouchableOpacity
               onPress={() => Linking.openURL("https://apps.apple.com/app/id6771118261")}
