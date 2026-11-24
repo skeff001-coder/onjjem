@@ -139,7 +139,7 @@ workflows:
         script: |
           cd artifacts/canine-encyclopedia
           WORKSPACE=$(find ios -maxdepth 1 -name "*.xcworkspace" | head -1)
-          SCHEME="ThatsMyDog"
+          SCHEME=$(basename "$WORKSPACE" .xcworkspace)
           echo "Workspace: $WORKSPACE   Scheme: $SCHEME"
           xcode-project use-profiles
           xcode-project build-ipa \
