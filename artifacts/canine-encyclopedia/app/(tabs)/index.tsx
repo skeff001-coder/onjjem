@@ -149,11 +149,11 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
 
       {/* ── Hero ── */}
       <View style={{
-        backgroundColor: "#111625",
+        backgroundColor: colors.card,
         borderRadius: 28,
         overflow: "hidden",
         borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.05)",
+        borderColor: colors.border,
         minHeight: 180,
         padding: 22,
         justifyContent: "flex-end",
@@ -162,21 +162,21 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
         <Text style={{
           fontSize: 30,
           fontFamily: "Inter_700Bold",
-          color: "#fff",
+          color: colors.foreground,
           letterSpacing: -0.6,
           lineHeight: 36,
-          maxWidth: "65%",
+          maxWidth: "90%",
         }}>
-          {"Discover. Celebrate.\nCreate. All about "}
-          <Text style={{ color: "#E6C673" }}>your dog.</Text>
+          {"Discover. Celebrate.\nCreate. All about\n"}
+          <Text style={{ color: colors.gold }}>your dog.</Text>
         </Text>
 
         <Text style={{
           fontSize: 13,
           fontFamily: "Inter_400Regular",
-          color: "#8E97A6",
+          color: colors.mutedForeground,
           marginTop: 8,
-          maxWidth: "60%",
+          maxWidth: "80%",
           lineHeight: 18,
         }}>
           Scan your dog and unlock their story, personality and art.
@@ -188,7 +188,7 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
           activeOpacity={0.85}
           style={{
             marginTop: 16,
-            backgroundColor: "#E6C673",
+            backgroundColor: colors.gold,
             borderRadius: 999,
             paddingVertical: 13,
             paddingHorizontal: 22,
@@ -196,21 +196,21 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
             alignItems: "center",
             gap: 8,
             alignSelf: "flex-start",
-            shadowColor: "#E6C673",
+            shadowColor: colors.gold,
             shadowOpacity: 0.35,
             shadowRadius: 12,
             shadowOffset: { width: 0, height: 4 },
           }}
         >
-          <Ionicons name="camera-outline" size={20} color="#000" />
-          <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: "#000", letterSpacing: 0.2 }}>
+          <Ionicons name="camera-outline" size={20} color={colors.navy} />
+          <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: colors.navy, letterSpacing: 0.2 }}>
             Scan Your Dog
           </Text>
         </TouchableOpacity>
 
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 8, marginLeft: 2 }}>
-          <Text style={{ fontSize: 11, color: "#626C7A" }}>↵</Text>
-          <Text style={{ fontSize: 11, color: "#626C7A", fontFamily: "Inter_400Regular" }}>
+          <Text style={{ fontSize: 11, color: colors.mutedForeground }}>↵</Text>
+          <Text style={{ fontSize: 11, color: colors.mutedForeground, fontFamily: "Inter_400Regular" }}>
             Free breed scan in seconds
           </Text>
         </View>
@@ -218,17 +218,17 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
 
       {/* ── Discovery grid ── */}
       <View style={{
-        backgroundColor: "#111625",
+        backgroundColor: colors.card,
         borderRadius: 24,
         borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.05)",
+        borderColor: colors.border,
         padding: 16,
         gap: 12,
       }}>
         <Text style={{
           fontSize: 11,
           fontFamily: "Inter_700Bold",
-          color: "#626C7A",
+          color: colors.mutedForeground,
           letterSpacing: 1.5,
           textTransform: "uppercase",
         }}>
@@ -236,11 +236,11 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
         </Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           {[
-            { emoji: "🐾", label: "Breed\nBreakdown" },
-            { emoji: "🧠", label: "Personality\nProfile" },
-            { emoji: "🎂", label: "Age\nEstimate" },
-            { emoji: "🧬", label: "Breed\nHistory" },
-            { emoji: "🎨", label: "Turn Into\nArt", isNew: true },
+            { emoji: "🐾", label: "Breeds" },
+            { emoji: "🧠", label: "Vibe" },
+            { emoji: "🎂", label: "Age" },
+            { emoji: "🧬", label: "History" },
+            { emoji: "🎨", label: "Art", isNew: true },
           ].map((item, i) => (
             <View key={i} style={{ alignItems: "center", flex: 1, gap: 6 }}>
               {item.isNew && (
@@ -248,17 +248,17 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
                   position: "absolute",
                   top: -8,
                   right: 0,
-                  backgroundColor: "#FFE395",
+                  backgroundColor: colors.gold,
                   borderRadius: 4,
                   paddingHorizontal: 4,
                   paddingVertical: 1,
                   zIndex: 1,
                 }}>
-                  <Text style={{ fontSize: 7, fontFamily: "Inter_700Bold", color: "#000" }}>NEW</Text>
+                  <Text style={{ fontSize: 7, fontFamily: "Inter_700Bold", color: colors.navy }}>NEW</Text>
                 </View>
               )}
               <View style={{
-                backgroundColor: "rgba(9,12,21,0.5)",
+                backgroundColor: colors.secondary,
                 borderRadius: 12,
                 padding: 8,
               }}>
@@ -267,7 +267,7 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
               <Text style={{
                 fontSize: 9,
                 fontFamily: "Inter_500Medium",
-                color: "#8E97A6",
+                color: colors.mutedForeground,
                 textAlign: "center",
                 lineHeight: 12,
               }}>
@@ -281,10 +281,10 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
       {/* ── Recently scanned profile card ── */}
       {dogPhoto && (
         <View style={{
-          backgroundColor: "#111625",
+          backgroundColor: colors.card,
           borderRadius: 24,
           borderWidth: 1,
-          borderColor: "rgba(255,255,255,0.05)",
+          borderColor: colors.border,
           padding: 16,
           flexDirection: "row",
           gap: 14,
@@ -296,7 +296,7 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
               <Text style={{
                 fontSize: 10,
                 fontFamily: "Inter_700Bold",
-                color: "#E6C673",
+                color: colors.gold,
                 letterSpacing: 1.5,
                 textTransform: "uppercase",
               }}>
@@ -305,16 +305,16 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
               <Text style={{
                 fontSize: 22,
                 fontFamily: "Inter_700Bold",
-                color: "#fff",
+                color: colors.foreground,
                 marginTop: 4,
               }}>
-                {dogName ?? "Your Dog"} <Text style={{ fontSize: 16, color: "#626C7A" }}>♡</Text>
+                {dogName ?? "Your Dog"} <Text style={{ fontSize: 16, color: colors.mutedForeground }}>♡</Text>
               </Text>
               {dogBreed && (
                 <Text style={{
                   fontSize: 12,
                   fontFamily: "Inter_500Medium",
-                  color: "#8E97A6",
+                  color: colors.mutedForeground,
                   marginTop: 2,
                 }}>
                   {dogBreed}
@@ -335,7 +335,7 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
                   <Text style={{
                     fontSize: 10,
                     fontFamily: "Inter_400Regular",
-                    color: "#8E97A6",
+                    color: colors.mutedForeground,
                     width: 62,
                   }}>
                     {m.label}
@@ -343,21 +343,21 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
                   <View style={{
                     flex: 1,
                     height: 4,
-                    backgroundColor: "#242C3F",
+                    backgroundColor: colors.secondary,
                     borderRadius: 999,
                     overflow: "hidden",
                   }}>
                     <View style={{
                       width: `${m.pct}%`,
                       height: "100%",
-                      backgroundColor: "#E6C673",
+                      backgroundColor: colors.gold,
                       borderRadius: 999,
                     }} />
                   </View>
                   <Text style={{
                     fontSize: 9,
                     fontFamily: "Inter_700Bold",
-                    color: "#626C7A",
+                    color: colors.mutedForeground,
                     width: 24,
                     textAlign: "right",
                   }}>
@@ -373,7 +373,7 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
             width: "45%",
             borderRadius: 18,
             overflow: "hidden",
-            backgroundColor: "#242C3F",
+            backgroundColor: colors.secondary,
             aspectRatio: 4 / 5,
           }}>
             <Image
@@ -386,7 +386,7 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
               bottom: 8,
               left: 8,
               right: 8,
-              backgroundColor: "rgba(0,0,0,0.6)",
+              backgroundColor: "rgba(46,32,19,0.65)",
               borderRadius: 12,
               paddingVertical: 8,
               paddingHorizontal: 10,
@@ -394,10 +394,10 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
               alignItems: "center",
               justifyContent: "space-between",
             }}>
-              <Text style={{ fontSize: 10, fontFamily: "Inter_700Bold", color: "#fff" }}>
+              <Text style={{ fontSize: 10, fontFamily: "Inter_700Bold", color: "#fff9ed" }}>
                 View Full Profile
               </Text>
-              <Text style={{ fontSize: 14, color: "#E6C673" }}>›</Text>
+              <Text style={{ fontSize: 14, color: colors.goldLight }}>›</Text>
             </View>
           </View>
         </View>
@@ -414,11 +414,11 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
         <Text style={{
           fontSize: 15,
           fontFamily: "Inter_700Bold",
-          color: "#fff",
+          color: colors.foreground,
         }}>
           Create something amazing
         </Text>
-        <Text style={{ fontSize: 12, color: "#626C7A", fontFamily: "Inter_500Medium" }}>
+        <Text style={{ fontSize: 12, color: colors.mutedForeground, fontFamily: "Inter_500Medium" }}>
           See all ›
         </Text>
       </View>

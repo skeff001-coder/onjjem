@@ -1,39 +1,45 @@
+// Warm "Pet Studio" palette — matches the app icon's cream/gold/brown look
+// instead of the previous dark navy "DNA lab" theme. Token NAMES are kept
+// unchanged (navy, navyMid, cream, etc.) since dozens of components
+// reference them directly — only the hex VALUES moved to the new palette.
+// navy/navyMid keep their old job (a dark color for contrast on gold
+// buttons/panels), just re-hued from blue-black to warm espresso brown.
 const colors = {
   light: {
-    text: "#0f0e17",
-    tint: "#c9a84c",
+    text: "#3b2a1d",
+    tint: "#e3a93c",
 
-    background: "#0a0e1a",
-    foreground: "#f5f0e8",
+    background: "#fbf3e3",
+    foreground: "#3b2a1d",
 
-    card: "#141927",
-    cardForeground: "#f5f0e8",
+    card: "#fff9ed",
+    cardForeground: "#3b2a1d",
 
-    primary: "#c9a84c",
-    primaryForeground: "#0a0e1a",
+    primary: "#e3a93c",
+    primaryForeground: "#2e2013",
 
-    secondary: "#1e2535",
-    secondaryForeground: "#c9a84c",
+    secondary: "#f3dfb8",
+    secondaryForeground: "#5c4027",
 
-    muted: "#1a2030",
-    mutedForeground: "#7a8ba0",
+    muted: "#f6ead3",
+    mutedForeground: "#8a7259",
 
-    accent: "#c9a84c",
-    accentForeground: "#0a0e1a",
+    accent: "#e3a93c",
+    accentForeground: "#2e2013",
 
-    destructive: "#e05252",
+    destructive: "#d9534f",
     destructiveForeground: "#ffffff",
 
-    border: "#232e42",
-    input: "#1e2535",
+    border: "#ead9b8",
+    input: "#fff9ed",
 
-    gold: "#c9a84c",
-    goldLight: "#e8d5a3",
-    navy: "#0a0e1a",
-    navyLight: "#141927",
-    navyMid: "#1e2535",
-    cream: "#f5f0e8",
-    creamMuted: "#d4c9b5",
+    gold: "#e3a93c",
+    goldLight: "#f0ce85",
+    navy: "#2e2013",
+    navyLight: "#4a3423",
+    navyMid: "#5c4027",
+    cream: "#fff9ed",
+    creamMuted: "#e8d4ae",
   },
   radius: 12,
 };
