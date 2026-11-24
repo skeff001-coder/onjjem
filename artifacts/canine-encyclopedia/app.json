@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "95",
+      "buildNumber": "96",
       "usesAppleSignIn": true,
       "infoPlist": {
         "LSApplicationQueriesSchemes": [

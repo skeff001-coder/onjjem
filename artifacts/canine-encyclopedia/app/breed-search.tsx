@@ -16,7 +16,6 @@ import { useColors } from "@/hooks/useColors";
 import { useApp } from "@/context/AppContext";
 import { getBreedKnowledge } from "@/lib/gemini";
 import { KnowledgeSection, InfoRow, TagList } from "@/components/KnowledgeSection";
-import { Platform } from "react-native";
 
 export default function BreedSearchScreen() {
   const colors = useColors();
