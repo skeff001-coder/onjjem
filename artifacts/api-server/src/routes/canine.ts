@@ -464,4 +464,79 @@ router.post("/dog-cartoon", async (req: Request, res: Response) => {
   }
 });
 
+// Fun default movie titles for the "You + Your Dog" poster feature — picked
+// randomly server-side so the client always has something to show before
+// the user edits it themselves.
+const MOVIE_POSTER_TITLES = [
+  "PAWS & ORDER",
+  "BEST IN SHOW, BEST IN LIFE",
+  "THE GOOD BOY CHRONICLES",
+  "A TAIL OF TWO BEST FRIENDS",
+  "UNLEASHED",
+  "FETCH: THE MOVIE",
+];
+
+router.post("/movie-poster", async (req: Request, res: Response) => {
+  const {
+    ownerSelfieBase64,
+    ownerMimeType = "image/jpeg",
+    dogPhotoBase64,
+    dogMimeType = "image/jpeg",
+    ownerName,
+    dogName,
+  } = req.body;
+
+  if (!ownerSelfieBase64) { res.status(400).json({ error: "ownerSelfieBase64 is required" }); return; }
+  if (!dogPhotoBase64) { res.status(400).json({ error: "dogPhotoBase64 is required" }); return; }
+
+  const promptText =
+    "Create a heartwarming 3D animated movie poster featuring the exact person from the first photo and the exact dog from the second photo standing side-by-side as best friends. Keep the person's exact facial features, hair, and smile/glasses, and keep the dog's exact fur colors, markings, breed traits, and ear shape. Warm golden sunlight, expressive eyes, vibrant Pixar-inspired 3D animation style, vertical 3:4 portrait framing with clean open space at the top and bottom for poster titles. Do not render any text inside the image.";
+
+  try {
+    const ai = getAI();
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash-image",
+      contents: [
+        {
+          role: "user",
+          parts: [
+            { text: promptText },
+            { inlineData: { mimeType: ownerMimeType, data: ownerSelfieBase64 } },
+            { inlineData: { mimeType: dogMimeType, data: dogPhotoBase64 } },
+          ],
+        },
+      ],
+      config: {
+        responseModalities: ["IMAGE"],
+        imageConfig: { aspectRatio: "3:4" },
+      },
+    });
+
+    const imagePart = response.candidates?.[0]?.content?.parts?.find(
+      (p: any) => p.inlineData,
+    ) as { inlineData: { mimeType: string; data: string } } | undefined;
+
+    if (!imagePart) {
+      throw new Error("Gemini did not return an image");
+    }
+
+    const name = typeof dogName === "string" && dogName.trim() ? dogName.trim() : null;
+    const defaultTitle = name
+      ? `${name}'S BIG ADVENTURE`
+      : MOVIE_POSTER_TITLES[Math.floor(Math.random() * MOVIE_POSTER_TITLES.length)];
+
+    const billing = `STARRING ${(typeof ownerName === "string" && ownerName.trim()) ? ownerName.trim().toUpperCase() : "ME"} & ${name ? name.toUpperCase() : "MY DOG"} • A WHAT'S UP DOG! ORIGINAL`;
+
+    res.json({
+      imageBase64: imagePart.inlineData.data,
+      mimeType: imagePart.inlineData.mimeType ?? "image/png",
+      defaultTitle,
+      billing,
+    });
+  } catch (e: any) {
+    req.log.error({ err: e }, "Movie poster generation failed");
+    res.status(500).json({ error: "Movie poster generation failed", details: e?.message });
+  }
+});
+
 export default router;
