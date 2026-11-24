@@ -664,12 +664,16 @@ function ScanResultModal({
   result,
   scanType,
   scannedUri,
+  dogName,
+  dogBreed,
 }: {
   visible: boolean;
   onClose: () => void;
   result: ScanResultData | null;
   scanType: ScanType;
   scannedUri: string | null;
+  dogName?: string | null;
+  dogBreed?: string | null;
 }) {
   const colors = useColors();
   if (!visible || !result) return null;
@@ -700,7 +704,7 @@ function ScanResultModal({
             <TrickTrainerResultView data={result.data} />
           )}
           {scanType === "cartoon" && result.type === "cartoon" && (
-            <CartoonResultView data={result.data} />
+            <CartoonResultView data={result.data} dogName={dogName} dogBreed={dogBreed} />
           )}
           {scannedUri && !["cartoon", "mixed_dna", "age_calc", "personality"].includes(scanType) && <ProductMockup photoUri={scannedUri} />}
         </ScrollView>
@@ -857,10 +861,24 @@ function AgeCalcResult({ data }: { data: AgeEstimateResult }) {
   );
 }
 
-function CartoonResultView({ data }: { data: DogCartoonResult }) {
+function CartoonResultView({
+  data,
+  dogName,
+  dogBreed,
+}: {
+  data: DogCartoonResult;
+  dogName?: string | null;
+  dogBreed?: string | null;
+}) {
 
   const [saving, setSaving] = useState(false);
   const dataUri = `data:${data.mimeType};base64,${data.imageBase64}`;
+
+  // Simple caption, no new image-compositing library needed —
+  // just a readable text line to go alongside the cartoon image share.
+  const shareCaption = `${dogName?.trim() ? dogName.trim() : "My dog"}${
+    dogBreed ? `, the ${dogBreed}` : ""
+  } — cartoon-ified with What's Up Dog! 🐾`;
 
   const handleSaveShare = async () => {
     setSaving(true);
@@ -869,9 +887,7 @@ function CartoonResultView({ data }: { data: DogCartoonResult }) {
       await FileSystem.writeAsStringAsync(fileUri, data.imageBase64, {
         encoding: FileSystem.EncodingType.Base64,
       });
-      await Share.share(
-        Platform.OS === "ios" ? { url: fileUri } : { url: fileUri, message: "My dog, cartoon-ified!" },
-      );
+      await Share.share({ url: fileUri, message: shareCaption });
     } catch (e) {
       Alert.alert("Couldn't save", "Something went wrong saving the image. Please try again.");
     } finally {
@@ -934,7 +950,7 @@ function CartoonResultView({ data }: { data: DogCartoonResult }) {
         <Ionicons name="print-outline" size={18} color="#e0a95c" />
         <Text style={{ fontSize: 14, fontWeight: "700", color: "#e0a95c" }}>Get This Printed at ONJJEM</Text>
       </TouchableOpacity>
-      <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: 8 }}>
+      <Text style={{ fontSize: 12, color: "#8a7259", textAlign: "center", marginTop: 8 }}>
         Save the image above first, then upload it on the ONJJEM site
       </Text>
     </View>
@@ -1149,7 +1165,7 @@ function PrintCTA({ color }: { color: string }) {
         <Ionicons name="print-outline" size={18} color={color} />
         <Text style={{ fontSize: 14, fontWeight: "700", color }}>Get Your Dog Printed at ONJJEM</Text>
       </TouchableOpacity>
-      <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: 8 }}>
+      <Text style={{ fontSize: 12, color: "#8a7259", textAlign: "center", marginTop: 8 }}>
         Mugs, canvas, magnets & more — using your own dog photos
       </Text>
     </View>
@@ -1176,51 +1192,51 @@ function ResultSection({ title, icon, color, items }: { title: string; icon: str
 const rStyles = StyleSheet.create({
   container: { flex: 1 },
   topBar: { alignItems: "center", paddingTop: 14, paddingHorizontal: 16, marginBottom: 4 },
-  handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: "#3a4558", marginBottom: 4 },
+  handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: "#ead9b8", marginBottom: 4 },
   closeBtn: { position: "absolute", right: 16, top: 14, padding: 8 },
   scroll: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
   resultWrap: { alignItems: "center", gap: 10, paddingBottom: 20 },
   iconRing: { width: 64, height: 64, borderRadius: 32, borderWidth: 2, alignItems: "center", justifyContent: "center", marginBottom: 4 },
-  resultTitle: { fontSize: 22, fontFamily: "Inter_700Bold", color: "#ffffff", letterSpacing: -0.2, textAlign: "center" },
-  resultSubtitle: { fontSize: 13, fontFamily: "Inter_500Medium", color: "rgba(255,255,255,0.45)", textAlign: "center", marginTop: -4 },
+  resultTitle: { fontSize: 22, fontFamily: "Inter_700Bold", color: "#3b2a1d", letterSpacing: -0.2, textAlign: "center" },
+  resultSubtitle: { fontSize: 13, fontFamily: "Inter_500Medium", color: "#8a7259", textAlign: "center", marginTop: -4 },
   bigNumberWrap: { alignItems: "center", marginVertical: 8 },
   bigNumber: { fontSize: 48, fontFamily: "Inter_700Bold", letterSpacing: -1 },
-  bigNumberLabel: { fontSize: 13, fontFamily: "Inter_500Medium", color: "rgba(255,255,255,0.45)", marginTop: -4 },
+  bigNumberLabel: { fontSize: 13, fontFamily: "Inter_500Medium", color: "#8a7259", marginTop: -4 },
   metricRow: { flexDirection: "row", gap: 12, width: "100%" },
-  metric: { flex: 1, backgroundColor: "rgba(255,255,255,0.04)", borderRadius: 14, padding: 14, alignItems: "center", gap: 4, borderWidth: 1, borderColor: "rgba(255,255,255,0.06)" },
+  metric: { flex: 1, backgroundColor: "#fff9ed", borderRadius: 14, padding: 14, alignItems: "center", gap: 4, borderWidth: 1, borderColor: "#ead9b8" },
   metricValue: { fontSize: 16, fontFamily: "Inter_700Bold", textAlign: "center" },
-  metricLabel: { fontSize: 11, fontFamily: "Inter_500Medium", color: "rgba(255,255,255,0.4)", textAlign: "center" },
-  sectionTitle: { fontSize: 14, fontFamily: "Inter_700Bold", marginTop: 6 },
-  bulletText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.65)", lineHeight: 18 },
+  metricLabel: { fontSize: 11, fontFamily: "Inter_500Medium", color: "#8a7259", textAlign: "center" },
+  sectionTitle: { fontSize: 14, fontFamily: "Inter_700Bold", marginTop: 6, color: "#3b2a1d" },
+  bulletText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#5c4027", lineHeight: 18 },
   tagRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, width: "100%", justifyContent: "center" },
   tag: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1 },
   tagText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
-  summaryBox: { backgroundColor: "rgba(255,255,255,0.04)", borderRadius: 14, padding: 16, width: "100%", borderWidth: 1, borderColor: "rgba(255,255,255,0.06)", gap: 6 },
-  summaryLabel: { fontSize: 12, fontFamily: "Inter_700Bold", color: "rgba(255,255,255,0.5)", letterSpacing: 0.5 },
-  summaryText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.7)", lineHeight: 20 },
+  summaryBox: { backgroundColor: "#fff9ed", borderRadius: 14, padding: 16, width: "100%", borderWidth: 1, borderColor: "#ead9b8", gap: 6 },
+  summaryLabel: { fontSize: 12, fontFamily: "Inter_700Bold", color: "#8a7259", letterSpacing: 0.5 },
+  summaryText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#3b2a1d", lineHeight: 20 },
   productCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(201,168,76,0.08)",
+    backgroundColor: "rgba(227,169,60,0.1)",
     borderRadius: 12,
     padding: 14,
     width: "100%",
     borderWidth: 1,
-    borderColor: "rgba(201,168,76,0.15)",
+    borderColor: "rgba(227,169,60,0.25)",
     marginBottom: 8,
   },
-  productName: { fontSize: 14, fontFamily: "Inter_700Bold", color: "#ffffff" },
-  productDesc: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.5)", marginTop: 2 },
+  productName: { fontSize: 14, fontFamily: "Inter_700Bold", color: "#3b2a1d" },
+  productDesc: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#8a7259", marginTop: 2 },
   onjjemLink: { alignItems: "center", paddingVertical: 8 },
   onjjemLinkText: { fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#c9a84c" },
   crossPromoCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "rgba(74,222,128,0.08)",
+    backgroundColor: "rgba(74,164,128,0.1)",
     borderWidth: 1,
-    borderColor: "rgba(74,222,128,0.25)",
+    borderColor: "rgba(74,164,128,0.3)",
     borderRadius: 14,
     padding: 14,
     marginTop: 4,
@@ -1230,28 +1246,28 @@ const rStyles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(74,222,128,0.15)",
+    backgroundColor: "rgba(74,164,128,0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
-  crossPromoTitle: { fontSize: 13.5, fontFamily: "Inter_700Bold", color: "#fff" },
-  crossPromoBody: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#9ca3af", marginTop: 2, lineHeight: 16 },
+  crossPromoTitle: { fontSize: 13.5, fontFamily: "Inter_700Bold", color: "#3b2a1d" },
+  crossPromoBody: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#8a7259", marginTop: 2, lineHeight: 16 },
   trickCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "#fff9ed",
     borderRadius: 14,
     padding: 14,
     width: "100%",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.06)",
+    borderColor: "#ead9b8",
     marginBottom: 8,
   },
   trickNumber: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center", borderWidth: 1 },
   trickNumberText: { fontSize: 14, fontFamily: "Inter_700Bold" },
-  trickName: { fontSize: 14, fontFamily: "Inter_700Bold", color: "#ffffff" },
-  trickMeta: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.45)", marginTop: 2 },
+  trickName: { fontSize: 14, fontFamily: "Inter_700Bold", color: "#3b2a1d" },
+  trickMeta: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#8a7259", marginTop: 2 },
 });
 
 /* ─── Web Purchase Prompt ─── */
@@ -1940,6 +1956,8 @@ export default function ScannerScreen() {
         result={scanResult}
         scanType={scanResult?.type ?? "breed"}
         scannedUri={scannedUri}
+        dogName={dogName || revealOfferDogName || null}
+        dogBreed={pendingScan?.breed ?? gallery[0]?.breed ?? null}
       />
 
       {/* Cartoon Style Picker */}
