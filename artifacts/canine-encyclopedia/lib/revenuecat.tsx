@@ -2,7 +2,6 @@ import React, { createContext, useContext } from "react";
 import { Platform } from "react-native";
 import Purchases, { type PurchasesPackage } from "react-native-purchases";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import Constants from "expo-constants";
 
 const REVENUECAT_TEST_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_TEST_API_KEY;
 const REVENUECAT_IOS_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY;
@@ -90,16 +89,20 @@ export async function purchaseMerchandise(rcProductId: string): Promise<string> 
   return result.transaction?.transactionIdentifier ?? result.customerInfo.originalAppUserId;
 }
 
+// Picks which RevenueCat project key to configure with. Previously this
+// checked __DEV__ / Constants.executionEnvironment to decide test vs live,
+// but a custom (non-`eas build`) CI pipeline can ship a release build where
+// __DEV__ is still true, silently wiring a real TestFlight/App Store build
+// to the test RevenueCat project. That makes purchasePackage() hang forever
+// (no success, no error) because the product it's buying doesn't exist in
+// that project. Instead, always prefer the real platform key when it's
+// present — it's only set in the production build profile, so dev/preview
+// builds (which don't set it) still correctly fall back to the test key.
 function getRevenueCatApiKey() {
-  if (!REVENUECAT_TEST_API_KEY) {
-    throw new Error("RevenueCat API Keys not found — run the seed script first");
-  }
-  if (__DEV__ || Platform.OS === "web" || Constants.executionEnvironment === "storeClient") {
-    return REVENUECAT_TEST_API_KEY;
-  }
   if (Platform.OS === "ios" && REVENUECAT_IOS_API_KEY) return REVENUECAT_IOS_API_KEY;
   if (Platform.OS === "android" && REVENUECAT_ANDROID_API_KEY) return REVENUECAT_ANDROID_API_KEY;
-  return REVENUECAT_TEST_API_KEY;
+  if (REVENUECAT_TEST_API_KEY) return REVENUECAT_TEST_API_KEY;
+  throw new Error("RevenueCat API Keys not found — run the seed script first");
 }
 
 export function initializeRevenueCat() {
