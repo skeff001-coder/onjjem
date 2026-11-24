@@ -134,7 +134,9 @@ router.get("/xmas-draw", async (req: Request, res: Response) => {
   if (new Date() < CLOSES) { res.type("html").send("<p style='font:18px system-ui;padding:20px'>The giveaway hasn't closed yet (Sun 22 Nov, 8pm UK).</p>"); return; }
   await ensureTable();
   const r = await db.execute(sql`SELECT name, email, country FROM xmas_entries ORDER BY entered_at`);
-  const rows = r.rows as any[];
+  // Owner test entries are never eligible to win.
+  const OWNER = ["skeff001@yahoo.com", "owenskef@gmail.com", "onjjemgifts@gmail.com", "hello@onjjem.com"];
+  const rows = (r.rows as any[]).filter((e) => !OWNER.includes(String(e.email || "").trim().toLowerCase()));
   if (!rows.length) { res.send("No entries"); return; }
   const w = rows[crypto.randomInt(rows.length)];
   res.type("html").send(`<body style="font:18px system-ui;padding:20px;max-width:560px;margin:auto"><h2>🎉 Winner (picked at random from ${rows.length})</h2><p><b>${esc(w.name)}</b><br>${esc(w.email)} · ${w.country}</p><p style="color:#666">Take a screenshot of this page as your record. Refreshing picks again, so only draw once.</p></body>`);
