@@ -1386,6 +1386,24 @@ export default function ScannerScreen() {
     })();
   }, []);
 
+  // Movie Poster uses — same "3 per purchase (or free re-unlock top-up)"
+  // pattern as Cartoonify above, but tracked separately. Kept separate
+  // rather than sharing Cartoonify's pool since the bundle's own sales
+  // copy already promises "3 cartoon artworks" specifically — pooling
+  // them would quietly shrink that promise for existing buyers. A poster
+  // call is also pricier (two reference images in, one out) than a
+  // single-image cartoon call, so its own 3-use cap keeps cost predictable.
+  const [posterUsesRemaining, setPosterUsesRemaining] = useState<number>(0);
+  const [posterUsesLoaded, setPosterUsesLoaded] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const raw = await AsyncStorage.getItem("wud_poster_paid_uses");
+      setPosterUsesRemaining(raw ? parseInt(raw, 10) : 0);
+      setPosterUsesLoaded(true);
+    })();
+  }, []);
+
   const isWeb = Platform.OS === "web";
   const topPad = isWeb ? 67 : insets.top;
   const galleryUris = useMemo(() => gallery.map((g) => g.uri), [gallery]);
@@ -1559,6 +1577,19 @@ export default function ScannerScreen() {
   // ── "You + Your Dog" Movie Poster helpers ──
 
   const openMoviePoster = async () => {
+    if (!posterUsesLoaded) return;
+    // Require the Full Story Bundle unlock (and a remaining use) before
+    // even opening the input screen — no free/teaser generations, since
+    // each one is a real paid Gemini call with no guaranteed revenue.
+    // Tapping Unlock when already owned but out of uses is a free
+    // StoreKit "re-purchase" of an owned non-consumable (same trick
+    // Cartoonify already relies on) — it tops the 3 uses back up at no
+    // extra charge to the customer.
+    const owned = hasCartoon || hasAllScanners;
+    if (!owned || posterUsesRemaining <= 0) {
+      const unlocked = await handleMoviePosterUnlock();
+      if (!unlocked) return;
+    }
     const reusable = await getReusablePhoto();
     setPosterDogPhoto(reusable);
     setPosterDogNameInput(dogName || gallery[0]?.dogName || "");
@@ -1620,6 +1651,11 @@ export default function ScannerScreen() {
       setMoviePosterResult(result);
       setMoviePosterTitle(result.defaultTitle);
       setMoviePosterStep("result");
+      if (posterUsesRemaining > 0) {
+        const next = posterUsesRemaining - 1;
+        await AsyncStorage.setItem("wud_poster_paid_uses", String(next));
+        setPosterUsesRemaining(next);
+      }
     } catch (e: any) {
       setMoviePosterError(e?.message ?? "Something went wrong generating your poster.");
       setMoviePosterStep("input");
@@ -1634,23 +1670,31 @@ export default function ScannerScreen() {
   // (hasCartoon), since packaging a brand new £-priced product would need
   // manual App Store Connect setup this session can't do.
   const [moviePosterBuying, setMoviePosterBuying] = useState(false);
-  const handleMoviePosterUnlock = async () => {
+  const handleMoviePosterUnlock = async (): Promise<boolean> => {
     if (isWeb) {
       setWebPromptVisible(true);
-      return;
+      return false;
     }
     const pkg = packageFor(PACKAGE_MIXED_BREED);
     if (!pkg) {
       Alert.alert("Not available", "This product is not available right now. Please try again.");
-      return;
+      return false;
     }
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setMoviePosterBuying(true);
     try {
       await purchase(pkg);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      // Re-purchasing an already-owned non-consumable doesn't charge the
+      // customer again (StoreKit just redelivers it) — so this also
+      // doubles as the "ran out of included generations, tap Unlock to
+      // top back up" path, same trick Cartoonify's reset already uses.
+      await AsyncStorage.setItem("wud_poster_paid_uses", "3");
+      setPosterUsesRemaining(3);
+      return true;
     } catch (e: any) {
       if (!e?.userCancelled) Alert.alert("Purchase failed", e?.message ?? "Please try again.");
+      return false;
     } finally {
       setMoviePosterBuying(false);
     }
@@ -2334,6 +2378,9 @@ export default function ScannerScreen() {
                 >
                   <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: colors.navy }}>Create Our Poster</Text>
                 </TouchableOpacity>
+                <Text style={{ fontSize: 11, color: colors.mutedForeground, textAlign: "center" }}>
+                  {posterUsesRemaining} poster {posterUsesRemaining === 1 ? "generation" : "generations"} left in your bundle
+                </Text>
               </View>
             )}
 
