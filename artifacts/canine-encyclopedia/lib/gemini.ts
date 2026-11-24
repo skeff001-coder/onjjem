@@ -283,3 +283,37 @@ export async function getDogCartoon(
   }
   return response.json();
 }
+
+export interface MoviePosterResult {
+  imageBase64: string;
+  mimeType: string;
+  defaultTitle: string;
+  billing: string;
+}
+
+export async function getMoviePoster(
+  ownerSelfieBase64: string,
+  ownerMimeType: string,
+  dogPhotoBase64: string,
+  dogMimeType: string,
+  ownerName?: string,
+  dogName?: string,
+): Promise<MoviePosterResult> {
+  const response = await fetch(`${getApiBase()}/api/movie-poster`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ownerSelfieBase64,
+      ownerMimeType,
+      dogPhotoBase64,
+      dogMimeType,
+      ownerName,
+      dogName,
+    }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(`${(err as any)?.error ?? "Movie poster generation failed"}: ${(err as any)?.details ?? `status ${response.status}`}`);
+  }
+  return response.json();
+}

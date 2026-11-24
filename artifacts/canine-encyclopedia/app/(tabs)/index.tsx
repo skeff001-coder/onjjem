@@ -40,12 +40,14 @@ import {
   getHealthGuide,
   getTrickTrainer,
   getDogCartoon,
+  getMoviePoster,
   type MixedBreedResult,
   type AgeEstimateResult,
   type PersonalityResult,
   type HealthGuideResult,
   type TrickTrainerResult,
   type DogCartoonResult,
+  type MoviePosterResult,
 } from "@/lib/gemini";
 import {
   useSubscription,
@@ -1322,6 +1324,7 @@ export default function ScannerScreen() {
     hasHealthGuide,
     hasTrickTrainer,
     hasAllScanners,
+    hasCartoon,
     packageFor,
     purchase,
     restore,
@@ -1355,6 +1358,21 @@ export default function ScannerScreen() {
   const [storyPickerVisible, setStoryPickerVisible] = useState(false);
   const [selectedCartoonStyle, setSelectedCartoonStyle] = useState<"default" | "oil-painting" | "anime" | "pop-art">("default");
   const [isBuying, setIsBuying] = useState(false);
+
+  // ── "You + Your Dog" Movie Poster ──
+  // Deliberately kept as its own self-contained flow (not wired into the
+  // ScanType/processImage pipeline above) since it needs two photos, not
+  // one, and that pipeline isn't built to take two inputs at once.
+  const [moviePosterVisible, setMoviePosterVisible] = useState(false);
+  const [moviePosterStep, setMoviePosterStep] = useState<"input" | "generating" | "result">("input");
+  const [ownerPhoto, setOwnerPhoto] = useState<{ uri: string; base64: string; mimeType: string } | null>(null);
+  const [posterDogPhoto, setPosterDogPhoto] = useState<{ uri: string; base64: string; mimeType: string } | null>(null);
+  const [ownerNameInput, setOwnerNameInput] = useState("");
+  const [posterDogNameInput, setPosterDogNameInput] = useState("");
+  const [moviePosterResult, setMoviePosterResult] = useState<MoviePosterResult | null>(null);
+  const [moviePosterTitle, setMoviePosterTitle] = useState("");
+  const [moviePosterTitleEditing, setMoviePosterTitleEditing] = useState(false);
+  const [moviePosterError, setMoviePosterError] = useState<string | null>(null);
   // Cartoon uses — 3 per purchase, tracked locally.
   // No free cartoon scan. No bundle dependency.
   const [cartoonUsesRemaining, setCartoonUsesRemaining] = useState<number>(0);
@@ -1535,6 +1553,122 @@ export default function ScannerScreen() {
       return { uri: mostRecent.uri, base64, mimeType };
     } catch {
       return null;
+    }
+  };
+
+  // ── "You + Your Dog" Movie Poster helpers ──
+
+  const openMoviePoster = async () => {
+    const reusable = await getReusablePhoto();
+    setPosterDogPhoto(reusable);
+    setPosterDogNameInput(dogName || gallery[0]?.dogName || "");
+    setOwnerPhoto(null);
+    setOwnerNameInput("");
+    setMoviePosterResult(null);
+    setMoviePosterTitle("");
+    setMoviePosterError(null);
+    setMoviePosterStep("input");
+    setMoviePosterVisible(true);
+  };
+
+  const pickMoviePosterPhoto = (target: "owner" | "dog") => {
+    Alert.alert(
+      target === "owner" ? "Add your selfie" : "Add your dog's photo",
+      "Take a new photo or choose one from your library.",
+      [
+        {
+          text: "Take Photo",
+          onPress: async () => {
+            const picked = await pickImage("camera");
+            if (picked) {
+              if (target === "owner") setOwnerPhoto(picked);
+              else setPosterDogPhoto(picked);
+            }
+          },
+        },
+        {
+          text: "Choose from Library",
+          onPress: async () => {
+            const picked = await pickImage("library");
+            if (picked) {
+              if (target === "owner") setOwnerPhoto(picked);
+              else setPosterDogPhoto(picked);
+            }
+          },
+        },
+        { text: "Cancel", style: "cancel" },
+      ],
+    );
+  };
+
+  const generateMoviePoster = async () => {
+    if (!ownerPhoto || !posterDogPhoto) {
+      Alert.alert("Two photos needed", "Add your selfie and your dog's photo to continue.");
+      return;
+    }
+    setMoviePosterStep("generating");
+    setMoviePosterError(null);
+    try {
+      const result = await getMoviePoster(
+        ownerPhoto.base64,
+        ownerPhoto.mimeType,
+        posterDogPhoto.base64,
+        posterDogPhoto.mimeType,
+        ownerNameInput.trim() || undefined,
+        posterDogNameInput.trim() || undefined,
+      );
+      setMoviePosterResult(result);
+      setMoviePosterTitle(result.defaultTitle);
+      setMoviePosterStep("result");
+    } catch (e: any) {
+      setMoviePosterError(e?.message ?? "Something went wrong generating your poster.");
+      setMoviePosterStep("input");
+    }
+  };
+
+  // Deliberately a standalone purchase call (not routed through the shared
+  // handlePurchase/purchaseTarget flow above), since that flow has its own
+  // post-purchase side effects (re-opening the style picker, kicking off a
+  // DNA/age/personality scan) tied to a ScanType that doesn't fit this
+  // two-photo feature. Grants the same Full Story Bundle entitlement
+  // (hasCartoon), since packaging a brand new £-priced product would need
+  // manual App Store Connect setup this session can't do.
+  const [moviePosterBuying, setMoviePosterBuying] = useState(false);
+  const handleMoviePosterUnlock = async () => {
+    if (isWeb) {
+      setWebPromptVisible(true);
+      return;
+    }
+    const pkg = packageFor(PACKAGE_MIXED_BREED);
+    if (!pkg) {
+      Alert.alert("Not available", "This product is not available right now. Please try again.");
+      return;
+    }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setMoviePosterBuying(true);
+    try {
+      await purchase(pkg);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch (e: any) {
+      if (!e?.userCancelled) Alert.alert("Purchase failed", e?.message ?? "Please try again.");
+    } finally {
+      setMoviePosterBuying(false);
+    }
+  };
+
+  const handleMoviePosterShare = async () => {
+    if (!moviePosterResult) return;
+    try {
+      const fileUri = `${FileSystem.cacheDirectory}movie-poster-${Date.now()}.png`;
+      await FileSystem.writeAsStringAsync(fileUri, moviePosterResult.imageBase64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      await Share.share({
+        url: fileUri,
+        message: "Check out our movie poster made with What's Up Dog!",
+      });
+    } catch {
+      Alert.alert("Couldn't save", "Something went wrong saving the poster. Please try again.");
     }
   };
 
@@ -1840,6 +1974,45 @@ export default function ScannerScreen() {
               ))}
             </View>
 
+            {/* "You + Your Dog" Movie Poster entry point */}
+            <TouchableOpacity
+              onPress={openMoviePoster}
+              activeOpacity={0.88}
+              style={{
+                marginTop: 14,
+                marginHorizontal: 16,
+                backgroundColor: colors.card,
+                borderRadius: 20,
+                borderWidth: 1,
+                borderColor: colors.gold,
+                padding: 16,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 14,
+              }}
+            >
+              <View style={{
+                width: 48, height: 48, borderRadius: 14,
+                backgroundColor: "rgba(227,169,60,0.15)",
+                alignItems: "center", justifyContent: "center",
+              }}>
+                <Ionicons name="film-outline" size={24} color={colors.gold} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: colors.foreground }}>
+                    You + Your Dog Movie Poster
+                  </Text>
+                  <View style={{ backgroundColor: colors.gold, borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
+                    <Text style={{ fontSize: 7, fontFamily: "Inter_700Bold", color: colors.navy }}>NEW</Text>
+                  </View>
+                </View>
+                <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
+                  A Pixar-style poster starring you and your dog together
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={colors.mutedForeground} />
+            </TouchableOpacity>
 
             {/* Restore Purchases */}
             <TouchableOpacity onPress={handleRestore} disabled={isRestoring} style={{ alignItems: "center", marginTop: 16 }}>
@@ -1985,6 +2158,22 @@ export default function ScannerScreen() {
                 <Ionicons name="chevron-forward" size={18} color="rgba(255,255,255,0.3)" />
               </TouchableOpacity>
             ))}
+            <TouchableOpacity
+              style={[styles.styleOptionRow, { borderWidth: 1, borderColor: "#e3a93c88" }]}
+              onPress={() => {
+                setStylePickerVisible(false);
+                openMoviePoster();
+              }}
+            >
+              <Ionicons name="people-outline" size={22} color="#e0a95c" />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.styleOptionText}>You + Your Dog Movie Poster</Text>
+                <Text style={{ fontSize: 11, fontFamily: "Inter_400Regular", color: "#8a7259", marginTop: 1 }}>
+                  Needs a selfie too
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="rgba(255,255,255,0.3)" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => setStylePickerVisible(false)} style={{ marginTop: 8, alignItems: "center", paddingVertical: 10 }}>
               <Text style={{ color: "rgba(255,255,255,0.4)", fontFamily: "Inter_600SemiBold", fontSize: 13 }}>Cancel</Text>
             </TouchableOpacity>
@@ -2026,6 +2215,248 @@ export default function ScannerScreen() {
               <Text style={{ color: "rgba(255,255,255,0.4)", fontFamily: "Inter_600SemiBold", fontSize: 13 }}>Cancel</Text>
             </TouchableOpacity>
           </View>
+        </View>
+      </Modal>
+
+      {/* "You + Your Dog" Movie Poster */}
+      <Modal
+        visible={moviePosterVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setMoviePosterVisible(false)}
+      >
+        <View style={[rStyles.container, { backgroundColor: colors.background }]}>
+          <View style={rStyles.topBar}>
+            <View style={rStyles.handle} />
+            <TouchableOpacity onPress={() => setMoviePosterVisible(false)} style={rStyles.closeBtn}>
+              <Ionicons name="close" size={22} color={colors.mutedForeground} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={rStyles.scroll}>
+
+            {moviePosterStep === "input" && (
+              <View style={{ alignItems: "center", gap: 16, paddingBottom: 20 }}>
+                <View style={[rStyles.iconRing, { borderColor: colors.gold }]}>
+                  <Ionicons name="film-outline" size={28} color={colors.gold} />
+                </View>
+                <Text style={rStyles.resultTitle}>You + Your Dog</Text>
+                <Text style={rStyles.resultSubtitle}>A movie poster starring the both of you</Text>
+
+                {moviePosterError && (
+                  <View style={{ backgroundColor: "rgba(217,83,79,0.1)", borderWidth: 1, borderColor: "rgba(217,83,79,0.3)", borderRadius: 12, padding: 12, width: "100%" }}>
+                    <Text style={{ color: "#d9534f", fontSize: 13 }}>{moviePosterError}</Text>
+                  </View>
+                )}
+
+                <View style={{ flexDirection: "row", gap: 12, width: "100%" }}>
+                  <TouchableOpacity
+                    onPress={() => pickMoviePosterPhoto("owner")}
+                    style={{
+                      flex: 1, aspectRatio: 1, borderRadius: 16,
+                      backgroundColor: colors.card, borderWidth: 1.5, borderColor: colors.border,
+                      borderStyle: ownerPhoto ? "solid" : "dashed",
+                      alignItems: "center", justifyContent: "center", overflow: "hidden",
+                    }}
+                  >
+                    {ownerPhoto ? (
+                      <Image source={{ uri: ownerPhoto.uri }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+                    ) : (
+                      <>
+                        <Ionicons name="person-add-outline" size={26} color={colors.mutedForeground} />
+                        <Text style={{ fontSize: 12, color: colors.mutedForeground, marginTop: 6, fontFamily: "Inter_600SemiBold" }}>Your Selfie</Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => pickMoviePosterPhoto("dog")}
+                    style={{
+                      flex: 1, aspectRatio: 1, borderRadius: 16,
+                      backgroundColor: colors.card, borderWidth: 1.5, borderColor: colors.border,
+                      borderStyle: posterDogPhoto ? "solid" : "dashed",
+                      alignItems: "center", justifyContent: "center", overflow: "hidden",
+                    }}
+                  >
+                    {posterDogPhoto ? (
+                      <Image source={{ uri: posterDogPhoto.uri }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+                    ) : (
+                      <>
+                        <Ionicons name="paw-outline" size={26} color={colors.mutedForeground} />
+                        <Text style={{ fontSize: 12, color: colors.mutedForeground, marginTop: 6, fontFamily: "Inter_600SemiBold" }}>Your Dog's Photo</Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                </View>
+                {posterDogPhoto && (
+                  <TouchableOpacity onPress={() => pickMoviePosterPhoto("dog")} style={{ marginTop: -8 }}>
+                    <Text style={{ fontSize: 12, color: colors.gold, fontFamily: "Inter_600SemiBold" }}>Use a different dog photo</Text>
+                  </TouchableOpacity>
+                )}
+
+                <View style={{ width: "100%", gap: 10 }}>
+                  <View>
+                    <Text style={{ fontSize: 12, fontFamily: "Inter_600SemiBold", color: colors.mutedForeground, marginBottom: 4 }}>Your Name (optional)</Text>
+                    <TextInput
+                      value={ownerNameInput}
+                      onChangeText={setOwnerNameInput}
+                      placeholder="Me"
+                      placeholderTextColor={colors.mutedForeground}
+                      style={{
+                        borderWidth: 1.5, borderColor: colors.border, borderRadius: 12,
+                        paddingHorizontal: 14, paddingVertical: 12, fontSize: 15,
+                        fontFamily: "Inter_500Medium", color: colors.foreground, backgroundColor: colors.card,
+                      }}
+                    />
+                  </View>
+                  <View>
+                    <Text style={{ fontSize: 12, fontFamily: "Inter_600SemiBold", color: colors.mutedForeground, marginBottom: 4 }}>Dog's Name</Text>
+                    <TextInput
+                      value={posterDogNameInput}
+                      onChangeText={setPosterDogNameInput}
+                      placeholder="Your dog's name"
+                      placeholderTextColor={colors.mutedForeground}
+                      style={{
+                        borderWidth: 1.5, borderColor: colors.border, borderRadius: 12,
+                        paddingHorizontal: 14, paddingVertical: 12, fontSize: 15,
+                        fontFamily: "Inter_500Medium", color: colors.foreground, backgroundColor: colors.card,
+                      }}
+                    />
+                  </View>
+                </View>
+
+                <TouchableOpacity
+                  onPress={generateMoviePoster}
+                  disabled={!ownerPhoto || !posterDogPhoto}
+                  style={{
+                    width: "100%", backgroundColor: colors.gold, borderRadius: 12,
+                    paddingVertical: 15, alignItems: "center", marginTop: 4,
+                    opacity: (!ownerPhoto || !posterDogPhoto) ? 0.5 : 1,
+                  }}
+                >
+                  <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: colors.navy }}>Create Our Poster</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {moviePosterStep === "generating" && (
+              <View style={{ alignItems: "center", gap: 16, paddingTop: 60 }}>
+                <ActivityIndicator size="large" color={colors.gold} />
+                <Text style={{ fontSize: 15, fontFamily: "Inter_600SemiBold", color: colors.foreground }}>
+                  Creating your movie poster...
+                </Text>
+                <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, textAlign: "center" }}>
+                  This can take up to 30 seconds — our AI is painting you and {posterDogNameInput || "your dog"} into one scene.
+                </Text>
+              </View>
+            )}
+
+            {moviePosterStep === "result" && moviePosterResult && (() => {
+              const posterUnlocked = hasCartoon || hasAllScanners;
+              return (
+                <View style={{ alignItems: "center", gap: 14, paddingBottom: 20 }}>
+                  <View style={{
+                    width: "100%", aspectRatio: 3 / 4, borderRadius: 18, overflow: "hidden",
+                    backgroundColor: colors.navy, borderWidth: 1, borderColor: colors.border,
+                  }}>
+                    <Image
+                      source={{ uri: `data:${moviePosterResult.mimeType};base64,${moviePosterResult.imageBase64}` }}
+                      style={{ width: "100%", height: "100%" }}
+                      resizeMode="cover"
+                    />
+                    {/* Title overlay (tap to edit) */}
+                    <View style={{ position: "absolute", top: 0, left: 0, right: 0, padding: 16, alignItems: "center" }}>
+                      {moviePosterTitleEditing ? (
+                        <TextInput
+                          value={moviePosterTitle}
+                          onChangeText={setMoviePosterTitle}
+                          onBlur={() => setMoviePosterTitleEditing(false)}
+                          autoFocus
+                          multiline
+                          textAlign="center"
+                          style={{
+                            fontSize: 24, fontFamily: "Inter_700Bold", color: "#ffffff",
+                            textShadowColor: "rgba(0,0,0,0.6)", textShadowOffset: { width: 0, height: 2 }, textShadowRadius: 6,
+                            textAlign: "center", width: "100%",
+                          }}
+                        />
+                      ) : (
+                        <TouchableOpacity onPress={() => setMoviePosterTitleEditing(true)}>
+                          <Text style={{
+                            fontSize: 24, fontFamily: "Inter_700Bold", color: "#ffffff", textAlign: "center",
+                            textShadowColor: "rgba(0,0,0,0.6)", textShadowOffset: { width: 0, height: 2 }, textShadowRadius: 6,
+                            letterSpacing: 0.5,
+                          }}>
+                            {moviePosterTitle} <Ionicons name="pencil" size={14} color="#ffffff" />
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                    {/* Billing block overlay */}
+                    <View style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: 14, backgroundColor: "rgba(0,0,0,0.35)" }}>
+                      <Text style={{
+                        fontSize: 11, fontFamily: "Inter_700Bold", color: "#ffffff", textAlign: "center", letterSpacing: 0.5,
+                      }}>
+                        {moviePosterResult.billing}
+                      </Text>
+                    </View>
+                    {/* Preview watermark, shown until unlocked */}
+                    {!posterUnlocked && (
+                      <View style={{
+                        position: "absolute", top: "45%", left: 0, right: 0,
+                        alignItems: "center", transform: [{ rotate: "-18deg" }],
+                      }}>
+                        <Text style={{
+                          fontSize: 34, fontFamily: "Inter_700Bold", color: "rgba(255,255,255,0.35)", letterSpacing: 4,
+                        }}>
+                          PREVIEW
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  {posterUnlocked ? (
+                    <>
+                      <TouchableOpacity
+                        onPress={handleMoviePosterShare}
+                        style={{
+                          flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
+                          backgroundColor: colors.gold, borderRadius: 12, paddingVertical: 14, width: "100%",
+                        }}
+                      >
+                        <Ionicons name="share-outline" size={18} color={colors.navy} />
+                        <Text style={{ fontSize: 14, fontWeight: "700", color: colors.navy }}>Share Poster</Text>
+                      </TouchableOpacity>
+                      <PrintCTA color={colors.gold} />
+                    </>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={handleMoviePosterUnlock}
+                      disabled={moviePosterBuying || isPurchasing}
+                      style={{
+                        flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
+                        backgroundColor: colors.gold, borderRadius: 12, paddingVertical: 14, width: "100%",
+                        opacity: (moviePosterBuying || isPurchasing) ? 0.6 : 1,
+                      }}
+                    >
+                      {moviePosterBuying ? (
+                        <ActivityIndicator color={colors.navy} size="small" />
+                      ) : (
+                        <>
+                          <Ionicons name="lock-open-outline" size={18} color={colors.navy} />
+                          <Text style={{ fontSize: 14, fontWeight: "700", color: colors.navy }}>Unlock HD Poster — £2.99</Text>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                  )}
+                  <Text style={{ fontSize: 11, color: colors.mutedForeground, textAlign: "center" }}>
+                    {posterUnlocked
+                      ? "Part of your Full Story Bundle unlock."
+                      : "One unlock gets you this poster plus Breed DNA, Age, Personality & Cartoonify."}
+                  </Text>
+                </View>
+              );
+            })()}
+
+          </ScrollView>
         </View>
       </Modal>
 
