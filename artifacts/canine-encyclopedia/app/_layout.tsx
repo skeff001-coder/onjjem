@@ -17,6 +17,26 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AppProvider } from "@/context/AppContext";
 import { SubscriptionProvider, initializeRevenueCat } from "@/lib/revenuecat";
 
+// TEMPORARY DIAGNOSTIC — remove once the launch crash is identified.
+// Build 92 crashes with SIGABRT from an uncaught JS error during startup,
+// but the device crash log has no symbols and no error message/stack, only
+// raw memory offsets. React Native's own uncaught-error handler is what's
+// escalating that error into a native abort; intercepting it here instead
+// shows the real error message and stack on screen as an alert, so the
+// next test run tells us exactly what's throwing instead of just crashing.
+if ((global as any).ErrorUtils) {
+  (global as any).ErrorUtils.setGlobalHandler((error: any, isFatal?: boolean) => {
+    try {
+      Alert.alert(
+        isFatal ? "Fatal JS Error (captured)" : "JS Error (captured)",
+        `${error?.message ?? String(error)}\n\n${(error?.stack ?? "").toString().slice(0, 1200)}`,
+      );
+    } catch {}
+    // Deliberately not calling the default handler, so the app stays open
+    // long enough to read the alert instead of crashing immediately.
+  });
+}
+
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
