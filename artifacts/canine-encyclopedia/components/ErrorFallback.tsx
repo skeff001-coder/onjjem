@@ -77,6 +77,30 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
           Please reload the app to continue.
         </Text>
 
+        {/* TEMPORARY DIAGNOSTIC — always show the real error on this build,
+            not just in __DEV__, so it's visible on a TestFlight build.
+            Remove this block once the underlying bug is found and fixed. */}
+        <ScrollView
+          style={{ maxHeight: 220, width: "100%" }}
+          contentContainerStyle={{
+            backgroundColor: colors.card,
+            borderRadius: 8,
+            padding: 12,
+          }}
+        >
+          <Text
+            selectable
+            style={{
+              fontSize: 12,
+              lineHeight: 18,
+              color: colors.foreground,
+              fontFamily: monoFont,
+            }}
+          >
+            {formatErrorDetails()}
+          </Text>
+        </ScrollView>
+
         <Pressable
           onPress={handleRestart}
           style={({ pressed }) => [
