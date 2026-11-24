@@ -1,5 +1,5 @@
 import { CartoonCarousel, CARTOON_SAMPLES } from '@/components/CartoonCarousel';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   View,
   Text,
