@@ -1131,13 +1131,16 @@ function MugCardMockup({ imageBase64, mimeType }: { imageBase64: string; mimeTyp
       await Share.share(
         Platform.OS === "ios"
           ? { url: fileUri }
-          : { url: fileUri, message: "My gift artwork — upload this at onjjem.com/shop" },
+          : { url: fileUri, message: "My gift artwork — upload this at onjjem.com/mug" },
       );
     } catch {
       // Saving/sharing failing shouldn't block getting to the shop.
     } finally {
       setSaving(false);
-      Linking.openURL("https://onjjem.com/shop");
+      // Confirmed-working product page (Owen tested it live), not the
+      // generic /shop homepage — "Order This Mug" should land on a mug,
+      // not wherever browsing from the homepage happens to lead.
+      Linking.openURL("https://onjjem.com/mug");
     }
   };
 
@@ -1225,7 +1228,7 @@ function MugCardMockup({ imageBase64, mimeType }: { imageBase64: string; mimeTyp
 function OnjjemGiftTeaser() {
   return (
     <TouchableOpacity
-      onPress={() => Linking.openURL("https://onjjem.com/shop")}
+      onPress={() => Linking.openURL("https://onjjem.com/mug")}
       activeOpacity={0.88}
       style={{
         marginTop: 24, marginHorizontal: 16,
