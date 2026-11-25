@@ -1702,7 +1702,19 @@ export default function ScannerScreen() {
         {
           text: "Take Photo",
           onPress: async () => {
+            // The camera lives on its own full-screen route (pushed via
+            // expo-router), which sits UNDERNEATH this screen's own native
+            // modal sheet. Pushing to it while the sheet is still presented
+            // leaves the camera screen mounted but invisible/untappable
+            // behind the sheet — the classic "frozen" Movie Poster screen.
+            // Close the sheet first and let it finish dismissing, then
+            // bring it back once we're back with the photo. All the form
+            // state (names, the other photo) lives in this component, not
+            // the Modal, so it survives the round trip untouched.
+            setMoviePosterVisible(false);
+            await new Promise((resolve) => setTimeout(resolve, 400));
             const picked = await pickImage("camera");
+            setMoviePosterVisible(true);
             if (picked) {
               if (target === "owner") setOwnerPhoto(picked);
               else setPosterDogPhoto(picked);
@@ -2141,7 +2153,7 @@ export default function ScannerScreen() {
 
             {/* "You + Your Dog" Movie Poster entry point */}
             <TouchableOpacity
-              onPress={openMoviePoster}
+              onPress={() => openMoviePoster()}
               activeOpacity={0.88}
               style={{
                 marginTop: 14,
@@ -2327,7 +2339,11 @@ export default function ScannerScreen() {
               style={[styles.styleOptionRow, { borderWidth: 1, borderColor: "#e3a93c88" }]}
               onPress={() => {
                 setStylePickerVisible(false);
-                openMoviePoster();
+                // Give this sheet a beat to finish dismissing before
+                // presenting the Movie Poster one on top of it — presenting
+                // a new modal sheet in the same tick as dismissing another
+                // is the same class of native-modal race fixed above.
+                setTimeout(() => openMoviePoster(), 350);
               }}
             >
               <Ionicons name="people-outline" size={22} color="#e0a95c" />
