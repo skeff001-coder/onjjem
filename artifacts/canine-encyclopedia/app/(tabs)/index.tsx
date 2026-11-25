@@ -20,6 +20,7 @@ import {
   Switch,
 } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -138,84 +139,132 @@ function useScannerDefs(): ScannerDef[] {
 }
 
 /* ─── Header ─── */
-function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
-  const { gallery, currentDogName, currentPhotoUri, currentScan } = useApp();
+function ScannerHeader({
+  onScanPress,
+  onCreatePosterPress,
+  onFestivePress,
+}: {
+  onScanPress: () => void;
+  onCreatePosterPress: () => void;
+  onFestivePress: () => void;
+}) {
   const colors = useColors();
+  const nativeDriver = Platform.OS !== "web";
 
-  const mostRecent = [...gallery].sort((a, b) => b.timestamp - a.timestamp)[0];
-  const dogPhoto = currentPhotoUri ?? mostRecent?.uri ?? null;
-  const dogName = currentDogName || mostRecent?.dogName || null;
-  const dogBreed = currentScan?.breed ?? mostRecent?.breed ?? null;
+  // Gentle up/down float on the poster mockup — the only animation this
+  // card needs, kept cheap (one Animated.Value, native driver) rather than
+  // reaching for a real sample image we don't have.
+  const floatAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatAnim, { toValue: 1, duration: 1800, useNativeDriver: nativeDriver }),
+        Animated.timing(floatAnim, { toValue: 0, duration: 1800, useNativeDriver: nativeDriver }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, []);
+  const floatY = floatAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -8] });
 
   return (
     <View style={{ gap: 14, paddingHorizontal: 16, paddingTop: 8 }}>
 
-      {/* ── Hero ── */}
+      {/* ── Hero Showcase Card ── */}
       <View style={{
         backgroundColor: colors.card,
         borderRadius: 28,
-        overflow: "hidden",
         borderWidth: 1,
         borderColor: colors.border,
-        minHeight: 180,
         padding: 22,
-        justifyContent: "flex-end",
+        alignItems: "center",
+        gap: 16,
       }}>
-        {/* Headline */}
+        {/* Animated poster mockup */}
+        <Animated.View style={{ width: "58%", aspectRatio: 3 / 4, transform: [{ translateY: floatY }], marginTop: 6 }}>
+          <View style={{
+            flex: 1, borderRadius: 22, backgroundColor: colors.navy,
+            borderWidth: 3, borderColor: colors.gold, overflow: "hidden",
+            alignItems: "center", justifyContent: "center", padding: 12,
+            shadowColor: colors.navy, shadowOpacity: 0.3, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 6,
+          }}>
+            <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+              <Ionicons name="person" size={46} color="#fff9ed" />
+              <Ionicons name="paw" size={38} color={colors.gold} style={{ marginLeft: -10, marginBottom: 2 }} />
+            </View>
+            <Text style={{ marginTop: 10, fontSize: 10, fontFamily: "Inter_700Bold", color: colors.gold, letterSpacing: 2 }}>
+              YOU + YOUR DOG
+            </Text>
+            <Text style={{ fontSize: 8, fontFamily: "Inter_500Medium", color: "rgba(255,249,237,0.55)", marginTop: 2, letterSpacing: 1 }}>
+              A MOVIE POSTER
+            </Text>
+          </View>
+
+          {/* Floating badge: AI speed claim */}
+          <View style={{
+            position: "absolute", top: -10, right: -14,
+            backgroundColor: colors.gold, borderRadius: 999,
+            paddingHorizontal: 9, paddingVertical: 5,
+            transform: [{ rotate: "6deg" }],
+            shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 4, shadowOffset: { width: 0, height: 2 }, elevation: 3,
+          }}>
+            <Text style={{ fontSize: 9, fontFamily: "Inter_700Bold", color: colors.navy }}>✨ AI Pixar Poster in 10s</Text>
+          </View>
+
+          {/* Floating pill: Christmas Edition — doubles as a shortcut into the festive flow */}
+          <TouchableOpacity
+            onPress={onFestivePress}
+            activeOpacity={0.85}
+            style={{
+              position: "absolute", bottom: -10, left: -14,
+              backgroundColor: colors.navy, borderRadius: 999,
+              borderWidth: 1, borderColor: colors.gold,
+              paddingHorizontal: 9, paddingVertical: 5,
+              transform: [{ rotate: "-5deg" }],
+            }}
+          >
+            <Text style={{ fontSize: 9, fontFamily: "Inter_700Bold", color: "#fff9ed" }}>🎄 Christmas Edition</Text>
+          </TouchableOpacity>
+        </Animated.View>
+
         <Text style={{
-          fontSize: 30,
+          fontSize: 23,
           fontFamily: "Inter_700Bold",
           color: colors.foreground,
-          letterSpacing: -0.6,
-          lineHeight: 36,
-          maxWidth: "90%",
+          letterSpacing: -0.4,
+          lineHeight: 28,
+          textAlign: "center",
         }}>
-          {"Discover. Celebrate.\nCreate. All about\n"}
-          <Text style={{ color: colors.gold }}>your dog.</Text>
+          Turn You & Your Dog Into a Movie Poster.
         </Text>
 
-        <Text style={{
-          fontSize: 13,
-          fontFamily: "Inter_400Regular",
-          color: colors.mutedForeground,
-          marginTop: 8,
-          maxWidth: "80%",
-          lineHeight: 18,
-        }}>
-          Scan your dog and unlock their story, personality and art.
-        </Text>
-
-        {/* CTA */}
-        <TouchableOpacity
-          onPress={onScanPress}
-          activeOpacity={0.85}
-          style={{
-            marginTop: 16,
-            backgroundColor: colors.gold,
-            borderRadius: 999,
-            paddingVertical: 13,
-            paddingHorizontal: 22,
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 8,
-            alignSelf: "flex-start",
-            shadowColor: colors.gold,
-            shadowOpacity: 0.35,
-            shadowRadius: 12,
-            shadowOffset: { width: 0, height: 4 },
-          }}
-        >
-          <Ionicons name="camera-outline" size={20} color={colors.navy} />
-          <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: colors.navy, letterSpacing: 0.2 }}>
-            Scan Your Dog
-          </Text>
-        </TouchableOpacity>
-
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 8, marginLeft: 2 }}>
-          <Text style={{ fontSize: 11, color: colors.mutedForeground }}>↵</Text>
-          <Text style={{ fontSize: 11, color: colors.mutedForeground, fontFamily: "Inter_400Regular" }}>
-            Free breed scan in seconds
-          </Text>
+        {/* Two high-impact action buttons */}
+        <View style={{ width: "100%", gap: 10 }}>
+          <TouchableOpacity
+            onPress={onCreatePosterPress}
+            activeOpacity={0.88}
+            style={{
+              backgroundColor: colors.gold, borderRadius: 16,
+              paddingVertical: 16, alignItems: "center",
+              shadowColor: colors.gold, shadowOpacity: 0.35, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
+            }}
+          >
+            <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: colors.navy }}>
+              🎬 Create You + Your Dog Poster
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={onScanPress}
+            activeOpacity={0.85}
+            style={{
+              backgroundColor: colors.card, borderWidth: 1.5, borderColor: colors.gold,
+              borderRadius: 16, paddingVertical: 15, alignItems: "center",
+            }}
+          >
+            <Text style={{ fontSize: 14, fontFamily: "Inter_700Bold", color: colors.foreground }}>
+              📸 Scan Your Dog (Breed, Vibe & Art)
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -279,151 +328,6 @@ function ScannerHeader({ onScanPress }: { onScanPress: () => void }) {
             </View>
           ))}
         </View>
-      </View>
-
-      {/* ── Recently scanned profile card ── */}
-      {dogPhoto && (
-        <View style={{
-          backgroundColor: colors.card,
-          borderRadius: 24,
-          borderWidth: 1,
-          borderColor: colors.border,
-          padding: 16,
-          flexDirection: "row",
-          gap: 14,
-          alignItems: "stretch",
-        }}>
-          {/* Left: info */}
-          <View style={{ flex: 1, justifyContent: "space-between" }}>
-            <View>
-              <Text style={{
-                fontSize: 10,
-                fontFamily: "Inter_700Bold",
-                color: colors.gold,
-                letterSpacing: 1.5,
-                textTransform: "uppercase",
-              }}>
-                Recently scanned
-              </Text>
-              <Text style={{
-                fontSize: 22,
-                fontFamily: "Inter_700Bold",
-                color: colors.foreground,
-                marginTop: 4,
-              }}>
-                {dogName ?? "Your Dog"} <Text style={{ fontSize: 16, color: colors.mutedForeground }}>♡</Text>
-              </Text>
-              {dogBreed && (
-                <Text style={{
-                  fontSize: 12,
-                  fontFamily: "Inter_500Medium",
-                  color: colors.mutedForeground,
-                  marginTop: 2,
-                }}>
-                  {dogBreed}
-                </Text>
-              )}
-            </View>
-
-            {/* Trait bars */}
-            <View style={{ gap: 8, marginTop: 14 }}>
-              {[
-                { icon: "⚡️", label: "Energy", pct: 85 },
-                { icon: "❤️", label: "Affection", pct: 92 },
-                { icon: "🌐", label: "Intelligence", pct: 78 },
-                { icon: "🎾", label: "Playfulness", pct: 88 },
-              ].map((m) => (
-                <View key={m.label} style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                  <Text style={{ fontSize: 11, width: 16 }}>{m.icon}</Text>
-                  <Text style={{
-                    fontSize: 10,
-                    fontFamily: "Inter_400Regular",
-                    color: colors.mutedForeground,
-                    width: 62,
-                  }}>
-                    {m.label}
-                  </Text>
-                  <View style={{
-                    flex: 1,
-                    height: 4,
-                    backgroundColor: colors.secondary,
-                    borderRadius: 999,
-                    overflow: "hidden",
-                  }}>
-                    <View style={{
-                      width: `${m.pct}%`,
-                      height: "100%",
-                      backgroundColor: colors.gold,
-                      borderRadius: 999,
-                    }} />
-                  </View>
-                  <Text style={{
-                    fontSize: 9,
-                    fontFamily: "Inter_700Bold",
-                    color: colors.mutedForeground,
-                    width: 24,
-                    textAlign: "right",
-                  }}>
-                    {m.pct}%
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          {/* Right: dog photo with overlay button */}
-          <View style={{
-            width: "45%",
-            borderRadius: 18,
-            overflow: "hidden",
-            backgroundColor: colors.secondary,
-            aspectRatio: 4 / 5,
-          }}>
-            <Image
-              source={{ uri: dogPhoto }}
-              style={{ width: "100%", height: "100%" }}
-              resizeMode="cover"
-            />
-            <View style={{
-              position: "absolute",
-              bottom: 8,
-              left: 8,
-              right: 8,
-              backgroundColor: "rgba(46,32,19,0.65)",
-              borderRadius: 12,
-              paddingVertical: 8,
-              paddingHorizontal: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}>
-              <Text style={{ fontSize: 10, fontFamily: "Inter_700Bold", color: "#fff9ed" }}>
-                View Full Profile
-              </Text>
-              <Text style={{ fontSize: 14, color: colors.goldLight }}>›</Text>
-            </View>
-          </View>
-        </View>
-      )}
-
-      {/* ── Create something amazing ── */}
-      <View style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingHorizontal: 4,
-        marginBottom: 4,
-      }}>
-        <Text style={{
-          fontSize: 15,
-          fontFamily: "Inter_700Bold",
-          color: colors.foreground,
-        }}>
-          Create something amazing
-        </Text>
-        <Text style={{ fontSize: 12, color: colors.mutedForeground, fontFamily: "Inter_500Medium" }}>
-          See all ›
-        </Text>
       </View>
 
     </View>
@@ -533,7 +437,7 @@ function ScannerCard({
   const opacity = anim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
   const isFeaturedGlow = def.featured && !owned;
   const glowShadowOpacity = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.2, 0.55] });
-  const glowBorderColor = isFeaturedGlow ? def.color : (hovered ? def.color : "rgba(255,255,255,0.08)");
+  const glowBorderColor = isFeaturedGlow ? def.color : (hovered ? def.color : "#ead9b8");
 
   return (
     <Animated.View style={{ transform: [{ translateY }, { scale }], opacity, width: CARD_WIDTH }}>
@@ -603,7 +507,7 @@ function ScannerCard({
 
 const cardStyles = StyleSheet.create({
   card: {
-    backgroundColor: "#0e1322",
+    backgroundColor: "#fff9ed",
     borderRadius: 18,
     padding: 16,
     gap: 10,
@@ -619,7 +523,7 @@ const cardStyles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 20,
   },
-  premiumBadgeText: { fontSize: 9, fontFamily: "Inter_700Bold", color: "#0a0e1a", letterSpacing: 0.3 },
+  premiumBadgeText: { fontSize: 9, fontFamily: "Inter_700Bold", color: "#2e2013", letterSpacing: 0.3 },
   ownedBadge: {
     position: "absolute",
     top: 12,
@@ -641,13 +545,13 @@ const cardStyles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 20,
   },
-  freeBadgeText: { fontSize: 9, fontFamily: "Inter_700Bold", color: "#0a0e1a", letterSpacing: 0.3 },
+  freeBadgeText: { fontSize: 9, fontFamily: "Inter_700Bold", color: "#2e2013", letterSpacing: 0.3 },
   row: { flexDirection: "row", alignItems: "center", gap: 12 },
   iconWrap: { width: 48, height: 48, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   textWrap: { flex: 1, gap: 2, paddingRight: 56 },
-  title: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#ffffff", letterSpacing: -0.2 },
-  subtitle: { fontSize: 12, fontFamily: "Inter_500Medium", color: "rgba(255,255,255,0.45)" },
-  description: { fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.55)", lineHeight: 18, marginTop: 2 },
+  title: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#3b2a1d", letterSpacing: -0.2 },
+  subtitle: { fontSize: 12, fontFamily: "Inter_500Medium", color: "#8a7259" },
+  description: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#8a7259", lineHeight: 18, marginTop: 2 },
 });
 
 /* ─── Scan Result Types ─── */
@@ -1261,6 +1165,48 @@ function MugCardMockup({ imageBase64, mimeType }: { imageBase64: string; mimeTyp
         Your artwork saves automatically — just upload it at checkout.
       </Text>
     </View>
+  );
+}
+
+// Static gift-shop teaser for the home screen — unlike MugCardMockup above,
+// there's no real generated artwork yet at this point (nothing's been
+// scanned), so this uses a generic mug glyph instead of a photo.
+function OnjjemGiftTeaser() {
+  return (
+    <TouchableOpacity
+      onPress={() => Linking.openURL("https://onjjem.com/shop")}
+      activeOpacity={0.88}
+      style={{
+        marginTop: 24, marginHorizontal: 16,
+        backgroundColor: "#fff9ed", borderRadius: 20,
+        borderWidth: 1, borderColor: "#ead9b8",
+        padding: 16, flexDirection: "row", alignItems: "center", gap: 14,
+      }}
+    >
+      <View style={{
+        width: 56, height: 52, borderRadius: 12, backgroundColor: "#ffffff",
+        borderWidth: 1, borderColor: "#e4ddcf", alignItems: "center", justifyContent: "center",
+      }}>
+        {/* mini mug handle */}
+        <View style={{ position: "absolute", right: -8, top: 12, width: 14, height: 24, borderRadius: 9, borderWidth: 4, borderColor: "#e4ddcf" }} />
+        <Ionicons name="gift-outline" size={22} color="#e3a93c" />
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 9, fontFamily: "Inter_700Bold", color: "rgba(201,168,76,0.8)", letterSpacing: 1, marginBottom: 2 }}>
+          FROM ONJJEM, OUR SISTER COMPANY
+        </Text>
+        <Text style={{ fontSize: 13.5, fontFamily: "Inter_700Bold", color: "#3b2a1d" }}>
+          Put your poster on a real mug or Christmas card
+        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4 }}>
+          <View style={{ backgroundColor: "#e3a93c", borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2 }}>
+            <Text style={{ fontSize: 10, fontFamily: "Inter_700Bold", color: "#2e2013" }}>15% OFF</Text>
+          </View>
+          <Text style={{ fontSize: 11, fontFamily: "Inter_400Regular", color: "#8a7259" }}>onjjem.com</Text>
+        </View>
+      </View>
+      <Ionicons name="chevron-forward" size={20} color="#8a7259" />
+    </TouchableOpacity>
   );
 }
 
@@ -2074,7 +2020,8 @@ export default function ScannerScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: "#0a0e1a" }]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar style="dark" />
       {/* Background dog-photo collage, dimmed for legibility */}
       <View style={[StyleSheet.absoluteFill, { pointerEvents: "none" } as any]}>
         {dogPhotos.length > 0 &&
@@ -2091,8 +2038,8 @@ export default function ScannerScreen() {
               />
             );
           })}
-        {/* dark scrim so the collage reads as texture, not noise */}
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(10,14,26,0.82)" }]} />
+        {/* warm cream scrim so the collage reads as texture, not noise */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(251,243,227,0.9)" }]} />
       </View>
 
       {COLLAGE_ONLY && <BlinkingFooter />}
@@ -2104,39 +2051,20 @@ export default function ScannerScreen() {
                         contentContainerStyle={{ paddingTop: topPad + 12, paddingBottom: isWeb ? 100 : insets.bottom + 140 }}
 
           >
-            {/* Christmas Gift Mode banner */}
-            <View style={{
-              marginHorizontal: 16, marginBottom: 14,
-              backgroundColor: colors.gold, borderRadius: 20,
-              padding: 18, gap: 10,
-            }}>
-              <Text style={{ fontSize: 17, fontFamily: "Inter_700Bold", color: colors.navy }}>
-                🎄 Christmas Gift Mode: Custom Dog Mugs & Cards
-              </Text>
-              <Text style={{ fontSize: 13, fontFamily: "Inter_500Medium", color: colors.navy, opacity: 0.85, lineHeight: 18 }}>
-                Turn any dog (or You + Your Dog) into a personalized Christmas gift in 60 seconds. Delivered by ONJJEM.
-              </Text>
-              <TouchableOpacity
-                onPress={() => openMoviePoster(true)}
-                activeOpacity={0.85}
-                style={{
-                  backgroundColor: colors.navy, borderRadius: 999,
-                  paddingVertical: 12, paddingHorizontal: 18,
-                  flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6,
-                  alignSelf: "flex-start",
-                }}
-              >
-                <Text style={{ fontSize: 14, fontFamily: "Inter_700Bold", color: "#ffffff" }}>
-                  Create a Christmas Gift →
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Header */}
-            <ScannerHeader onScanPress={() => {
+            {/* Header — now the full visual-first hero: poster mockup,
+                headline, and the two primary action buttons. The old
+                separate Christmas banner and the small Movie Poster list
+                row are both folded into this hero (the floating "Christmas
+                Edition" pill and the primary button respectively), so
+                they've been removed rather than left as redundant clutter. */}
+            <ScannerHeader
+              onScanPress={() => {
                 const breedDef = scanners.find(s => s.id === "breed");
                 if (breedDef) handleScannerTap(breedDef);
-              }} />
+              }}
+              onCreatePosterPress={() => openMoviePoster()}
+              onFestivePress={() => openMoviePoster(true)}
+            />
 
             {/* Scanner Cards */}
             <View style={{ alignItems: "center", gap: 12, marginTop: 20, paddingHorizontal: 16 }}>
@@ -2151,75 +2079,24 @@ export default function ScannerScreen() {
               ))}
             </View>
 
-            {/* "You + Your Dog" Movie Poster entry point */}
-            <TouchableOpacity
-              onPress={() => openMoviePoster()}
-              activeOpacity={0.88}
-              style={{
-                marginTop: 14,
-                marginHorizontal: 16,
-                backgroundColor: colors.card,
-                borderRadius: 20,
-                borderWidth: 1,
-                borderColor: colors.gold,
-                padding: 16,
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 14,
-              }}
-            >
-              <View style={{
-                width: 48, height: 48, borderRadius: 14,
-                backgroundColor: "rgba(227,169,60,0.15)",
-                alignItems: "center", justifyContent: "center",
-              }}>
-                <Ionicons name="film-outline" size={24} color={colors.gold} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                  <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: colors.foreground }}>
-                    You + Your Dog Movie Poster
-                  </Text>
-                  <View style={{ backgroundColor: colors.gold, borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
-                    <Text style={{ fontSize: 7, fontFamily: "Inter_700Bold", color: colors.navy }}>NEW</Text>
-                  </View>
-                </View>
-                <Text style={{ fontSize: 12, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
-                  A Pixar-style poster starring you and your dog together
-                </Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.mutedForeground} />
-            </TouchableOpacity>
-
             {/* Restore Purchases */}
             <TouchableOpacity onPress={handleRestore} disabled={isRestoring} style={{ alignItems: "center", marginTop: 16 }}>
               {isRestoring ? (
-                <ActivityIndicator size="small" color="rgba(255,255,255,0.3)" />
+                <ActivityIndicator size="small" color="#8a7259" />
               ) : (
                 <Text style={styles.restoreText}>Restore purchases</Text>
               )}
             </TouchableOpacity>
 
-            {/* ONJJEM Promo Strip */}
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://onjjem.com")}
-              activeOpacity={0.82}
-              style={[styles.onjjemStrip, { marginTop: 24, marginHorizontal: 16 }]}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={styles.onjjemLabel}>FROM ONJJEM, OUR SISTER COMPANY</Text>
-                <Text style={styles.onjjemTitle}>Turn this photo into a keepsake</Text>
-                <Text style={styles.onjjemSub}>Canvas, mugs, keyrings & more — onjjem.com</Text>
-              </View>
-              <Ionicons name="bag-outline" size={24} color="#c9a84c" />
-            </TouchableOpacity>
+            {/* ONJJEM Gift Card */}
+            <OnjjemGiftTeaser />
           </ScrollView>
 
           {/* Scanning overlay */}
           {phase === "scanning" && (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(10,14,26,0.85)", alignItems: "center", justifyContent: "center", zIndex: 50 }]}>
-              <ActivityIndicator color="#c9a84c" size="large" />
-              <Text style={{ marginTop: 16, fontSize: 15, fontFamily: "Inter_600SemiBold", color: "#c9a84c" }}>{statusText}</Text>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(251,243,227,0.92)", alignItems: "center", justifyContent: "center", zIndex: 50 }]}>
+              <ActivityIndicator color={colors.gold} size="large" />
+              <Text style={{ marginTop: 16, fontSize: 15, fontFamily: "Inter_600SemiBold", color: colors.foreground }}>{statusText}</Text>
             </View>
           )}
         </>
@@ -2741,7 +2618,7 @@ const styles = StyleSheet.create({
   unlockAllText: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#0a0e1a", letterSpacing: -0.2 },
   unlockAllPrice: { fontSize: 14, fontFamily: "Inter_700Bold", color: "#0a0e1a", opacity: 0.7 },
   unlockAllSub: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.35)", marginTop: 8 },
-  restoreText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.35)" },
+  restoreText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#8a7259" },
 
   onjjemStrip: {
     flexDirection: "row",
