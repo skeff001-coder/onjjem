@@ -30,7 +30,7 @@ const PRODUCTS = [
     name: "Premium Gloss Personalised Postcard",
     subtitle: "Museum-quality print, posted straight to your door",
     description:
-      "Printed on luxurious 350gsm gloss card with rich, true-to-life colour and edge-to-edge coverage — this isn't your average postcard. It's the kind of keepsake people pin above their desk or keep in a drawer for years. A genuinely lovely little gift, and yours free with The Full Story Bundle.",
+      "Printed on luxurious 350gsm gloss card with rich, true-to-life colour and edge-to-edge coverage — this isn't your average postcard. It's the kind of keepsake people pin above their desk or keep in a drawer for years. A genuinely lovely little gift, and yours free with Unlock Everything.",
     icon: "mail-outline" as const,
     price: 499,
     rrp: null as number | null,
@@ -542,7 +542,7 @@ export default function ShopScreen() {
           {hasCartoon ? (
             <>
               <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20, marginBottom: 12 }}>
-                Thank you for getting The Full Story Bundle! Put your dog (or their cartoon) on a canvas, mug, blanket and more, with 15% off at onjjem.com.
+                Thank you for unlocking everything! Put your dog (or their cartoon) on a canvas, mug, blanket and more, with 15% off at onjjem.com.
               </Text>
               <View style={{ backgroundColor: "rgba(224,169,92,0.15)", borderRadius: 10, padding: 12, alignItems: "center" }}>
                 <Text style={{ fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#e0a95c", marginBottom: 4 }}>YOUR DISCOUNT CODE</Text>
@@ -558,7 +558,7 @@ export default function ShopScreen() {
             </>
           ) : (
             <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground, lineHeight: 20 }}>
-              Get The Full Story Bundle from the Scanner tab to unlock your 15% discount code for anything at onjjem.com.
+              Get Unlock Everything from the Scanner tab to unlock your 15% discount code for anything at onjjem.com.
             </Text>
           )}
         </View>

@@ -86,6 +86,7 @@ interface ScannerDef {
   title: string;
   subtitle: string;
   description: string;
+  perks?: string[];
   icon: string;
   color: string;
   glow: string;
@@ -122,9 +123,17 @@ function useScannerDefs(): ScannerDef[] {
       },
       {
         id: "mixed_dna",
-        title: "🧬 The Full Story Bundle",
-        subtitle: "Breed mix · Age · Personality · Cartoonify",
-        description: "Unlock your dog's breed mix, age estimate & personality profile, turn your dog into 3 cartoon artworks, plus a free postcard of your dog delivered to your door and 15% off at ONJJEM.com.",
+        title: "🎁 Unlock Everything",
+        subtitle: "One purchase. Here's what you get:",
+        description: "",
+        perks: [
+          "Your dog's full personality profile",
+          "A personalised health & care guide",
+          "Fun trick-training ideas for your dog",
+          "How old your dog really is, in human years",
+          "3 cartoon artworks of your dog",
+          "Free gifts: a postcard of your dog delivered to your door + 15% off real mugs, cards & canvases at ONJJEM.com",
+        ],
         icon: "layers-outline",
         color: "#d4af37",
         glow: "rgba(212,175,55,0.3)",
@@ -523,7 +532,7 @@ function ScannerCard({
         )}
         {!def.free && !owned && def.featured && (
           <View style={[cardStyles.premiumBadge, { backgroundColor: def.color }]}>
-            <Text style={cardStyles.premiumBadgeText}>{def.id === "mixed_dna" ? "Bundle ✨" : "£4.99"}</Text>
+            <Text style={cardStyles.premiumBadgeText}>{def.id === "mixed_dna" ? "£2.99 · Unlock" : "£4.99"}</Text>
           </View>
         )}
         {!def.free && owned && (
@@ -549,7 +558,23 @@ function ScannerCard({
           <Ionicons name="chevron-forward" size={20} color={def.color} style={{ opacity: 0.6 }} />
         </View>
 
-        <Text style={cardStyles.description}>{def.description}</Text>
+        {def.perks ? (
+          <View style={{ gap: 7, marginTop: 2 }}>
+            {def.perks.map((perk, i) => (
+              <View key={i} style={{ flexDirection: "row", gap: 8, alignItems: "flex-start" }}>
+                <Ionicons
+                  name="checkmark-circle"
+                  size={15}
+                  color={def.color}
+                  style={{ marginTop: 1 }}
+                />
+                <Text style={[cardStyles.description, { marginTop: 0, flex: 1 }]}>{perk}</Text>
+              </View>
+            ))}
+          </View>
+        ) : (
+          <Text style={cardStyles.description}>{def.description}</Text>
+        )}
       </TouchableOpacity>
       </Animated.View>
     </Animated.View>
