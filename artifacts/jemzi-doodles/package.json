@@ -1,0 +1,19 @@
+{
+  "name": "jemzi-doodles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "expo": "^54.0.38",
+    "expo-image-picker": "^15.1.0",
+    "react": "19.1",
+    "react-native": "^0.81.5",
+    "react-native-purchases": "^8.12.0"
+  }
+}

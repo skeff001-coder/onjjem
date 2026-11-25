@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Jemzi Doodles",
+    "slug": "jemzi-doodles",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.onjjem.doodles"
+    },
+    "extra": {
+      "revenueCatPublicSDKKey": "pk_live_abcdefghij"
+    }
+  }
+}

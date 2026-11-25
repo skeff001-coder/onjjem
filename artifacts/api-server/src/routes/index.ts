@@ -13,7 +13,7 @@ import giveawayRouter from "./giveaway";
 import printablesRouter from "./printables";
 import contestRouter from "./contest";
 import xmasGiveawayRouter from "./xmasGiveaway";
-import jemziFindersRouter from "./jemziFinders";
+import doodlesRouter from "./doodles";
 
 const router: IRouter = Router();
 router.use(healthRouter);
@@ -30,7 +30,7 @@ router.use(giveawayRouter);
 router.use(printablesRouter);
 router.use(contestRouter);
 router.use(xmasGiveawayRouter);
-router.use(jemziFindersRouter);
+router.use(doodlesRouter);
 
 export default router;
 
