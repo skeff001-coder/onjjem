@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.onjjem.canineencyclopedia",
-      "buildNumber": "108",
+      "buildNumber": "109",
       "usesAppleSignIn": true,
       "infoPlist": {
         "LSApplicationQueriesSchemes": [
@@ -26,7 +26,7 @@
           "instagram",
           "tiktok"
         ],
-        "NSCameraUsageDescription": "What's Up Dog! uses your camera to scan and identify your dog's breed using AI.",
+        "NSCameraUsageDescription": "What's Up Dog! uses your camera to scan your dog's breed and to take photos for your You + Your Dog movie poster.",
         "NSPhotoLibraryUsageDescription": "What's Up Dog! accesses your photos so you can choose a dog image for breed identification.",
         "NSPhotoLibraryAddUsageDescription": "What's Up Dog! saves identified dog portraits to your photo library.",
         "ITSAppUsesNonExemptEncryption": false
@@ -54,7 +54,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "What's Up Dog! uses your camera to scan and identify your dog's breed using AI."
+          "cameraPermission": "What's Up Dog! uses your camera to scan your dog's breed and to take photos for your You + Your Dog movie poster."
         }
       ],
       [
