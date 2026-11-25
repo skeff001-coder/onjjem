@@ -138,6 +138,54 @@ function useScannerDefs(): ScannerDef[] {
   );
 }
 
+// A zero-dependency stand-in for a real looping video: a small mug mockup
+// that cross-fades between "plain" and "cartoon printed on it" on a loop,
+// to hint at the actual heat-reveal mugs ONJJEM sells — without needing
+// expo-video/expo-av (a genuinely new native dependency, untested in this
+// build pipeline) or a bundled video file we don't have.
+function MugRevealLoop() {
+  const colors = useColors();
+  const nativeDriver = Platform.OS !== "web";
+  const reveal = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.delay(600),
+        Animated.timing(reveal, { toValue: 1, duration: 900, useNativeDriver: nativeDriver }),
+        Animated.delay(1400),
+        Animated.timing(reveal, { toValue: 0, duration: 900, useNativeDriver: nativeDriver }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, []);
+
+  return (
+    <View style={{
+      width: "100%", borderRadius: 20, overflow: "hidden",
+      backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border,
+      padding: 14, flexDirection: "row", alignItems: "center", gap: 12,
+    }}>
+      <View style={{ width: 58, height: 52, borderRadius: 12, backgroundColor: "#ffffff", borderWidth: 1, borderColor: "#e4ddcf", alignItems: "center", justifyContent: "center" }}>
+        <View style={{ position: "absolute", right: -8, top: 13, width: 14, height: 24, borderRadius: 9, borderWidth: 4, borderColor: "#e4ddcf" }} />
+        {/* "Printed" patch, fading in and out to mimic the heat-reveal */}
+        <Animated.View style={{ width: 36, height: 30, borderRadius: 6, backgroundColor: colors.gold, opacity: reveal, alignItems: "center", justifyContent: "center" }}>
+          <Ionicons name="paw" size={14} color={colors.navy} />
+        </Animated.View>
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 12.5, fontFamily: "Inter_700Bold", color: colors.foreground }}>
+          ✨ Turn Your Dog Into Art & Real Mugs
+        </Text>
+        <Text style={{ fontSize: 10.5, fontFamily: "Inter_400Regular", color: colors.mutedForeground, marginTop: 2 }}>
+          Heat-reveal mugs from ONJJEM — the print appears like magic
+        </Text>
+      </View>
+    </View>
+  );
+}
+
 /* ─── Header ─── */
 function ScannerHeader({
   onScanPress,
@@ -237,6 +285,9 @@ function ScannerHeader({
         }}>
           Turn You & Your Dog Into a Movie Poster.
         </Text>
+
+        {/* Mug-reveal teaser loop — sits right above the primary button */}
+        <MugRevealLoop />
 
         {/* Two high-impact action buttons */}
         <View style={{ width: "100%", gap: 10 }}>
