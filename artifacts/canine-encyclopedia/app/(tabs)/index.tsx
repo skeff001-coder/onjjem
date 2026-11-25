@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Switch,
 } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -935,26 +936,7 @@ function CartoonResultView({
         )}
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => Linking.openURL("https://onjjem.com/shop")}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 8,
-          borderWidth: 1,
-          borderColor: "#e0a95c",
-          borderRadius: 12,
-          paddingVertical: 14,
-          marginTop: 10,
-        }}
-      >
-        <Ionicons name="print-outline" size={18} color="#e0a95c" />
-        <Text style={{ fontSize: 14, fontWeight: "700", color: "#e0a95c" }}>Get This Printed at ONJJEM</Text>
-      </TouchableOpacity>
-      <Text style={{ fontSize: 12, color: "#8a7259", textAlign: "center", marginTop: 8 }}>
-        Save the image above first, then upload it on the ONJJEM site
-      </Text>
+      <MugCardMockup imageBase64={data.imageBase64} mimeType={data.mimeType} />
     </View>
   );
 }
@@ -1174,6 +1156,114 @@ function PrintCTA({ color }: { color: string }) {
   );
 }
 
+// Plain-RN "mug on a table" mockup — no gradients/shader library, just
+// layered Views (rounded rect body, a thin darker strip for shading, a
+// ring-shaped handle clipped to a sliver by sitting mostly outside the
+// body's bounds) with the artwork dropped into a flat inset "label" area
+// rather than a true cylindrical-wrap projection, which would need a
+// skia/canvas dependency this build deliberately avoids.
+function MugCardMockup({ imageBase64, mimeType }: { imageBase64: string; mimeType: string }) {
+  const dataUri = `data:${mimeType};base64,${imageBase64}`;
+  const [saving, setSaving] = useState(false);
+
+  const handleOrder = async () => {
+    setSaving(true);
+    try {
+      const fileUri = `${FileSystem.cacheDirectory}onjjem-gift-${Date.now()}.png`;
+      await FileSystem.writeAsStringAsync(fileUri, imageBase64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      await Share.share(
+        Platform.OS === "ios"
+          ? { url: fileUri }
+          : { url: fileUri, message: "My gift artwork — upload this at onjjem.com/shop" },
+      );
+    } catch {
+      // Saving/sharing failing shouldn't block getting to the shop.
+    } finally {
+      setSaving(false);
+      Linking.openURL("https://onjjem.com/shop");
+    }
+  };
+
+  return (
+    <View style={{
+      width: "100%", backgroundColor: "#fff9ed", borderRadius: 20,
+      borderWidth: 1, borderColor: "#ead9b8", padding: 18, gap: 14,
+      alignItems: "center", marginTop: 8,
+    }}>
+      <Text style={{ fontSize: 15, fontFamily: "Inter_700Bold", color: "#3b2a1d" }}>
+        Make It a Real Gift (ONJJEM)
+      </Text>
+
+      <View style={{ flexDirection: "row", gap: 24, alignItems: "flex-end", justifyContent: "center" }}>
+        {/* Mug mockup */}
+        <View style={{ width: 120, alignItems: "center" }}>
+          <View style={{
+            width: 100, height: 90, borderRadius: 14, backgroundColor: "#ffffff",
+            borderWidth: 1, borderColor: "#e4ddcf",
+            shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4,
+            alignItems: "center", justifyContent: "center",
+          }}>
+            {/* handle */}
+            <View style={{
+              position: "absolute", right: -14, top: 18,
+              width: 26, height: 46, borderRadius: 16,
+              borderWidth: 7, borderColor: "#e4ddcf",
+            }} />
+            {/* subtle cylindrical shading */}
+            <View style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 14, backgroundColor: "rgba(0,0,0,0.06)", borderTopLeftRadius: 14, borderBottomLeftRadius: 14 }} />
+            <View style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 10, backgroundColor: "rgba(0,0,0,0.04)", borderTopRightRadius: 14, borderBottomRightRadius: 14 }} />
+            {/* artwork label */}
+            <View style={{ width: 70, height: 62, borderRadius: 6, overflow: "hidden" }}>
+              <Image source={{ uri: dataUri }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+            </View>
+          </View>
+          <Text style={{ fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#8a7259", marginTop: 8 }}>Ceramic Mug</Text>
+        </View>
+
+        {/* Greeting card mockup */}
+        <View style={{ width: 90, alignItems: "center" }}>
+          <View style={{
+            width: 80, height: 108, borderRadius: 8, backgroundColor: "#ffffff",
+            borderWidth: 1, borderColor: "#e4ddcf", overflow: "hidden",
+            shadowColor: "#000", shadowOpacity: 0.12, shadowRadius: 6, shadowOffset: { width: 0, height: 3 }, elevation: 3,
+          }}>
+            <Image source={{ uri: dataUri }} style={{ width: "100%", height: "72%" }} resizeMode="cover" />
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+              <Text style={{ fontSize: 9, fontFamily: "Inter_700Bold", color: "#3b2a1d" }}>Season's</Text>
+              <Text style={{ fontSize: 9, fontFamily: "Inter_700Bold", color: "#3b2a1d" }}>Greetings</Text>
+            </View>
+          </View>
+          <Text style={{ fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#8a7259", marginTop: 8 }}>Greeting Card</Text>
+        </View>
+      </View>
+
+      <View style={{ backgroundColor: "#e3a93c", borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 }}>
+        <Text style={{ fontSize: 11, fontFamily: "Inter_700Bold", color: "#2e2013" }}>15% OFF APP EXCLUSIVE APPLIED</Text>
+      </View>
+
+      <TouchableOpacity
+        onPress={handleOrder}
+        disabled={saving}
+        style={{
+          width: "100%", backgroundColor: "#e3a93c", borderRadius: 12,
+          paddingVertical: 14, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8,
+        }}
+      >
+        {saving ? (
+          <ActivityIndicator color="#2e2013" size="small" />
+        ) : (
+          <Text style={{ fontSize: 14, fontFamily: "Inter_700Bold", color: "#2e2013" }}>Order This Mug on ONJJEM.com →</Text>
+        )}
+      </TouchableOpacity>
+      <Text style={{ fontSize: 11, color: "#8a7259", textAlign: "center" }}>
+        Your artwork saves automatically — just upload it at checkout.
+      </Text>
+    </View>
+  );
+}
+
 function ResultSection({ title, icon, color, items }: { title: string; icon: string; color: string; items: string[] }) {
   return (
     <View style={{ marginTop: 8 }}>
@@ -1373,6 +1463,7 @@ export default function ScannerScreen() {
   const [moviePosterTitle, setMoviePosterTitle] = useState("");
   const [moviePosterTitleEditing, setMoviePosterTitleEditing] = useState(false);
   const [moviePosterError, setMoviePosterError] = useState<string | null>(null);
+  const [festiveMode, setFestiveMode] = useState(false);
   // Cartoon uses — 3 per purchase, tracked locally.
   // No free cartoon scan. No bundle dependency.
   const [cartoonUsesRemaining, setCartoonUsesRemaining] = useState<number>(0);
@@ -1576,7 +1667,7 @@ export default function ScannerScreen() {
 
   // ── "You + Your Dog" Movie Poster helpers ──
 
-  const openMoviePoster = async () => {
+  const openMoviePoster = async (startFestive: boolean = false) => {
     if (!posterUsesLoaded) return;
     // Require the Full Story Bundle unlock (and a remaining use) before
     // even opening the input screen — no free/teaser generations, since
@@ -1598,6 +1689,7 @@ export default function ScannerScreen() {
     setMoviePosterResult(null);
     setMoviePosterTitle("");
     setMoviePosterError(null);
+    setFestiveMode(startFestive);
     setMoviePosterStep("input");
     setMoviePosterVisible(true);
   };
@@ -1647,6 +1739,7 @@ export default function ScannerScreen() {
         posterDogPhoto.mimeType,
         ownerNameInput.trim() || undefined,
         posterDogNameInput.trim() || undefined,
+        festiveMode,
       );
       setMoviePosterResult(result);
       setMoviePosterTitle(result.defaultTitle);
@@ -1999,6 +2092,34 @@ export default function ScannerScreen() {
                         contentContainerStyle={{ paddingTop: topPad + 12, paddingBottom: isWeb ? 100 : insets.bottom + 140 }}
 
           >
+            {/* Christmas Gift Mode banner */}
+            <View style={{
+              marginHorizontal: 16, marginBottom: 14,
+              backgroundColor: colors.gold, borderRadius: 20,
+              padding: 18, gap: 10,
+            }}>
+              <Text style={{ fontSize: 17, fontFamily: "Inter_700Bold", color: colors.navy }}>
+                🎄 Christmas Gift Mode: Custom Dog Mugs & Cards
+              </Text>
+              <Text style={{ fontSize: 13, fontFamily: "Inter_500Medium", color: colors.navy, opacity: 0.85, lineHeight: 18 }}>
+                Turn any dog (or You + Your Dog) into a personalized Christmas gift in 60 seconds. Delivered by ONJJEM.
+              </Text>
+              <TouchableOpacity
+                onPress={() => openMoviePoster(true)}
+                activeOpacity={0.85}
+                style={{
+                  backgroundColor: colors.navy, borderRadius: 999,
+                  paddingVertical: 12, paddingHorizontal: 18,
+                  flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6,
+                  alignSelf: "flex-start",
+                }}
+              >
+                <Text style={{ fontSize: 14, fontFamily: "Inter_700Bold", color: "#ffffff" }}>
+                  Create a Christmas Gift →
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             {/* Header */}
             <ScannerHeader onScanPress={() => {
                 const breedDef = scanners.find(s => s.id === "breed");
@@ -2368,6 +2489,30 @@ export default function ScannerScreen() {
                 </View>
 
                 <TouchableOpacity
+                  onPress={() => setFestiveMode((v) => !v)}
+                  activeOpacity={0.85}
+                  style={{
+                    width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+                    backgroundColor: colors.card, borderWidth: 1.5,
+                    borderColor: festiveMode ? colors.gold : colors.border,
+                    borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14,
+                  }}
+                >
+                  <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 8 }}>
+                    <Text style={{ fontSize: 18 }}>🎄</Text>
+                    <Text style={{ fontSize: 13, fontFamily: "Inter_600SemiBold", color: colors.foreground, flex: 1 }}>
+                      Festive Christmas Scene
+                    </Text>
+                  </View>
+                  <Switch
+                    value={festiveMode}
+                    onValueChange={setFestiveMode}
+                    trackColor={{ false: colors.border, true: colors.gold }}
+                    thumbColor="#ffffff"
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
                   onPress={generateMoviePoster}
                   disabled={!ownerPhoto || !posterDogPhoto}
                   style={{
@@ -2472,7 +2617,10 @@ export default function ScannerScreen() {
                         <Ionicons name="share-outline" size={18} color={colors.navy} />
                         <Text style={{ fontSize: 14, fontWeight: "700", color: colors.navy }}>Share Poster</Text>
                       </TouchableOpacity>
-                      <PrintCTA color={colors.gold} />
+                      <MugCardMockup
+                        imageBase64={moviePosterResult.imageBase64}
+                        mimeType={moviePosterResult.mimeType}
+                      />
                     </>
                   ) : (
                     <TouchableOpacity

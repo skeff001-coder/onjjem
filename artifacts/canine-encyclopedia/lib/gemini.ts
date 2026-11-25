@@ -298,6 +298,7 @@ export async function getMoviePoster(
   dogMimeType: string,
   ownerName?: string,
   dogName?: string,
+  festive?: boolean,
 ): Promise<MoviePosterResult> {
   const response = await fetch(`${getApiBase()}/api/movie-poster`, {
     method: "POST",
@@ -309,6 +310,7 @@ export async function getMoviePoster(
       dogMimeType,
       ownerName,
       dogName,
+      festive,
     }),
   });
   if (!response.ok) {
