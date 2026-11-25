@@ -484,13 +484,21 @@ router.post("/movie-poster", async (req: Request, res: Response) => {
     dogMimeType = "image/jpeg",
     ownerName,
     dogName,
+    festive,
   } = req.body;
 
   if (!ownerSelfieBase64) { res.status(400).json({ error: "ownerSelfieBase64 is required" }); return; }
   if (!dogPhotoBase64) { res.status(400).json({ error: "dogPhotoBase64 is required" }); return; }
 
-  const promptText =
+  const basePromptText =
     "Create a heartwarming 3D animated movie poster featuring the exact person from the first photo and the exact dog from the second photo standing side-by-side as best friends. Keep the person's exact facial features, hair, and smile/glasses, and keep the dog's exact fur colors, markings, breed traits, and ear shape. Warm golden sunlight, expressive eyes, vibrant Pixar-inspired 3D animation style, vertical 3:4 portrait framing with clean open space at the top and bottom for poster titles. Do not render any text inside the image.";
+
+  const promptText = festive
+    ? basePromptText.replace(
+        "Warm golden sunlight,",
+        "Set in a cozy Christmas living room with twinkling fairy lights, wrapped presents, and soft snow outside the window. Warm golden firelight,",
+      )
+    : basePromptText;
 
   try {
     const ai = getAI();
