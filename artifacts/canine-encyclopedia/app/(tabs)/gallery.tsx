@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import * as MediaLibrary from "expo-media-library";
+import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColors } from "@/hooks/useColors";
 import { useApp, type GalleryEntry } from "@/context/AppContext";
@@ -270,11 +270,11 @@ export default function GalleryScreen() {
 
         {/* ── Legal Footer ── */}
         <View style={styles.footer}>
-          <TouchableOpacity onPress={() => router.push("/privacy" as any)} activeOpacity={0.7}>
+          <TouchableOpacity onPress={() => WebBrowser.openBrowserAsync(`https://${process.env.EXPO_PUBLIC_DOMAIN}/api/privacy`)} activeOpacity={0.7}>
             <Text style={[styles.footerLink, { color: colors.mutedForeground }]}>Privacy Policy</Text>
           </TouchableOpacity>
           <Text style={[styles.footerDot, { color: colors.mutedForeground }]}>·</Text>
-          <TouchableOpacity onPress={() => router.push("/terms" as any)} activeOpacity={0.7}>
+          <TouchableOpacity onPress={() => WebBrowser.openBrowserAsync("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")} activeOpacity={0.7}>
             <Text style={[styles.footerLink, { color: colors.mutedForeground }]}>Terms & Conditions</Text>
           </TouchableOpacity>
         </View>
