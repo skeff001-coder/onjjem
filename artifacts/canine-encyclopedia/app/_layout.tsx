@@ -26,14 +26,19 @@ import { SubscriptionProvider, initializeRevenueCat } from "@/lib/revenuecat";
 // next test run tells us exactly what's throwing instead of just crashing.
 if ((global as any).ErrorUtils) {
   (global as any).ErrorUtils.setGlobalHandler((error: any, isFatal?: boolean) => {
-    try {
-      Alert.alert(
-        isFatal ? "Fatal JS Error (captured)" : "JS Error (captured)",
-        `${error?.message ?? String(error)}\n\n${(error?.stack ?? "").toString().slice(0, 1200)}`,
-      );
-    } catch {}
-    // Deliberately not calling the default handler, so the app stays open
-    // long enough to read the alert instead of crashing immediately.
+    // Only show the raw error pop-up in development; real users just get a
+    // console log so they never see a stack trace.
+    console.warn(isFatal ? "Fatal JS error (captured):" : "JS error (captured):", error?.message ?? String(error));
+    if (__DEV__) {
+      try {
+        Alert.alert(
+          isFatal ? "Fatal JS Error (captured)" : "JS Error (captured)",
+          `${error?.message ?? String(error)}\n\n${(error?.stack ?? "").toString().slice(0, 1200)}`,
+        );
+      } catch {}
+    }
+    // Deliberately not calling the default handler, so a stray JS error
+    // doesn't escalate into a native abort and crash the app.
   });
 }
 
