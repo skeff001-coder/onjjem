@@ -7,6 +7,10 @@ import { WebhookHandlers } from "./webhookHandlers";
 
 const app: Express = express();
 
+// Running behind Railway's proxy: trust one hop so req.ip is the real client
+// address (used by the rate limiter) rather than the proxy's.
+app.set("trust proxy", 1);
+
 app.get("/api/stripe/webhook", (_req: Request, res: Response) => {
   res.status(200).json({ ok: true });
 });

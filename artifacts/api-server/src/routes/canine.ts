@@ -1,7 +1,26 @@
 import { Router, Request, Response } from "express";
 import { GoogleGenAI } from "@google/genai";
+import { rateLimit } from "../middlewares/rateLimit";
 
 const router = Router();
+
+// Cap how often one IP can call the (paid) Gemini endpoints: 60 requests per
+// 10 minutes. Applies only to these paths, not to other routes on the server.
+router.use(
+  [
+    "/scan-breed",
+    "/breed-knowledge",
+    "/glowup",
+    "/mixed-breed-dna",
+    "/age-estimate",
+    "/personality-scan",
+    "/health-guide",
+    "/trick-trainer",
+    "/dog-cartoon",
+    "/movie-poster",
+  ],
+  rateLimit({ windowMs: 10 * 60 * 1000, max: 60 }),
+);
 
 function getAI() {
   const apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
