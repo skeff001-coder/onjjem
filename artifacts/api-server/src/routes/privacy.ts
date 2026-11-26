@@ -125,7 +125,7 @@ router.get("/privacy", (_req, res) => {
     </div>
 
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: 20 May 2025</p>
+    <p class="updated">Last updated: 26 November 2026</p>
 
     <div class="card">
       <h2>The Short Version</h2>
@@ -139,9 +139,10 @@ router.get("/privacy", (_req, res) => {
     <div class="card">
       <h2>Photos &amp; Breed Scanning</h2>
       <p>
-        When you scan a dog photo, the image is sent to Google's Gemini API
-        solely to identify the breed. We do not store, retain, or share your
-        photos in any way. Google's own privacy policy governs how Gemini
+        When you scan a dog photo, or create a cartoon or movie poster, the image
+        is sent to Google's Gemini API solely to produce that result (breed
+        identification, personality and health guides, cartoon or poster artwork).
+        Our server does not store or retain your photos. Google's own privacy policy governs how Gemini
         processes requests — see <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>.
       </p>
       <p>
@@ -153,9 +154,9 @@ router.get("/privacy", (_req, res) => {
     <div class="card">
       <h2>In-App Purchases</h2>
       <p>
-        Pup-Grade features are purchased through Apple's App Store. All payment
-        processing is handled entirely by Apple. We receive a transaction
-        confirmation but never see your card details, Apple ID, or billing information.
+        The "Unlock Everything" bundle is purchased through Apple's App Store. All
+        payment processing is handled entirely by Apple. We receive a transaction
+        confirmation but never see your card details or billing information.
       </p>
       <p>
         Purchase state is managed by RevenueCat. RevenueCat assigns an anonymous
@@ -165,14 +166,25 @@ router.get("/privacy", (_req, res) => {
     </div>
 
     <div class="card">
+      <h2>Sign in with Apple &amp; Free Scans</h2>
+      <p>
+        Free breed scans are limited per person. To enforce this, the app asks you
+        to Sign in with Apple. Apple gives us a unique, anonymous user identifier
+        (we request no name or email). We store this identifier on our server
+        together with the number of free scans you have used, so the limit
+        survives reinstalling the app. It is used only for this purpose and is
+        never shared or used for advertising or tracking.
+      </p>
+    </div>
+
+    <div class="card">
       <h2>Data We Do Not Collect</h2>
       <ul>
         <li>No name, email address, or contact details</li>
         <li>No location data</li>
-        <li>No device identifiers or advertising IDs</li>
+        <li>No advertising IDs</li>
         <li>No usage analytics or behavioural tracking</li>
         <li>No crash reporting services</li>
-        <li>No social login or third-party account linking</li>
       </ul>
     </div>
 
