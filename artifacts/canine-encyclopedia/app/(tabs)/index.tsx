@@ -265,7 +265,7 @@ function ScannerHeader({
             transform: [{ rotate: "6deg" }],
             shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 4, shadowOffset: { width: 0, height: 2 }, elevation: 3,
           }}>
-            <Text style={{ fontSize: 9, fontFamily: "Inter_700Bold", color: colors.navy }}>✨ AI Pixar Poster in 10s</Text>
+            <Text style={{ fontSize: 9, fontFamily: "Inter_700Bold", color: colors.navy }}>✨ AI Movie Poster in 10s</Text>
           </View>
 
           {/* Floating pill: Christmas Edition — doubles as a shortcut into the festive flow */}
