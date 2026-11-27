@@ -1,4 +1,3 @@
-import { CartoonCarousel, CARTOON_SAMPLES } from '@/components/CartoonCarousel';
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   View,
@@ -2651,7 +2650,6 @@ export default function ScannerScreen() {
                     ? "Get 3 cartoon scans — choose from Animated Movie, Oil Painting or Pop Art styles. One-time purchase."
                     : "Unlock your dog's full DNA, Age & Personality story — plus a free personalised postcard shipped to your door. One-time purchase."}
                 </Text>
-                <CartoonCarousel samples={CARTOON_SAMPLES} />
                 <TouchableOpacity
                   onPress={handlePurchase}
                   disabled={isBuying}
