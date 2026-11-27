@@ -10,6 +10,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
 import type { GalleryEntry } from "@/context/AppContext";
+import { resolvePhoto } from "@/lib/photoStore";
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = (width - 48) / 2;
@@ -22,6 +23,7 @@ interface BreedCardProps {
 
 export function BreedCard({ entry, onPress, onLongPress }: BreedCardProps) {
   const colors = useColors();
+  const [failed, setFailed] = React.useState(false);
 
   return (
     <TouchableOpacity
@@ -30,7 +32,13 @@ export function BreedCard({ entry, onPress, onLongPress }: BreedCardProps) {
       activeOpacity={0.85}
       style={[styles.card, { width: CARD_WIDTH, backgroundColor: colors.card, borderColor: colors.border }]}
     >
-      <Image source={{ uri: entry.uri }} style={styles.image} resizeMode="cover" />
+      {failed ? (
+        <View style={[styles.image, { alignItems: "center", justifyContent: "center", backgroundColor: colors.navyMid }]}>
+          <Ionicons name="paw" size={40} color={colors.gold} />
+        </View>
+      ) : (
+        <Image source={{ uri: resolvePhoto(entry.uri) }} style={styles.image} resizeMode="cover" onError={() => setFailed(true)} />
+      )}
       <View style={styles.overlay}>
         {entry.hasDeepKnowledge && (
           <View style={[styles.badge, { backgroundColor: colors.gold }]}>
