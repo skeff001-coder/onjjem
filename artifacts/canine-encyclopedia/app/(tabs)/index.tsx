@@ -1,4 +1,3 @@
-import { CartoonCarousel, CARTOON_SAMPLES } from '@/components/CartoonCarousel';
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   View,
@@ -133,7 +132,7 @@ function useScannerDefs(): ScannerDef[] {
           "Fun trick-training ideas for your dog",
           "How old your dog really is, in human years",
           "3 cartoon artworks of your dog",
-          "Free gifts: a postcard of your dog delivered to your door + 15% off real mugs, cards & canvases at ONJJEM.com",
+          "15% off real mugs, cards & canvases at ONJJEM.com",
         ],
         icon: "layers-outline",
         color: "#d4af37",
@@ -2238,8 +2237,7 @@ export default function ScannerScreen() {
               🐾 {revealOfferDogName}'s story awaits
             </Text>
             <Text style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
-              Unlock {revealOfferDogName}'s full Mixed Breed DNA, Age & Personality report — plus a free postcard
-              of {revealOfferDogName} posted straight to your door, and access to the Loyalty Card.
+              Unlock {revealOfferDogName}'s full Mixed Breed DNA, Age & Personality report, plus access to the Loyalty Card.
             </Text>
             <TouchableOpacity onPress={acceptRevealOffer} style={[styles.continueBtn, { marginTop: 18 }]}>
               <Text style={styles.continueBtnText}>Reveal {revealOfferDogName}'s Story — £2.99</Text>
@@ -2649,9 +2647,8 @@ export default function ScannerScreen() {
                 <Text style={[styles.purchaseSub, { color: colors.mutedForeground }]}>
                   {purchaseTarget.id === "cartoon"
                     ? "Get 3 cartoon scans — choose from Animated Movie, Oil Painting or Pop Art styles. One-time purchase."
-                    : "Unlock your dog's full DNA, Age & Personality story — plus a free personalised postcard shipped to your door. One-time purchase."}
+                    : "Unlock your dog's full DNA, Age & Personality story. One-time purchase."}
                 </Text>
-                <CartoonCarousel samples={CARTOON_SAMPLES} />
                 <TouchableOpacity
                   onPress={handlePurchase}
                   disabled={isBuying}
@@ -2661,7 +2658,7 @@ export default function ScannerScreen() {
                     <ActivityIndicator color="#0a0e1a" size="small" />
                   ) : (
                     <Text style={[styles.purchaseBtnText, { color: "#0a0e1a" }]}>
-                      {purchaseTarget.id === "cartoon" ? "Get 3 Cartoon Scans — £4.99" : "Unlock Full Story + Free Postcard — £2.99"}
+                      {purchaseTarget.id === "cartoon" ? "Get 3 Cartoon Scans — £4.99" : "Unlock Full Story — £2.99"}
                     </Text>
                   )}
                 </TouchableOpacity>

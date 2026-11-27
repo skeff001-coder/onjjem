@@ -157,7 +157,7 @@ export default function GalleryScreen() {
                 Unlock the Full Story
               </Text>
               <Text style={{ fontSize: 12, color: colors.mutedForeground, marginTop: 2 }}>
-                DNA, Age & Personality + a free postcard — £2.99
+                DNA, Age & Personality — £2.99
               </Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color={colors.mutedForeground} />

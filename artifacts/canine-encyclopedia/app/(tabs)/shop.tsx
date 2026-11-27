@@ -32,9 +32,9 @@ const PRODUCTS = [
     description:
       "Printed on luxurious 350gsm gloss card with rich, true-to-life colour and edge-to-edge coverage — this isn't your average postcard. It's the kind of keepsake people pin above their desk or keep in a drawer for years. A genuinely lovely little gift, and yours free with Unlock Everything.",
     icon: "mail-outline" as const,
-    price: 499,
+    price: 399,
     rrp: null as number | null,
-    freeWithBundle: true,
+    freeWithBundle: false,
     sku: "wud-gift-postcard",
     emoji: "📮",
   },
@@ -493,7 +493,7 @@ export default function ShopScreen() {
                     <ActivityIndicator color="#4ade80" />
                   ) : (
                     <Text style={s.freeBtnText}>
-                      {postcardClaimed ? "Postcard Already Claimed ✓" : "Claim Your Free Postcard →"}
+                      {postcardClaimed ? "Postcard Already Claimed ✓" : "Claim Your Postcard →"}
                     </Text>
                   )}
                 </TouchableOpacity>
