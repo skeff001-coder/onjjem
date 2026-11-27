@@ -75,7 +75,7 @@ const TIERS = [
     features: [
       "Everything in Lineage Report",
       "Everything in Grooming Masterclass",
-      "Health diagnostics & lifespan data",
+      "Health info & lifespan data",
       "Genetic predispositions & risks",
       "Exercise & nutrition guide",
       "Full breed blueprint — all data",
