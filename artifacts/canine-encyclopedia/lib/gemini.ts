@@ -260,6 +260,25 @@ export async function getTrickTrainer(breed: string, dogName?: string): Promise<
   return response.json();
 }
 
+export interface InnerVoiceResult {
+  voice: string;
+  mood: string;
+  emoji: string;
+}
+
+export async function getInnerVoice(breed: string, dogName?: string): Promise<InnerVoiceResult> {
+  const response = await fetch(`${getApiBase()}/api/inner-voice`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ breed, dogName }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(`${(err as any)?.error ?? "Inner voice failed"}: ${(err as any)?.details ?? `status ${response.status}`}`);
+  }
+  return response.json();
+}
+
 export interface DogCartoonResult {
   imageBase64: string;
   mimeType: string;
