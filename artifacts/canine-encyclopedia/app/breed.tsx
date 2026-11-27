@@ -23,6 +23,7 @@ import { useSubscription } from "@/lib/revenuecat";
 import { useApp } from "@/context/AppContext";
 import { KnowledgeSection, InfoRow, TagList } from "@/components/KnowledgeSection";
 import { ProductMockup } from "@/components/ProductMockup";
+import { getInnerVoice, InnerVoiceResult } from "@/lib/gemini";
 
 const { width } = Dimensions.get("window");
 const PHOTO_SIZE = width * 0.42;
@@ -194,6 +195,123 @@ const shareStyles = StyleSheet.create({
   btnLabel: { fontSize: 10, fontFamily: "Inter_700Bold", letterSpacing: 0.2 },
 });
 
+function InnerVoiceCard({ breed, dogName }: { breed: string; dogName: string }) {
+  const colors = useColors();
+  const [result, setResult] = useState<InnerVoiceResult | null>(null);
+  const [loading, setLoading] = useState(false);
+  const label = dogName || "your dog";
+
+  const hear = async () => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setLoading(true);
+    try {
+      setResult(await getInnerVoice(breed, dogName || undefined));
+    } catch {
+      Alert.alert("Couldn't hear them", "Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const share = async () => {
+    if (!result) return;
+    await trackShare("inner_voice", breed);
+    try {
+      await Share.share({
+        message: `${result.emoji} ${dogName || "My dog"} the ${breed} is thinking:\n\n"${result.voice}"\n\nMood: ${result.mood}\n\nHear what YOUR dog is thinking 👇\nhttps://onjjem.com\n\n#WhatsUpDog #DogsInnerVoice`,
+        url: "https://onjjem.com",
+      });
+    } catch {}
+  };
+
+  return (
+    <View style={[voiceStyles.wrap, { backgroundColor: colors.navyMid, borderColor: colors.border }]}>
+      <View style={voiceStyles.header}>
+        <Ionicons name="chatbubble-ellipses-outline" size={15} color={colors.gold} />
+        <Text style={[voiceStyles.heading, { color: colors.foreground }]}>Dog's Inner Voice</Text>
+      </View>
+
+      {result ? (
+        <>
+          <View style={[voiceStyles.bubble, { backgroundColor: colors.gold + "18", borderColor: colors.gold + "44" }]}>
+            <Text style={voiceStyles.emoji}>{result.emoji}</Text>
+            <Text style={[voiceStyles.quote, { color: colors.foreground }]}>"{result.voice}"</Text>
+            <Text style={[voiceStyles.mood, { color: colors.gold }]}>Mood: {result.mood}</Text>
+          </View>
+          <View style={voiceStyles.row}>
+            <TouchableOpacity
+              onPress={hear}
+              disabled={loading}
+              style={[voiceStyles.btn, { borderColor: colors.border }]}
+              activeOpacity={0.75}
+            >
+              {loading ? (
+                <ActivityIndicator color={colors.gold} size="small" />
+              ) : (
+                <Text style={[voiceStyles.btnText, { color: colors.foreground }]}>Again 🔄</Text>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={share}
+              style={[voiceStyles.btn, { backgroundColor: colors.gold, borderColor: colors.gold }]}
+              activeOpacity={0.75}
+            >
+              <Text style={[voiceStyles.btnText, { color: colors.navy }]}>Share 📤</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : (
+        <>
+          <Text style={[voiceStyles.sub, { color: colors.mutedForeground }]}>
+            Find out what {label} is really thinking right now
+          </Text>
+          <TouchableOpacity
+            onPress={hear}
+            disabled={loading}
+            style={[voiceStyles.btn, { backgroundColor: colors.gold, borderColor: colors.gold }]}
+            activeOpacity={0.75}
+          >
+            {loading ? (
+              <ActivityIndicator color={colors.navy} size="small" />
+            ) : (
+              <Text style={[voiceStyles.btnText, { color: colors.navy }]}>Hear {label}'s thoughts 🐶</Text>
+            )}
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
+  );
+}
+
+const voiceStyles = StyleSheet.create({
+  wrap: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 16,
+    gap: 10,
+  },
+  header: { flexDirection: "row", alignItems: "center", gap: 7 },
+  heading: { fontSize: 14, fontFamily: "Inter_700Bold" },
+  sub: { fontSize: 12, fontFamily: "Inter_400Regular", lineHeight: 17 },
+  bubble: { borderWidth: 1, borderRadius: 16, padding: 16, gap: 8, alignItems: "center" },
+  emoji: { fontSize: 36 },
+  quote: { fontSize: 16, fontFamily: "Inter_600SemiBold", lineHeight: 23, textAlign: "center" },
+  mood: { fontSize: 12, fontFamily: "Inter_700Bold", letterSpacing: 0.4 },
+  row: { flexDirection: "row", gap: 10 },
+  btn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    minHeight: 44,
+  },
+  btnText: { fontSize: 14, fontFamily: "Inter_700Bold" },
+});
+
 export default function BreedScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -351,6 +469,9 @@ export default function BreedScreen() {
             </ScrollView>
           ) : null}
         </View>
+
+        {/* Dog's Inner Voice */}
+        <InnerVoiceCard breed={currentScan.breed} dogName={dogName} />
 
         {/* Social Share */}
         <ShareStrip breed={currentScan.breed} dogName={dogName} />

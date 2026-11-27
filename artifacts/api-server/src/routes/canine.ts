@@ -16,6 +16,7 @@ router.use(
     "/personality-scan",
     "/health-guide",
     "/trick-trainer",
+    "/inner-voice",
     "/dog-cartoon",
     "/movie-poster",
   ],
@@ -410,6 +411,51 @@ Return ONLY valid JSON:
   } catch (e: any) {
     req.log.error({ err: e }, "Trick trainer failed");
     res.status(500).json({ error: "Trick trainer generation failed", details: e?.message });
+  }
+});
+
+// Dog's Inner Voice — a short, funny first-person thought from the dog,
+// built from breed + name only (no image), so it is cheap and fast. Each
+// call picks a random theme so pressing "Again" gives a different line.
+const INNER_VOICE_THEMES = [
+  "food and snacks",
+  "walkies",
+  "the postman",
+  "the sofa",
+  "squirrels",
+  "bedtime",
+  "their human leaving the house",
+  "a trip to the vet",
+  "the vacuum cleaner",
+  "visitors at the door",
+];
+
+router.post("/inner-voice", async (req: Request, res: Response) => {
+  const { breed, dogName } = req.body;
+  if (!breed) { res.status(400).json({ error: "breed is required" }); return; }
+  try {
+    const name = dogName ? `${dogName} the ${breed}` : `a ${breed}`;
+    const theme = INNER_VOICE_THEMES[Math.floor(Math.random() * INNER_VOICE_THEMES.length)];
+    const result = await generateAndParseJSON(
+      [
+        {
+          text: `You are the inner voice of ${name}. Write ONE funny, warm, first-person thought this dog is having right now, about: ${theme}. Let the breed's real personality shine through. Maximum 25 words. Family-friendly, no swearing, and do not mention being an AI.
+
+Return ONLY valid JSON:
+{
+  "voice": "The dog's thought, in first person",
+  "mood": "2-3 word mood label, e.g. Deeply Suspicious",
+  "emoji": "One single emoji that matches the mood"
+}${JSON_SAFETY_NOTE}`,
+        },
+      ],
+      512,
+      true,
+    );
+    res.json(result);
+  } catch (e: any) {
+    req.log.error({ err: e }, "Inner voice failed");
+    res.status(500).json({ error: "Inner voice generation failed", details: e?.message });
   }
 });
 
