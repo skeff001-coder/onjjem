@@ -246,7 +246,6 @@ function InnerVoiceCard({ breed, dogName }: { breed: string; dogName: string }) 
     try {
       await Share.share({
         message: `${result.emoji} ${dogName || "My dog"} the ${breed} is thinking:\n\n"${result.voice}"\n\nMood: ${result.mood}\n\nHear what YOUR dog is thinking 👇\nhttps://onjjem.com\n\n#WhatsUpDog #DogsInnerVoice`,
-        url: "https://onjjem.com",
       });
     } catch {}
   };
