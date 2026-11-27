@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as Speech from "expo-speech";
 import Purchases from "react-native-purchases";
 import { useColors } from "@/hooks/useColors";
 import { useSubscription } from "@/lib/revenuecat";
@@ -146,9 +147,9 @@ function ShareStrip({ breed, dogName }: ShareStripProps) {
     <View style={[shareStyles.wrap, { backgroundColor: colors.navyMid, borderColor: colors.border }]}>
       <View style={shareStyles.header}>
         <Ionicons name="share-social-outline" size={15} color={colors.gold} />
-        <Text style={[shareStyles.heading, { color: colors.foreground }]}>Share the breed</Text>
+        <Text style={[shareStyles.heading, { color: colors.cream }]}>Share the breed</Text>
       </View>
-      <Text style={[shareStyles.sub, { color: colors.mutedForeground }]}>
+      <Text style={[shareStyles.sub, { color: colors.creamMuted }]}>
         Tell your followers what breed {dogName || "your dog"} is
       </Text>
       <View style={shareStyles.row}>
@@ -199,15 +200,41 @@ function InnerVoiceCard({ breed, dogName }: { breed: string; dogName: string }) 
   const colors = useColors();
   const [result, setResult] = useState<InnerVoiceResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
   const label = dogName || "your dog";
+
+  // Stop any speech if the screen closes.
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
+
+  const listen = () => {
+    if (!result) return;
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Speech.stop();
+    setSpeaking(true);
+    // Higher pitch and a slightly quicker pace so it sounds like a cheeky dog.
+    Speech.speak(result.voice, {
+      language: "en-GB",
+      pitch: 1.5,
+      rate: 1.0,
+      onDone: () => setSpeaking(false),
+      onStopped: () => setSpeaking(false),
+      onError: () => setSpeaking(false),
+    });
+  };
 
   const hear = async () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Speech.stop();
+    setSpeaking(false);
     setLoading(true);
     try {
       setResult(await getInnerVoice(breed, dogName || undefined));
     } catch {
-      Alert.alert("Couldn't hear them", "Please try again.");
+      Alert.alert("Couldn't get a thought", "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -228,42 +255,51 @@ function InnerVoiceCard({ breed, dogName }: { breed: string; dogName: string }) 
     <View style={[voiceStyles.wrap, { backgroundColor: colors.navyMid, borderColor: colors.border }]}>
       <View style={voiceStyles.header}>
         <Ionicons name="chatbubble-ellipses-outline" size={15} color={colors.gold} />
-        <Text style={[voiceStyles.heading, { color: colors.foreground }]}>Dog's Inner Voice</Text>
+        <Text style={[voiceStyles.heading, { color: colors.cream }]}>Dog's Inner Voice</Text>
       </View>
 
       {result ? (
         <>
           <View style={[voiceStyles.bubble, { backgroundColor: colors.gold + "18", borderColor: colors.gold + "44" }]}>
             <Text style={voiceStyles.emoji}>{result.emoji}</Text>
-            <Text style={[voiceStyles.quote, { color: colors.foreground }]}>"{result.voice}"</Text>
+            <Text style={[voiceStyles.quote, { color: colors.cream }]}>"{result.voice}"</Text>
             <Text style={[voiceStyles.mood, { color: colors.gold }]}>Mood: {result.mood}</Text>
           </View>
+          <TouchableOpacity
+            onPress={listen}
+            style={[voiceStyles.btn, { backgroundColor: colors.gold, borderColor: colors.gold }]}
+            activeOpacity={0.75}
+          >
+            <Text style={[voiceStyles.btnText, { color: colors.navy }]}>
+              {speaking ? "Speaking… 🔊" : "🔊 Listen"}
+            </Text>
+          </TouchableOpacity>
           <View style={voiceStyles.row}>
             <TouchableOpacity
               onPress={hear}
               disabled={loading}
-              style={[voiceStyles.btn, { borderColor: colors.border }]}
+              style={[voiceStyles.btn, { borderColor: colors.creamMuted }]}
               activeOpacity={0.75}
             >
               {loading ? (
                 <ActivityIndicator color={colors.gold} size="small" />
               ) : (
-                <Text style={[voiceStyles.btnText, { color: colors.foreground }]}>Again 🔄</Text>
+                <Text style={[voiceStyles.btnText, { color: colors.cream }]}>Again 🔄</Text>
               )}
             </TouchableOpacity>
             <TouchableOpacity
               onPress={share}
-              style={[voiceStyles.btn, { backgroundColor: colors.gold, borderColor: colors.gold }]}
+              style={[voiceStyles.btn, { borderColor: colors.creamMuted }]}
               activeOpacity={0.75}
             >
-              <Text style={[voiceStyles.btnText, { color: colors.navy }]}>Share 📤</Text>
+              <Text style={[voiceStyles.btnText, { color: colors.cream }]}>Share 📤</Text>
             </TouchableOpacity>
           </View>
         </>
       ) : (
         <>
-          <Text style={[voiceStyles.sub, { color: colors.mutedForeground }]}>
-            Find out what {label} is really thinking right now
+          <Text style={[voiceStyles.sub, { color: colors.creamMuted }]}>
+            Find out what {label} is really thinking right now, then hear it out loud
           </Text>
           <TouchableOpacity
             onPress={hear}
@@ -274,7 +310,7 @@ function InnerVoiceCard({ breed, dogName }: { breed: string; dogName: string }) 
             {loading ? (
               <ActivityIndicator color={colors.navy} size="small" />
             ) : (
-              <Text style={[voiceStyles.btnText, { color: colors.navy }]}>Hear {label}'s thoughts 🐶</Text>
+              <Text style={[voiceStyles.btnText, { color: colors.navy }]}>What is {label} thinking? 🐶</Text>
             )}
           </TouchableOpacity>
         </>
