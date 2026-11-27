@@ -220,6 +220,9 @@ function InnerVoiceCard({ breed, dogName }: { breed: string; dogName: string }) 
       language: "en-GB",
       pitch: 1.5,
       rate: 1.0,
+      // Use the system's own audio session for speech so it isn't muted by
+      // the app's default session (which follows the iPhone silent switch).
+      useApplicationAudioSession: false,
       onDone: () => setSpeaking(false),
       onStopped: () => setSpeaking(false),
       onError: () => setSpeaking(false),
