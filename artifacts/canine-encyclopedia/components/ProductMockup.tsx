@@ -76,7 +76,7 @@ export function ProductMockup({ photoUri }: ProductMockupProps) {
     <View style={styles.container}>
       <Text style={[styles.heading, { color: colors.foreground }]}>See it as a gift</Text>
       <Text style={[styles.subheading, { color: colors.mutedForeground }]}>
-        Tap to order this exact photo on a real product
+        A preview. Save your photo to your phone, then tap a product to upload it at ONJJEM.
       </Text>
       <View style={styles.row}>
         {PRODUCTS.map((product) => (
