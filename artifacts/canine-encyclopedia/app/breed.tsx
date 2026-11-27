@@ -24,7 +24,7 @@ import { useSubscription } from "@/lib/revenuecat";
 import { useApp } from "@/context/AppContext";
 import { KnowledgeSection, InfoRow, TagList } from "@/components/KnowledgeSection";
 import { ProductMockup } from "@/components/ProductMockup";
-import { getInnerVoice, InnerVoiceResult } from "@/lib/gemini";
+import { getInnerVoice, InnerVoiceResult, getBreedKnowledge } from "@/lib/gemini";
 
 const { width } = Dimensions.get("window");
 const PHOTO_SIZE = width * 0.42;
@@ -354,7 +354,16 @@ export default function BreedScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { currentScan, currentKnowledge, currentDogName, currentPhotoUri, gallery } = useApp();
+  const {
+    currentScan,
+    currentKnowledge,
+    setCurrentKnowledge,
+    knowledgeCache,
+    cacheKnowledge,
+    currentDogName,
+    currentPhotoUri,
+    gallery,
+  } = useApp();
   const { hasMixedBreed } = useSubscription();
   const [breedPhotos, setBreedPhotos] = useState<string[]>([]);
   const [photosLoading, setPhotosLoading] = useState(true);
@@ -382,6 +391,36 @@ export default function BreedScreen() {
       .finally(() => setPhotosLoading(false));
   }, [currentScan?.breed]);
 
+  // Breed facts are normally fetched right after a scan, but they are only kept
+  // in memory. Opening a saved dog from My Pack after the app restarted (or when
+  // the facts on screen are for a different breed) left this screen spinning
+  // forever, so fetch them here when they are missing.
+  const sameBreed = (a?: string, b?: string) =>
+    !!a && !!b && a.trim().toLowerCase() === b.trim().toLowerCase();
+
+  useEffect(() => {
+    const breed = currentScan?.breed;
+    if (!breed) return;
+    const cached = knowledgeCache[breed];
+    if (cached) {
+      if (currentKnowledge !== cached) setCurrentKnowledge(cached);
+      return;
+    }
+    if (sameBreed(currentKnowledge?.breed, breed)) return;
+    let cancelled = false;
+    getBreedKnowledge(breed)
+      .then((knowledge) => {
+        if (cancelled) return;
+        setCurrentKnowledge(knowledge);
+        cacheKnowledge(breed, knowledge);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentScan?.breed, currentKnowledge?.breed, currentScan?.breed ? knowledgeCache[currentScan.breed] : undefined]);
+
   if (!currentScan) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center" }]}>
@@ -390,7 +429,9 @@ export default function BreedScreen() {
     );
   }
 
-  const k = currentKnowledge;
+  const k =
+    knowledgeCache[currentScan.breed] ??
+    (sameBreed(currentKnowledge?.breed, currentScan.breed) ? currentKnowledge : null);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
