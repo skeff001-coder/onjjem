@@ -88,8 +88,9 @@ router.post("/free-scan/consume", async (req, res) => {
 });
 
 // Owner only: /api/owner-reset-free-scans?key=YOUR_GIVEAWAY_KEY
-// Testing helper: gives everyone who used a free scan in the last 30 days their
-// two free scans back. Same key check as /api/owner-report.
+// Testing helper: gives everyone who used a free scan in the last N days (default
+// 30, max 3650, set with &days=N) their two free scans back. Same key check as
+// /api/owner-report.
 const normKey = (v: unknown) => String(v ?? "").replace(/\s+/g, "").toLowerCase();
 
 router.get("/owner-reset-free-scans", async (req, res) => {
@@ -100,10 +101,11 @@ router.get("/owner-reset-free-scans", async (req, res) => {
   }
   try {
     await ensureTable();
+    const days = Math.min(Math.max(parseInt(String(req.query.days ?? "30"), 10) || 30, 1), 3650);
     const result = await db.execute(sql`
       UPDATE free_scan_usage
       SET scans_used = 0, updated_at = now()
-      WHERE updated_at > now() - interval '30 days'
+      WHERE updated_at > now() - make_interval(days => ${days})
       RETURNING apple_user_id
     `);
     res.json({ ok: true, reset: result.rows.length });
