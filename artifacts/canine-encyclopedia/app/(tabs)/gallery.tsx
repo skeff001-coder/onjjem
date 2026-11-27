@@ -207,7 +207,7 @@ export default function GalleryScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>How It Works</Text>
           <Text style={[styles.sectionBody, { color: colors.mutedForeground }]}>
-            What's Up Dog! uses advanced AI to identify dog breeds from a single photo — no account needed, no data stored.
+            What's Up Dog! uses advanced AI to identify dog breeds from a single photo — no account needed.
           </Text>
           {HOW_IT_WORKS.map((step, i) => (
             <View key={i} style={[styles.stepRow, { borderColor: colors.border }]}>
@@ -236,7 +236,7 @@ export default function GalleryScreen() {
         {/* ── About the App ── */}
         <View style={[styles.aboutCard, { backgroundColor: colors.navyMid, borderColor: colors.gold + "33" }]}>
           <Text style={[styles.aboutLabel, { color: colors.gold }]}>ABOUT WHAT'S UP DOG!</Text>
-          <Text style={[styles.aboutTitle, { color: colors.foreground }]}>Built for dog lovers</Text>
+          <Text style={[styles.aboutTitle, { color: colors.cream }]}>Built for dog lovers</Text>
           <Text style={[styles.aboutBody, { color: colors.mutedForeground }]}>
             Whether you've spotted an interesting dog on a walk or want to learn more about your own breed, What's Up Dog! gives you instant, accurate breed information at your fingertips.
           </Text>
