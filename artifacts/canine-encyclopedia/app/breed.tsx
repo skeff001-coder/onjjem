@@ -499,7 +499,7 @@ export default function BreedScreen() {
                 Unlock {displayName}'s full story — £2.99
               </Text>
               <Text style={{ fontSize: 12, color: colors.mutedForeground, marginTop: 2 }}>
-                Free postcard · Free Loyalty Card access · DNA, Age & Personality reports
+                Loyalty Card access · DNA, Age & Personality reports
               </Text>
             </View>
             <Ionicons name="chevron-forward" size={18} color={colors.mutedForeground} />
