@@ -51,6 +51,7 @@ import {
   type DogCartoonResult,
   type MoviePosterResult,
 } from "@/lib/gemini";
+import { persistPhoto } from "@/lib/photoStore";
 import {
   useSubscription,
   PACKAGE_MIXED_BREED,
@@ -1982,9 +1983,10 @@ export default function ScannerScreen() {
     setCurrentDogName(name);
     setCurrentScan(pendingScan);
     setCurrentPhotoUri(scannedUri);
+    const savedUri = await persistPhoto(scannedUri, pendingGalleryId);
     await addToGallery({
       id: pendingGalleryId,
-      uri: scannedUri,
+      uri: savedUri,
       breed: pendingScan.breed,
       dogName: name || undefined,
       isMix: pendingScan.isMix,
